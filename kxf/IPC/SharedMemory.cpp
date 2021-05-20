@@ -55,11 +55,16 @@ namespace
 		value.Add(FILE_MAP_COPY, protection & MemoryProtection::CopyOnWrite);
 		return value;
 	}
-}
 
-namespace kxf::IPC
-{
-	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name) noexcept
+	kxf::String GetFullName(const kxf::String& name, bool isGlobal)
+	{
+		if (!name.IsEmpty())
+		{
+			return kxf::String::Format(wxS("%1\\%2"), isGlobal ? "Global" : "Local", name);
+		}
+		return {};
+	}
+	void* DoAllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name, bool isGlobal) noexcept
 	{
 		ULARGE_INTEGER sizeULI = {};
 		sizeULI.QuadPart = size;
@@ -67,7 +72,8 @@ namespace kxf::IPC
 		const auto protectionWin32 = ConvertProtection(protection);
 		const auto memoryAccessWin32 = ConvertMemoryAccess(protection);
 
-		void* handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, *protectionWin32, sizeULI.HighPart, sizeULI.LowPart, name);
+		String fullName = GetFullName(name, isGlobal);
+		void* handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, *protectionWin32, sizeULI.HighPart, sizeULI.LowPart, !fullName.IsEmpty() ? fullName.wc_str() : nullptr);
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
 			buffer = ::MapViewOfFile(handle, *memoryAccessWin32, 0, 0, size);
@@ -79,10 +85,12 @@ namespace kxf::IPC
 		}
 		return nullptr;
 	}
-	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept
+	void* DoOpenSharedMemoryRegion(void*& buffer, const String& name, bool isGlobal, size_t size, FlagSet<MemoryProtection> protection) noexcept
 	{
 		const auto memoryAccessWin32 = ConvertMemoryAccess(protection);
-		void* handle = ::OpenFileMappingW(*memoryAccessWin32, FALSE, name);
+		String fullName = GetFullName(name, isGlobal);
+
+		void* handle = ::OpenFileMappingW(*memoryAccessWin32, FALSE, !fullName.IsEmpty() ? fullName.wc_str() : nullptr);
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
 			buffer = ::MapViewOfFile(handle, *memoryAccessWin32, 0, 0, size);
@@ -94,6 +102,28 @@ namespace kxf::IPC
 		}
 		return nullptr;
 	}
+}
+
+namespace kxf::IPC
+{
+	void* AllocateGlobalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name) noexcept
+	{
+		return DoAllocateSharedMemoryRegion(buffer, size, protection, name, true);
+	}
+	void* AllocateLocalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name) noexcept
+	{
+		return DoAllocateSharedMemoryRegion(buffer, size, protection, name, false);
+	}
+
+	void* OpenGloablSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
+	{
+		return DoOpenSharedMemoryRegion(buffer, name, true, size, protection);
+	}
+	void* OpenLocalSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
+	{
+		return DoOpenSharedMemoryRegion(buffer, name, false, size, protection);
+	}
+
 	void FreeSharedMemoryRegion(void* handle, void* buffer) noexcept
 	{
 		if (buffer)

@@ -11,8 +11,12 @@ namespace kxf
 
 namespace kxf::IPC
 {
-	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr) noexcept;
-	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
+	void* AllocateGlobalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept;
+	void* AllocateLocalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept;
+
+	void* OpenGloablSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
+	void* OpenLocalSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
+
 	void FreeSharedMemoryRegion(void* handle, void* buffer) noexcept;
 }
 
@@ -35,16 +39,42 @@ namespace kxf
 				m_Protection = MemoryProtection::None;
 			}
 
+			template<class TFunc>
+			bool DoOpen(const String& name, size_t size, FlagSet<MemoryProtection> protection, TFunc&& func) noexcept
+			{
+				Free();
+				if (m_Handle = std::invoke(func, m_Buffer, name, size, protection))
+				{
+					m_Size = size;
+					m_Protection = protection;
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
+
+			template<class TFunc>
+			bool DoAllocate(size_t size, FlagSet<MemoryProtection> protection, const String& name, TFunc&& func) noexcept
+			{
+				Free();
+				if (m_Handle = std::invoke(func, m_Buffer, size, protection, name))
+				{
+					m_Size = size;
+					m_Protection = protection;
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
+
 		public:
 			SharedMemoryBuffer() noexcept = default;
-			SharedMemoryBuffer(size_t size, FlagSet<MemoryProtection> protection, const String& name)
-			{
-				Allocate(size, protection, name);
-			}
-			SharedMemoryBuffer(size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr)
-			{
-				Allocate(size, protection, name);
-			}
 			SharedMemoryBuffer(SharedMemoryBuffer&& other) noexcept
 			{
 				*this = std::move(other);
@@ -61,59 +91,22 @@ namespace kxf
 				return !m_Handle || !m_Buffer || m_Size == 0;
 			}
 
-			bool Open(const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept
+			bool OpenGlobal(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
-				Free();
-				if (m_Handle = IPC::OpenSharedMemoryRegion(m_Buffer, name, size, protection))
-				{
-					m_Size = size;
-					m_Protection = protection;
-					return true;
-				}
-				else
-				{
-					MakeNull();
-					return false;
-				}
+				return DoOpen(name, size, protection, IPC::OpenGloablSharedMemoryRegion);
 			}
-			bool Open(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
+			bool OpenLocal(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
-				return Open(name.wc_str(), size, protection);
+				return DoOpen(name, size, protection, IPC::OpenLocalSharedMemoryRegion);
 			}
 
-			bool Allocate(size_t size, FlagSet<MemoryProtection> protection, const String& name) noexcept
+			bool AllocateGlobal(size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept
 			{
-				return Allocate(size, protection, name.IsEmpty() ? nullptr : name.wc_str());
+				return DoAllocate(size, protection, name, IPC::AllocateGlobalSharedMemoryRegion);
 			}
-			bool Allocate(size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr) noexcept
+			bool AllocateLocal(size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept
 			{
-				Free();
-				if (m_Handle = IPC::AllocateSharedMemoryRegion(m_Buffer, size, protection, name))
-				{
-					m_Size = size;
-					m_Protection = protection;
-					return true;
-				}
-				else
-				{
-					MakeNull();
-					return false;
-				}
-			}
-
-			SharedMemoryBuffer Clone(const wchar_t* name = nullptr) const noexcept
-			{
-				// Allocate new buffer with the same parameters
-				SharedMemoryBuffer buffer;
-				if (buffer.Allocate(m_Size, m_Protection, name))
-				{
-					std::memcpy(buffer.m_Buffer, m_Buffer, m_Size);
-				}
-				return buffer;
-			}
-			SharedMemoryBuffer Clone(const String& name) const noexcept
-			{
-				return Clone(name.wc_str());
+				return DoAllocate(size, protection, name, IPC::AllocateLocalSharedMemoryRegion);
 			}
 			
 			void Free() noexcept
