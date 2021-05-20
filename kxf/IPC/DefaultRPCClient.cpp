@@ -23,8 +23,7 @@ namespace kxf
 
 	bool DefaultRPCClient::DoConnectToServer(bool notify)
 	{
-		String name = GetControlBufferName();
-		if (m_SessionMutex.Open(name) && m_ControlBuffer.OpenGlobal(name, GetControlBufferSize(), MemoryProtection::Read))
+		if (m_SessionMutex.Open(GetSessionMutexName()) && m_ControlBuffer.OpenGlobal(GetControlBufferName(), GetControlBufferSize(), MemoryProtection::Read))
 		{
 			// Read control parameters
 			auto stream = m_ControlBuffer.GetInputStream();

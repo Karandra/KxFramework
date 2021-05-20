@@ -36,6 +36,7 @@ namespace kxf
 			size_t GetControlBufferSize() const;
 			String GetControlBufferName() const;
 			String GetResultBufferName() const;
+			String GetSessionMutexName() const;
 
 			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler);
 			void OnTerminate();

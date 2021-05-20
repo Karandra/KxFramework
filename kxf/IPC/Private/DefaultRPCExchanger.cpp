@@ -29,6 +29,10 @@ namespace kxf
 	{
 		return String::Format(wxS("%1:%2-ResultBuffer"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
 	}
+	String DefaultRPCExchanger::GetSessionMutexName() const
+	{
+		return String::Format(wxS("%1:%2-SessionMutex"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+	}
 
 	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler)
 	{

@@ -21,8 +21,7 @@ namespace kxf
 
 	bool DefaultRPCServer::DoStartServer(bool notify)
 	{
-		String name = GetControlBufferName();
-		if (m_SessionMutex.CreateAcquired(name) && m_ControlBuffer.AllocateGlobal(GetControlBufferSize(), MemoryProtection::RW, name))
+		if (m_SessionMutex.CreateAcquired(GetSessionMutexName()) && m_ControlBuffer.AllocateGlobal(GetControlBufferSize(), MemoryProtection::RW, GetControlBufferName()))
 		{
 			m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
 
