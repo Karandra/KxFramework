@@ -18,8 +18,10 @@ namespace kxf
 			DefaultRPCProcedure m_Procedure;
 			DefaultRPCServer* m_Server = nullptr;
 			DefaultRPCClient* m_Client = nullptr;
-			IInputStream* m_ResultStream = nullptr;
+
 			IInputStream* m_ParametersStream = nullptr;
+			std::optional<MemoryOutputStream> m_ResultStream;
+			std::optional<MemoryInputStream> m_ResultStreamRead;
 
 		public:
 			DefaultRPCEvent() = default;
@@ -50,11 +52,11 @@ namespace kxf
 			IRPCServer* GetServer() const override;
 			IRPCClient* GetClient() const override;
 
-			IInputStream& GetProcedureResult() override;
-			void SetProcedureResult(IInputStream& stream) override;
+			IInputStream& RawGetProcedureResult() override;
+			void RawSetProcedureResult(IInputStream& stream) override;
 
-			IInputStream& GetProcedureParameters() override;
-			void SetProcedureParameters(IInputStream& stream) override;
+			IInputStream& RawGetProcedureParameters() override;
+			void RawSetProcedureParameters(IInputStream& stream) override;
 
 			// DefaultRPCEvent
 			const DefaultRPCProcedure& GetProcedure() const&

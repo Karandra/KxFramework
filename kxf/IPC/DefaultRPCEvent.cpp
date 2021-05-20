@@ -15,20 +15,26 @@ namespace kxf
 		return m_Client;
 	}
 
-	IInputStream& DefaultRPCEvent::GetProcedureResult()
+	IInputStream& DefaultRPCEvent::RawGetProcedureResult()
 	{
-		return m_ResultStream ? *m_ResultStream : NullInputStream::Get();
+		if (m_ResultStream)
+		{
+			m_ResultStreamRead.emplace(*m_ResultStream);
+			return *m_ResultStreamRead;
+		}
+		return NullInputStream::Get();
 	}
-	void DefaultRPCEvent::SetProcedureResult(IInputStream& stream)
+	void DefaultRPCEvent::RawSetProcedureResult(IInputStream& stream)
 	{
-		m_ResultStream = &stream;
+		m_ResultStream.emplace();
+		m_ResultStream->Write(stream);
 	}
 
-	IInputStream& DefaultRPCEvent::GetProcedureParameters()
+	IInputStream& DefaultRPCEvent::RawGetProcedureParameters()
 	{
 		return m_ParametersStream ? *m_ParametersStream : NullInputStream::Get();
 	}
-	void DefaultRPCEvent::SetProcedureParameters(IInputStream& stream)
+	void DefaultRPCEvent::RawSetProcedureParameters(IInputStream& stream)
 	{
 		m_ParametersStream = &stream;
 	}

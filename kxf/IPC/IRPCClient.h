@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/EventSystem/EventID.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "Private/RPCExchange.h"
 
 namespace kxf
 {
@@ -20,6 +19,17 @@ namespace kxf
 			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) = 0;
 			virtual void DisconnectFromServer() = 0;
 
-			virtual IInputStream& InvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
+			virtual IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
+
+		public:
+			template<class TReturn = void, class... Args>
+			TReturn InvokeProcedure(const EventID& procedureID, Args&&... arg)
+			{
+				return IPC::Private::InvokeProcedure<TReturn>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult) -> IInputStream&
+				{
+					MemoryInputStream parametersInputStream(parametersStream);
+					return RawInvokeProcedure(procedureID, parametersInputStream, parametersCount, hasResult);
+				}, procedureID, std::forward<Args>(arg)...);
+			}
 	};
 }

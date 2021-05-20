@@ -33,18 +33,9 @@ namespace kxf
 			IEvtHandler* m_EvtHandler = nullptr;
 
 		protected:
-			size_t GetControlBufferSize() const
-			{
-				return 64;
-			}
-			String GetControlBufferName() const
-			{
-				return String::Format(wxS("RPCSession:%1-ControlBuffer"), m_SessionID.ToString(UUIDFormat::CurlyBraces));
-			}
-			String GetResultBufferName() const
-			{
-				return String::Format(wxS("RPCSession:%1-ResultBuffer"), m_SessionID.ToString(UUIDFormat::CurlyBraces));
-			}
+			size_t GetControlBufferSize() const;
+			String GetControlBufferName() const;
+			String GetResultBufferName() const;
 
 			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler);
 			void OnTerminate();
@@ -54,6 +45,7 @@ namespace kxf
 			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event);
 
 			IInputStream& SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const wxStreamBuffer& buffer);
+			
 	};
 }
 
@@ -63,7 +55,14 @@ namespace kxf
 	{
 		friend struct BinarySerializer<DefaultRPCProcedure>;
 
+		public:
+			static constexpr uint32_t GetFormatVersion() noexcept
+			{
+				return 1;
+			}
+
 		private:
+			uint32_t m_Version = GetFormatVersion();
 			EventID m_ProcedureID;
 			void* m_OriginHandle = nullptr;
 			uint32_t m_ParametersCount = 0;
@@ -102,6 +101,11 @@ namespace kxf
 			{
 				return std::move(m_ProcedureID);
 			}
+
+			uint32_t GetVersion() const
+			{
+				return m_Version;
+			}
 			void* GetOriginHandle() const
 			{
 				return m_OriginHandle;
@@ -126,17 +130,28 @@ namespace kxf
 	{
 		uint64_t Serialize(IOutputStream& stream, const DefaultRPCProcedure& value) const
 		{
-			return Serialization::WriteObject(stream, value.m_ProcedureID) +
+			return Serialization::WriteObject(stream, value.m_Version) +
+				Serialization::WriteObject(stream, value.m_ProcedureID) +
 				Serialization::WriteObject(stream, value.m_OriginHandle) +
 				Serialization::WriteObject(stream, value.m_ParametersCount) +
 				Serialization::WriteObject(stream, value.m_HasResult);
 		}
 		uint64_t Deserialize(IInputStream& stream, DefaultRPCProcedure& value) const
 		{
-			return Serialization::ReadObject(stream, value.m_ProcedureID) +
-				Serialization::ReadObject(stream, value.m_OriginHandle) +
-				Serialization::ReadObject(stream, value.m_ParametersCount) +
-				Serialization::ReadObject(stream, value.m_HasResult);
+			auto read = Serialization::ReadObject(stream, value.m_Version);
+			if (value.m_Version != DefaultRPCProcedure::GetFormatVersion())
+			{
+				throw BinarySerializerException(String::Format("Unsupported version encountered during 'DefaultRPCProcedure' deserialization: %1 found, %2 expected",
+												value.m_Version,
+												DefaultRPCProcedure::GetFormatVersion())
+				);
+			}
+
+			read += Serialization::ReadObject(stream, value.m_ProcedureID);
+			read += Serialization::ReadObject(stream, value.m_OriginHandle);
+			read += Serialization::ReadObject(stream, value.m_ParametersCount);
+			read += Serialization::ReadObject(stream, value.m_HasResult);
+			return read;
 		}
 	};
 }

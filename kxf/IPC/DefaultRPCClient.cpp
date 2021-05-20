@@ -18,7 +18,7 @@ namespace kxf
 	}
 	void DefaultRPCClient::NotifyServer(const EventID& eventID)
 	{
-		DefaultRPCClient::InvokeProcedure(eventID, NullInputStream::Get(), 0, false);
+		InvokeProcedure(eventID);
 	}
 
 	bool DefaultRPCClient::DoConnectToServer(bool notify)
@@ -52,6 +52,11 @@ namespace kxf
 			Notify(IRPCEvent::EvtClientDisconnected);
 			NotifyServer(IRPCEvent::EvtClientDisconnected);
 		}
+
+		m_ServerPID = 0;
+		m_ServerHandle = nullptr;
+		m_UserEvtHandler = nullptr;
+		m_ServiceEvtHandler.SetNextHandler(nullptr);
 		OnTerminate();
 	}
 
@@ -60,6 +65,16 @@ namespace kxf
 	{
 		DefaultRPCEvent event(*this);
 		DefaultRPCExchanger::OnDataRecievedCommon(stream, event);
+	}
+
+	DefaultRPCClient::DefaultRPCClient()
+	{
+		// TODO: Watch server status using the provided PID and initiate disconnect event
+		// the server terminates without proper notifications (i.e crashes).
+	}
+	DefaultRPCClient::~DefaultRPCClient()
+	{
+		DoDisconnectFromServer(true);
 	}
 
 	// IRPCClient
@@ -71,7 +86,10 @@ namespace kxf
 	{
 		if (!m_SessionMutex)
 		{
-			OnInitialize(sessionID, evtHandler);
+			m_UserEvtHandler = &evtHandler;
+			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
+
+			OnInitialize(sessionID, m_ServiceEvtHandler);
 			return DoConnectToServer();
 		}
 		return false;
@@ -81,7 +99,7 @@ namespace kxf
 		DoDisconnectFromServer(true);
 	}
 
-	IInputStream& DefaultRPCClient::InvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	IInputStream& DefaultRPCClient::RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		if (m_SessionMutex && procedureID)
 		{

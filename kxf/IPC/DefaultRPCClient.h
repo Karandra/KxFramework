@@ -1,5 +1,6 @@
 #pragma once
 #include "IRPCClient.h"
+#include "kxf/EventSystem/EvtHandler.h"
 #include "Private/DefaultRPCExchanger.h"
 
 namespace kxf
@@ -7,6 +8,9 @@ namespace kxf
 	class DefaultRPCClient: public RTTI::DynamicImplementation<DefaultRPCClient, IRPCClient>, public DefaultRPCExchanger
 	{
 		private:
+			EvtHandler m_ServiceEvtHandler;
+			IEvtHandler* m_UserEvtHandler = nullptr;
+
 			uint32_t m_ServerPID = 0;
 			void* m_ServerHandle = nullptr;
 
@@ -22,11 +26,8 @@ namespace kxf
 			void OnDataRecieved(IInputStream& stream) override;
 
 		public:
-			DefaultRPCClient() = default;
-			~DefaultRPCClient()
-			{
-				DoDisconnectFromServer(true);
-			}
+			DefaultRPCClient();
+			~DefaultRPCClient();
 
 		public:
 			// IRPCClient
@@ -34,6 +35,6 @@ namespace kxf
 			bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) override;
 			void DisconnectFromServer() override;
 
-			IInputStream& InvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
+			IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
 	};
 }

@@ -31,10 +31,7 @@ namespace kxf
 
 		public:
 			DefaultRPCServer();
-			~DefaultRPCServer()
-			{
-				DoTerminateServer(true);
-			}
+			~DefaultRPCServer();
 
 		public:
 			// IRPCServer
@@ -42,6 +39,6 @@ namespace kxf
 			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) override;
 			void TerminateServer() override;
 
-			void BreadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;
+			void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;
 	};
 }

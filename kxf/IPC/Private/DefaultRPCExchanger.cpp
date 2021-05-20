@@ -7,10 +7,29 @@
 #include "kxf/IO/NullStream.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/EventSystem/IEvtHandler.h"
+#include "kxf/Application/ICoreApplication.h"
 #include <Windows.h>
+
+namespace
+{
+	constexpr kxf::XChar g_SharedPrefix[] = wxS("kxf::DefaultRPCExchanger");
+}
 
 namespace kxf
 {
+	size_t DefaultRPCExchanger::GetControlBufferSize() const
+	{
+		return 64;
+	}
+	String DefaultRPCExchanger::GetControlBufferName() const
+	{
+		return String::Format(wxS("%1:%2-ControlBuffer"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+	}
+	String DefaultRPCExchanger::GetResultBufferName() const
+	{
+		return String::Format(wxS("%1:%2-ResultBuffer"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+	}
+
 	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler)
 	{
 		m_SessionID = sessionID;
@@ -37,14 +56,14 @@ namespace kxf
 			// Set stream with serialized parameters for an event handler to read from
 			if (procedure.HasParameters())
 			{
-				event.SetProcedureParameters(stream);
+				event.RawSetProcedureParameters(stream);
 			}
 
 			// Call event handler if any
 			if (m_EvtHandler->ProcessEvent(event, procedure.GetProcedureID()) && procedure.HasResult())
 			{
 				// If we had processed the event get serialized result and write it into shared result buffer
-				if (IInputStream& resultStream = event.GetProcedureResult())
+				if (IInputStream& resultStream = event.RawGetProcedureResult())
 				{
 					m_ResultBuffer.AllocateGlobal(resultStream.GetSize().ToBytes(), MemoryProtection::RW, GetResultBufferName());
 					m_ResultBuffer.GetOutputStream()->Write(resultStream);

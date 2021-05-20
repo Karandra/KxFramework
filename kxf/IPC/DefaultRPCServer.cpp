@@ -16,7 +16,7 @@ namespace kxf
 	}
 	void DefaultRPCServer::NotifyClients(const EventID& eventID)
 	{
-		DefaultRPCServer::BreadcastProcedure(eventID, NullInputStream::Get(), 0);
+		BroadcastProcedure(eventID);
 	}
 
 	bool DefaultRPCServer::DoStartServer(bool notify)
@@ -39,11 +39,9 @@ namespace kxf
 			}
 			return true;
 		}
-		else
-		{
-			DoTerminateServer();
-			return false;
-		}
+
+		DoTerminateServer();
+		return false;
 	}
 	void DefaultRPCServer::DoTerminateServer(bool notify)
 	{
@@ -54,6 +52,8 @@ namespace kxf
 		}
 
 		OnTerminate();
+		m_UserEvtHandler = nullptr;
+		m_ServiceEvtHandler.SetNextHandler(nullptr);
 		m_Clients.clear();
 	}
 
@@ -66,7 +66,6 @@ namespace kxf
 
 	DefaultRPCServer::DefaultRPCServer()
 	{
-		m_ServiceEvtHandler.SetNextHandler(m_UserEvtHandler);
 		m_ServiceEvtHandler.Bind(IRPCEvent::EvtClientConnected, [&](IRPCEvent& event)
 		{
 			m_Clients.emplace(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
@@ -75,6 +74,10 @@ namespace kxf
 		{
 			m_Clients.erase(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
 		});
+	}
+	DefaultRPCServer::~DefaultRPCServer()
+	{
+		DoTerminateServer(true);
 	}
 
 	// IRPCServer
@@ -87,8 +90,9 @@ namespace kxf
 		if (!m_SessionMutex)
 		{
 			m_UserEvtHandler = &evtHandler;
-			OnInitialize(sessionID, m_ServiceEvtHandler);
+			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
 
+			OnInitialize(sessionID, m_ServiceEvtHandler);
 			return DoStartServer(true);
 		}
 		return false;
@@ -98,7 +102,7 @@ namespace kxf
 		DoTerminateServer(true);
 	}
 
-	void DefaultRPCServer::BreadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
+	void DefaultRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
 	{
 		if (!m_Clients.empty() && m_SessionMutex && procedureID)
 		{

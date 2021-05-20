@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Private/RPCExchange.h"
 #include "kxf/RTTI/RTTI.h"
 #include "kxf/EventSystem/Event.h"
 
@@ -33,10 +34,30 @@ namespace kxf
 			virtual IRPCServer* GetServer() const = 0;
 			virtual IRPCClient* GetClient() const = 0;
 
-			virtual IInputStream& GetProcedureResult() = 0;
-			virtual void SetProcedureResult(IInputStream& stream) = 0;
+			virtual IInputStream& RawGetProcedureResult() = 0;
+			virtual void RawSetProcedureResult(IInputStream& stream) = 0;
 
-			virtual IInputStream& GetProcedureParameters() = 0;
-			virtual void SetProcedureParameters(IInputStream& stream) = 0;
+			virtual IInputStream& RawGetProcedureParameters() = 0;
+			virtual void RawSetProcedureParameters(IInputStream& stream) = 0;
+
+		public:
+			template<class... Args>
+			std::tuple<Args...> GetProcedureParameters()
+			{
+				IInputStream& stream = RawGetProcedureParameters();
+				stream.RewindI();
+
+				return IPC::Private::DeserializeParameters<Args...>().AsTuple(stream, std::make_index_sequence<sizeof...(Args)>());
+			}
+
+			template<class TReturn>
+			void SetProcedureResult(const TReturn& result)
+			{
+				MemoryOutputStream stream;
+				IPC::Private::SetProcedureResult(stream, result);
+
+				MemoryInputStream inputStream(stream);
+				RawSetProcedureResult(inputStream);
+			}
 	};
 }

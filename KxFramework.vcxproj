@@ -290,6 +290,7 @@
     <ClInclude Include="kxf\IPC\Private\BasicRPCExchanger.h" />
     <ClInclude Include="kxf\IPC\Private\DefaultRPCExchanger.h" />
     <ClInclude Include="kxf\IPC\Private\DefaultRPCExchangerWindow.h" />
+    <ClInclude Include="kxf\IPC\Private\RPCExchange.h" />
     <ClInclude Include="kxf\IPC\SharedMemory.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
