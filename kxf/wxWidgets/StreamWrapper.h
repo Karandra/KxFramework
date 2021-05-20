@@ -83,6 +83,7 @@ namespace kxf::wxWidgets
 				m_Stream->Read(buffer, size);
 				return *this;
 			}
+			using IInputStream::Read;
 
 			StreamOffset TellI() const override
 			{
@@ -178,6 +179,7 @@ namespace kxf::wxWidgets
 				m_Stream->Write(buffer, size);
 				return *this;
 			}
+			using IOutputStream::Write;
 
 			StreamOffset TellO() const override
 			{
