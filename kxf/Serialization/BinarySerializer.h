@@ -38,7 +38,8 @@ namespace kxf::Serialization
 		}
 		else if constexpr(std::is_pointer_v<TValue>)
 		{
-			return BinarySerializer<void*>().Serialize(stream, static_cast<void*>(value));
+			auto ptr = const_cast<const void*>(static_cast<void*>(value));
+			return BinarySerializer<void*>().Serialize(stream, ptr);
 		}
 		else
 		{
@@ -224,23 +225,6 @@ namespace kxf
 	};
 
 	template<>
-	struct BinarySerializer<void*> final: private Private::IntBinarySerializer
-	{
-		uint64_t Serialize(IOutputStream& stream, const void*& value) const
-		{
-			return SerializeInteger(stream, reinterpret_cast<uint64_t>(value));
-		}
-		uint64_t Deserialize(IInputStream& stream, void*& value) const
-		{
-			uint64_t buffer = 0;
-			auto read = DeserializeInteger(stream, buffer);
-			value = reinterpret_cast<void*>(buffer);
-
-			return read;
-		}
-	};
-
-	template<>
 	struct BinarySerializer<float> final: private Private::FloatBinarySerializer
 	{
 		uint64_t Serialize(IOutputStream& stream, const float& value) const
@@ -263,6 +247,40 @@ namespace kxf
 		uint64_t Deserialize(IInputStream& stream, double& value) const
 		{
 			return DeserializeFloat(stream, value);
+		}
+	};
+
+	template<>
+	struct BinarySerializer<void*> final: private Private::IntBinarySerializer
+	{
+		uint64_t Serialize(IOutputStream& stream, const void*& value) const
+		{
+			return SerializeInteger(stream, reinterpret_cast<uint64_t>(value));
+		}
+		uint64_t Deserialize(IInputStream& stream, void*& value) const
+		{
+			uint64_t buffer = 0;
+			auto read = DeserializeInteger(stream, buffer);
+			value = reinterpret_cast<void*>(buffer);
+
+			return read;
+		}
+	};
+
+	template<>
+	struct BinarySerializer<bool> final: private Private::IntBinarySerializer
+	{
+		uint64_t Serialize(IOutputStream& stream, const bool& value) const
+		{
+			return SerializeInteger(stream, static_cast<uint8_t>(value));
+		}
+		uint64_t Deserialize(IInputStream& stream, bool& value) const
+		{
+			uint8_t buffer = 0;
+			auto read = DeserializeInteger(stream, buffer);
+			value = static_cast<bool>(buffer);
+
+			return read;
 		}
 	};
 }
