@@ -62,6 +62,10 @@ namespace kxf
 
 			virtual StreamOffset TellI() const = 0;
 			virtual StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) = 0;
+			StreamOffset RewindI()
+			{
+				return SeekI(0, IOStreamSeek::FromStart);
+			}
 	};
 }
 
@@ -84,6 +88,10 @@ namespace kxf
 
 			virtual StreamOffset TellO() const = 0;
 			virtual StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) = 0;
+			StreamOffset RewindO()
+			{
+				return SeekO(0, IOStreamSeek::FromStart);
+			}
 
 			virtual bool Flush() = 0;
 			virtual bool SetAllocationSize(BinarySize allocationSize) = 0;
