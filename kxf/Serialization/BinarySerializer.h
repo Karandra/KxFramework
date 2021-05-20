@@ -45,6 +45,18 @@ namespace kxf::Serialization
 		}
 	}
 
+	template<size_t N>
+	uint64_t WriteObject(IOutputStream& stream, const char(&value)[N])
+	{
+		return BinarySerializer<std::string_view>().Serialize(stream, std::string_view(value, N - 1));
+	}
+
+	template<size_t N>
+	uint64_t WriteObject(IOutputStream& stream, const wchar_t(&value)[N])
+	{
+		return BinarySerializer<std::wstring_view>().Serialize(stream, std::wstring_view(value, N - 1));
+	}
+
 	template<class TValue>
 	uint64_t ReadObject(IInputStream& stream, TValue& value)
 	{
