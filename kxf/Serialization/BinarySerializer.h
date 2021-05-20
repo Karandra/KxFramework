@@ -4,6 +4,7 @@
 
 namespace kxf
 {
+	class String;
 	class IInputStream;
 	class IOutputStream;
 }
@@ -16,14 +17,11 @@ namespace kxf
 	class BinarySerializerException: public std::runtime_error
 	{
 		public:
-		BinarySerializerException(const char* message)
-			:runtime_error(message)
-		{
-		}
-		BinarySerializerException(const std::string& message)
-			:runtime_error(message)
-		{
-		}
+			BinarySerializerException(const char* message);
+			BinarySerializerException(const wchar_t* message);
+			BinarySerializerException(const std::string& message);
+			BinarySerializerException(const std::wstring& message);
+			BinarySerializerException(const String& message);
 	};
 }
 namespace kxf::Serialization

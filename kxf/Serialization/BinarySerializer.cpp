@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "BinarySerializer.h"
+#include "kxf/General/String.h"
 #include "kxf/IO/IStream.h"
 
 namespace
@@ -59,6 +60,30 @@ namespace
 			throw kxf::BinarySerializerException("Could not read the required amount of bytes");
 		}
 		return read;
+	}
+}
+
+namespace kxf
+{
+	BinarySerializerException::BinarySerializerException(const char* message)
+		:runtime_error(message)
+	{
+	}
+	BinarySerializerException::BinarySerializerException(const wchar_t* message)
+		:BinarySerializerException(String(message))
+	{
+	}
+	BinarySerializerException::BinarySerializerException(const std::string& message)
+		:runtime_error(message)
+	{
+	}
+	BinarySerializerException::BinarySerializerException(const std::wstring& message)
+		:BinarySerializerException(String::FromView(message))
+	{
+	}
+	BinarySerializerException::BinarySerializerException(const String& message)
+		:runtime_error(message.ToUTF8())
+	{
 	}
 }
 
