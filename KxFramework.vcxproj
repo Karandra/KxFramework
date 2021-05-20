@@ -281,9 +281,15 @@
     <ClInclude Include="kxf\IO\StreamError.h" />
     <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
     <ClInclude Include="kxf\IPC\Common.h" />
+    <ClInclude Include="kxf\IPC\DefaultRPCClient.h" />
+    <ClInclude Include="kxf\IPC\DefaultRPCEvent.h" />
+    <ClInclude Include="kxf\IPC\DefaultRPCServer.h" />
     <ClInclude Include="kxf\IPC\IRPCClient.h" />
     <ClInclude Include="kxf\IPC\IRPCEvent.h" />
     <ClInclude Include="kxf\IPC\IRPCServer.h" />
+    <ClInclude Include="kxf\IPC\Private\BasicRPCExchanger.h" />
+    <ClInclude Include="kxf\IPC\Private\DefaultRPCExchanger.h" />
+    <ClInclude Include="kxf\IPC\Private\DefaultRPCExchangerWindow.h" />
     <ClInclude Include="kxf\IPC\SharedMemory.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
@@ -384,6 +390,7 @@
     <ClInclude Include="kxf\System\WMI.h" />
     <ClInclude Include="kxf\Threading\CriticalSection.h" />
     <ClInclude Include="kxf\Threading\IThreadPool.h" />
+    <ClInclude Include="kxf\Threading\Mutex.h" />
     <ClInclude Include="kxf\Threading\ReadWriteLock.h" />
     <ClInclude Include="kxf\Threading\RecursiveRWLock.h" />
     <ClInclude Include="kxf\Threading\SynchronizedCondition.h" />
@@ -747,6 +754,11 @@
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\IO\NullStream.cpp" />
+    <ClCompile Include="kxf\IPC\DefaultRPCClient.cpp" />
+    <ClCompile Include="kxf\IPC\DefaultRPCEvent.cpp" />
+    <ClCompile Include="kxf\IPC\DefaultRPCServer.cpp" />
+    <ClCompile Include="kxf\IPC\Private\DefaultRPCExchanger.cpp" />
+    <ClCompile Include="kxf\IPC\Private\DefaultRPCExchangerWindow.cpp" />
     <ClCompile Include="kxf\IPC\SharedMemory.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
@@ -811,6 +823,7 @@
     <ClCompile Include="kxf\System\WMI.cpp" />
     <ClCompile Include="kxf\Threading\Common.cpp" />
     <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
+    <ClCompile Include="kxf\Threading\Mutex.cpp" />
     <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
     <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp" />
     <ClCompile Include="kxf\Threading\ThreadPool.cpp" />

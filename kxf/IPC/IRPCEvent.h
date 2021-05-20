@@ -22,10 +22,8 @@ namespace kxf
 			KxEVENT_MEMBER(IRPCEvent, ServerStarted);
 			KxEVENT_MEMBER(IRPCEvent, ServerTerminated);
 
-			KxEVENT_MEMBER(IRPCEvent, ClientStarted);
-			KxEVENT_MEMBER(IRPCEvent, ClientTerminated);
-
-			KxEVENT_MEMBER(IRPCEvent, ProcedureCall);
+			KxEVENT_MEMBER(IRPCEvent, ClientConnected);
+			KxEVENT_MEMBER(IRPCEvent, ClientDisconnected);
 
 		public:
 			IRPCEvent() = default;
