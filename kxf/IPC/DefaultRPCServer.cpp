@@ -5,6 +5,7 @@
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
+#include "kxf/Utility/Container.h"
 
 namespace kxf
 {
@@ -18,10 +19,24 @@ namespace kxf
 	{
 		BroadcastProcedure(eventID);
 	}
-
-	bool DefaultRPCServer::DoStartServer(bool notify)
+	void DefaultRPCServer::CleanupClients()
 	{
-		if (m_SessionMutex.CreateAcquired(GetSessionMutexName()) && m_ControlBuffer.AllocateGlobal(GetControlBufferSize(), MemoryProtection::RW, GetControlBufferName()))
+		for (auto it = m_Clients.begin(); it != m_Clients.end();)
+		{
+			if (!::IsWindow(reinterpret_cast<HWND>(*it)))
+			{
+				it = m_Clients.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
+	bool DefaultRPCServer::DoStartServer(KernelObjectNamespace ns, bool notify)
+	{
+		if (m_SessionMutex.CreateAcquired(GetSessionMutexName(), ns) && m_ControlBuffer.Allocate(GetControlBufferSize(), MemoryProtection::RW, GetControlBufferName(), ns))
 		{
 			m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
 
@@ -68,11 +83,11 @@ namespace kxf
 		m_ServiceEvtHandler.Bind(IRPCEvent::EvtClientConnected, [&](IRPCEvent& event)
 		{
 			m_Clients.emplace(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
-		});
+		}, BindEventFlag::AlwaysSkip);
 		m_ServiceEvtHandler.Bind(IRPCEvent::EvtClientDisconnected, [&](IRPCEvent& event)
 		{
 			m_Clients.erase(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
-		});
+		}, BindEventFlag::AlwaysSkip);
 	}
 	DefaultRPCServer::~DefaultRPCServer()
 	{
@@ -84,15 +99,15 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCServer::StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler)
+	bool DefaultRPCServer::StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns)
 	{
 		if (!m_SessionMutex)
 		{
 			m_UserEvtHandler = &evtHandler;
 			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
 
-			OnInitialize(sessionID, m_ServiceEvtHandler);
-			return DoStartServer(true);
+			OnInitialize(sessionID, m_ServiceEvtHandler, ns);
+			return DoStartServer(ns, true);
 		}
 		return false;
 	}
@@ -103,6 +118,8 @@ namespace kxf
 
 	void DefaultRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
 	{
+		CleanupClients();
+
 		if (!m_Clients.empty() && m_SessionMutex && procedureID)
 		{
 			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow->GetHandle(), parametersCount);

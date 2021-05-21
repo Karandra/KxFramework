@@ -32,10 +32,16 @@ namespace kxf
 
 	IInputStream& DefaultRPCEvent::RawGetProcedureParameters()
 	{
-		return m_ParametersStream ? *m_ParametersStream : NullInputStream::Get();
+		if (m_ParametersStream)
+		{
+			m_ParametersStream->SeekI(m_ParametersStreamOffset, IOStreamSeek::FromStart);
+			return *m_ParametersStream;
+		}
+		return NullInputStream::Get();
 	}
 	void DefaultRPCEvent::RawSetProcedureParameters(IInputStream& stream)
 	{
 		m_ParametersStream = &stream;
+		m_ParametersStreamOffset = stream.TellI();
 	}
 }

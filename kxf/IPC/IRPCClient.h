@@ -17,7 +17,7 @@ namespace kxf
 
 		public:
 			virtual bool IsConnectedToServer() const = 0;
-			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) = 0;
+			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) = 0;
 			virtual void DisconnectFromServer() = 0;
 
 			virtual IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;

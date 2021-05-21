@@ -17,7 +17,7 @@ namespace kxf
 
 		public:
 			virtual bool IsServerRunning() const = 0;
-			virtual bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) = 0;
+			virtual bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) = 0;
 			virtual void TerminateServer() = 0;
 
 			virtual void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) = 0;

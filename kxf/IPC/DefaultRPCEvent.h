@@ -20,6 +20,7 @@ namespace kxf
 			DefaultRPCClient* m_Client = nullptr;
 
 			IInputStream* m_ParametersStream = nullptr;
+			StreamOffset m_ParametersStreamOffset;
 			std::optional<MemoryOutputStream> m_ResultStream;
 			std::optional<MemoryInputStream> m_ResultStreamRead;
 

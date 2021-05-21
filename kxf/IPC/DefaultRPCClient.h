@@ -18,7 +18,7 @@ namespace kxf
 			void Notify(const EventID& eventID);
 			void NotifyServer(const EventID& eventID);
 
-			bool DoConnectToServer(bool notify = false);
+			bool DoConnectToServer(KernelObjectNamespace ns, bool notify = false);
 			void DoDisconnectFromServer(bool notify = false);
 
 		protected:
@@ -32,7 +32,7 @@ namespace kxf
 		public:
 			// IRPCClient
 			bool IsConnectedToServer() const override;
-			bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) override;
+			bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) override;
 			void DisconnectFromServer() override;
 
 			IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;

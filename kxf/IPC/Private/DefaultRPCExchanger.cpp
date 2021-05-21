@@ -34,10 +34,11 @@ namespace kxf
 		return String::Format(wxS("%1:%2-SessionMutex"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
 	}
 
-	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler)
+	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns)
 	{
 		m_SessionID = sessionID;
 		m_EvtHandler = &evtHandler;
+		m_KernelObjectNamespace = ns;
 	}
 	void DefaultRPCExchanger::OnTerminate()
 	{
@@ -69,8 +70,13 @@ namespace kxf
 				// If we had processed the event get serialized result and write it into shared result buffer
 				if (IInputStream& resultStream = event.RawGetProcedureResult())
 				{
-					m_ResultBuffer.AllocateGlobal(resultStream.GetSize().ToBytes(), MemoryProtection::RW, GetResultBufferName());
-					m_ResultBuffer.GetOutputStream()->Write(resultStream);
+					const uint64_t size = resultStream.GetSize().ToBytes();
+					m_ResultBuffer.Allocate(size + sizeof(size), MemoryProtection::RW, GetResultBufferName(), m_KernelObjectNamespace);
+
+					// Write allocated size and the result
+					auto stream = m_ResultBuffer.GetOutputStream();
+					Serialization::WriteObject(*stream, size);
+					stream->Write(resultStream);
 				}
 			}
 		}
@@ -82,12 +88,24 @@ namespace kxf
 		data.cbData = buffer.GetBufferSize();
 
 		m_ResultStream.reset();
+		m_ResultBuffer.ZeroBuffer();
+		Win32Error::SetLastError(Win32Error::Success());
 		::SendMessageW(reinterpret_cast<HWND>(windowHandle), WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&data));
 
-		if (procedure.HasResult() && Win32Error::GetLastError().IsSuccess())
+		if (procedure.HasResult() && Win32Error::GetLastError().IsSuccess() && m_ResultBuffer.Open(GetResultBufferName(), 0, MemoryProtection::RW, m_KernelObjectNamespace))
 		{
-			m_ResultStream.emplace(m_ResultBuffer.GetBuffer(), m_ResultBuffer.GetSize());
-			return *m_ResultStream;
+			// Retrieve the actual size of the result
+			uint64_t actualSize = 0;
+
+			// Assume at least 'sizeof(actualSize)' here since we don't know the size and we don't need to read more anyway
+			MemoryInputStream stream(m_ResultBuffer.GetBuffer(), sizeof(actualSize));
+			auto read = Serialization::ReadObject(stream, actualSize);
+
+			if (actualSize != 0)
+			{
+				m_ResultStream.emplace(reinterpret_cast<const uint8_t*>(m_ResultBuffer.GetBuffer()) + read, actualSize);
+				return *m_ResultStream;
+			}
 		}
 		return NullInputStream::Get();
 	}

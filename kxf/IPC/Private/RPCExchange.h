@@ -43,7 +43,7 @@ namespace kxf::IPC::Private
 	template<class TReturn>
 	uint64_t SetProcedureResult(IOutputStream& stream, const TReturn& result)
 	{
-		static_assert(!std::is_void<TReturn>, "TReturn must not be void");
+		static_assert(!std::is_void_v<TReturn>, "TReturn must not be void");
 
 		return Serialization::WriteObject(stream, result);
 	}
@@ -51,22 +51,16 @@ namespace kxf::IPC::Private
 	template<class... Args>
 	class DeserializeParameters final
 	{
-		private:
-		template<class TValue>
-		TValue Read(IInputStream& stream, size_t index) const
-		{
-			static_assert(std::is_default_constructible_v<TValue>, "TValue must be default constructible");
-
-			TValue value;
-			Serialization::ReadObject(stream, value);
-			return value;
-		}
-
 		public:
-		template<size_t... t_Sequence>
-		std::tuple<Args...> AsTuple(IInputStream& stream, std::index_sequence<t_Sequence...>) const
-		{
-			return std::make_tuple(Args{Read<Args>(stream, t_Sequence)}...);
-		}
+			template<size_t... t_Sequence>
+			std::tuple<Args...> AsTuple(IInputStream& stream, std::index_sequence<t_Sequence...>) const
+			{
+				static_assert((std::is_default_constructible_v<Args> && ...), "All types must be default constructible");
+
+				std::tuple<Args...> parameters;
+				std::initializer_list<uint64_t> list{Serialization::ReadObject(stream, std::get<t_Sequence>(parameters)) ...};
+
+				return parameters;
+			}
 	};
 }

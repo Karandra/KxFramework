@@ -22,9 +22,10 @@ namespace kxf
 		friend class DefaultRPCExchangerWindow;
 
 		protected:
-			GlobalMutex m_SessionMutex;
+			Mutex m_SessionMutex;
 			SharedMemoryBuffer m_ControlBuffer;
 			UniversallyUniqueID m_SessionID;
+			KernelObjectNamespace m_KernelObjectNamespace = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
 			std::optional<MemoryInputStream> m_ResultStream;
@@ -38,7 +39,7 @@ namespace kxf
 			String GetResultBufferName() const;
 			String GetSessionMutexName() const;
 
-			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler);
+			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns);
 			void OnTerminate();
 
 		protected:

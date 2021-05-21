@@ -44,10 +44,7 @@ namespace kxf
 			template<class... Args>
 			std::tuple<Args...> GetProcedureParameters()
 			{
-				IInputStream& stream = RawGetProcedureParameters();
-				stream.RewindI();
-
-				return IPC::Private::DeserializeParameters<Args...>().AsTuple(stream, std::make_index_sequence<sizeof...(Args)>());
+				return IPC::Private::DeserializeParameters<Args...>().AsTuple(RawGetProcedureParameters(), std::make_index_sequence<sizeof...(Args)>());
 			}
 
 			template<class TReturn>

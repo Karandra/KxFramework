@@ -21,8 +21,9 @@ namespace kxf
 		private:
 			void Notify(const EventID& eventID);
 			void NotifyClients(const EventID& eventID);
+			void CleanupClients();
 
-			bool DoStartServer(bool notify = false);
+			bool DoStartServer(KernelObjectNamespace ns, bool notify = false);
 			void DoTerminateServer(bool notify = false);
 
 		protected:
@@ -36,7 +37,7 @@ namespace kxf
 		public:
 			// IRPCServer
 			bool IsServerRunning() const override;
-			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler) override;
+			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) override;
 			void TerminateServer() override;
 
 			void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;

@@ -21,9 +21,9 @@ namespace kxf
 		InvokeProcedure(eventID);
 	}
 
-	bool DefaultRPCClient::DoConnectToServer(bool notify)
+	bool DefaultRPCClient::DoConnectToServer(KernelObjectNamespace ns, bool notify)
 	{
-		if (m_SessionMutex.Open(GetSessionMutexName()) && m_ControlBuffer.OpenGlobal(GetControlBufferName(), GetControlBufferSize(), MemoryProtection::Read))
+		if (m_SessionMutex.Open(GetSessionMutexName(), ns) && m_ControlBuffer.Open(GetControlBufferName(), GetControlBufferSize(), MemoryProtection::Read, ns))
 		{
 			// Read control parameters
 			auto stream = m_ControlBuffer.GetInputStream();
@@ -32,6 +32,8 @@ namespace kxf
 
 			if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)))
 			{
+				m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
+
 				if (notify)
 				{
 					Notify(IRPCEvent::EvtClientConnected);
@@ -81,15 +83,15 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCClient::ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler)
+	bool DefaultRPCClient::ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns)
 	{
 		if (!m_SessionMutex)
 		{
 			m_UserEvtHandler = &evtHandler;
 			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
 
-			OnInitialize(sessionID, m_ServiceEvtHandler);
-			return DoConnectToServer();
+			OnInitialize(sessionID, m_ServiceEvtHandler, ns);
+			return DoConnectToServer(ns, true);
 		}
 		return false;
 	}
