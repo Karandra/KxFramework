@@ -1,14 +1,14 @@
 #pragma once
-#include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/EventSystem/EvtHandlerAccessor.h"
+#include "EvtHandler.h"
+#include "EvtHandlerAccessor.h"
 
-namespace kxf::Private
+namespace kxf
 {
-	template<class TBase>
-	class BasicRPCExchanger: public RTTI::PrivateStub<BasicRPCExchanger<TBase>, TBase>
+	template<class TBase, class TEvtHandler = EvtHandler>
+	class BasicEvtHandler: public RTTI::PrivateStub<BasicEvtHandler<TBase, TEvtHandler>, TBase>
 	{
 		protected:
-			EvtHandler m_EvtHandler;
+			TEvtHandler m_EvtHandler;
 
 		protected:
 			EventSystem::EvtHandlerAccessor AccessEvtHandler() noexcept

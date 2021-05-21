@@ -5,7 +5,6 @@
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
-#include "kxf/Utility/Container.h"
 
 namespace kxf
 {

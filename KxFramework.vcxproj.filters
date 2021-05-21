@@ -1915,9 +1915,6 @@
     <ClInclude Include="kxf\IPC\DefaultRPCServer.h">
       <Filter>kxf\IPC</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\IPC\Private\BasicRPCExchanger.h">
-      <Filter>kxf\IPC\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Threading\Mutex.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
@@ -1935,6 +1932,9 @@
     </ClInclude>
     <ClInclude Include="kxf\IPC\Private\RPCExchange.h">
       <Filter>kxf\IPC\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\BasicEvtHandler.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
