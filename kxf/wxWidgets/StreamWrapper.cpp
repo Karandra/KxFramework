@@ -7,28 +7,25 @@ namespace
 	{
 		using namespace kxf;
 
-		if (stream.IsOk())
+		switch (stream.GetLastError())
 		{
-			switch (stream.GetLastError())
+			case wxStreamError::wxSTREAM_NO_ERROR:
 			{
-				case wxStreamError::wxSTREAM_NO_ERROR:
-				{
-					return StreamError::Success();
-				}
-				case wxStreamError::wxSTREAM_EOF:
-				{
-					return StreamErrorCode::EndOfStream;
-				}
-				case wxStreamError::wxSTREAM_READ_ERROR:
-				{
-					return StreamErrorCode::ReadError;
-				}
-				case wxStreamError::wxSTREAM_WRITE_ERROR:
-				{
-					return StreamErrorCode::WriteError;
-				}
-			};
-		}
+				return StreamError::Success();
+			}
+			case wxStreamError::wxSTREAM_EOF:
+			{
+				return StreamErrorCode::EndOfStream;
+			}
+			case wxStreamError::wxSTREAM_READ_ERROR:
+			{
+				return StreamErrorCode::ReadError;
+			}
+			case wxStreamError::wxSTREAM_WRITE_ERROR:
+			{
+				return StreamErrorCode::WriteError;
+			}
+		};
 		return StreamError::Fail();
 	}
 }
