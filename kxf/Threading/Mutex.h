@@ -3,26 +3,26 @@
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime/TimeSpan.h"
 
-namespace kxf::Private
+namespace kxf
 {
-	class KX_API BasicMutex
+	class KX_API Mutex final
 	{
 		private:
 			void* m_Handle = nullptr;
 
-		protected:
-			bool Create(const String& name, bool acquireInitially, bool isGlobal) noexcept;
-			bool Open(const String& name, bool isGlobal) noexcept;
+		private:
+			bool DoCreate(const String& name, bool acquireInitially, KernelObjectNamespace ns) noexcept;
+			bool DoOpen(const String& name, KernelObjectNamespace ns) noexcept;
 
-		protected:
-			BasicMutex() noexcept = default;
-			BasicMutex(const BasicMutex&) = delete;
-			BasicMutex(BasicMutex&& other) noexcept
+		public:
+			Mutex() noexcept = default;
+			Mutex(const Mutex&) = delete;
+			Mutex(Mutex&& other) noexcept
 				:m_Handle(other.m_Handle)
 			{
 				other.m_Handle = nullptr;
 			}
-			~BasicMutex() noexcept
+			~Mutex() noexcept
 			{
 				Destroy();
 			}
@@ -37,9 +37,22 @@ namespace kxf::Private
 				return m_Handle;
 			}
 
-			void Destroy() noexcept;
+			bool Create(const String& name, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept
+			{
+				return DoCreate(name, false, ns);
+			}
+			bool CreateAcquired(const String& name, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept
+			{
+				return DoCreate(name, true, ns);
+			}
+			bool Open(const String& name, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept
+			{
+				return DoOpen(name, ns);
+			}
+
 			bool Acquire(const TimeSpan& timeout = {}) noexcept;
 			bool Release() noexcept;
+			void Destroy() noexcept;
 
 		public:
 			explicit operator bool() const noexcept
@@ -51,8 +64,8 @@ namespace kxf::Private
 				return IsNull();
 			}
 
-			BasicMutex& operator=(const BasicMutex&) = delete;
-			BasicMutex& operator=(BasicMutex&& other) noexcept
+			Mutex& operator=(const Mutex&) = delete;
+			Mutex& operator=(Mutex&& other) noexcept
 			{
 				Destroy();
 
@@ -60,49 +73,6 @@ namespace kxf::Private
 				other.m_Handle = nullptr;
 
 				return *this;
-			}
-	};
-}
-
-namespace kxf
-{
-	class LocalMutex final: public Private::BasicMutex
-	{
-		public:
-			LocalMutex() noexcept = default;
-
-		public:
-			bool Create(const String& name = {})
-			{
-				return BasicMutex::Create(name, false, false);
-			}
-			bool CreateAcquired(const String& name = {})
-			{
-				return BasicMutex::Create(name, true, false);
-			}
-			bool Open(const String& name)
-			{
-				return BasicMutex::Open(name, false);
-			}
-	};
-
-	class GlobalMutex final: public Private::BasicMutex
-	{
-		public:
-			GlobalMutex() noexcept = default;
-
-		public:
-			bool Create(const String& name = {})
-			{
-				return BasicMutex::Create(name, false, true);
-			}
-			bool CreateAcquired(const String& name = {})
-			{
-				return BasicMutex::Create(name, true, true);
-			}
-			bool Open(const String& name)
-			{
-				return BasicMutex::Open(name, true);
 			}
 	};
 }

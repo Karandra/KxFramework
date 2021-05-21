@@ -11,12 +11,8 @@ namespace kxf
 
 namespace kxf::IPC
 {
-	void* AllocateGlobalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept;
-	void* AllocateLocalSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept;
-
-	void* OpenGloablSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
-	void* OpenLocalSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
-
+	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const String& name = {}, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept;
+	void* OpenSharedMemoryRegion(void*& buffer, const String& name, size_t size, FlagSet<MemoryProtection> protection, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept;
 	void FreeSharedMemoryRegion(void* handle, void* buffer) noexcept;
 }
 
@@ -39,40 +35,6 @@ namespace kxf
 				m_Protection = MemoryProtection::None;
 			}
 
-			template<class TFunc>
-			bool DoOpen(const String& name, size_t size, FlagSet<MemoryProtection> protection, TFunc&& func) noexcept
-			{
-				Free();
-				if (m_Handle = std::invoke(func, m_Buffer, name, size, protection))
-				{
-					m_Size = size;
-					m_Protection = protection;
-					return true;
-				}
-				else
-				{
-					MakeNull();
-					return false;
-				}
-			}
-
-			template<class TFunc>
-			bool DoAllocate(size_t size, FlagSet<MemoryProtection> protection, const String& name, TFunc&& func) noexcept
-			{
-				Free();
-				if (m_Handle = std::invoke(func, m_Buffer, size, protection, name))
-				{
-					m_Size = size;
-					m_Protection = protection;
-					return true;
-				}
-				else
-				{
-					MakeNull();
-					return false;
-				}
-			}
-
 		public:
 			SharedMemoryBuffer() noexcept = default;
 			SharedMemoryBuffer(SharedMemoryBuffer&& other) noexcept
@@ -91,32 +53,44 @@ namespace kxf
 				return !m_Handle || !m_Buffer || m_Size == 0;
 			}
 
-			bool OpenGlobal(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
-			{
-				return DoOpen(name, size, protection, IPC::OpenGloablSharedMemoryRegion);
-			}
-			bool OpenLocal(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
-			{
-				return DoOpen(name, size, protection, IPC::OpenLocalSharedMemoryRegion);
-			}
-
-			bool AllocateGlobal(size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept
-			{
-				return DoAllocate(size, protection, name, IPC::AllocateGlobalSharedMemoryRegion);
-			}
-			bool AllocateLocal(size_t size, FlagSet<MemoryProtection> protection, const String& name = {}) noexcept
-			{
-				return DoAllocate(size, protection, name, IPC::AllocateLocalSharedMemoryRegion);
-			}
-			
 			void Free() noexcept
 			{
 				IPC::FreeSharedMemoryRegion(m_Handle, m_Buffer);
 				MakeNull();
 			}
+			bool Open(const String& name, size_t size, FlagSet<MemoryProtection> protection, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept
+			{
+				Free();
+				if (m_Handle = IPC::OpenSharedMemoryRegion(m_Buffer, name, size, protection, ns))
+				{
+					m_Size = size;
+					m_Protection = protection;
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
+			bool Allocate(size_t size, FlagSet<MemoryProtection> protection, const String& name = {}, KernelObjectNamespace ns = KernelObjectNamespace::Local) noexcept
+			{
+				Free();
+				if (m_Handle = IPC::AllocateSharedMemoryRegion(m_Buffer, size, protection, name, ns))
+				{
+					m_Size = size;
+					m_Protection = protection;
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
 			void ZeroBuffer() noexcept;
 
-			void Acquire(void* handle, void* data, size_t size, FlagSet<MemoryProtection> protection) noexcept
+			void Attach(void* handle, void* data, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
 				Free();
 				
@@ -125,7 +99,7 @@ namespace kxf
 				m_Size = size;
 				m_Protection = protection;
 			}
-			void* Release() noexcept
+			void* Detach() noexcept
 			{
 				void* handle = m_Handle;
 				MakeNull();
@@ -180,8 +154,8 @@ namespace kxf
 			{
 				if (this != &other)
 				{
-					Acquire(other.m_Handle, other.m_Buffer, other.m_Size, other.m_Protection);
-					other.Release();
+					Attach(other.m_Handle, other.m_Buffer, other.m_Size, other.m_Protection);
+					other.Detach();
 				}
 				return *this;
 			}

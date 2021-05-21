@@ -16,4 +16,6 @@ namespace kxf::System::Private
 
 	std::optional<uint32_t> MapSystemProcessPriority(SystemProcessPriority priority) noexcept;
 	SystemProcessPriority MapSystemProcessPriority(uint32_t priority) noexcept;
+
+	String GetKernelObjectName(const String& name, KernelObjectNamespace ns);
 }

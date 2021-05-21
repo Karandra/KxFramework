@@ -133,4 +133,23 @@ namespace kxf::System::Private
 		};
 		return SystemProcessPriority::None;
 	}
+
+	String GetKernelObjectName(const String& name, KernelObjectNamespace ns)
+	{
+		if (!name.IsEmpty())
+		{
+			switch (ns)
+			{
+				case KernelObjectNamespace::Local:
+				{
+					return String::Format(wxS("Local\\%1"), name);
+				}
+				case KernelObjectNamespace::Global:
+				{
+					return String::Format(wxS("Global\\%1"), name);
+				}
+			};
+		}
+		return {};
+	}
 }
