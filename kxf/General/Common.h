@@ -126,6 +126,14 @@ namespace kxf
 		RWX = Read|Write|Execute,
 	};
 	KxFlagSet_Declare(MemoryProtection);
+
+	enum class KernelObjectNamespace
+	{
+		None = -1,
+
+		Local,
+		Global
+	};
 }
 
 namespace kxf
