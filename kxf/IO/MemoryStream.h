@@ -19,6 +19,14 @@ namespace kxf
 			BinarySize m_LastRead;
 			StreamError m_LastError = StreamErrorCode::Success;
 
+		private:
+			void ResetState()
+			{
+				m_LastRead = {};
+				m_LastError = StreamErrorCode::Success;
+				m_StreamBuffer.Rewind();
+			}
+
 		public:
 			MemoryInputStream() noexcept
 			{
@@ -44,6 +52,7 @@ namespace kxf
 			MemoryInputStream(MemoryStreamBuffer streamBuffer) noexcept
 				:m_StreamBuffer(std::move(streamBuffer))
 			{
+				m_StreamBuffer.Rewind();
 			}
 			MemoryInputStream(IInputStream& stream, BinarySize size = {})
 			{
@@ -123,11 +132,13 @@ namespace kxf
 			// IMemoryStream
 			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
+				ResetState();
 				return std::move(m_StreamBuffer);
 			}
 			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
 			{
 				m_StreamBuffer = std::move(streamBuffer);
+				ResetState();
 			}
 
 			MemoryStreamBuffer& GetStreamBuffer() noexcept override
@@ -168,6 +179,14 @@ namespace kxf
 			BinarySize m_LastWrite;
 			StreamError m_LastError = StreamErrorCode::Success;
 
+		private:
+			void ResetState()
+			{
+				m_LastWrite = {};
+				m_LastError = StreamErrorCode::Success;
+				m_StreamBuffer.Rewind();
+			}
+
 		public:
 			MemoryOutputStream() noexcept
 			{
@@ -184,12 +203,7 @@ namespace kxf
 			MemoryOutputStream(MemoryStreamBuffer streamBuffer) noexcept
 				:m_StreamBuffer(std::move(streamBuffer))
 			{
-			}
-			MemoryOutputStream(const MemoryInputStream& stream)
-			{
-				auto& buffer = stream.GetStreamBuffer();
-				m_StreamBuffer.AttachStorage(buffer.GetBufferStart(), buffer.GetBufferEnd());
-				m_StreamBuffer.SetStorageFixed();
+				m_StreamBuffer.Rewind();
 			}
 			MemoryOutputStream(MemoryInputStream&& stream) noexcept
 				:m_StreamBuffer(std::move(stream.GetStreamBuffer()))
@@ -266,11 +280,13 @@ namespace kxf
 			// IMemoryStream
 			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
+				ResetState();
 				return std::move(m_StreamBuffer);
 			}
 			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
 			{
 				m_StreamBuffer = std::move(streamBuffer);
+				ResetState();
 			}
 
 			MemoryStreamBuffer& GetStreamBuffer() noexcept override
