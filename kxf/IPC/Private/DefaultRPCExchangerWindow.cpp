@@ -8,7 +8,7 @@
 
 namespace
 {
-	constexpr wchar_t g_WindowClassName[] = L"DefaultRPCExchangerWindow";
+	constexpr wchar_t g_WindowClassName[] = L"kxf::DefaultRPCExchangerWindow";
 
 	HMODULE GetCurrentModule() noexcept
 	{
