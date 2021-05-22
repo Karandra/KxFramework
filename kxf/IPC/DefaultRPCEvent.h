@@ -1,5 +1,5 @@
 #pragma once
-#include "IRPCEvent.h"
+#include "RPCEvent.h"
 #include "Private/DefaultRPCExchanger.h"
 
 namespace kxf
@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class DefaultRPCEvent: public IRPCEvent
+	class DefaultRPCEvent: public RPCEvent
 	{
 		friend class DefaultRPCExchanger;
 
@@ -23,6 +23,10 @@ namespace kxf
 			StreamOffset m_ParametersStreamOffset;
 			std::optional<MemoryOutputStream> m_ResultStream;
 			std::optional<MemoryInputStream> m_ResultStreamRead;
+
+		private:
+			void RawSetParameters(IInputStream& stream);
+			IInputStream& RawGetResult();
 
 		public:
 			DefaultRPCEvent() = default;
@@ -49,15 +53,16 @@ namespace kxf
 				return std::make_unique<DefaultRPCEvent>(std::move(*this));
 			}
 
-			// IRPCEvent
+			// RPCEvent
 			IRPCServer* GetServer() const override;
 			IRPCClient* GetClient() const override;
 
-			IInputStream& RawGetProcedureResult() override;
-			void RawSetProcedureResult(IInputStream& stream) override;
-
-			IInputStream& RawGetProcedureParameters() override;
-			void RawSetProcedureParameters(IInputStream& stream) override;
+			size_t GetParameterCount() const override
+			{
+				return m_Procedure.GetParametersCount();
+			}
+			IInputStream& RawGetParameters() override;
+			void RawSetResult(IInputStream& stream) override;
 
 			// DefaultRPCEvent
 			const DefaultRPCProcedure& GetProcedure() const&

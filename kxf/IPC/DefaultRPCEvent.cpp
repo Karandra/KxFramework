@@ -6,6 +6,21 @@
 
 namespace kxf
 {
+	void DefaultRPCEvent::RawSetParameters(IInputStream& stream)
+	{
+		m_ParametersStream = &stream;
+		m_ParametersStreamOffset = stream.TellI();
+	}
+	IInputStream& DefaultRPCEvent::RawGetResult()
+	{
+		if (m_ResultStream)
+		{
+			m_ResultStreamRead.emplace(*m_ResultStream);
+			return *m_ResultStreamRead;
+		}
+		return NullInputStream::Get();
+	}
+
 	IRPCServer* DefaultRPCEvent::GetServer() const
 	{
 		return m_Server;
@@ -15,22 +30,7 @@ namespace kxf
 		return m_Client;
 	}
 
-	IInputStream& DefaultRPCEvent::RawGetProcedureResult()
-	{
-		if (m_ResultStream)
-		{
-			m_ResultStreamRead.emplace(*m_ResultStream);
-			return *m_ResultStreamRead;
-		}
-		return NullInputStream::Get();
-	}
-	void DefaultRPCEvent::RawSetProcedureResult(IInputStream& stream)
-	{
-		m_ResultStream.emplace();
-		m_ResultStream->Write(stream);
-	}
-
-	IInputStream& DefaultRPCEvent::RawGetProcedureParameters()
+	IInputStream& DefaultRPCEvent::RawGetParameters()
 	{
 		if (m_ParametersStream)
 		{
@@ -39,9 +39,9 @@ namespace kxf
 		}
 		return NullInputStream::Get();
 	}
-	void DefaultRPCEvent::RawSetProcedureParameters(IInputStream& stream)
+	void DefaultRPCEvent::RawSetResult(IInputStream& stream)
 	{
-		m_ParametersStream = &stream;
-		m_ParametersStreamOffset = stream.TellI();
+		m_ResultStream.emplace();
+		m_ResultStream->Write(stream);
 	}
 }

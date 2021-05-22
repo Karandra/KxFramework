@@ -36,8 +36,8 @@ namespace kxf
 
 				if (notify)
 				{
-					Notify(IRPCEvent::EvtClientConnected);
-					NotifyServer(IRPCEvent::EvtClientConnected);
+					Notify(RPCEvent::EvtClientConnected);
+					NotifyServer(RPCEvent::EvtClientConnected);
 				}
 				return true;
 			}
@@ -50,8 +50,8 @@ namespace kxf
 	{
 		if (m_SessionMutex && notify)
 		{
-			Notify(IRPCEvent::EvtClientDisconnected);
-			NotifyServer(IRPCEvent::EvtClientDisconnected);
+			Notify(RPCEvent::EvtClientDisconnected);
+			NotifyServer(RPCEvent::EvtClientDisconnected);
 		}
 
 		m_ServerPID = 0;

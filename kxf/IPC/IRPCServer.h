@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "IRPCEvent.h"
+#include "RPCEvent.h"
 #include "Private/RPCExchange.h"
 
 namespace kxf

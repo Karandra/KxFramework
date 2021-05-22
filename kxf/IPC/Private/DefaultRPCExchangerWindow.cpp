@@ -22,7 +22,7 @@ namespace kxf
 	}
 
 	DefaultRPCExchangerWindow::DefaultRPCExchangerWindow(DefaultRPCExchanger& exchanger, const UniversallyUniqueID& sessionID)
-		:Frame(nullptr, wxID_NONE, exchanger.GetControlBufferName()), m_Exchanger(exchanger)
+		:Frame(nullptr, wxID_NONE, sessionID.ToString()), m_Exchanger(exchanger)
 	{
 	}
 }

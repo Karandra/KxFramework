@@ -41,7 +41,7 @@ namespace kxf::IPC::Private
 	}
 
 	template<class TReturn>
-	uint64_t SetProcedureResult(IOutputStream& stream, const TReturn& result)
+	uint64_t SetResult(IOutputStream& stream, const TReturn& result)
 	{
 		static_assert(!std::is_void_v<TReturn>, "TReturn must not be void");
 

@@ -61,15 +61,18 @@ namespace kxf
 			// Set stream with serialized parameters for an event handler to read from
 			if (procedure.HasParameters())
 			{
-				event.RawSetProcedureParameters(stream);
+				// The stream is not at its initial position at this point (we had read the procedure info)
+				// so 'RawSetParameters' saves its position inside the event object.
+				event.RawSetParameters(stream);
 			}
 
 			// Call event handler if any
 			if (m_EvtHandler->ProcessEvent(event, procedure.GetProcedureID()) && procedure.HasResult())
 			{
 				// If we had processed the event get serialized result and write it into shared result buffer
-				if (IInputStream& resultStream = event.RawGetProcedureResult())
+				if (IInputStream& resultStream = event.RawGetResult())
 				{
+					// Allocate shared buffer for the result and the result's size
 					const uint64_t size = resultStream.GetSize().ToBytes();
 					m_ResultBuffer.Allocate(size + sizeof(size), MemoryProtection::RW, GetResultBufferName(), m_KernelObjectNamespace);
 

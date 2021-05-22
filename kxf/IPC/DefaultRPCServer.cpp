@@ -47,8 +47,8 @@ namespace kxf
 			// Notify server started
 			if (notify)
 			{
-				Notify(IRPCEvent::EvtServerStarted);
-				NotifyClients(IRPCEvent::EvtServerStarted);
+				Notify(RPCEvent::EvtServerStarted);
+				NotifyClients(RPCEvent::EvtServerStarted);
 			}
 			return true;
 		}
@@ -60,8 +60,8 @@ namespace kxf
 	{
 		if (m_SessionMutex && notify)
 		{
-			Notify(IRPCEvent::EvtServerTerminated);
-			NotifyClients(IRPCEvent::EvtServerTerminated);
+			Notify(RPCEvent::EvtServerTerminated);
+			NotifyClients(RPCEvent::EvtServerTerminated);
 		}
 
 		OnTerminate();
@@ -79,11 +79,11 @@ namespace kxf
 
 	DefaultRPCServer::DefaultRPCServer()
 	{
-		m_ServiceEvtHandler.Bind(IRPCEvent::EvtClientConnected, [&](IRPCEvent& event)
+		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientConnected, [&](RPCEvent& event)
 		{
 			m_Clients.emplace(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
 		}, BindEventFlag::AlwaysSkip);
-		m_ServiceEvtHandler.Bind(IRPCEvent::EvtClientDisconnected, [&](IRPCEvent& event)
+		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientDisconnected, [&](RPCEvent& event)
 		{
 			m_Clients.erase(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
 		}, BindEventFlag::AlwaysSkip);
