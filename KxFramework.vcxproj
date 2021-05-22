@@ -272,6 +272,7 @@
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\IMemoryStream.h" />
+    <ClInclude Include="kxf\IO\MemoryStreamBuffer.h" />
     <ClInclude Include="kxf\IO\NativeFileStream.h" />
     <ClInclude Include="kxf\IO\IStream.h" />
     <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
@@ -286,7 +287,7 @@
     <ClInclude Include="kxf\IPC\DefaultRPCEvent.h" />
     <ClInclude Include="kxf\IPC\DefaultRPCServer.h" />
     <ClInclude Include="kxf\IPC\IRPCClient.h" />
-    <ClInclude Include="kxf\IPC\IRPCEvent.h" />
+    <ClInclude Include="kxf\IPC\RPCEvent.h" />
     <ClInclude Include="kxf\IPC\IRPCServer.h" />
     <ClInclude Include="kxf\IPC\Private\DefaultRPCExchanger.h" />
     <ClInclude Include="kxf\IPC\Private\DefaultRPCExchangerWindow.h" />
@@ -751,6 +752,7 @@
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
+    <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp" />
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />

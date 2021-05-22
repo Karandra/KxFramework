@@ -1900,7 +1900,7 @@
     <ClInclude Include="kxf\IPC\IRPCClient.h">
       <Filter>kxf\IPC</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\IPC\IRPCEvent.h">
+    <ClInclude Include="kxf\IPC\RPCEvent.h">
       <Filter>kxf\IPC</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IPC\IRPCServer.h">
@@ -1935,6 +1935,9 @@
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\BasicEvtHandler.h">
       <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\MemoryStreamBuffer.h">
+      <Filter>kxf\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2880,6 +2883,9 @@
     </ClCompile>
     <ClCompile Include="kxf\IPC\Private\DefaultRPCExchanger.cpp">
       <Filter>kxf\IPC\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp">
+      <Filter>kxf\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

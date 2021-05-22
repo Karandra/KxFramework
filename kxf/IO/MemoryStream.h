@@ -2,8 +2,7 @@
 #include "Common.h"
 #include "IStream.h"
 #include "IMemoryStream.h"
-#include "kxf/wxWidgets/StreamWrapper.h"
-#include <wx/mstream.h>
+#include "MemoryStreamBuffer.h"
 
 namespace kxf
 {
@@ -13,102 +12,295 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API MemoryInputStream: public wxWidgets::InputStreamWrapper, public IMemoryStream
+	class KX_API MemoryInputStream: public RTTI::Implementation<MemoryInputStream, IInputStream, IMemoryStream>
 	{
-		KxRTTI_DeclareIID(MemoryInputStream, {});
-		KxRTTI_QueryInterface_Extend(MemoryInputStream, IMemoryStream);
-
 		private:
-			wxMemoryInputStream m_Stream;
+			MemoryStreamBuffer m_StreamBuffer;
+			BinarySize m_LastRead;
+			StreamError m_LastError = StreamErrorCode::Success;
 
 		public:
-			MemoryInputStream(const void* buffer, size_t size)
-				:InputStreamWrapper(m_Stream), m_Stream(buffer, size)
+			MemoryInputStream() noexcept
+			{
+				m_StreamBuffer.SetStorageFixed();
+			}
+			MemoryInputStream(const MemoryInputStream&) = delete;
+			MemoryInputStream(MemoryInputStream&& other) noexcept
+			{
+				*this = std::move(other);
+			}
+			MemoryInputStream(const void* buffer, size_t size) noexcept
+			{
+				m_StreamBuffer.AttachStorage(buffer, size);
+				m_StreamBuffer.SetStorageFixed();
+			}
+			MemoryInputStream(const void* buffer, const void* end) noexcept
+			{
+				m_StreamBuffer.AttachStorage(buffer, end);
+				m_StreamBuffer.SetStorageFixed();
+			}
+			MemoryInputStream(const MemoryOutputStream& stream) noexcept;
+			MemoryInputStream(MemoryOutputStream&& stream) noexcept;
+			MemoryInputStream(MemoryStreamBuffer streamBuffer) noexcept
+				:m_StreamBuffer(std::move(streamBuffer))
 			{
 			}
-			
-			MemoryInputStream(MemoryInputStream& stream)
-				:InputStreamWrapper(m_Stream), m_Stream(stream.AsWxStream())
+			MemoryInputStream(IInputStream& stream, BinarySize size = {})
 			{
-			}
-			MemoryInputStream(const MemoryOutputStream& stream);
-			MemoryInputStream(IInputStream& stream, BinarySize size = {});
-
-			MemoryInputStream(wxMemoryInputStream& stream)
-				:InputStreamWrapper(m_Stream), m_Stream(stream.GetInputStreamBuffer()->GetBufferStart(), stream.GetInputStreamBuffer()->GetBufferSize())
-			{
-			}
-			MemoryInputStream(const wxMemoryOutputStream& stream)
-				:InputStreamWrapper(m_Stream), m_Stream(stream.GetOutputStreamBuffer()->GetBufferStart(), stream.GetOutputStreamBuffer()->GetBufferSize())
-			{
-			}
-			MemoryInputStream(wxInputStream& stream, BinarySize size = {})
-				:InputStreamWrapper(m_Stream), m_Stream(stream, size.ToBytes())
-			{
+				m_StreamBuffer.CreateStorage(stream, size ? size.ToBytes() : 0);
+				m_StreamBuffer.SetStorageFixed();
 			}
 
 		public:
-			// MemoryInputStream
-			wxMemoryInputStream& AsWxStream() noexcept
+			// IStream
+			void Close() noexcept override
 			{
-				return m_Stream;
-			}
-			const wxMemoryInputStream& AsWxStream() const noexcept
-			{
-				return m_Stream;
+				m_StreamBuffer = {};
+				m_LastRead = {};
+				m_LastError = StreamErrorCode::Success;
 			}
 
-			bool Flush();
-			bool SetAllocationSize(BinarySize offset);
+			StreamError GetLastError() const noexcept override
+			{
+				return m_LastError;
+			}
+			void SetLastError(StreamError lastError) noexcept override
+			{
+				m_LastError = std::move(lastError);
+			}
+
+			bool IsSeekable() const override
+			{
+				return true;
+			}
+			BinarySize GetSize() const noexcept override
+			{
+				return m_StreamBuffer.GetBufferSize();
+			}
+
+			// IInputStream
+			bool CanRead() const noexcept override
+			{
+				return !m_StreamBuffer.IsNull() && !m_StreamBuffer.IsEndOfStream();
+			}
+
+			BinarySize LastRead() const noexcept override
+			{
+				return m_LastRead;
+			}
+			void SetLastRead(BinarySize lastRead) noexcept override
+			{
+				m_LastRead = lastRead;
+			}
+
+			std::optional<uint8_t> Peek() noexcept override
+			{
+				uint8_t value = 0;
+				intptr_t length = sizeof(value);
+				if (m_StreamBuffer.Read(&value, length) == length)
+				{
+					m_StreamBuffer.Seek(-length, IOStreamSeek::FromCurrent);
+					return value;
+				}
+				return {};
+			}
+			IInputStream& Read(void* buffer, size_t size) noexcept override
+			{
+				m_LastRead = m_StreamBuffer.Read(buffer, size);
+				return *this;
+			}
+			using IInputStream::Read;
+
+			StreamOffset TellI() const noexcept override
+			{
+				return m_StreamBuffer.Tell();
+			}
+			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) noexcept override
+			{
+				return m_StreamBuffer.Seek(static_cast<intptr_t>(offset.ToBytes()), seek);
+			}
 
 			// IMemoryStream
-			wxStreamBuffer& GetStreamBuffer() const override
+			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
-				return *m_Stream.GetInputStreamBuffer();
+				return std::move(m_StreamBuffer);
+			}
+			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
+			{
+				m_StreamBuffer = std::move(streamBuffer);
+			}
+
+			MemoryStreamBuffer& GetStreamBuffer() noexcept override
+			{
+				return m_StreamBuffer;
+			}
+			const MemoryStreamBuffer& GetStreamBuffer() const noexcept override
+			{
+				return m_StreamBuffer;
+			}
+			size_t CopyToBuffer(void* buffer, size_t size) const override
+			{
+				const size_t effectiveSize = std::min(size, m_StreamBuffer.GetBufferSize());
+				std::memcpy(buffer, m_StreamBuffer.GetBufferStart(), effectiveSize);
+
+				return effectiveSize;
+			}
+
+		public:
+			MemoryInputStream& operator=(const MemoryInputStream&) = delete;
+			MemoryInputStream& operator=(MemoryInputStream&& other) noexcept
+			{
+				m_StreamBuffer = std::move(other.m_StreamBuffer);
+				m_LastRead = std::move(other.m_LastRead);
+				m_LastError = std::move(other.m_LastError);
+
+				return *this;
 			}
 	};
 }
 
 namespace kxf
 {
-	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper, public IMemoryStream, public IReadableOutputStream
+	class KX_API MemoryOutputStream: public RTTI::Implementation<MemoryInputStream, IOutputStream, IMemoryStream, IReadableOutputStream>
 	{
-		KxRTTI_DeclareIID(MemoryOutputStream, {});
-		KxRTTI_QueryInterface_Extend(MemoryOutputStream, IMemoryStream, IReadableOutputStream);
-
 		private:
-			wxMemoryOutputStream m_Stream;
+			MemoryStreamBuffer m_StreamBuffer;
+			BinarySize m_LastWrite;
+			StreamError m_LastError = StreamErrorCode::Success;
 
 		public:
-			MemoryOutputStream(void* buffer = nullptr, size_t size = 0)
-				:OutputStreamWrapper(m_Stream), m_Stream(buffer, size)
+			MemoryOutputStream() noexcept
 			{
+				m_StreamBuffer.CreateStorage();
+			}
+			MemoryOutputStream(void* buffer, size_t size)
+			{
+				m_StreamBuffer.AttachStorage(buffer, size);
+			}
+			MemoryOutputStream(void* buffer, const void* end)
+			{
+				m_StreamBuffer.AttachStorage(buffer, end);
+			}
+			MemoryOutputStream(MemoryStreamBuffer streamBuffer) noexcept
+				:m_StreamBuffer(std::move(streamBuffer))
+			{
+			}
+			MemoryOutputStream(const MemoryInputStream& stream)
+			{
+				auto& buffer = stream.GetStreamBuffer();
+				m_StreamBuffer.AttachStorage(buffer.GetBufferStart(), buffer.GetBufferEnd());
+				m_StreamBuffer.SetStorageFixed();
+			}
+			MemoryOutputStream(MemoryInputStream&& stream) noexcept
+				:m_StreamBuffer(std::move(stream.GetStreamBuffer()))
+			{
+			}
+			MemoryOutputStream(const MemoryOutputStream&) = delete;
+			MemoryOutputStream(MemoryOutputStream&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 
 		public:
+			// IStream
+			void Close() noexcept override
+			{
+				m_StreamBuffer = {};
+				m_LastWrite = {};
+				m_LastError = StreamErrorCode::Success;
+			}
+
+			StreamError GetLastError() const noexcept override
+			{
+				return m_LastError;
+			}
+			void SetLastError(StreamError lastError) noexcept override
+			{
+				m_LastError = std::move(lastError);
+			}
+
+			bool IsSeekable() const override
+			{
+				return true;
+			}
+			BinarySize GetSize() const noexcept override
+			{
+				return m_StreamBuffer.GetBufferSize();
+			}
+
 			// IOutputStream
-			bool Flush() override;
-			bool SetAllocationSize(BinarySize allocationSize) override;
-
-			// MemoryOutputStream
-			size_t CopyTo(void* buffer, size_t size) const;
-
-			wxMemoryOutputStream& AsWxStream() noexcept
+			BinarySize LastWrite() const noexcept override
 			{
-				return m_Stream;
+				return m_LastWrite;
 			}
-			const wxMemoryOutputStream& AsWxStream() const noexcept
+			void SetLastWrite(BinarySize lastWrite) noexcept override
 			{
-				return m_Stream;
+				m_LastWrite = lastWrite;
+			}
+
+			IOutputStream& Write(const void* buffer, size_t size) override
+			{
+				m_LastWrite = m_StreamBuffer.Write(buffer, size);
+				return *this;
+			}
+			using IOutputStream::Write;
+
+			StreamOffset TellO() const noexcept override
+			{
+				return m_StreamBuffer.Tell();
+			}
+			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) noexcept override
+			{
+				return m_StreamBuffer.Seek(static_cast<intptr_t>(offset.ToBytes()), seek);
+			}
+
+			bool Flush() noexcept override
+			{
+				return false;
+			}
+			bool SetAllocationSize(BinarySize offset) override
+			{
+				return m_StreamBuffer.ReserveStorage(offset.ToBytes());
 			}
 
 			// IMemoryStream
-			wxStreamBuffer& GetStreamBuffer() const override
+			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
-				return *m_Stream.GetOutputStreamBuffer();
+				return std::move(m_StreamBuffer);
+			}
+			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
+			{
+				m_StreamBuffer = std::move(streamBuffer);
+			}
+
+			MemoryStreamBuffer& GetStreamBuffer() noexcept override
+			{
+				return m_StreamBuffer;
+			}
+			const MemoryStreamBuffer& GetStreamBuffer() const noexcept override
+			{
+				return m_StreamBuffer;
+			}
+			size_t CopyToBuffer(void* buffer, size_t size) const override
+			{
+				const size_t effectiveSize = std::min(size, m_StreamBuffer.GetBufferSize());
+				std::memcpy(buffer, m_StreamBuffer.GetBufferStart(), effectiveSize);
+
+				return effectiveSize;
 			}
 
 			// IReadableOutputStream
 			std::unique_ptr<IInputStream> CreateInputStream() const override;
+
+		public:
+			MemoryOutputStream& operator=(const MemoryOutputStream&) = delete;
+			MemoryOutputStream& operator=(MemoryOutputStream&& other) noexcept
+			{
+				m_StreamBuffer = std::move(other.m_StreamBuffer);
+				m_LastWrite = std::move(other.m_LastWrite);
+				m_LastError = std::move(other.m_LastError);
+
+				return *this;
+			}
 	};
 }
