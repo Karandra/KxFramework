@@ -7,12 +7,12 @@
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/IO/MemoryStream.h"
 #include "../SharedMemory.h"
+#include "DefaultRPCExchangerWindow.h"
 
 namespace kxf
 {
 	class DefaultRPCEvent;
 	class DefaultRPCProcedure;
-	class DefaultRPCExchangerWindow;
 }
 
 namespace kxf
@@ -28,10 +28,16 @@ namespace kxf
 			KernelObjectNamespace m_KernelObjectNamespace = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
-			DefaultRPCExchangerWindow* m_ReceivingWindow = nullptr;
+			DefaultRPCExchangerWindow m_ReceivingWindow;
 			IEvtHandler* m_EvtHandler = nullptr;
 
 		protected:
+			DefaultRPCExchanger()
+				:m_ReceivingWindow(*this)
+			{
+			}
+
+		public:
 			size_t GetControlBufferSize() const;
 			String GetControlBufferName() const;
 			String GetResultBufferName() const;
@@ -40,12 +46,11 @@ namespace kxf
 			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns);
 			void OnTerminate();
 
-		protected:
+		public:
 			virtual void OnDataRecieved(IInputStream& stream) = 0;
 			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event);
 
 			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer);
-			
 	};
 }
 

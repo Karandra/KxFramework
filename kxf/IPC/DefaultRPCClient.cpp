@@ -30,10 +30,8 @@ namespace kxf
 			Serialization::ReadObject(stream, m_ServerPID);
 			Serialization::ReadObject(stream, m_ServerHandle);
 
-			if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)))
+			if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)) && m_ReceivingWindow.Create(m_SessionID))
 			{
-				m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
-
 				if (notify)
 				{
 					Notify(RPCEvent::EvtClientConnected);
@@ -104,7 +102,7 @@ namespace kxf
 	{
 		if (m_SessionMutex && procedureID)
 		{
-			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow->GetHandle(), parametersCount, hasResult);
+			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
 
 			MemoryOutputStream stream;
 			Serialization::WriteObject(stream, procedure);

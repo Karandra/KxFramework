@@ -1,5 +1,5 @@
 #pragma once
-#include "kxf/UI/Windows/Frame.h"
+#include <wx/dialog.h>
 
 namespace kxf
 {
@@ -8,15 +8,33 @@ namespace kxf
 
 namespace kxf
 {
-	class DefaultRPCExchangerWindow final: public UI::Frame
+	class DefaultRPCExchangerWindow final
 	{
 		private:
 			DefaultRPCExchanger& m_Exchanger;
+			uint32_t m_WindowClass = 0;
+			void* m_Handle = nullptr;
 
-		protected:
-			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
+		private:
+			bool MSWHandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam);
 
 		public:
-			DefaultRPCExchangerWindow(DefaultRPCExchanger& exchanger, const UniversallyUniqueID& sessionID);
+			DefaultRPCExchangerWindow(DefaultRPCExchanger& exchanger) noexcept
+				:m_Exchanger(exchanger)
+			{
+			}
+			~DefaultRPCExchangerWindow() noexcept
+			{
+				Destroy();
+			}
+
+		public:
+			void* GetHandle() const noexcept
+			{
+				return m_Handle;
+			}
+
+			bool Create(const UniversallyUniqueID& sessionID);
+			bool Destroy() noexcept;
 	};
 }

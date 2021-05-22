@@ -37,20 +37,21 @@ namespace kxf
 	{
 		if (m_SessionMutex.CreateAcquired(GetSessionMutexName(), ns) && m_ControlBuffer.Allocate(GetControlBufferSize(), MemoryProtection::RW, GetControlBufferName(), ns))
 		{
-			m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
-
-			// Write out everything that the client will need to connect to the server
-			MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
-			Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
-			Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow->GetHandle()));
-
-			// Notify server started
-			if (notify)
+			if (m_ReceivingWindow.Create(m_SessionID))
 			{
-				Notify(RPCEvent::EvtServerStarted);
-				NotifyClients(RPCEvent::EvtServerStarted);
+				// Write out everything that the client will need to connect to the server
+				MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
+				Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
+				Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow.GetHandle()));
+
+				// Notify server started
+				if (notify)
+				{
+					Notify(RPCEvent::EvtServerStarted);
+					NotifyClients(RPCEvent::EvtServerStarted);
+				}
+				return true;
 			}
-			return true;
 		}
 
 		DoTerminateServer();
@@ -121,7 +122,7 @@ namespace kxf
 
 		if (!m_Clients.empty() && m_SessionMutex && procedureID)
 		{
-			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow->GetHandle(), parametersCount);
+			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount);
 
 			MemoryOutputStream stream;
 			Serialization::WriteObject(stream, procedure);

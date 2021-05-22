@@ -3,11 +3,6 @@
 #include "kxf/EventSystem/EvtHandler.h"
 #include "Private/DefaultRPCExchanger.h"
 
-namespace kxf::Private
-{
-	class DefaultRPCExchangerWindow;
-}
-
 namespace kxf
 {
 	class DefaultRPCServer: public RTTI::DynamicImplementation<DefaultRPCServer, IRPCServer>, public DefaultRPCExchanger

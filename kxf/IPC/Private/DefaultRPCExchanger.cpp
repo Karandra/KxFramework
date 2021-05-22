@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "DefaultRPCExchanger.h"
-#include "DefaultRPCExchangerWindow.h"
 #include "../DefaultRPCEvent.h"
 #include "../SharedMemory.h"
 #include "kxf/IO/IStream.h"
@@ -42,11 +41,7 @@ namespace kxf
 	}
 	void DefaultRPCExchanger::OnTerminate()
 	{
-		if (m_ReceivingWindow)
-		{
-			m_ReceivingWindow->Destroy();
-			m_ReceivingWindow = nullptr;
-		}
+		m_ReceivingWindow.Destroy();
 		m_SessionMutex.Destroy();
 		m_ControlBuffer.Free();
 	}
