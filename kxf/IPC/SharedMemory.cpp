@@ -118,20 +118,20 @@ namespace kxf
 		Utility::SecureZeroMemory(m_Buffer, m_Size);
 	}
 
-	std::unique_ptr<IInputStream> SharedMemoryBuffer::GetInputStream() const
+	MemoryInputStream SharedMemoryBuffer::GetInputStream() const
 	{
 		if (!IsNull() && m_Protection.Contains(MemoryProtection::Read))
 		{
-			return std::make_unique<MemoryInputStream>(m_Buffer, m_Size);
+			return MemoryInputStream(m_Buffer, m_Size);
 		}
-		return nullptr;
+		return {};
 	}
-	std::unique_ptr<IOutputStream> SharedMemoryBuffer::GetOutputStream()
+	MemoryOutputStream SharedMemoryBuffer::GetOutputStream()
 	{
 		if (!IsNull() && m_Protection.Contains(MemoryProtection::Write))
 		{
-			return std::make_unique<MemoryOutputStream>(m_Buffer, m_Size);
+			return MemoryOutputStream(m_Buffer, m_Size);
 		}
-		return nullptr;
+		return {};
 	}
 }

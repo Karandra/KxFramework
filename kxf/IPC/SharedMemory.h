@@ -5,8 +5,8 @@
 
 namespace kxf
 {
-	class IInputStream;
-	class IOutputStream;
+	class MemoryInputStream;
+	class MemoryOutputStream;
 }
 
 namespace kxf::IPC
@@ -137,8 +137,8 @@ namespace kxf
 			}
 
 		public:
-			std::unique_ptr<IInputStream> GetInputStream() const;
-			std::unique_ptr<IOutputStream> GetOutputStream();
+			MemoryInputStream GetInputStream() const;
+			MemoryOutputStream GetOutputStream();
 
 		public:
 			explicit operator bool() const noexcept
