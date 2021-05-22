@@ -26,9 +26,9 @@ namespace kxf
 		if (m_SessionMutex.Open(GetSessionMutexName(), ns) && m_ControlBuffer.Open(GetControlBufferName(), GetControlBufferSize(), MemoryProtection::Read, ns))
 		{
 			// Read control parameters
-			auto stream = m_ControlBuffer.GetInputStream();
-			Serialization::ReadObject(*stream, m_ServerPID);
-			Serialization::ReadObject(*stream, m_ServerHandle);
+			MemoryInputStream stream = m_ControlBuffer.GetInputStream();
+			Serialization::ReadObject(stream, m_ServerPID);
+			Serialization::ReadObject(stream, m_ServerHandle);
 
 			if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)))
 			{
@@ -100,7 +100,7 @@ namespace kxf
 		DoDisconnectFromServer(true);
 	}
 
-	IInputStream& DefaultRPCClient::RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream DefaultRPCClient::RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		if (m_SessionMutex && procedureID)
 		{

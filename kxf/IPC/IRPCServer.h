@@ -28,7 +28,7 @@ namespace kxf
 			{
 				return IPC::Private::InvokeProcedure<void>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult)
 				{
-					MemoryInputStream parametersInputStream(parametersStream);
+					MemoryInputStream parametersInputStream(parametersStream.DetachStreamBuffer());
 					RawBroadcastProcedure(procedureID, parametersInputStream, parametersCount);
 				}, procedureID, std::forward<Args>(arg)...);
 			}

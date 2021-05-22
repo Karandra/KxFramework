@@ -28,8 +28,6 @@ namespace kxf
 			KernelObjectNamespace m_KernelObjectNamespace = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
-			std::optional<MemoryInputStream> m_ResultStream;
-
 			DefaultRPCExchangerWindow* m_ReceivingWindow = nullptr;
 			IEvtHandler* m_EvtHandler = nullptr;
 
@@ -46,7 +44,7 @@ namespace kxf
 			virtual void OnDataRecieved(IInputStream& stream) = 0;
 			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event);
 
-			IInputStream& SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const wxStreamBuffer& buffer);
+			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer);
 			
 	};
 }

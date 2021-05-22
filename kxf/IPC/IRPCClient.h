@@ -20,15 +20,15 @@ namespace kxf
 			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) = 0;
 			virtual void DisconnectFromServer() = 0;
 
-			virtual IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
+			virtual MemoryInputStream RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
 
 		public:
 			template<class TReturn = void, class... Args>
 			TReturn InvokeProcedure(const EventID& procedureID, Args&&... arg)
 			{
-				return IPC::Private::InvokeProcedure<TReturn>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult) -> IInputStream&
+				return IPC::Private::InvokeProcedure<TReturn>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult)
 				{
-					MemoryInputStream parametersInputStream(parametersStream);
+					MemoryInputStream parametersInputStream(parametersStream.DetachStreamBuffer());
 					return RawInvokeProcedure(procedureID, parametersInputStream, parametersCount, hasResult);
 				}, procedureID, std::forward<Args>(arg)...);
 			}

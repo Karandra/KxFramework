@@ -20,7 +20,7 @@ namespace kxf::IPC::Private
 		}
 		else
 		{
-			IInputStream& resultStream = std::invoke(func, parametersStream, list.size(), !std::is_void_v<TReturn>);
+			MemoryInputStream resultStream = std::invoke(func, parametersStream, list.size(), !std::is_void_v<TReturn>);
 			static_assert(std::is_default_constructible_v<TReturn>, "TReturn must be default constructible");
 
 			// Handle return value if non-void

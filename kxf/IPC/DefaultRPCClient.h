@@ -35,6 +35,6 @@ namespace kxf
 			bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) override;
 			void DisconnectFromServer() override;
 
-			IInputStream& RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
+			MemoryInputStream RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
 	};
 }

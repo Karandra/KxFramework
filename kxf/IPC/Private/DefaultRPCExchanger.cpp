@@ -70,30 +70,29 @@ namespace kxf
 			if (m_EvtHandler->ProcessEvent(event, procedure.GetProcedureID()) && procedure.HasResult())
 			{
 				// If we had processed the event get serialized result and write it into shared result buffer
-				if (IInputStream& resultStream = event.RawGetResult())
+				if (MemoryInputStream resultStream = event.RawGetResult())
 				{
 					// Allocate shared buffer for the result and the result's size
-					const uint64_t size = resultStream.GetSize().ToBytes();
-					m_ResultBuffer.Allocate(size + sizeof(size), MemoryProtection::RW, GetResultBufferName(), m_KernelObjectNamespace);
+					const uint64_t resultSize = resultStream.GetSize().ToBytes();
+					m_ResultBuffer.Allocate(resultSize + sizeof(resultSize), MemoryProtection::RW, GetResultBufferName(), m_KernelObjectNamespace);
 
-					// Write allocated size and the result
-					auto stream = m_ResultBuffer.GetOutputStream();
-					Serialization::WriteObject(*stream, size);
-					stream->Write(resultStream);
+					// Write result size and the result
+					MemoryOutputStream stream = m_ResultBuffer.GetOutputStream();
+					Serialization::WriteObject(stream, resultSize);
+					stream.Write(resultStream);
 				}
 			}
 		}
 	}
-	IInputStream& DefaultRPCExchanger::SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const wxStreamBuffer& buffer)
+	MemoryInputStream DefaultRPCExchanger::SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer)
 	{
-		COPYDATASTRUCT data = {};
-		data.lpData = buffer.GetBufferStart();
-		data.cbData = buffer.GetBufferSize();
+		COPYDATASTRUCT parametersBufferData = {};
+		parametersBufferData.lpData = const_cast<void*>(buffer.GetBufferStart());
+		parametersBufferData.cbData = buffer.GetBufferSize();
 
-		m_ResultStream.reset();
 		m_ResultBuffer.ZeroBuffer();
 		Win32Error::SetLastError(Win32Error::Success());
-		::SendMessageW(reinterpret_cast<HWND>(windowHandle), WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&data));
+		::SendMessageW(reinterpret_cast<HWND>(windowHandle), WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&parametersBufferData));
 
 		if (procedure.HasResult() && Win32Error::GetLastError().IsSuccess() && m_ResultBuffer.Open(GetResultBufferName(), 0, MemoryProtection::RW, m_KernelObjectNamespace))
 		{
@@ -106,10 +105,9 @@ namespace kxf
 
 			if (actualSize != 0)
 			{
-				m_ResultStream.emplace(reinterpret_cast<const uint8_t*>(m_ResultBuffer.GetBuffer()) + read, actualSize);
-				return *m_ResultStream;
+				return MemoryInputStream(reinterpret_cast<const uint8_t*>(m_ResultBuffer.GetBuffer()) + read, actualSize);
 			}
 		}
-		return NullInputStream::Get();
+		return {};
 	}
 }

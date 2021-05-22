@@ -40,9 +40,9 @@ namespace kxf
 			m_ReceivingWindow = new DefaultRPCExchangerWindow(*this, m_SessionID);
 
 			// Write out everything that the client will need to connect to the server
-			auto stream = m_ControlBuffer.GetOutputStream();
-			Serialization::WriteObject(*stream, static_cast<uint32_t>(::GetCurrentProcessId()));
-			Serialization::WriteObject(*stream, reinterpret_cast<void*>(m_ReceivingWindow->GetHandle()));
+			MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
+			Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
+			Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow->GetHandle()));
 
 			// Notify server started
 			if (notify)

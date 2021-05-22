@@ -11,14 +11,13 @@ namespace kxf
 		m_ParametersStream = &stream;
 		m_ParametersStreamOffset = stream.TellI();
 	}
-	IInputStream& DefaultRPCEvent::RawGetResult()
+	MemoryInputStream DefaultRPCEvent::RawGetResult()
 	{
 		if (m_ResultStream)
 		{
-			m_ResultStreamRead.emplace(*m_ResultStream);
-			return *m_ResultStreamRead;
+			return std::move(m_ResultStream);
 		}
-		return NullInputStream::Get();
+		return {};
 	}
 
 	IRPCServer* DefaultRPCEvent::GetServer() const
@@ -41,7 +40,7 @@ namespace kxf
 	}
 	void DefaultRPCEvent::RawSetResult(IInputStream& stream)
 	{
-		m_ResultStream.emplace();
-		m_ResultStream->Write(stream);
+		m_ResultStream = {};
+		m_ResultStream.Write(stream);
 	}
 }

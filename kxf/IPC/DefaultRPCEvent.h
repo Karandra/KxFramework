@@ -21,12 +21,11 @@ namespace kxf
 
 			IInputStream* m_ParametersStream = nullptr;
 			StreamOffset m_ParametersStreamOffset;
-			std::optional<MemoryOutputStream> m_ResultStream;
-			std::optional<MemoryInputStream> m_ResultStreamRead;
+			MemoryOutputStream m_ResultStream;
 
 		private:
 			void RawSetParameters(IInputStream& stream);
-			IInputStream& RawGetResult();
+			MemoryInputStream RawGetResult();
 
 		public:
 			DefaultRPCEvent() = default;
