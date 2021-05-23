@@ -1,6 +1,10 @@
 #pragma once
 #include <cstdint>
 #include <stdexcept>
+#include <string>
+#include <string_view>
+#include <array>
+#include <vector>
 
 namespace kxf
 {
@@ -85,51 +89,89 @@ namespace kxf::Serialization
 	}
 }
 
+namespace kxf::Private
+{
+	class BufferBinarySerializer
+	{
+		private:
+			uint64_t DoWriteBuffer(IOutputStream& stream, const void* buffer, size_t length) const;
+			uint64_t DoReadBuffer(IInputStream& stream, void* buffer, size_t length) const;
+	};
+
+	class IntBinarySerializer
+	{
+		private:
+			uint64_t DoSerializeInteger(IOutputStream& stream, const void* buffer, size_t length, bool isSigned) const;
+			uint64_t DoDeserializeInteger(IInputStream& stream, void* buffer, size_t length, bool isSigned) const;
+
+		protected:
+			template<class T>
+			uint64_t SerializeInteger(IOutputStream& stream, const T& value) const
+			{
+				return DoSerializeInteger(stream, &value, sizeof(value), std::is_signed_v<T>);
+			}
+
+			template<class T>
+			uint64_t DeserializeInteger(IInputStream& stream, T& value) const
+			{
+				return DoDeserializeInteger(stream, &value, sizeof(value), std::is_signed_v<T>);
+			}
+	};
+
+	class FloatBinarySerializer
+	{
+		private:
+			uint64_t DoSerializeFloat(IOutputStream& stream, const void* buffer, size_t length) const;
+			uint64_t DoDeserializeFloat(IInputStream& stream, void* buffer, size_t length) const;
+
+		protected:
+			template<class T>
+			uint64_t SerializeFloat(IOutputStream& stream, const T& value) const
+			{
+				return DoSerializeFloat(stream, &value, sizeof(value));
+			}
+
+			template<class T>
+			uint64_t DeserializeFloat(IInputStream& stream, T& value) const
+			{
+				return DoDeserializeFloat(stream, &value, sizeof(value));
+			}
+	};
+
+	class StringBinarySerializer
+	{
+		private:
+			uint64_t DoSerializeString(IOutputStream& stream, const void* buffer, size_t length) const;
+			uint64_t DoDeserializeString(IInputStream& stream, void* buffer, size_t& length) const;
+
+		protected:
+			template<class T>
+			uint64_t SerializeString(IOutputStream& stream, const std::basic_string_view<T>& value) const
+			{
+				return DoSerializeString(stream, value.data(), value.size() * sizeof(T));
+			}
+
+			template<class T>
+			uint64_t SerializeString(IOutputStream& stream, const std::basic_string<T>& value) const
+			{
+				return DoSerializeString(stream, value.data(), value.size() * sizeof(T));
+			}
+
+			template<class T>
+			uint64_t DeserializeString(IInputStream& stream, std::basic_string<T>& value) const
+			{
+				size_t length = 0;
+				uint64_t read = DoDeserializeString(stream, nullptr, length);
+
+				value.resize(length);
+				read += DoDeserializeString(stream, value.data(), length);
+				return read;
+			}
+	};
+}
+
 namespace kxf
 {
-	namespace Private
-	{
-		class IntBinarySerializer
-		{
-			private:
-				uint64_t DoSerializeInteger(IOutputStream& stream, const void* buffer, size_t length, bool isSigned) const;
-				uint64_t DoDeserializeInteger(IInputStream& stream, void* buffer, size_t length, bool isSigned) const;
-
-			protected:
-				template<class T>
-				uint64_t SerializeInteger(IOutputStream& stream, const T& value) const
-				{
-					return DoSerializeInteger(stream, &value, sizeof(value), std::is_signed_v<T>);
-				}
-
-				template<class T>
-				uint64_t DeserializeInteger(IInputStream& stream, T& value) const
-				{
-					return DoDeserializeInteger(stream, &value, sizeof(value), std::is_signed_v<T>);
-				}
-		};
-
-		class FloatBinarySerializer
-		{
-			private:
-				uint64_t DoSerializeFloat(IOutputStream& stream, const void* buffer, size_t length) const;
-				uint64_t DoDeserializeFloat(IInputStream& stream, void* buffer, size_t length) const;
-
-			protected:
-				template<class T>
-				uint64_t SerializeFloat(IOutputStream& stream, const T& value) const
-				{
-					return DoSerializeFloat(stream, &value, sizeof(value));
-				}
-
-				template<class T>
-				uint64_t DeserializeFloat(IInputStream& stream, T& value) const
-				{
-					return DoDeserializeFloat(stream, &value, sizeof(value));
-				}
-		};
-	}
-
 	template<>
 	struct BinarySerializer<uint8_t> final: private Private::IntBinarySerializer
 	{
@@ -297,30 +339,26 @@ namespace kxf
 
 namespace kxf
 {
-	template<>
-	struct BinarySerializer<std::string> final
+	template<class T>
+	struct BinarySerializer<std::basic_string<T>> final: private Private::StringBinarySerializer
 	{
-		uint64_t Serialize(IOutputStream& stream, const std::string& value) const;
-		uint64_t Deserialize(IInputStream& stream, std::string& value) const;
+		uint64_t Serialize(IOutputStream& stream, const std::basic_string<T>& value) const
+		{
+			return SerializeString(stream, value);
+		}
+		uint64_t Deserialize(IInputStream& stream, std::basic_string<T>& value) const
+		{
+			return DeserializeString(stream, value);
+		}
 	};
 
-	template<>
-	struct BinarySerializer<std::wstring> final
+	template<class T>
+	struct BinarySerializer<std::basic_string_view<T>> final: private Private::StringBinarySerializer
 	{
-		uint64_t Serialize(IOutputStream& stream, const std::wstring& value) const;
-		uint64_t Deserialize(IInputStream& stream, std::wstring& value) const;
-	};
-
-	template<>
-	struct BinarySerializer<std::string_view> final
-	{
-		uint64_t Serialize(IOutputStream& stream, const std::string_view& value) const;
-	};
-
-	template<>
-	struct BinarySerializer<std::wstring_view> final
-	{
-		uint64_t Serialize(IOutputStream& stream, const std::wstring_view& value) const;
+		uint64_t Serialize(IOutputStream& stream, const std::basic_string_view<T>& value) const
+		{
+			return SerializeString(stream, value);
+		}
 	};
 
 	template<>
@@ -338,6 +376,92 @@ namespace kxf
 		uint64_t Serialize(IOutputStream& stream, const wchar_t* value) const
 		{
 			return Serialization::WriteObject(stream, value ? std::wstring_view(value) : std::wstring_view());
+		}
+	};
+}
+
+namespace kxf
+{
+	template<class T, size_t N>
+	struct BinarySerializer<std::array<T, N>> final: private Private::BufferBinarySerializer
+	{
+		uint64_t Serialize(IOutputStream& stream, const std::array<T, N>& value) const
+		{
+			uint64_t written = Serialization::WriteObject(stream, static_cast<uint64_t>(N));
+			if constexpr(std::is_trivially_copyable_v<T>)
+			{
+				written += DoWriteBuffer(stream, value.data(), N * sizeof(T));
+			}
+			else
+			{
+				for (const auto& item: value)
+				{
+					written += Serialization::WriteObject(stream, item);
+				}
+			}
+			return written;
+		}
+		uint64_t Deserialize(IInputStream& stream, std::array<T, N>& value) const
+		{
+			uint64_t length = 0;
+			uint64_t read = Serialization::ReadObject(stream, length);
+			if (length != N)
+			{
+				throw BinarySerializerException("Invalid item count");
+			}
+
+			if constexpr(std::is_trivially_copyable_v<T>)
+			{
+				read += DoReadBuffer(stream, value.data(), N * sizeof(T));
+			}
+			else
+			{
+				for (auto& item: value)
+				{
+					read += Serialization::ReadObject(stream, item);
+				}
+			}
+			return read;
+		}
+	};
+
+	template<class T>
+	struct BinarySerializer<std::vector<T>> final: private Private::BufferBinarySerializer
+	{
+		uint64_t Serialize(IOutputStream& stream, const std::vector<T>& value) const
+		{
+			uint64_t written = Serialization::WriteObject(stream, static_cast<uint64_t>(value.size()));
+			if constexpr(std::is_trivially_copyable_v<T>)
+			{
+				written += DoWriteBuffer(stream, value.data(), value.size() * sizeof(T));
+			}
+			else
+			{
+				for (const auto& item: value)
+				{
+					written += Serialization::WriteObject(stream, item);
+				}
+			}
+			return written;
+		}
+		uint64_t Deserialize(IInputStream& stream, std::vector<T>& value) const
+		{
+			uint64_t length = 0;
+			uint64_t read = Serialization::ReadObject(stream, length);
+
+			value.resize(static_cast<size_t>(length));
+			if constexpr(std::is_trivially_copyable_v<T>)
+			{
+				read += DoReadBuffer(stream, value.data(), length * sizeof(T));
+			}
+			else
+			{
+				for (size_t i = 0; i < length; i++)
+				{
+					read += Serialization::ReadObject(stream, value[i]);
+				}
+			}
+			return read;
 		}
 	};
 }
