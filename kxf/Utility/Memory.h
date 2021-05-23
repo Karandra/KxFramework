@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/Common.hpp"
+#include "kxf/General/NativeUUID.h"
 #include <memory>
 #include <new>
 #include "kxf/System/UndefWindows.h"
@@ -18,6 +19,16 @@ namespace kxf::Utility
 	void DestroyAt(void* buffer) noexcept(std::is_nothrow_destructible_v<T>)
 	{
 		std::destroy_at(static_cast<T*>(buffer));
+	}
+
+	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+	NativeUUID StoreMemberFunction(TFunc func) noexcept
+	{
+		static_assert(sizeof(func) <= sizeof(NativeUUID), "Member function size must be less or equal to the size of 'NativeUUID' type");
+
+		NativeUUID uuid;
+		std::memcpy(&uuid, &func, sizeof(func));
+		return uuid;
 	}
 }
 

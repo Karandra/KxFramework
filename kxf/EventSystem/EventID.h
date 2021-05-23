@@ -3,21 +3,9 @@
 #include "kxf/General/String.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
+#include "kxf/Utility/Memory.h"
 #include <type_traits>
 #include <variant>
-
-namespace kxf::EventSystem::Private
-{
-	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
-	UniversallyUniqueID StoreMemberFunction(TFunc func) noexcept
-	{
-		static_assert(sizeof(func) <= sizeof(NativeUUID));
-
-		NativeUUID uuid;
-		std::memcpy(&uuid, &func, sizeof(func));
-		return uuid;
-	}
-}
 
 namespace kxf
 {
@@ -46,7 +34,7 @@ namespace kxf
 			// Member function pointer
 			template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
 			EventID(TFunc func) noexcept
-				:m_ID(EventSystem::Private::StoreMemberFunction(func))
+				:m_ID(Utility::StoreMemberFunction(func))
 			{
 			}
 			
