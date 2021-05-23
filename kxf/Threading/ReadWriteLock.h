@@ -5,12 +5,12 @@ struct _RTL_SRWLOCK;
 
 namespace kxf
 {
-	class ReadWriteLockNull final
+	class NullReadWriteLock final
 	{
 		public:
-			ReadWriteLockNull() noexcept = default;
-			ReadWriteLockNull(const ReadWriteLockNull&) = delete;
-			~ReadWriteLockNull() noexcept = default;
+			NullReadWriteLock() noexcept = default;
+			NullReadWriteLock(const NullReadWriteLock&) = delete;
+			~NullReadWriteLock() noexcept = default;
 
 		public:
 			void LockRead() noexcept { }
@@ -20,7 +20,7 @@ namespace kxf
 			void UnlockWrite() noexcept { }
 
 		public:
-			ReadWriteLockNull& operator=(const ReadWriteLockNull&) = delete;
+			NullReadWriteLock& operator=(const NullReadWriteLock&) = delete;
 	};
 }
 
