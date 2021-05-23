@@ -56,3 +56,9 @@ namespace kxf
 			}
 	};
 }
+
+#define KxRPC_DECLARE_EVENT(name)							extern KX_API const kxf::EventTag<kxf::RPCEvent> name
+
+#define KxRPC_DEFINE_EVENT_AS(name, ...)					const kxf::EventTag<kxf::RPCEvent> name = (__VA_ARGS__)
+#define KxRPC_DEFINE_EVENT_UUID(name, ...)					KxRPC_DEFINE_EVENT_AS(name, kxf::NativeUUID (__VA_ARGS__))
+#define KxRPC_DEFINE_EVENT_STRING(name)						KxRPC_DEFINE_EVENT_AS(name, #name)
