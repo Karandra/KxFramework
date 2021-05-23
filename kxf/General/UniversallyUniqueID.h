@@ -27,11 +27,15 @@ namespace kxf
 {
 	class KX_API UniversallyUniqueID final
 	{
+		friend struct std::hash<UniversallyUniqueID>;
+		friend struct BinarySerializer<UniversallyUniqueID>;
+
 		public:
 			static UniversallyUniqueID Create() noexcept;
 			static UniversallyUniqueID CreateSequential() noexcept;
 
 			static UniversallyUniqueID CreateFromInt128(const uint8_t (&bytes)[16]) noexcept;
+			static UniversallyUniqueID CreateFromInt128(const std::array<uint8_t, 16> bytes) noexcept;
 			static UniversallyUniqueID CreateFromInt128(uint64_t low, uint64_t high) noexcept;
 
 			static UniversallyUniqueID CreateFromString(const char* value) noexcept;
@@ -91,11 +95,11 @@ namespace kxf
 		public:
 			constexpr bool operator==(const UniversallyUniqueID& other) const noexcept
 			{
-				return *this == other.m_ID;
+				return m_ID == other.m_ID;
 			}
 			constexpr bool operator!=(const UniversallyUniqueID& other) const noexcept
 			{
-				return !(*this == other);
+				return m_ID != other.m_ID;
 			}
 			bool operator<(const UniversallyUniqueID& other) const noexcept
 			{
@@ -120,7 +124,7 @@ namespace kxf
 			}
 			constexpr bool operator!=(const NativeUUID& other) const noexcept
 			{
-				return !(*this == other);
+				return m_ID != other;
 			}
 			bool operator<(const NativeUUID& other) const noexcept;
 			bool operator<=(const NativeUUID& other) const noexcept;
@@ -136,15 +140,11 @@ namespace kxf
 	{
 		uint64_t Serialize(IOutputStream& stream, const UniversallyUniqueID& value) const
 		{
-			return Serialization::WriteObject(stream, value.ToNativeUUID());
+			return Serialization::WriteObject(stream, value.m_ID);
 		}
 		uint64_t Deserialize(IInputStream& stream, UniversallyUniqueID& value) const
 		{
-			NativeUUID buffer;
-			auto read = Serialization::ReadObject(stream, buffer);
-			value = std::move(buffer);
-
-			return read;
+			return Serialization::ReadObject(stream, value.m_ID);
 		}
 	};
 }
@@ -152,11 +152,11 @@ namespace kxf
 namespace std
 {
 	template<>
-	struct hash<kxf::UniversallyUniqueID>
+	struct hash<kxf::UniversallyUniqueID> final
 	{
 		constexpr size_t operator()(const kxf::UniversallyUniqueID& uuid) const noexcept
 		{
-			return uuid.ToNativeUUID().GetHash();
+			return std::hash<kxf::NativeUUID>()(uuid.m_ID);
 		}
 	};
 

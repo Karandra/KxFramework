@@ -160,17 +160,24 @@ namespace kxf
 	{
 		NativeUUID uuid;
 		std::memcpy(&uuid, bytes, std::size(bytes));
+
 		return uuid;
 	}
 	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(uint64_t low, uint64_t high) noexcept
 	{
-		uint8_t bytes[16] = {};
+		std::array<uint8_t, 16> bytes;
 		std::memcpy(&bytes, &low, sizeof(low));
 		std::memcpy(&bytes[sizeof(low)], &high, sizeof(high));
 
 		return CreateFromInt128(bytes);
 	}
+	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(const std::array<uint8_t, 16> bytes) noexcept
+	{
+		NativeUUID uuid;
+		std::memcpy(&uuid, bytes.data(), bytes.size());
 
+		return uuid;
+	}
 	UniversallyUniqueID UniversallyUniqueID::CreateFromString(const char* value) noexcept
 	{
 		return DoCreateFromString(value);
@@ -187,7 +194,7 @@ namespace kxf
 	UniversallyUniqueID::UniversallyUniqueID(LocallyUniqueID other) noexcept
 	{
 		uint64_t vlaue = other.ToInt();
-		std::memset(&m_ID, 0, sizeof(vlaue));
+		std::memset(&m_ID, 0, sizeof(m_ID));
 		std::memcpy(&m_ID, &vlaue, sizeof(vlaue));
 	}
 
@@ -314,7 +321,7 @@ namespace kxf
 			uuid.Append(braces.second);
 		}
 
-		// Append URN format prefix
+		// Prepend URN format prefix if asked to
 		if (format & UUIDFormat::URN)
 		{
 			uuid.Prepend(g_RFC_URN);
@@ -338,9 +345,9 @@ namespace kxf
 	}
 	std::array<uint8_t, 16> UniversallyUniqueID::ToInt128() const noexcept
 	{
-		std::array<uint8_t, 16> i128;
-		std::memcpy(i128.data(), &m_ID, std::size(i128));
-		return i128;
+		std::array<uint8_t, 16> bytes;
+		std::memcpy(bytes.data(), &m_ID, std::size(bytes));
+		return bytes;
 	}
 
 	bool UniversallyUniqueID::operator<(const NativeUUID& other) const noexcept

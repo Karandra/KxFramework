@@ -11,13 +11,16 @@ namespace kxf
 {
 	class KX_API IID final
 	{
+		friend struct std::hash<IID>;
+		friend struct BinarySerializer<IID>;
+
 		private:
 			NativeUUID m_ID;
 
 		public:
 			constexpr IID() noexcept = default;
-			constexpr IID(const NativeUUID& uuid) noexcept
-				:m_ID(uuid)
+			constexpr IID(NativeUUID uuid) noexcept
+				:m_ID(std::move(uuid))
 			{
 			}
 
@@ -26,7 +29,7 @@ namespace kxf
 			{
 				return m_ID.IsNull();
 			}
-			constexpr NativeUUID ToNativeUUID() const noexcept
+			constexpr const NativeUUID& ToNativeUUID() const noexcept
 			{
 				return m_ID;
 			}
@@ -65,6 +68,22 @@ namespace kxf
 	};
 }
 
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<IID> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const IID& value) const
+		{
+			return Serialization::WriteObject(stream, value.ToNativeUUID());
+		}
+		uint64_t Deserialize(IInputStream& stream, IID& value) const
+		{
+			return Serialization::ReadObject(stream, value.m_ID);
+		}
+	};
+}
+
 namespace std
 {
 	template<>
@@ -72,7 +91,7 @@ namespace std
 	{
 		constexpr size_t operator()(const kxf::IID& iid) const noexcept
 		{
-			return iid.ToNativeUUID().GetHash();
+			return std::hash<kxf::NativeUUID>()(iid.m_ID);
 		}
 	};
 }
