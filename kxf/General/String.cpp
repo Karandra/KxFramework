@@ -7,25 +7,25 @@
 
 namespace
 {
-	char CharToLower(char c)
+	char CharToLower(char c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
 	}
-	char CharToUpper(char c)
+	char CharToUpper(char c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharUpperA(reinterpret_cast<LPSTR>(c)));
 	}
-	wchar_t CharToLower(wchar_t c)
+	wchar_t CharToLower(wchar_t c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
 	}
-	wchar_t CharToUpper(wchar_t c)
+	wchar_t CharToUpper(wchar_t c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
