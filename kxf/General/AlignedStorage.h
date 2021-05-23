@@ -32,6 +32,19 @@ namespace kxf
 				return *m_Value;
 			}
 
+			bool IsConstructed() const noexcept
+			{
+				return m_Value != nullptr;
+			}
+			void Destroy() noexcept(std::is_nothrow_destructible_v<TValue>)
+			{
+				if (m_Value)
+				{
+					m_Buffer.Destroy();
+					m_Value = nullptr;
+				}
+			}
+
 			void CopyFrom(const AlignedStorage& other) noexcept(std::is_nothrow_constructible_v<TValue, const TValue&>)
 			{
 				if (other.IsConstructed())
@@ -55,30 +68,6 @@ namespace kxf
 				{
 					Destroy();
 				}
-			}
-
-			template<std::enable_if_t<std::is_move_constructible_v<TValue>, int> = 0>
-			TValue TakeValue() noexcept
-			{
-				if (m_Value)
-				{
-					return std::move(*m_Value);
-				}
-				return {};
-			}
-
-			void Destroy() noexcept(std::is_nothrow_destructible_v<TValue>)
-			{
-				if (m_Value)
-				{
-					m_Buffer.Destroy();
-					m_Value = nullptr;
-				}
-			}
-
-			bool IsConstructed() const noexcept
-			{
-				return m_Value != nullptr;
 			}
 
 		public:
