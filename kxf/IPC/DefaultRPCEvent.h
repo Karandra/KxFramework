@@ -56,6 +56,10 @@ namespace kxf
 			IRPCServer* GetServer() const override;
 			IRPCClient* GetClient() const override;
 
+			bool HasResult() const override
+			{
+				return m_Procedure.HasResult();
+			}
 			size_t GetParameterCount() const override
 			{
 				return m_Procedure.GetParametersCount();

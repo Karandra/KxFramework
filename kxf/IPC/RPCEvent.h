@@ -34,6 +34,7 @@ namespace kxf
 			virtual IRPCServer* GetServer() const = 0;
 			virtual IRPCClient* GetClient() const = 0;
 
+			virtual bool HasResult() const = 0;
 			virtual size_t GetParameterCount() const = 0;
 			virtual IInputStream& RawGetParameters() = 0;
 			virtual void RawSetResult(IInputStream& stream) = 0;

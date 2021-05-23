@@ -15,7 +15,7 @@ namespace kxf
 	{
 		if (m_ResultStream)
 		{
-			return std::move(m_ResultStream);
+			return m_ResultStream.DetachStreamBuffer();
 		}
 		return {};
 	}
@@ -31,7 +31,7 @@ namespace kxf
 
 	IInputStream& DefaultRPCEvent::RawGetParameters()
 	{
-		if (m_ParametersStream)
+		if (m_ParametersStream && m_Procedure.HasParameters())
 		{
 			m_ParametersStream->SeekI(m_ParametersStreamOffset, IOStreamSeek::FromStart);
 			return *m_ParametersStream;
@@ -41,6 +41,9 @@ namespace kxf
 	void DefaultRPCEvent::RawSetResult(IInputStream& stream)
 	{
 		m_ResultStream = {};
-		m_ResultStream.Write(stream);
+		if (m_Procedure.HasResult())
+		{
+			m_ResultStream.Write(stream);
+		}
 	}
 }
