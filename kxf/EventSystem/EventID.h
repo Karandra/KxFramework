@@ -30,6 +30,7 @@ namespace kxf
 			std::variant<int64_t, UniversallyUniqueID, String> m_ID;
 
 		private:
+			size_t GetHash() const noexcept;
 			uint64_t Serialize(IOutputStream& stream) const;
 			uint64_t Deserialize(IInputStream& stream);
 
@@ -94,7 +95,6 @@ namespace kxf
 
 		public:
 			bool IsNull() const noexcept;
-			size_t GetHash() const noexcept;
 
 			int64_t AsInt() const noexcept;
 			UniversallyUniqueID AsUniqueID() const noexcept;
@@ -252,11 +252,10 @@ namespace kxf
 	};
 }
 
-
 namespace std
 {
 	template<>
-	struct hash<kxf::EventID>
+	struct hash<kxf::EventID> final
 	{
 		size_t operator()(const kxf::EventID& id) const noexcept
 		{

@@ -10,25 +10,58 @@ namespace
 
 namespace kxf
 {
+	size_t EventID::GetHash() const noexcept
+	{
+		if (auto value = std::get_if<int64_t>(&m_ID))
+		{
+			if (*value != 0)
+			{
+				return std::hash<int64_t>()(*value);
+			}
+		}
+		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
+		{
+			if (!value->IsNull())
+			{
+				return std::hash<UniversallyUniqueID>()(*value);
+			}
+		}
+		else if (auto value = std::get_if<String>(&m_ID))
+		{
+			if (!value->IsEmpty())
+			{
+				return std::hash<String>()(*value);
+			}
+		}
+		return 0;
+	}
 	uint64_t EventID::Serialize(IOutputStream& stream) const
 	{
-		uint64_t written = Serialization::WriteObject(stream, static_cast<uint64_t>(m_ID.index()));
+		uint64_t written = 0;
+		auto WriteIndex = [&]()
+		{
+			return Serialization::WriteObject(stream, static_cast<uint64_t>(m_ID.index()));
+		};
 
 		if (auto value = std::get_if<int64_t>(&m_ID))
 		{
+			written += WriteIndex();
 			written += Serialization::WriteObject(stream, *value);
 		}
 		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
 		{
+			written += WriteIndex();
 			written += Serialization::WriteObject(stream, *value);
 		}
 		else if (auto value = std::get_if<String>(&m_ID))
 		{
+			written += WriteIndex();
 			written += Serialization::WriteObject(stream, *value);
 		}
 		else
 		{
-			// Shouldn't happen, but just in case
+			// Shouldn't happen, but just in case serialize as if it's an empty object
+			written += Serialization::WriteObject(stream, static_cast<uint64_t>(0));
 			written += Serialization::WriteObject(stream, static_cast<uint64_t>(0));
 		}
 		return written;
@@ -91,31 +124,6 @@ namespace kxf
 			return value->IsEmpty();
 		}
 		return false;
-	}
-	size_t EventID::GetHash() const noexcept
-	{
-		if (auto value = std::get_if<int64_t>(&m_ID))
-		{
-			if (*value != 0)
-			{
-				return std::hash<int64_t>()(*value);
-			}
-		}
-		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
-		{
-			if (!value->IsNull())
-			{
-				return std::hash<UniversallyUniqueID>()(*value);
-			}
-		}
-		else if (auto value = std::get_if<String>(&m_ID))
-		{
-			if (!value->IsEmpty())
-			{
-				return std::hash<String>()(*value);
-			}
-		}
-		return 0;
 	}
 
 	int64_t EventID::AsInt() const noexcept
