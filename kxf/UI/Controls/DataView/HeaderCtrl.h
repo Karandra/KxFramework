@@ -31,7 +31,7 @@ namespace kxf::UI::DataView
 
 		private:
 			View* m_View = nullptr;
-			HWND m_HeaderCtrlHandle = nullptr;
+			void* m_HeaderCtrlHandle = nullptr;
 			int m_ScrollOffset = 0;
 
 			std::unique_ptr<GDIImageList> m_ImageList;
@@ -40,7 +40,7 @@ namespace kxf::UI::DataView
 			bool m_UpdateColumns = false;
 
 		private:
-			HWND GetHeaderCtrlHandle() const;
+			void* GetHeaderCtrlHandle() const;
 			void DoSetSize(int x, int y, int width, int height, int sizeFlags) override;
 			void ScrollWidget(int dx);
 

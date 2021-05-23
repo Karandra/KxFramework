@@ -47,7 +47,7 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	HWND HeaderCtrl::GetHeaderCtrlHandle() const
+	void* HeaderCtrl::GetHeaderCtrlHandle() const
 	{
 		return m_HeaderCtrlHandle;
 	}
@@ -228,7 +228,7 @@ namespace kxf::UI::DataView
 			if (!m_ImageList)
 			{
 				m_ImageList = std::make_unique<GDIImageList>(bitmap.GetSize());
-				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
+				Header_SetImageList(reinterpret_cast<HWND>(GetHeaderCtrlHandle()), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);
 		}
@@ -314,7 +314,7 @@ namespace kxf::UI::DataView
 			{
 				HDITEMW headerItem = {};
 				headerItem.mask = HDI_LPARAM;
-				Header_GetItem(GetHeaderCtrlHandle(), header->iItem, &headerItem);
+				Header_GetItem(reinterpret_cast<HWND>(GetHeaderCtrlHandle()), header->iItem, &headerItem);
 
 				return reinterpret_cast<Column*>(headerItem.lParam);
 			}
@@ -586,10 +586,10 @@ namespace kxf::UI::DataView
 		if (m_HeaderCtrlHandle)
 		{
 			// First delete all old columns
-			const size_t oldItemsCount = Header_GetItemCount(m_HeaderCtrlHandle);
+			const size_t oldItemsCount = Header_GetItemCount(reinterpret_cast<HWND>(m_HeaderCtrlHandle));
 			for (size_t i = 0; i < oldItemsCount; i++)
 			{
-				Header_DeleteItem(m_HeaderCtrlHandle, 0);
+				Header_DeleteItem(reinterpret_cast<HWND>(m_HeaderCtrlHandle), 0);
 			}
 
 			// Clear image list
@@ -607,7 +607,7 @@ namespace kxf::UI::DataView
 			{
 				HDITEMW item = {};
 				DoMakeItem(item, *column);
-				Header_InsertItem(m_HeaderCtrlHandle, index, &item);
+				Header_InsertItem(reinterpret_cast<HWND>(m_HeaderCtrlHandle), index, &item);
 				index++;
 
 				if (!hasResizableColumns)
@@ -639,7 +639,7 @@ namespace kxf::UI::DataView
 	Rect HeaderCtrl::GetDropdownRect(size_t index) const
 	{
 		RECT rect = {};
-		Header_GetItemDropDownRect(GetHeaderCtrlHandle(), index, &rect);
+		Header_GetItemDropDownRect(reinterpret_cast<HWND>(GetHeaderCtrlHandle()), index, &rect);
 		return Utility::FromWindowsRect(rect);
 	}
 	Rect HeaderCtrl::GetDropdownRect(const Column& column) const

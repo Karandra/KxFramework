@@ -10,6 +10,8 @@
 #include "kxf/UI/IGraphicsRendererAwareWidget.h"
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
+#include <wx/dataobj.h>
+#include <wx/sizer.h>
 
 namespace kxf::UI
 {

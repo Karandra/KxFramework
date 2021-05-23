@@ -2,7 +2,6 @@
 #include "kxf/System/Common.h"
 
 #include "kxf/System/COM.h"
-#include "kxf/System/ErrorCode.h"
 #include "kxf/System/ShellLink.h"
 #include "kxf/System/ShellFileType.h"
 #include "kxf/System/ShellFileTypeInfo.h"
@@ -17,7 +16,6 @@
 #include "kxf/System/ExecutableVersionResource.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/Registry.h"
-#include "kxf/System/SharedMemory.h"
 #include "kxf/System/SystemProcess.h"
 #include "kxf/System/TaskScheduler.h"
 #include "kxf/System/UserName.h"

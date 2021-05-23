@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "ColumnID.h"
 #include <kxf/RTTI.hpp>
+#include <wx/recguard.h>
 
 namespace kxf::UI::DataView
 {

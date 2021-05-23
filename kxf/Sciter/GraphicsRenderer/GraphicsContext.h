@@ -3,6 +3,7 @@
 #include "kxf/Sciter/Utility/HandleWrapper.h"
 #include "kxf/Drawing/GDIRenderer/GDIPen.h"
 #include "kxf/Drawing/GDIRenderer/GDIBrush.h"
+#include <wx/graphics.h>
 
 namespace kxf::Sciter
 {
