@@ -57,6 +57,10 @@ namespace kxf::IPC::Private
 			{
 				static_assert((std::is_default_constructible_v<Args> && ...), "All types must be default constructible");
 
+				// We are *required* to deserialize parameters in direct order (0, 1, 2, ...) and 'std::initializer_list'
+				// does exactly that unlike construction of 'std::tuple<Args...>' which construct types from last to first
+				// (..., 2, 1, 0). In either case we need to default construct the types to deserialize them, so it's not an
+				// issue anyway.
 				std::tuple<Args...> parameters;
 				std::initializer_list<uint64_t> list{Serialization::ReadObject(stream, std::get<t_Sequence>(parameters)) ...};
 
