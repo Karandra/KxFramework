@@ -203,27 +203,33 @@ namespace kxf
 	}
 	IInputStream& NativeFileStream::Read(void* buffer, size_t size)
 	{
-		m_LastRead = {};
-
-		DWORD lastRead = 0;
-		if (::ReadFile(m_Handle, buffer, size, &lastRead, nullptr))
+		if (buffer)
 		{
-			if (lastRead == 0 && size != 0 && GetOffsetByHandle(m_Handle) == GetSizeByHandle(m_Handle))
+			DWORD lastRead = 0;
+			if (::ReadFile(m_Handle, buffer, size, &lastRead, nullptr))
 			{
-				m_LastError = ERROR_HANDLE_EOF;
+				if (lastRead == 0 && size != 0 && GetOffsetByHandle(m_Handle) == GetSizeByHandle(m_Handle))
+				{
+					m_LastError = ERROR_HANDLE_EOF;
+				}
+				else
+				{
+					m_LastError = Win32Error::Success();
+				}
 			}
 			else
 			{
-				m_LastRead = lastRead;
-				m_LastError = Win32Error::Success();
+				m_LastError = Win32Error::GetLastError();
 			}
+
+			m_LastRead = lastRead;
+			m_StreamOffset = GetOffsetByHandle(m_Handle);
 		}
 		else
 		{
-			m_LastError = Win32Error::GetLastError();
+			m_LastRead = {};
+			m_LastError = ERROR_INVALID_PARAMETER;
 		}
-		m_StreamOffset = GetOffsetByHandle(m_Handle);
-
 		return *this;
 	}
 
@@ -240,20 +246,26 @@ namespace kxf
 	// IOutputStream
 	IOutputStream& NativeFileStream::Write(const void* buffer, size_t size)
 	{
-		m_LastWrite = {};
-
-		DWORD lastWrite = 0;
-		if (::WriteFile(m_Handle, buffer, size, &lastWrite, nullptr))
+		if (buffer)
 		{
+			DWORD lastWrite = 0;
+			if (::WriteFile(m_Handle, buffer, size, &lastWrite, nullptr))
+			{
+				m_LastError = Win32Error::Success();
+			}
+			else
+			{
+				m_LastError = Win32Error::GetLastError();
+			}
+
 			m_LastWrite = lastWrite;
-			m_LastError = Win32Error::Success();
+			m_StreamOffset = GetOffsetByHandle(m_Handle);
 		}
 		else
 		{
-			m_LastError = Win32Error::GetLastError();
+			m_LastWrite = {};
+			m_LastError = ERROR_INVALID_PARAMETER;
 		}
-		m_StreamOffset = GetOffsetByHandle(m_Handle);
-
 		return *this;
 	}
 	StreamOffset NativeFileStream::TellO() const
