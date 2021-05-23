@@ -75,6 +75,7 @@
 #undef GetCurrentDirectory
 #undef SetCurrentDirectory
 #undef SetPort
+#undef CreateFont
 
 #ifdef ZeroMemory
 #undef ZeroMemory
