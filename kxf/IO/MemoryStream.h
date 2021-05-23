@@ -20,10 +20,10 @@ namespace kxf
 			StreamError m_LastError = StreamErrorCode::Success;
 
 		private:
-			void ResetState()
+			void ResetState(StreamErrorCode errorCode = StreamErrorCode::Success)
 			{
 				m_LastRead = {};
-				m_LastError = StreamErrorCode::Success;
+				m_LastError = errorCode;
 				m_StreamBuffer.Rewind();
 			}
 
@@ -132,7 +132,7 @@ namespace kxf
 			// IMemoryStream
 			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
-				ResetState();
+				ResetState(StreamErrorCode::EndOfStream);
 				return std::move(m_StreamBuffer);
 			}
 			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
@@ -180,10 +180,10 @@ namespace kxf
 			StreamError m_LastError = StreamErrorCode::Success;
 
 		private:
-			void ResetState()
+			void ResetState(StreamErrorCode errorCode = StreamErrorCode::Success)
 			{
 				m_LastWrite = {};
-				m_LastError = StreamErrorCode::Success;
+				m_LastError = errorCode;
 				m_StreamBuffer.Rewind();
 			}
 
@@ -280,7 +280,7 @@ namespace kxf
 			// IMemoryStream
 			MemoryStreamBuffer DetachStreamBuffer() noexcept override
 			{
-				ResetState();
+				ResetState(StreamErrorCode::EndOfStream);
 				return std::move(m_StreamBuffer);
 			}
 			void AttachStreamBuffer(MemoryStreamBuffer streamBuffer) noexcept override
