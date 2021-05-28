@@ -1,13 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/General/String.h"
-#include <tuple>
-
-namespace kxf
-{
-	class MemoryInputStream;
-	class MemoryOutputStream;
-}
+#include "kxf/IO/MemoryStream.h"
 
 namespace kxf::IPC
 {
@@ -35,6 +29,9 @@ namespace kxf
 				m_Protection = MemoryProtection::None;
 			}
 
+			MemoryInputStream DoGetInputStream(size_t size, bool unchecked = false) const noexcept;
+			MemoryOutputStream DoGetOutputStream(size_t size, bool unchecked = false) noexcept;
+
 		public:
 			SharedMemoryBuffer() noexcept = default;
 			SharedMemoryBuffer(SharedMemoryBuffer&& other) noexcept
@@ -50,7 +47,7 @@ namespace kxf
 		public:
 			bool IsNull() const noexcept
 			{
-				return !m_Handle || !m_Buffer || m_Size == 0;
+				return m_Handle == nullptr || m_Buffer == nullptr || m_Size == 0;
 			}
 
 			void Free() noexcept
@@ -137,8 +134,23 @@ namespace kxf
 			}
 
 		public:
-			MemoryInputStream GetInputStream() const;
-			MemoryOutputStream GetOutputStream();
+			MemoryInputStream GetInputStream(size_t maxSize = std::numeric_limits<size_t>::max()) const noexcept
+			{
+				return DoGetInputStream(std::min(m_Size, maxSize));
+			}
+			MemoryInputStream GetInputStreamUnchecked(size_t size) const noexcept
+			{
+				return DoGetInputStream(size, true);
+			}
+
+			MemoryOutputStream GetOutputStream(size_t maxSize = std::numeric_limits<size_t>::max()) noexcept
+			{
+				return DoGetOutputStream(std::min(m_Size, maxSize));
+			}
+			MemoryOutputStream GetOutputStreamUnchecked(size_t size) noexcept
+			{
+				return DoGetOutputStream(size, true);
+			}
 
 		public:
 			explicit operator bool() const noexcept

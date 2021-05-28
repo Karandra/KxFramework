@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "SharedMemory.h"
 #include <Windows.h>
-#include "kxf/IO/MemoryStream.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/System/UndefWindows.h"
 #include "kxf/Utility/Memory.h"
@@ -113,25 +112,25 @@ namespace kxf::IPC
 
 namespace kxf
 {
+	MemoryInputStream SharedMemoryBuffer::DoGetInputStream(size_t size, bool unchecked) const noexcept
+	{
+		if ((unchecked || m_Buffer) && m_Protection.Contains(MemoryProtection::Read))
+		{
+			return MemoryInputStream(m_Buffer, size);
+		}
+		return {};
+	}
+	MemoryOutputStream SharedMemoryBuffer::DoGetOutputStream(size_t size, bool unchecked) noexcept
+	{
+		if ((unchecked || m_Buffer) && m_Protection.Contains(MemoryProtection::Write))
+		{
+			return MemoryOutputStream(m_Buffer, size);
+		}
+		return {};
+	}
+
 	void SharedMemoryBuffer::ZeroBuffer() noexcept
 	{
 		Utility::SecureZeroMemory(m_Buffer, m_Size);
-	}
-
-	MemoryInputStream SharedMemoryBuffer::GetInputStream() const
-	{
-		if (!IsNull() && m_Protection.Contains(MemoryProtection::Read))
-		{
-			return MemoryInputStream(m_Buffer, m_Size);
-		}
-		return {};
-	}
-	MemoryOutputStream SharedMemoryBuffer::GetOutputStream()
-	{
-		if (!IsNull() && m_Protection.Contains(MemoryProtection::Write))
-		{
-			return MemoryOutputStream(m_Buffer, m_Size);
-		}
-		return {};
 	}
 }
