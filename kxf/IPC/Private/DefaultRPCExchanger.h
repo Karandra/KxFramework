@@ -11,6 +11,7 @@
 
 namespace kxf
 {
+	class IThreadPool;
 	class DefaultRPCEvent;
 	class DefaultRPCProcedure;
 }
@@ -25,7 +26,8 @@ namespace kxf
 			Mutex m_SessionMutex;
 			SharedMemoryBuffer m_ControlBuffer;
 			UniversallyUniqueID m_SessionID;
-			KernelObjectNamespace m_KernelObjectNamespace = KernelObjectNamespace::None;
+			FlagSet<RPCExchangeFlag> m_ExchangeFlags;
+			KernelObjectNamespace m_KernelScope = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
 			DefaultRPCExchangerWindow m_ReceivingWindow;
@@ -43,14 +45,15 @@ namespace kxf
 			String GetResultBufferName() const;
 			String GetSessionMutexName() const;
 
-			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns);
+			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags);
 			void OnTerminate();
 
 		public:
 			virtual void OnDataRecieved(IInputStream& stream) = 0;
-			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event);
+			virtual bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) = 0;
+			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const UniversallyUniqueID& clientID = {});
 
-			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer);
+			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
 	};
 }
 
@@ -59,6 +62,9 @@ namespace kxf
 	class DefaultRPCProcedure final
 	{
 		friend struct BinarySerializer<DefaultRPCProcedure>;
+		friend class DefaultRPCExchanger;
+		friend class DefaultRPCClient;
+		friend class DefaultRPCServer;
 
 		public:
 			static constexpr uint32_t GetFormatVersion() noexcept
@@ -69,6 +75,7 @@ namespace kxf
 		private:
 			uint32_t m_Version = GetFormatVersion();
 			EventID m_ProcedureID;
+			UniversallyUniqueID m_ClientID;
 			void* m_OriginHandle = nullptr;
 			uint32_t m_ParametersCount = 0;
 			bool m_HasResult = false;
@@ -116,6 +123,15 @@ namespace kxf
 				return m_OriginHandle;
 			}
 
+			UniversallyUniqueID GetClientID() const
+			{
+				return m_ClientID;
+			}
+			void SetClientID(const UniversallyUniqueID& clientID)
+			{
+				m_ClientID = clientID;
+			}
+
 		public:
 			explicit operator bool() const noexcept
 			{
@@ -137,6 +153,7 @@ namespace kxf
 		{
 			return Serialization::WriteObject(stream, value.m_Version) +
 				Serialization::WriteObject(stream, value.m_ProcedureID) +
+				Serialization::WriteObject(stream, value.m_ClientID) +
 				Serialization::WriteObject(stream, value.m_OriginHandle) +
 				Serialization::WriteObject(stream, value.m_ParametersCount) +
 				Serialization::WriteObject(stream, value.m_HasResult);
@@ -153,6 +170,7 @@ namespace kxf
 			}
 
 			read += Serialization::ReadObject(stream, value.m_ProcedureID);
+			read += Serialization::ReadObject(stream, value.m_ClientID);
 			read += Serialization::ReadObject(stream, value.m_OriginHandle);
 			read += Serialization::ReadObject(stream, value.m_ParametersCount);
 			read += Serialization::ReadObject(stream, value.m_HasResult);

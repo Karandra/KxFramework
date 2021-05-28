@@ -8,9 +8,6 @@ namespace kxf
 {
 	class IRPCServer;
 	class IRPCClient;
-
-	class IInputStream;
-	class IOutputStream;
 }
 
 namespace kxf
@@ -20,11 +17,11 @@ namespace kxf
 		KxRTTI_DeclareIID(RPCEvent, {0x709fe4e1, 0xff7b, 0x4c2f, {0xb4, 0xce, 0xf5, 0xc3, 0x20, 0x7d, 0x55, 0xc9}});
 
 		public:
-			KxEVENT_MEMBER(RPCEvent, ServerStarted);
-			KxEVENT_MEMBER(RPCEvent, ServerTerminated);
+			KxEVENT_MEMBER_STRING(RPCEvent, ServerStarted);
+			KxEVENT_MEMBER_STRING(RPCEvent, ServerTerminated);
 
-			KxEVENT_MEMBER(RPCEvent, ClientConnected);
-			KxEVENT_MEMBER(RPCEvent, ClientDisconnected);
+			KxEVENT_MEMBER_STRING(RPCEvent, ClientConnected);
+			KxEVENT_MEMBER_STRING(RPCEvent, ClientDisconnected);
 
 		public:
 			RPCEvent() = default;
@@ -33,6 +30,7 @@ namespace kxf
 		public:
 			virtual IRPCServer* GetServer() const = 0;
 			virtual IRPCClient* GetClient() const = 0;
+			virtual UniversallyUniqueID GetClientID() const = 0;
 
 			virtual bool HasResult() const = 0;
 			virtual size_t GetParameterCount() const = 0;
@@ -50,7 +48,7 @@ namespace kxf
 			void SetResult(const TReturn& result)
 			{
 				MemoryOutputStream stream;
-				IPC::Private::SetResult(stream, result);
+				IPC::Private::SetProcedureResult(stream, result);
 
 				MemoryInputStream inputStream(stream);
 				RawSetResult(inputStream);

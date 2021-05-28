@@ -13,6 +13,8 @@ namespace kxf
 	class DefaultRPCEvent: public RPCEvent
 	{
 		friend class DefaultRPCExchanger;
+		friend class DefaultRPCClient;
+		friend class DefaultRPCServer;
 
 		private:
 			DefaultRPCProcedure m_Procedure;
@@ -29,12 +31,12 @@ namespace kxf
 
 		public:
 			DefaultRPCEvent() = default;
-			DefaultRPCEvent(DefaultRPCServer& server, DefaultRPCProcedure procedure = {})
-				:m_Procedure(std::move(procedure)), m_Server(&server)
+			DefaultRPCEvent(DefaultRPCServer& server)
+				:m_Server(&server)
 			{
 			}
-			DefaultRPCEvent(DefaultRPCClient& client, DefaultRPCProcedure procedure = {})
-				:m_Procedure(std::move(procedure)), m_Client(&client)
+			DefaultRPCEvent(DefaultRPCClient& client)
+				:m_Client(&client)
 			{
 			}
 
@@ -55,6 +57,10 @@ namespace kxf
 			// RPCEvent
 			IRPCServer* GetServer() const override;
 			IRPCClient* GetClient() const override;
+			UniversallyUniqueID GetClientID() const override
+			{
+				return m_Procedure.GetClientID();
+			}
 
 			bool HasResult() const override
 			{

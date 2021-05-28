@@ -21,24 +21,35 @@ namespace kxf
 		InvokeProcedure(eventID);
 	}
 
-	bool DefaultRPCClient::DoConnectToServer(KernelObjectNamespace ns, bool notify)
+	bool DefaultRPCClient::DoConnectToServer()
 	{
-		if (m_SessionMutex.Open(GetSessionMutexName(), ns) && m_ControlBuffer.Open(GetControlBufferName(), GetControlBufferSize(), MemoryProtection::Read, ns))
+		try
 		{
-			// Read control parameters
-			MemoryInputStream stream = m_ControlBuffer.GetInputStream();
-			Serialization::ReadObject(stream, m_ServerPID);
-			Serialization::ReadObject(stream, m_ServerHandle);
-
-			if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)) && m_ReceivingWindow.Create(m_SessionID))
+			if (m_SessionMutex.Open(GetSessionMutexName(), m_KernelScope) && m_ControlBuffer.Open(GetControlBufferName(), 0, MemoryProtection::Read, m_KernelScope))
 			{
-				if (notify)
+				// Read control parameters
+				const size_t initialControlBufferSize = GetControlBufferSize();
+				MemoryInputStream stream = m_ControlBuffer.GetInputStreamUnchecked(initialControlBufferSize);
+
+				uint64_t controlBufferSize = 0;
+				Serialization::ReadObject(stream, controlBufferSize);
+				if (controlBufferSize == initialControlBufferSize)
 				{
-					Notify(RPCEvent::EvtClientConnected);
-					NotifyServer(RPCEvent::EvtClientConnected);
+					Serialization::ReadObject(stream, m_ServerPID);
+					Serialization::ReadObject(stream, m_ServerHandle);
+
+					if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)) && m_ReceivingWindow.Create(m_SessionID))
+					{
+						Notify(RPCEvent::EvtClientConnected);
+						NotifyServer(RPCEvent::EvtClientConnected);
+						return true;
+					}
 				}
-				return true;
 			}
+		}
+		catch (const BinarySerializerException& e)
+		{
+			wxLogError("Serialization exception: %s", e.what());
 		}
 
 		DoDisconnectFromServer(false);
@@ -62,8 +73,15 @@ namespace kxf
 	// Private::DefaultRPCExchanger
 	void DefaultRPCClient::OnDataRecieved(IInputStream& stream)
 	{
-		DefaultRPCEvent event(*this);
-		DefaultRPCExchanger::OnDataRecievedCommon(stream, event);
+		if (m_SessionMutex)
+		{
+			DefaultRPCEvent event(*this);
+			DefaultRPCExchanger::OnDataRecievedCommon(stream, event, m_ClientID);
+		}
+	}
+	bool DefaultRPCClient::OnDataRecievedFilter(const DefaultRPCProcedure& procedure)
+	{
+		return procedure.m_OriginHandle == m_ServerHandle;
 	}
 
 	DefaultRPCClient::DefaultRPCClient()
@@ -81,15 +99,16 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCClient::ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns)
+	bool DefaultRPCClient::ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, const UniversallyUniqueID& clientID, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags )
 	{
 		if (!m_SessionMutex)
 		{
+			m_ClientID = clientID;
 			m_UserEvtHandler = &evtHandler;
 			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
 
-			OnInitialize(sessionID, m_ServiceEvtHandler, ns);
-			return DoConnectToServer(ns, true);
+			OnInitialize(sessionID, m_ServiceEvtHandler, std::move(threadPool), flags);
+			return DoConnectToServer();
 		}
 		return false;
 	}
@@ -103,6 +122,7 @@ namespace kxf
 		if (m_SessionMutex && procedureID)
 		{
 			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+			procedure.m_ClientID = m_ClientID;
 
 			MemoryOutputStream stream;
 			Serialization::WriteObject(stream, procedure);
@@ -112,6 +132,6 @@ namespace kxf
 			}
 			return SendData(m_ServerHandle, procedure, stream.GetStreamBuffer());
 		}
-		return NullInputStream::Get();
+		return {};
 	}
 }

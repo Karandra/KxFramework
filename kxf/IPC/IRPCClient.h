@@ -7,6 +7,7 @@ namespace kxf
 {
 	class IRPCServer;
 	class IEvtHandler;
+	class IThreadPool;
 }
 
 namespace kxf
@@ -17,8 +18,10 @@ namespace kxf
 
 		public:
 			virtual bool IsConnectedToServer() const = 0;
-			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) = 0;
+			virtual bool ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, const UniversallyUniqueID& clientID = {}, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) = 0;
 			virtual void DisconnectFromServer() = 0;
+			virtual UniversallyUniqueID GetSessionID() const = 0;
+			virtual UniversallyUniqueID GetClientID() const = 0;
 
 			virtual MemoryInputStream RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
 
@@ -30,7 +33,7 @@ namespace kxf
 				{
 					MemoryInputStream parametersInputStream(parametersStream.DetachStreamBuffer());
 					return RawInvokeProcedure(procedureID, parametersInputStream, parametersCount, hasResult);
-				}, procedureID, std::forward<Args>(arg)...);
+				}, std::forward<Args>(arg)...);
 			}
 	};
 }

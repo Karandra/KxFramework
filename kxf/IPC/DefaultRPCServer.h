@@ -5,25 +5,39 @@
 
 namespace kxf
 {
+	class DefaultRPCEvent;
+}
+
+namespace kxf
+{
 	class DefaultRPCServer: public RTTI::DynamicImplementation<DefaultRPCServer, IRPCServer>, public DefaultRPCExchanger
 	{
 		private:
 			EvtHandler m_ServiceEvtHandler;
 			IEvtHandler* m_UserEvtHandler = nullptr;
 
-			std::set<void*> m_Clients;
+			std::unordered_map<UniversallyUniqueID, void*> m_UniqueClients;
+			std::unordered_set<void*> m_AnonymousClients;
 
 		private:
 			void Notify(const EventID& eventID);
 			void NotifyClients(const EventID& eventID);
-			void CleanupClients();
 
-			bool DoStartServer(KernelObjectNamespace ns, bool notify = false);
-			void DoTerminateServer(bool notify = false);
+			bool DoStartServer();
+			void DoTerminateServer(bool notify);
+			MemoryInputStream DoInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult);
+
+			bool HasAnyClients() const noexcept
+			{
+				return m_UniqueClients.size() != 0 || m_AnonymousClients.size() != 0;
+			}
+			void HandleClientEvent(DefaultRPCEvent& event, bool add);
+			void CleanupClients();
 
 		protected:
 			// Private::DefaultRPCExchanger
 			void OnDataRecieved(IInputStream& stream) override;
+			bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) override;
 
 		public:
 			DefaultRPCServer();
@@ -32,9 +46,14 @@ namespace kxf
 		public:
 			// IRPCServer
 			bool IsServerRunning() const override;
-			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) override;
+			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) override;
 			void TerminateServer() override;
+			UniversallyUniqueID GetSessionID() const override
+			{
+				return m_SessionID;
+			}
 
+			MemoryInputStream RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
 			void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;
 	};
 }

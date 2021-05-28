@@ -6,8 +6,26 @@
 
 namespace kxf::IPC::Private
 {
+	template<class TReturn>
+	TReturn GetProcedureResult(IInputStream& stream)
+	{
+		static_assert(std::is_default_constructible_v<TReturn>, "TReturn must be default constructible");
+
+		TReturn result;
+		Serialization::ReadObject(stream, result);
+		return result;
+	}
+
+	template<class TReturn>
+	uint64_t SetProcedureResult(IOutputStream& stream, const TReturn& result)
+	{
+		static_assert(!std::is_void_v<TReturn>, "TReturn must not be void");
+
+		return Serialization::WriteObject(stream, result);
+	}
+
 	template<class TReturn = void, class TFunc, class... Args>
-	TReturn InvokeProcedure(TFunc&& func, const EventID& procedureID, Args&&... arg)
+	TReturn InvokeProcedure(TFunc&& func, Args&&... arg)
 	{
 		// Serialize input parameters
 		MemoryOutputStream parametersStream;
@@ -20,32 +38,10 @@ namespace kxf::IPC::Private
 		}
 		else
 		{
-			MemoryInputStream resultStream = std::invoke(func, parametersStream, list.size(), !std::is_void_v<TReturn>);
-			static_assert(std::is_default_constructible_v<TReturn>, "TReturn must be default constructible");
-
 			// Handle return value if non-void
-			TReturn result;
-			Serialization::ReadObject(resultStream, result);
-			return result;
+			MemoryInputStream resultStream = std::invoke(func, parametersStream, list.size(), !std::is_void_v<TReturn>);
+			return GetProcedureResult<TReturn>(resultStream);
 		}
-	}
-
-	template<class TReturn>
-	TReturn GetProcedureResult(IInputStream& stream)
-	{
-		static_assert(std::is_default_constructible_v<TReturn>, "TReturn must be default constructible");
-
-		TReturn result;
-		Serialization::ReadObject(stream, result);
-		return result;
-	}
-
-	template<class TReturn>
-	uint64_t SetResult(IOutputStream& stream, const TReturn& result)
-	{
-		static_assert(!std::is_void_v<TReturn>, "TReturn must not be void");
-
-		return Serialization::WriteObject(stream, result);
 	}
 
 	template<class... Args>

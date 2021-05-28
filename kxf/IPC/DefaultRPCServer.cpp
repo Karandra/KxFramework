@@ -18,13 +18,65 @@ namespace kxf
 	{
 		BroadcastProcedure(eventID);
 	}
+
+	void DefaultRPCServer::HandleClientEvent(DefaultRPCEvent& event, bool add)
+	{
+		const auto& procedure = event.GetProcedure();
+		if (auto id = procedure.GetClientID())
+		{
+			if (add)
+			{
+				if (m_UniqueClients.emplace(id, procedure.GetOriginHandle()).second)
+				{
+					event.Skip();
+				}
+			}
+			else
+			{
+				if (m_UniqueClients.erase(id) != 0)
+				{
+					event.Skip();
+				}
+			}
+		}
+		else if (void* handle = procedure.GetOriginHandle())
+		{
+			if (add)
+			{
+				if (m_AnonymousClients.emplace(handle).second)
+				{
+					event.Skip();
+				}
+			}
+			else
+			{
+				if (m_AnonymousClients.erase(handle) != 0)
+				{
+					event.Skip();
+				}
+			}
+		}
+	}
 	void DefaultRPCServer::CleanupClients()
 	{
-		for (auto it = m_Clients.begin(); it != m_Clients.end();)
+		// Remove any invalid clients
+		for (auto it = m_UniqueClients.begin(); it != m_UniqueClients.end();)
+		{
+			if (!::IsWindow(reinterpret_cast<HWND>(it->second)))
+			{
+				it = m_UniqueClients.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		for (auto it = m_AnonymousClients.begin(); it != m_AnonymousClients.end();)
 		{
 			if (!::IsWindow(reinterpret_cast<HWND>(*it)))
 			{
-				it = m_Clients.erase(it);
+				it = m_AnonymousClients.erase(it);
 			}
 			else
 			{
@@ -33,28 +85,34 @@ namespace kxf
 		}
 	}
 
-	bool DefaultRPCServer::DoStartServer(KernelObjectNamespace ns, bool notify)
+	bool DefaultRPCServer::DoStartServer()
 	{
-		if (m_SessionMutex.CreateAcquired(GetSessionMutexName(), ns) && m_ControlBuffer.Allocate(GetControlBufferSize(), MemoryProtection::RW, GetControlBufferName(), ns))
+		try
 		{
-			if (m_ReceivingWindow.Create(m_SessionID))
+			size_t controlBufferSize = GetControlBufferSize();
+			if (m_SessionMutex.CreateAcquired(GetSessionMutexName(), m_KernelScope) && m_ControlBuffer.Allocate(controlBufferSize, MemoryProtection::RW, GetControlBufferName(), m_KernelScope))
 			{
-				// Write out everything that the client will need to connect to the server
-				MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
-				Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
-				Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow.GetHandle()));
-
-				// Notify server started
-				if (notify)
+				if (m_ReceivingWindow.Create(m_SessionID))
 				{
+					// Write out everything that the client will need to connect to the server
+					MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
+					Serialization::WriteObject(stream, static_cast<uint64_t>(controlBufferSize));
+					Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
+					Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow.GetHandle()));
+
+					// Notify server started
 					Notify(RPCEvent::EvtServerStarted);
 					NotifyClients(RPCEvent::EvtServerStarted);
+					return true;
 				}
-				return true;
 			}
 		}
+		catch (const BinarySerializerException& e)
+		{
+			wxLogError("Serialization exception: %s", e.what());
+		}
 
-		DoTerminateServer();
+		DoTerminateServer(false);
 		return false;
 	}
 	void DefaultRPCServer::DoTerminateServer(bool notify)
@@ -68,25 +126,96 @@ namespace kxf
 		OnTerminate();
 		m_UserEvtHandler = nullptr;
 		m_ServiceEvtHandler.SetNextHandler(nullptr);
-		m_Clients.clear();
+		m_UniqueClients.clear();
+		m_AnonymousClients.clear();
+	}
+	MemoryInputStream DefaultRPCServer::DoInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	{
+		CleanupClients();
+
+		if (m_SessionMutex && procedureID)
+		{
+			auto PrepareData = [&](IOutputStream& stream)
+			{
+				DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+
+				Serialization::WriteObject(stream, procedure);
+				if (procedure.HasParameters())
+				{
+					stream.Write(parameters);
+				}
+
+				return procedure;
+			};
+
+			if (clientID)
+			{
+				auto it = m_UniqueClients.find(clientID);
+				if (it != m_UniqueClients.end())
+				{
+					MemoryOutputStream stream;
+					auto procedure = PrepareData(stream);
+
+					return SendData(it->second, procedure, stream.GetStreamBuffer());
+				}
+			}
+			else
+			{
+				MemoryOutputStream stream;
+				auto procedure = PrepareData(stream);
+
+				for (auto&& [id, handle]: m_UniqueClients)
+				{
+					SendData(handle, procedure, stream.GetStreamBuffer(), true);
+				}
+				for (void* handle: m_AnonymousClients)
+				{
+					SendData(handle, procedure, stream.GetStreamBuffer(), true);
+				}
+			}
+		}
+		return {};
 	}
 
 	// Private::DefaultRPCExchanger
 	void DefaultRPCServer::OnDataRecieved(IInputStream& stream)
 	{
-		DefaultRPCEvent event(*this);
-		DefaultRPCExchanger::OnDataRecievedCommon(stream, event);
+		if (m_SessionMutex)
+		{
+			DefaultRPCEvent event(*this);
+			DefaultRPCExchanger::OnDataRecievedCommon(stream, event);
+		}
+	}
+	bool DefaultRPCServer::OnDataRecievedFilter(const DefaultRPCProcedure& procedure)
+	{
+		if (procedure.m_ClientID)
+		{
+			auto it = m_UniqueClients.find(procedure.m_ClientID);
+			if (it != m_UniqueClients.end())
+			{
+				return it->second == procedure.m_OriginHandle;
+			}
+			else
+			{
+				return procedure.m_ProcedureID == RPCEvent::EvtClientConnected;
+			}
+		}
+		else
+		{
+			return m_AnonymousClients.count(procedure.m_OriginHandle) != 0 || procedure.m_ProcedureID == RPCEvent::EvtClientConnected;
+		}
+		return false;
 	}
 
 	DefaultRPCServer::DefaultRPCServer()
 	{
 		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientConnected, [&](RPCEvent& event)
 		{
-			m_Clients.emplace(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
-		}, BindEventFlag::AlwaysSkip);
+			HandleClientEvent(static_cast<DefaultRPCEvent&>(event), true);
+		});
 		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientDisconnected, [&](RPCEvent& event)
 		{
-			m_Clients.erase(static_cast<DefaultRPCEvent&>(event).GetProcedure().GetOriginHandle());
+			HandleClientEvent(static_cast<DefaultRPCEvent&>(event), false);
 		}, BindEventFlag::AlwaysSkip);
 	}
 	DefaultRPCServer::~DefaultRPCServer()
@@ -99,15 +228,15 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCServer::StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns)
+	bool DefaultRPCServer::StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
 	{
 		if (!m_SessionMutex)
 		{
 			m_UserEvtHandler = &evtHandler;
 			m_ServiceEvtHandler.SetNextHandler(&evtHandler);
 
-			OnInitialize(sessionID, m_ServiceEvtHandler, ns);
-			return DoStartServer(ns, true);
+			OnInitialize(sessionID, m_ServiceEvtHandler, std::move(threadPool), flags);
+			return DoStartServer();
 		}
 		return false;
 	}
@@ -116,25 +245,16 @@ namespace kxf
 		DoTerminateServer(true);
 	}
 
+	MemoryInputStream DefaultRPCServer::RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	{
+		if (clientID)
+		{
+			return DoInvokeProcedure(clientID, procedureID, parameters, parametersCount, hasResult);
+		}
+		return {};
+	}
 	void DefaultRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
 	{
-		CleanupClients();
-
-		if (!m_Clients.empty() && m_SessionMutex && procedureID)
-		{
-			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount);
-
-			MemoryOutputStream stream;
-			Serialization::WriteObject(stream, procedure);
-			if (procedure.HasParameters())
-			{
-				stream.Write(parameters);
-			}
-
-			for (void* handle: m_Clients)
-			{
-				SendData(handle, procedure, stream.GetStreamBuffer());
-			}
-		}
+		DoInvokeProcedure({}, procedureID, parameters, parametersCount, false);
 	}
 }

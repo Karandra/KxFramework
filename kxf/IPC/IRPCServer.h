@@ -7,6 +7,7 @@ namespace kxf
 {
 	class IRPCClient;
 	class IEvtHandler;
+	class IThreadPool;
 }
 
 namespace kxf
@@ -17,12 +18,24 @@ namespace kxf
 
 		public:
 			virtual bool IsServerRunning() const = 0;
-			virtual bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, KernelObjectNamespace ns = KernelObjectNamespace::Local) = 0;
+			virtual bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) = 0;
 			virtual void TerminateServer() = 0;
+			virtual UniversallyUniqueID GetSessionID() const = 0;
 
+			virtual MemoryInputStream RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
 			virtual void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) = 0;
 
 		public:
+			template<class TReturn = void, class... Args>
+			TReturn InvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, Args&&... arg)
+			{
+				return IPC::Private::InvokeProcedure<TReturn>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult)
+				{
+					MemoryInputStream parametersInputStream(parametersStream.DetachStreamBuffer());
+					return RawInvokeProcedure(clientID, procedureID, parametersInputStream, parametersCount, hasResult);
+				}, std::forward<Args>(arg)...);
+			}
+
 			template<class... Args>
 			void BroadcastProcedure(const EventID& procedureID, Args&&... arg)
 			{
@@ -30,7 +43,7 @@ namespace kxf
 				{
 					MemoryInputStream parametersInputStream(parametersStream.DetachStreamBuffer());
 					RawBroadcastProcedure(procedureID, parametersInputStream, parametersCount);
-				}, procedureID, std::forward<Args>(arg)...);
+				}, std::forward<Args>(arg)...);
 			}
 	};
 }
