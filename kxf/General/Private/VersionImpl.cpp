@@ -15,7 +15,7 @@ namespace
 
 namespace kxf::Private::Version
 {
-	Cmp Compare(const kxf::Version& left, const kxf::Version& right)
+	std::strong_ordering Compare(const kxf::Version& left, const kxf::Version& right)
 	{
 		if (left.GetType() == right.GetType())
 		{
@@ -28,27 +28,20 @@ namespace kxf::Private::Version
 
 					for (size_t i = 0; i < std::max(left.GetComponentCount(), right.GetComponentCount()); i++)
 					{
-						auto left = itemsLeft[i].m_Numeric;
-						auto right = itemsRight[i].m_Numeric;
-
-						if (left < right)
+						if (auto cmp = itemsLeft[i].m_Numeric <=> itemsRight[i].m_Numeric; cmp != 0)
 						{
-							return Cmp::LT;
-						}
-						else if (left > right)
-						{
-							return Cmp::GT;
+							return cmp;
 						}
 					}
-					return Cmp::EQ;
+					return std::strong_ordering::equal;
 				}
 				case VersionType::DateTime:
 				{
-					return CompareValues(left.ToDateTime(), right.ToDateTime());
+					return left.ToDateTime() <=> right.ToDateTime();
 				}
 			};
 		}
-		return Cmp::Invalid;
+		return left.GetType() <=> right.GetType();
 	}
 
 	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount)

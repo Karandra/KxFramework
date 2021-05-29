@@ -93,43 +93,20 @@ namespace kxf
 			}
 
 		public:
+			constexpr auto operator<=>(const UniversallyUniqueID&) const noexcept = default;
 			constexpr bool operator==(const UniversallyUniqueID& other) const noexcept
 			{
 				return m_ID == other.m_ID;
 			}
-			constexpr bool operator!=(const UniversallyUniqueID& other) const noexcept
-			{
-				return m_ID != other.m_ID;
-			}
-			bool operator<(const UniversallyUniqueID& other) const noexcept
-			{
-				return *this < other.m_ID;
-			}
-			bool operator<=(const UniversallyUniqueID& other) const noexcept
-			{
-				return *this <= other.m_ID;
-			}
-			bool operator>(const UniversallyUniqueID& other) const noexcept
-			{
-				return *this > other.m_ID;
-			}
-			bool operator>=(const UniversallyUniqueID& other) const noexcept
-			{
-				return *this >= other.m_ID;
-			}
 
+			constexpr auto operator<=>(const NativeUUID& other) const noexcept
+			{
+				return m_ID <=> other;
+			}
 			constexpr bool operator==(const NativeUUID& other) const noexcept
 			{
 				return m_ID == other;
 			}
-			constexpr bool operator!=(const NativeUUID& other) const noexcept
-			{
-				return m_ID != other;
-			}
-			bool operator<(const NativeUUID& other) const noexcept;
-			bool operator<=(const NativeUUID& other) const noexcept;
-			bool operator>(const NativeUUID& other) const noexcept;
-			bool operator>=(const NativeUUID& other) const noexcept;
 	};
 }
 

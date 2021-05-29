@@ -35,34 +35,10 @@ namespace kxf
 				return IsNull();
 			}
 
+			constexpr auto operator<=>(const ColorDepth&) const noexcept = default;
 			constexpr int operator*() const noexcept
 			{
 				return m_Value;
-			}
-
-			constexpr bool operator==(const ColorDepth& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			constexpr bool operator!=(const ColorDepth& other) const noexcept
-			{
-				return m_Value != other.m_Value;
-			}
-			constexpr bool operator<(const ColorDepth& other) const noexcept
-			{
-				return m_Value < other.m_Value;
-			}
-			constexpr bool operator<=(const ColorDepth& other) const noexcept
-			{
-				return m_Value <= other.m_Value;
-			}
-			constexpr bool operator>(const ColorDepth& other) const noexcept
-			{
-				return m_Value > other.m_Value;
-			}
-			constexpr bool operator>=(const ColorDepth& other) const noexcept
-			{
-				return m_Value >= other.m_Value;
 			}
 	};
 }

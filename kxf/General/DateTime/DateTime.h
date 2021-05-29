@@ -280,30 +280,13 @@ namespace kxf
 				return m_Value.IsBetween(left.m_Value, right.m_Value);
 			}
 
+			auto operator<=>(const DateTime& other) const noexcept
+			{
+				return GetValue() <=> other.GetValue();
+			}
 			bool operator==(const DateTime& other) const noexcept
 			{
-				return m_Value == other.m_Value;
-			}
-			bool operator!=(const DateTime& other) const noexcept
-			{
-				return m_Value != other.m_Value;
-			}
-
-			bool operator<(const DateTime& other) const noexcept
-			{
-				return m_Value < other.m_Value;
-			}
-			bool operator<=(const DateTime& other) const noexcept
-			{
-				return m_Value <= other.m_Value;
-			}
-			bool operator>(const DateTime& other) const noexcept
-			{
-				return m_Value > other.m_Value;
-			}
-			bool operator>=(const DateTime& other) const noexcept
-			{
-				return m_Value >= other.m_Value;
+				return GetValue() == other.GetValue();
 			}
 
 			// Arithmetics

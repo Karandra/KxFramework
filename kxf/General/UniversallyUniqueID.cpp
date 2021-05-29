@@ -40,12 +40,6 @@ namespace
 		return CastAs<::UUID>(std::forward<T>(uuid));
 	}
 
-	int Compare(const kxf::NativeUUID& left, const kxf::NativeUUID& right) noexcept
-	{
-		RPC_STATUS status = RPC_S_OK;
-		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
-	}
-
 	kxf::NativeUUID DoCreateFromString(const kxf::String& value) noexcept
 	{
 		using namespace kxf;
@@ -348,22 +342,5 @@ namespace kxf
 		std::array<uint8_t, 16> bytes;
 		std::memcpy(bytes.data(), &m_ID, std::size(bytes));
 		return bytes;
-	}
-
-	bool UniversallyUniqueID::operator<(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) < 0;
-	}
-	bool UniversallyUniqueID::operator<=(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) <= 0;
-	}
-	bool UniversallyUniqueID::operator>(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) > 0;
-	}
-	bool UniversallyUniqueID::operator>=(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) >= 0;
 	}
 }

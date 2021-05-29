@@ -81,7 +81,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxfPCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -567,7 +567,6 @@
     <ClInclude Include="kxf\General\IndexedEnum.h" />
     <ClInclude Include="kxf\General\Math.h" />
     <ClInclude Include="kxf\General\StdID.h" />
-    <ClInclude Include="kxf\General\MemorySpan.h" />
     <ClInclude Include="kxf\General\NativeUUID.h" />
     <ClInclude Include="kxf\General\Private\ExtraData.h" />
     <ClInclude Include="kxf\General\Private\String.h" />

@@ -147,9 +147,7 @@ namespace kxf
 			URI& operator=(URI&&) noexcept;
 
 			bool operator==(const URI& other) const noexcept;
-			bool operator!=(const URI& other) const noexcept;
 			bool operator==(const wxURI& other) const;
-			bool operator!=(const wxURI& other) const;
 
 			operator wxURI() const;
 	};

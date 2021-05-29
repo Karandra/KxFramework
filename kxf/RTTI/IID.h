@@ -51,19 +51,19 @@ namespace kxf
 				return m_ID.IsNull();
 			}
 
+			constexpr auto operator<=>(const IID&) const noexcept = default;
 			constexpr bool operator==(const IID& other) const noexcept
 			{
 				return m_ID == other.m_ID;
 			}
-			constexpr bool operator!=(const IID& other) const noexcept
-			{
-				return m_ID != other.m_ID;
-			}
 
-			constexpr IID& operator=(const NativeUUID& uuid) noexcept
+			constexpr auto operator<=>(const NativeUUID& other) const noexcept
 			{
-				m_ID = uuid;
-				return *this;
+				return m_ID <=> other;
+			}
+			constexpr bool operator==(const NativeUUID& other) const noexcept
+			{
+				return m_ID == other;
 			}
 	};
 }

@@ -204,10 +204,6 @@ namespace kxf
 				}
 				return true;
 			}
-			bool operator!=(const LocalizationItem& other) const noexcept
-			{
-				return !(*this == other);
-			}
 
 			LocalizationItem& operator=(const LocalizationItem&) = default;
 			LocalizationItem& operator=(LocalizationItem&&) noexcept = default;

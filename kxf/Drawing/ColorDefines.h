@@ -111,25 +111,38 @@ namespace kxf
 			}
 
 		public:
-			constexpr bool operator==(const PackedRGB& other) const noexcept
+			constexpr auto operator<=>(const PackedRGB& other) const noexcept
 			{
-				if (this != &other)
+				if constexpr(std::is_floating_point_v<T>)
 				{
-					if constexpr(std::is_floating_point_v<T>)
+					using namespace Utility;
+					if (AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue))
 					{
-						using namespace Utility;
-						return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
-					}
-					else
-					{
-						return Red == other.Red && Green == other.Green && Blue == other.Blue;
+						return std::partial_ordering::equivalent;
 					}
 				}
-				return true;
+
+				if (auto cmp = Red <=> other.Red; cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = Green <=> other.Green; cmp != 0)
+				{
+					return cmp;
+				}
+				return Blue <=> other.Blue;
 			}
-			constexpr bool operator!=(const PackedRGB& other) const noexcept
+			constexpr bool operator==(const PackedRGB& other) const noexcept
 			{
-				return !(*this == other);
+				if constexpr(std::is_floating_point_v<T>)
+				{
+					using namespace Utility;
+					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+				}
+				else
+				{
+					return Red == other.Red && Green == other.Green && Blue == other.Blue;
+				}
 			}
 	};
 
@@ -157,9 +170,9 @@ namespace kxf
 			}
 
 		public:
-			constexpr bool IsSameAs(const PackedRGB<T>& other) const noexcept
+			constexpr bool IsSameColorAs(const PackedRGB<T>& other) const noexcept
 			{
-				if constexpr(std::is_floating_point_v<T>)
+				if constexpr (std::is_floating_point_v<T>)
 				{
 					using namespace Utility;
 					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
@@ -169,7 +182,7 @@ namespace kxf
 					return Red == other.Red && Green == other.Green && Blue == other.Blue;
 				}
 			}
-			constexpr bool IsSameAs(const PackedRGBA& other) const noexcept
+			constexpr bool IsSameColorAs(const PackedRGBA& other) const noexcept
 			{
 				if (this != &other)
 				{
@@ -198,13 +211,42 @@ namespace kxf
 			}
 
 		public:
+			constexpr auto operator<=>(const PackedRGBA& other) const noexcept
+			{
+				if constexpr(std::is_floating_point_v<T>)
+				{
+					using namespace Utility;
+					if (AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue) && AlmostEqual(Alpha, other.Alpha))
+					{
+						return std::partial_ordering::equivalent;
+					}
+				}
+
+				if (auto cmp = Red <=> other.Red; cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = Green <=> other.Green; cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = Blue <=> other.Blue; cmp != 0)
+				{
+					return cmp;
+				}
+				return Alpha <=> other.Alpha;
+			}
 			constexpr bool operator==(const PackedRGBA& other) const noexcept
 			{
-				return IsSameAs(other);
-			}
-			constexpr bool operator!=(const PackedRGBA& other) const noexcept
-			{
-				return !(*this == other);
+				if constexpr(std::is_floating_point_v<T>)
+				{
+					using namespace Utility;
+					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue) && AlmostEqual(Alpha, other.Alpha);
+				}
+				else
+				{
+					return Red == other.Red && Green == other.Green && Blue == other.Blue && Alpha == other.Alpha;
+				}
 			}
 	};
 }

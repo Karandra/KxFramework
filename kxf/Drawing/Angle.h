@@ -85,6 +85,8 @@ namespace kxf
 				*this = FromNormalized(m_Value / n);
 				return *this;
 			}
+
+			auto operator<=>(const Angle&) const noexcept = default;
 	};
 }
 
@@ -98,17 +100,6 @@ namespace kxf
 	{
 		return Angle::FromNormalized(left.ToNormalized() - right.ToNormalized());
 	}
-
-	#pragma warning(push, 0)
-	#pragma warning(disable: 4005)
-
-	#define Kx_AngleCmpOp(op, T1, T2, cmp)				inline constexpr bool operator op(T1 x, T2 y) noexcept { return cmp(x, y, op); }
-	#define Kx_AngleCmp(left, right, op)				left.ToNormalized() op right.ToNormalized()
-	wxFOR_ALL_COMPARISONS_3(Kx_AngleCmpOp, const Angle&, const Angle&, Kx_AngleCmp);
-
-	#undef Kx_AngleCmp
-	#undef Kx_AngleCmpOp
-	#pragma warning(pop)
 }
 
 namespace kxf

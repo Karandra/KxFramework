@@ -202,14 +202,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			constexpr bool operator==(const FlagSet& other) const noexcept
-			{
-				return Equals(other);
-			}
-			constexpr bool operator!=(const FlagSet& other) const noexcept
-			{
-				return !Equals(other);
-			}
+			constexpr auto operator<=>(const FlagSet&) const noexcept = default;
 
 			constexpr FlagSet& operator=(const FlagSet&) noexcept = default;
 			constexpr FlagSet& operator=(FlagSet&&) noexcept = default;

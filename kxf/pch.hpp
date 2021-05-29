@@ -17,6 +17,7 @@
 #include <exception>
 #include <stdexcept>
 #include <utility>
+#include <compare>
 #include <tuple>
 
 // Often used wxWidgets headers

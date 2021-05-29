@@ -75,7 +75,7 @@ namespace kxf
 		{
 			case 0:
 			{
-				uint64_t value = 0;
+				int64_t value = 0;
 				read += Serialization::ReadObject(stream, value);
 				m_ID = value;
 

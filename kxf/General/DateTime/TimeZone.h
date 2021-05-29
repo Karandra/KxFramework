@@ -43,13 +43,6 @@ namespace kxf
 				return ToWxOffset();
 			}
 
-			bool operator==(const TimeZoneOffset& other) const noexcept
-			{
-				return m_Offset == other.m_Offset;
-			}
-			bool operator!=(const TimeZoneOffset& other) const noexcept
-			{
-				return !(*this == other);
-			}
+			auto operator<=>(const TimeZoneOffset&) const noexcept = default;
 	};
 }

@@ -94,30 +94,7 @@ namespace kxf::Private::Version
 
 namespace kxf::Private::Version
 {
-	enum class Cmp
-	{
-		LT = -1,
-		EQ = 0,
-		GT = 1,
-
-		Invalid = -2
-	};
-	
-	template<class T>
-	static Cmp CompareValues(const T& left, const T& right)
-	{
-		if (left > right)
-		{
-			return Cmp::GT;
-		}
-		else if (left < right)
-		{
-			return Cmp::LT;
-		}
-		return Cmp::EQ;
-	}
-
-	Cmp Compare(const kxf::Version& left, const kxf::Version& right);
+	std::strong_ordering Compare(const kxf::Version& left, const kxf::Version& right);
 
 	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount);
 	bool Parse(const String& source, DateTime& dateTime);

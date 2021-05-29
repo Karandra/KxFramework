@@ -200,30 +200,7 @@ namespace kxf
 
 		public:
 			// Comparison
-			constexpr bool operator==(const BinarySize& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			constexpr bool operator!=(const BinarySize& other) const noexcept
-			{
-				return m_Value != other.m_Value;
-			}
-			constexpr bool operator<(const BinarySize& other) const noexcept
-			{
-				return m_Value < other.m_Value;
-			}
-			constexpr bool operator<=(const BinarySize& other) const noexcept
-			{
-				return m_Value <= other.m_Value;
-			}
-			constexpr bool operator>(const BinarySize& other) const noexcept
-			{
-				return m_Value > other.m_Value;
-			}
-			constexpr bool operator>=(const BinarySize& other) const noexcept
-			{
-				return m_Value >= other.m_Value;
-			}
+			constexpr auto operator<=>(const BinarySize&) const noexcept = default;
 
 			// Arithmetics
 			constexpr BinarySize operator+(const BinarySize& other) const noexcept

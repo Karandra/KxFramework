@@ -499,9 +499,6 @@
     <ClInclude Include="kxf\General\Private\VersionImpl.h">
       <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\MemorySpan.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\Any.h">
       <Filter>kxf\General</Filter>
     </ClInclude>

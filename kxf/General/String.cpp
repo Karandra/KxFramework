@@ -53,18 +53,18 @@ namespace
 		return result;
 	}
 
-	int CompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
+	std::strong_ordering CompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
 		{
-			return kxf::String(left).MakeLower() == kxf::String(right).MakeLower();
+			return kxf::String(left).MakeLower().CompareTo(kxf::String(right).MakeLower());
 		}
 		else
 		{
-			return left.compare(right);
+			return left <=> right;
 		}
 	}
-	int CompareStrings(std::wstring_view left, std::wstring_view right, bool ignoreCase) noexcept
+	std::strong_ordering CompareStrings(std::wstring_view left, std::wstring_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
 		{
@@ -75,35 +75,37 @@ namespace
 			{
 				case CSTR_LESS_THAN:
 				{
-					return -1;
+					return std::strong_ordering::less;
 				}
 				case CSTR_EQUAL:
 				{
-					return 0;
+					return std::strong_ordering::equal;
 				}
 				case CSTR_GREATER_THAN:
 				{
-					return 1;
+					return std::strong_ordering::greater;
 				}
 			};
-			return -2;
+
+			// We shouldn't be here, but in case we did compare with case
+			return left <=> right;
 		}
 		else
 		{
-			return left.compare(right);
+			return left <=> right;
 		}
 	}
-	int CompareChars(wxUniChar left, wxUniChar right) noexcept
+	std::strong_ordering CompareChars(wxUniChar left, wxUniChar right) noexcept
 	{
 		if (left < right)
 		{
-			return -1;
+			return std::strong_ordering::less;
 		}
 		else if (left > right)
 		{
-			return 1;
+			return std::strong_ordering::greater;
 		}
-		return 0;
+		return std::strong_ordering::equal;
 	}
 
 	template<class T>
@@ -283,15 +285,15 @@ namespace kxf
 
 namespace kxf
 {
-	int String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags) noexcept
+	std::strong_ordering String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags) noexcept
+	std::strong_ordering String::DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags) noexcept
+	std::strong_ordering String::DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		if (flags & StringOpFlag::IgnoreCase)
 		{

@@ -115,13 +115,13 @@ namespace kxf
 
 			// Comparison
 		private:
-			static int DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static int DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static int DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static std::strong_ordering DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static std::strong_ordering DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static std::strong_ordering DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags = {}) noexcept;
 			
 		public:
 			template<class T1, class T2>
-			static int Compare(T1&& left, T2&& right, FlagSet<StringOpFlag> flags = {}) noexcept
+			static std::strong_ordering Compare(T1&& left, T2&& right, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
 				{
@@ -164,9 +164,17 @@ namespace kxf
 				}
 				return {};
 			}
+			static wxUniChar FromUTF8(char8_t c)
+			{
+				return FromUTF8(static_cast<char>(c));
+			}
 			static String FromUTF8(const char* utf8, size_t length = npos)
 			{
 				return wxString::FromUTF8(utf8, length);
+			}
+			static String FromUTF8(const char8_t* utf8, size_t length = npos)
+			{
+				return wxString::FromUTF8(reinterpret_cast<const char*>(utf8), length);
 			}
 			static String FromUTF8(const std::string& utf8)
 			{
@@ -228,21 +236,6 @@ namespace kxf
 			// Case conversion
 			static wxUniChar ToLower(wxUniChar c) noexcept;
 			static wxUniChar ToUpper(wxUniChar c) noexcept;
-
-			// Concatenation
-			template<class... Args>
-			static String Concat(Args&&... arg)
-			{
-				return (String(std::forward<Args>(arg)) + ...);
-			}
-
-			template<class... Args>
-			static String ConcatWithSeparator(const String& sep, Args&&... arg)
-			{
-				String value = ((String(std::forward<Args>(arg)) + sep) + ...);
-				value.RemoveFromEnd(sep.length());
-				return value;
-			}
 
 			// Substring extraction
 			template<class TFunc>
@@ -321,6 +314,21 @@ namespace kxf
 				return 0;
 			}
 
+			// Concatenation
+			template<class... Args>
+			static String Concat(Args&&... arg)
+			{
+				return (String(std::forward<Args>(arg)) + ...);
+			}
+
+			template<class... Args>
+			static String ConcatWithSeparator(const String& sep, Args&&... arg)
+			{
+				String value = ((String(std::forward<Args>(arg)) + sep) + ...);
+				value.RemoveFromEnd(sep.length());
+				return value;
+			}
+
 			// Formatting
 			template<class TString, class... Args>
 			static String Format(TString&& format, Args&&... arg)
@@ -383,6 +391,10 @@ namespace kxf
 			}
 			String(const char* data, const wxMBConv& conv, size_t length = npos)
 				:m_String(data, conv, Private::CheckStringLength(data, length))
+			{
+			}
+			String(const char8_t* data, size_t length = npos)
+				:String(FromUTF8(data, Private::CheckStringLength(data, length)))
 			{
 			}
 			String(const wchar_t* data, size_t length = npos)
@@ -624,7 +636,7 @@ namespace kxf
 
 			// Comparison
 		private:
-			int DoCompareTo(std::string_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, char>)
+			std::strong_ordering DoCompareTo(std::string_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, char>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(*this, String(other), flags);
@@ -632,7 +644,7 @@ namespace kxf
 				return Compare(GetView(), other, flags);
 				#endif
 			}
-			int DoCompareTo(std::wstring_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, wchar_t>)
+			std::strong_ordering DoCompareTo(std::wstring_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(GetView(), other, flags);
@@ -640,7 +652,7 @@ namespace kxf
 				return Compare(*this, String(other), flags);
 				#endif
 			}
-			int DoCompareTo(wxUniChar other, FlagSet<StringOpFlag> flags = {}) const noexcept
+			std::strong_ordering DoCompareTo(wxUniChar other, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar c[2] = {other, 0};
 				return Compare(GetView(), StringViewOf(c), flags);
@@ -648,7 +660,7 @@ namespace kxf
 
 		public:
 			template<class T>
-			int CompareTo(T&& other, FlagSet<StringOpFlag> flags = {}) const
+			std::strong_ordering CompareTo(T&& other, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -1205,119 +1217,72 @@ namespace kxf
 			{
 				return GetWxString();
 			}
+
+			// Comparison
+			std::strong_ordering operator<=>(const String& other) const noexcept
+			{
+				return GetView() <=> other.GetView();
+			}
+			std::strong_ordering operator<=>(const wxString& other) const noexcept
+			{
+				return GetView() <=> StringViewOf(other);
+			}
+			std::strong_ordering operator<=>(const char* other) const
+			{
+				return CompareTo(other);
+			}
+			std::strong_ordering operator<=>(const wchar_t* other) const
+			{
+				return CompareTo(other);
+			}
+
+			bool operator==(const String& other) const noexcept
+			{
+				return *this <=> other == std::strong_ordering::equal;
+			}
+			bool operator==(const wxString& other) const noexcept
+			{
+				return *this <=> other == std::strong_ordering::equal;
+			}
+			bool operator==(const char* other) const
+			{
+				return *this <=> other == std::strong_ordering::equal;
+			}
+			bool operator==(const wchar_t* other) const
+			{
+				return *this <=> other == std::strong_ordering::equal;
+			}
+
+			bool operator==(const wxUniChar& other) const noexcept
+			{
+				return IsSameAs(other);
+			}
+			bool operator==(char other) const noexcept
+			{
+				return IsSameAs(other);
+			}
+			bool operator==(wchar_t other) const noexcept
+			{
+				return IsSameAs(other);
+			}
 	};
 }
 
 namespace kxf
 {
-	// Comparison with char
-	inline bool operator==(const String& left, wxUniChar right)
-	{
-		return left.IsSameAs(right);
-	}
-	inline bool operator==(const String& left, wxUniCharRef right)
-	{
-		return left.IsSameAs(right);
-	}
-	inline bool operator==(const String& left, char right)
-	{
-		return left.IsSameAs(right);
-	}
-	inline bool operator==(const String& left, wchar_t right)
-	{
-		return left.IsSameAs(right);
-	}
-	inline bool operator==(wxUniChar left, const String& right)
-	{
-		return right.IsSameAs(left);
-	}
-	inline bool operator==(wxUniCharRef left, const String& right)
-	{
-		return right.IsSameAs(left);
-	}
-	inline bool operator==(char left, const String& right)
-	{
-		return right.IsSameAs(left);
-	}
-	inline bool operator==(wchar_t left, const String& right)
-	{
-		return right.IsSameAs(left);
-	}
-	
-	inline bool operator!=(const String& left, wxUniChar right)
-	{
-		return !left.IsSameAs(right);
-	}
-	inline bool operator!=(const String& left, wxUniCharRef right)
-	{
-		return !left.IsSameAs(right);
-	}
-	inline bool operator!=(const String& left, char right)
-	{
-		return !left.IsSameAs(right);
-	}
-	inline bool operator!=(const String& left, wchar_t right)
-	{
-		return !left.IsSameAs(right);
-	}
-	inline bool operator!=(wxUniChar left, const String& right)
-	{
-		return !right.IsSameAs(left);
-	}
-	inline bool operator!=(wxUniCharRef left, const String& right)
-	{
-		return !right.IsSameAs(left);
-	}
-	inline bool operator!=(char left, const String& right)
-	{
-		return !right.IsSameAs(left);
-	}
-	inline bool operator!=(wchar_t left, const String& right)
-	{
-		return !right.IsSameAs(left);
-	}
-
-	// Use wxWidgets macro to quickly define all comparison operators at once.
-	// Hopefully the C++20 three-way "spaceship" operator will simplify this.
-	// For now this wall of code is required.
-
-	// Disable macro redefinition warning
-	#pragma warning(push, 0)   
-	#pragma warning(disable: 4005)
-
-	// String <=> String
-	// Can't use 'wxDEFINE_ALL_COMPARISONS' for the same types because it'll cause multiple
-	// definitions for some operators because types are the same on the left and on the right. 
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right.GetWxString()
-	wxFOR_ALL_COMPARISONS_3(wxDEFINE_COMPARISON, const String&, const String&, Kx_StringCmp);
-
-	// String <=> wxString
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right
-	wxDEFINE_ALL_COMPARISONS(const String&, const wxString&, Kx_StringCmp);
-
-	// String <=> const char*
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right
-	wxDEFINE_ALL_COMPARISONS(const String&, const char* , Kx_StringCmp);
-
-	// String <=> const wchar_t*
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right
-	wxDEFINE_ALL_COMPARISONS(const String&, const wchar_t*, Kx_StringCmp);
-
-	#undef Kx_StringCmp
-
-	// Restore any disabled warnings
-	#pragma warning(pop)
-
 	// Concatenation
 	template<class T>
 	String operator+(const String& left, T&& right)
 	{
 		return left.Clone().Append(std::forward<T>(right));
 	}
-}
 
-namespace kxf
-{
+	template<class T>
+	String operator+(const String& left, const String& right)
+	{
+		return left.Clone().Append(right);
+	}
+
 	template<class T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
 	String ToString(T value)
 	{
