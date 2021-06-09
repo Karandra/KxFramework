@@ -5,6 +5,7 @@
 #include "kxf/EventSystem/Private/Win32ConsoleEventLoop.h"
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
+#include "kxf/General/Format.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/NtStatus.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -717,7 +718,7 @@ namespace kxf
 	{
 		if (wxLog* log = wxLog::GetActiveTarget(); log && log->IsEnabled() && log->IsLevelEnabled(wxLOG_Debug, wxLOG_COMPONENT))
 		{
-			log->LogTextAtLevel(wxLOG_Debug, String::Format(wxS("File '%1'@%2; Function '%3'; When [%4]; %5"), file, line, function, condition, message));
+			log->LogTextAtLevel(wxLOG_Debug, Format("File '{}'@{}; Function '{}'; When [{}]; {}", file, line, function, condition, message));
 		}
 	}
 

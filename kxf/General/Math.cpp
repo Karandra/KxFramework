@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "Math.h"
+#include "kxf/General/Format.h"
 #include <locale>
 #include <random>
 #include <cmath>
@@ -47,15 +48,11 @@ namespace kxf::Math
 	{
 		if (truncateTo > 0)
 		{
-			String buffer = String::Format(String::Format("%%.%dlf", DBL_DIG), x);
-			size_t pointPos = buffer.Find(GetDecimalSeparator());
-
-			if (pointPos != String::npos)
+			// That's not really how you should do it, but eh... whatever
+			String formatted = Format("{:.{}f}", x, std::min(truncateTo, DBL_DIG));
+			if (auto value = formatted.ToFloatingPoint())
 			{
-				if (auto value = buffer.Truncate(pointPos + 1 + truncateTo).ToFloatingPoint())
-				{
-					return *value;
-				}
+				return *value;
 			}
 		}
 		return std::floor(x);
@@ -201,7 +198,7 @@ namespace kxf::Math
 	{
 		if (base == 10)
 		{
-			return String::Format("%1", x);
+			return ToString(x);
 		}
 		else if (base <= 36)
 		{
@@ -213,11 +210,11 @@ namespace kxf::Math
 				{
 					if (i < 10)
 					{
-						symbols[i] = i+'0';
+						symbols[i] = i + '0';
 					}
 					else
 					{
-						symbols[i] = i+'A'-10;
+						symbols[i] = i + 'A' - 10;
 					}
 				}
 

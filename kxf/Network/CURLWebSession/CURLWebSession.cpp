@@ -2,6 +2,7 @@
 #include "CURLWebSession.h"
 #include "CURLWebRequest.h"
 #include "LibCURL.h"
+#include "kxf/General/Format.h"
 #include "kxf/FileSystem/IFileSystem.h"
 
 namespace
@@ -60,7 +61,7 @@ namespace kxf
 
 	String CURLWebSession::GetDefaultUserAgent() const
 	{
-		return String::Format(wxS("%1/%2"), g_Name, LIBCURL_VERSION);
+		return Format("{}/{}", g_Name, LIBCURL_VERSION);
 	}
 
 	// ILibraryInfo

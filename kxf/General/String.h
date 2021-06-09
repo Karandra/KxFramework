@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Private/String.h"
+#include <format>
 #include <string>
 #include <string_view>
 #include "kxf/System/UndefWindows.h"
@@ -20,12 +21,6 @@ namespace kxf
 		FirstMatchOnly = 1 << 2,
 	};
 	KxFlagSet_Declare(StringOpFlag);
-
-	namespace StringFormatter
-	{
-		template<class T>
-		class Formatter;
-	}
 }
 
 namespace kxf
@@ -329,31 +324,6 @@ namespace kxf
 				return value;
 			}
 
-			// Formatting
-			template<class TString, class... Args>
-			static String Format(TString&& format, Args&&... arg)
-			{
-				if constexpr((sizeof...(Args)) != 0)
-				{
-					StringFormatter::Formatter formatter(std::forward<TString>(format));
-					std::initializer_list<int>{((void)formatter(arg), 0) ...};
-					return formatter;
-				}
-				return format;
-			}
-
-			template<class Traits, class TString, class... Args>
-			static String Format(TString&& format, Args&&... arg)
-			{
-				if constexpr ((sizeof...(Args)) != 0)
-				{
-					StringFormatter::Formatter<Traits> formatter(std::forward<TString>(format));
-					std::initializer_list<int>{((void)formatter(arg), 0) ...};
-					return formatter;
-				}
-				return format;
-			}
-
 		private:
 			wxString m_String;
 
@@ -402,7 +372,20 @@ namespace kxf
 			{
 			}
 			
-			// std::[w]string_view
+			// std::[w]string[_view]
+			explicit String(const std::string& other)
+				:m_String(other.data(), other.length())
+			{
+			}
+			explicit String(const std::string& other, const wxMBConv& conv)
+				:m_String(other.data(), conv, other.length())
+			{
+			}
+			explicit String(const std::wstring& other)
+				:m_String(other.data(), other.length())
+			{
+			}
+
 			explicit String(std::string_view other)
 				:m_String(other.data(), other.length())
 			{
@@ -1283,6 +1266,7 @@ namespace kxf
 		return left.Clone().Append(right);
 	}
 
+	// Conversion
 	template<class T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
 	String ToString(T value)
 	{

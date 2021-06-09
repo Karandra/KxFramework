@@ -4,6 +4,7 @@
 #include "InStreamWrapper.h"
 #include "ArchiveOpenCallback.h"
 #include "../Library.h"
+#include "kxf/General/Format.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/Utility/ScopeGuard.h"
@@ -261,7 +262,7 @@ namespace kxf::SevenZip::Private
 				{
 					ArchiveEvent event = eventHandler.CreateEvent();
 					event.SetProgress(counter, std::size(availableFormats));
-					event.SetString(String::Format(wxS("Trying to open archive as %1"), GetNameByFormat(format)));
+					event.SetString(Format("Trying to open archive as {}", GetNameByFormat(format)));
 
 					if (!eventHandler.SendEvent(event, ArchiveEvent::EvtIdentifyFormat))
 					{

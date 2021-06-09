@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "VersionImpl.h"
 #include "../Version.h"
+#include "kxf/General/Format.h"
 
 namespace
 {
@@ -125,7 +126,7 @@ namespace kxf::Private::Version
 				}
 				else
 				{
-					result << String::Format(wxS("%1"), num);
+					result << ToString(num);
 					if (*string)
 					{
 						result += string;

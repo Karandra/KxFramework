@@ -196,7 +196,7 @@ namespace kxf
 			}
 
 			// Formatting
-			String Format(BinarySizeUnit unit = BinarySizeUnit::Auto, FlagSet<BinarySizeFormat> format = {}, int precision = -1) const;
+			String ToString(BinarySizeUnit unit = BinarySizeUnit::Auto, FlagSet<BinarySizeFormat> format = {}, int precision = -1) const;
 
 		public:
 			// Comparison

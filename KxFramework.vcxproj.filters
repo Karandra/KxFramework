@@ -1403,12 +1403,6 @@
     <ClInclude Include="kxf\Sciter\Widgets\Common.h">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StringFormatter.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\StringFormatterTraits.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\RTTI\IID.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
@@ -1935,6 +1929,9 @@
     </ClInclude>
     <ClInclude Include="kxf\IO\MemoryStreamBuffer.h">
       <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Format.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2605,9 +2602,6 @@
     <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\StringFormatter.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\IO\IStream.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
@@ -2883,6 +2877,12 @@
     </ClCompile>
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp">
       <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Format.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Crypto\HashValue.cpp">
+      <Filter>kxf\Crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

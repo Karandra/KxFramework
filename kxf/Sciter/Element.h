@@ -3,7 +3,7 @@
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
 #include "kxf/General/String.h"
-#include "kxf/General/StringFormatter.h"
+#include "kxf/General/Format.h"
 
 namespace kxf
 {
@@ -249,15 +249,15 @@ namespace kxf::Sciter
 
 			Element GetElementByAttribute(const String& name, const String& value) const
 			{
-				return SelectAny(String::Format(wxS("[%1=%2]"), name, value));
+				return SelectAny(Format("[{}={}]", name, value));
 			}
 			Element GetElementByID(const String& id) const
 			{
-				return SelectAny(String::Format(wxS("#%1"), id));
+				return SelectAny(Format("#{}", id));
 			}
 			Element GetElementByClass(const String& name) const
 			{
-				return SelectAny(String::Format(wxS(".%1"), name));
+				return SelectAny(Format(".{}", name));
 			}
 
 			// Widgets
@@ -267,15 +267,15 @@ namespace kxf::Sciter
 
 			Widget* GetWidgetByAttribute(const String& name, const String& value) const
 			{
-				return SelectAnyWidget(String::Format(wxS("[%1=%2]"), name, value));
+				return SelectAnyWidget(Format("[{}={}]", name, value));
 			}
 			Widget* GetWidgetByID(const String& id) const
 			{
-				return SelectAnyWidget(String::Format(wxS("#%1"), id));
+				return SelectAnyWidget(Format("#{}", id));
 			}
 			Widget* GetWidgetByClass(const String& name) const
 			{
-				return SelectAnyWidget(String::Format(wxS(".%1"), name));
+				return SelectAnyWidget(Format(".{}", name));
 			}
 
 			template<class TWidget, class TFunc>

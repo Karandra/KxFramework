@@ -3,7 +3,7 @@
 
 namespace kxf::Utility
 {
-	std::optional<bool> ParsePool(const String& value)
+	std::optional<bool> ParseBool(const String& value)
 	{
 		if (value == wxS("false") || value == wxS("FALSE"))
 		{

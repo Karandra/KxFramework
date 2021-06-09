@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "StandardLocalization.h"
+#include "kxf/General/Format.h"
 #include "kxf/Application/ICoreApplication.h"
 
 namespace
@@ -140,7 +141,7 @@ namespace kxf::Localization::Private
 
 		if (result.IsEmpty())
 		{
-			return String::Format(wxS("#%1"), id);
+			return Format("#{}", id);
 		}
 		else
 		{
@@ -204,7 +205,7 @@ namespace kxf::Localization::Private
 
 		if (result.IsEmpty())
 		{
-			return String::Format(wxS("#%1"), id);
+			return Format("#{}", id);
 		}
 		return result;
 	}

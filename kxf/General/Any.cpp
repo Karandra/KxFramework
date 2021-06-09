@@ -1,15 +1,6 @@
 #include "KxfPCH.h"
 #include "Any.h"
-
-namespace
-{
-	class Formatter2: public kxf::StringFormatter::Formatter<kxf::StringFormatter::DefaultFormatTraits>
-	{
-		public:
-			using Formatter::Formatter;
-			using Formatter::FormatIntWithBase;
-	};
-}
+#include "kxf/General/String.h"
 
 namespace kxf
 {
@@ -17,36 +8,36 @@ namespace kxf
 	{
 		if (auto value = AsPtr<int8_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<int16_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<int32_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<int64_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 
 		if (auto value = AsPtr<uint8_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<uint16_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<uint32_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<uint64_t>())
 		{
-			return Formatter2::FormatIntWithBase(*value);
+			return ToString(*value);
 		}
 		return {};
 	}
@@ -54,11 +45,11 @@ namespace kxf
 	{
 		if (auto value = AsPtr<float>())
 		{
-			return Formatter2(wxS("%1"))(*value);
+			return ToString(*value);
 		}
 		else if (auto value = AsPtr<double>())
 		{
-			return Formatter2(wxS("%1"))(*value);
+			return ToString(*value);
 		}
 		return {};
 	}

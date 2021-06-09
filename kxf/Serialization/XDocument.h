@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
+#include "kxf/General/Format.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "Private/XDocument.h"
@@ -48,7 +49,7 @@ namespace kxf::XDocument
 					const size_t index = node.GetIndexWithinParent();
 					if (index > 1)
 					{
-						xPath.Prepend(String::Format(wxS("%1%2%3"), node.GetName(), xPathIndexSep, index));
+						xPath.Prepend(Format("{}{}{}", node.GetName(), xPathIndexSep, index));
 					}
 					else
 					{

@@ -9,6 +9,7 @@
 #include "Private/ArchiveUpdateCallback.h"
 #include "Private/InStreamWrapper.h"
 #include "Private/OutStreamWrapper.h"
+#include "kxf/General/Format.h"
 #include "kxf/General/ErrorCode.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/System/VariantProperty.h"
@@ -49,23 +50,23 @@ namespace
 	}
 	String FormatMethodString(int dictionarySize, SevenZip::CompressionMethod method)
 	{
-		const int64_t dictSizeMB = 20 + dictionarySize;
+		const int64_t dictSizeMB = static_cast<int64_t>(dictionarySize) + 20;
 
 		switch (method)
 		{
 			case CompressionMethod::LZMA:
 			case CompressionMethod::LZMA2:
 			{
-				return String::Format(wxS("%1:d=%2"), GetMethodString(method), dictSizeMB);
+				return Format("{}:d={}", GetMethodString(method), dictSizeMB);
 			}
 			case CompressionMethod::BZIP2:
 			{
 				// Makes no sense for BZip2 as its max dictionary size is so tiny
-				return wxS("BZip2:d=900000b");
+				return "BZip2:d=900000b";
 			}
 			case CompressionMethod::PPMD:
 			{
-				return String::Format(wxS("%1:mem=%2"), GetMethodString(method), dictSizeMB);
+				return Format("{}:mem={}", GetMethodString(method), dictSizeMB);
 			}
 		};
 		return {};

@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "ProgressBar.h"
+#include "kxf/General/Format.h"
 
 namespace kxf::UI
 {
@@ -17,10 +18,7 @@ namespace kxf::UI
 			const String label = GetLabel();
 			if (!label.IsEmpty())
 			{
-				StringFormatter::Formatter format(std::move(label));
-				format(((double)DoGetValue() / (double)DoGetRange()) * 100.0, 2);
-
-				dc.DrawLabel(format.ToString(), rect, ToInt(Alignment::Center));
+				dc.DrawLabel(Format("{:.2f}", (static_cast<double>(DoGetValue()) / static_cast<double>(DoGetRange())) * 100.0), rect, ToInt(Alignment::Center));
 			}
 		}
 	}

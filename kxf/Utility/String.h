@@ -46,5 +46,5 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	KX_API std::optional<bool> ParsePool(const String& value);
+	KX_API std::optional<bool> ParseBool(const String& value);
 }

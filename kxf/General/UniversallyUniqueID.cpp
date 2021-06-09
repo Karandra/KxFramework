@@ -2,6 +2,7 @@
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
 #include "RegEx.h"
+#include "Format.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/Utility/Common.h"
@@ -226,7 +227,7 @@ namespace kxf
 		{
 			auto DoPart = [&](auto value, size_t width, bool suppressSeparator = false)
 			{
-				String part = std::move(StringFormatter::Formatter(wxS("%1"))(value, width, 16, wxS('0'))).ToString();
+				String part = Format("{:0{}x}", value, width);
 				part.Truncate(width);
 
 				if (format & UUIDFormat::HexPrefix)

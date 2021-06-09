@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IArtProvider.h"
 #include "kxf/General/OptionalPtr.h"
+#include "kxf/UI/StdIcon.h"
 
 namespace kxf
 {

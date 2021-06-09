@@ -84,7 +84,7 @@ namespace kxf::Log
 		{
 			wxSetAssertHandler([](const wxString& file, int line, const wxString& func, const wxString& condition, const wxString& message)
 			{
-				Log::Debug(wxS("Assert failed: [File=%1:%2], [Function=%3], [Condition=%4], [Message=%5]"), file, line, func, condition, message);
+				Log::Debug("Assert failed: [File={}:{:04}], [Function={}], [Condition={}], [Message={}]", file, line, func, condition, message);
 			});
 		}
 		else

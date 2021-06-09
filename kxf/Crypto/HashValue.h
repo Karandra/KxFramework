@@ -1,8 +1,11 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
 #include <array>
 
+namespace kxf
+{
+	class String;
+}
 namespace kxf::Crypto::Private
 {
 	template<size_t bitLength, class T>
@@ -10,6 +13,8 @@ namespace kxf::Crypto::Private
 	{
 		return std::is_integral_v<T> && std::is_unsigned_v<T> && (sizeof(T) <= bitLength / 8) && (bitLength == 8 || bitLength == 16 || bitLength == 32 || bitLength == 64);
 	}
+
+	String HashValueToString(std::span<const uint8_t> data);
 }
 
 namespace kxf::Crypto
@@ -60,14 +65,7 @@ namespace kxf::Crypto
 
 			String ToString() const
 			{
-				wxString result;
-				result.reserve(m_Hash.size() * 2);
-
-				for (uint8_t x : m_Hash)
-				{
-					result.sprintf(wxS("%s%02x"), result, x);
-				};
-				return result;
+				return Private::HashValueToString({m_Hash.data(), m_Hash.size()});
 			}
 
 			template<class = std::enable_if_t<Private::IsHashConvertibleToInteger<bitLength, uint8_t>()>>

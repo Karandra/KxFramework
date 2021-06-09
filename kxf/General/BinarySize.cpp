@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "BinarySize.h"
 #include "Math.h"
+#include "Format.h"
 #include "kxf/Application/ICoreApplication.h"
 
 namespace
@@ -64,7 +65,7 @@ namespace
 		}
 		else
 		{
-			result = String::Format(wxS("%1"), static_cast<int64_t>(value));
+			result = kxf::ToString(value);
 		}
 		AddUnitLabelIfNeeded(result, format, unit);
 
@@ -86,16 +87,16 @@ namespace
 
 namespace kxf
 {
-	String BinarySize::Format(BinarySizeUnit unit, FlagSet<BinarySizeFormat> format, int precision) const
+	String BinarySize::ToString(BinarySizeUnit unit, FlagSet<BinarySizeFormat> format, int precision) const
 	{
 		// Short-circuit for zero
 		if (IsNull())
 		{
 			if (auto label = GetSizeUnitString(BinarySizeUnit::Bytes))
 			{
-				return String::Format(wxS("0 %1"), *label);
+				return Format("0 {}", *label);
 			}
-			return wxS("0");
+			return "0";
 		}
 
 		switch (unit)

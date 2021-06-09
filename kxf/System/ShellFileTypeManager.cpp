@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
+#include "kxf/General/Format.h"
 
 namespace kxf
 {
@@ -27,8 +28,8 @@ namespace kxf
 						String ext = FSPath(std::move(extension)).GetExtension();
 
 						RegistryKey key = classesRoot.CreateKey(ext, RegistryAccess::Write);
-						key.SetStringValue({}, String::Format(wxS("URL:%1 Protocol"), ext.MakeUpper()));
-						key.SetStringValue(wxS("URL Protocol"), {});
+						key.SetStringValue({}, Format("URL:{} Protocol", ext.MakeUpper()));
+						key.SetStringValue("URL Protocol", {});
 					}
 				}
 				return true;

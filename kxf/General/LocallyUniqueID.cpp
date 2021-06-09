@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "LocallyUniqueID.h"
+#include "kxf/General/Format.h"
 #include <cwchar>
 
 namespace
@@ -40,6 +41,10 @@ namespace kxf
 
 	String LocallyUniqueID::ToString() const
 	{
-		return !IsNull() ? String::Format(wxS("%1"), m_ID) : NullString;
+		if (!IsNull())
+		{
+			return kxf::ToString(m_ID);
+		}
+		return {};
 	}
 }
