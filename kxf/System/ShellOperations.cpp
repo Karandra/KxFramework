@@ -105,13 +105,13 @@ namespace
 				{
 					if (extraData)
 					{
-						if (auto index = icon.AfterLast(wxS(',')).ToInt<int>())
+						if (auto index = icon.AfterLast(',').ToInt<int>())
 						{
 							*extraData = std::abs(*index);
 						}
 					}
 
-					String path = icon.BeforeLast(wxS(','));
+					String path = icon.BeforeLast(',');
 					return !path.IsEmpty() ? path : icon;
 				}
 				break;

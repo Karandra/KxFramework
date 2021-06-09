@@ -129,44 +129,13 @@ namespace kxf
 		return {};
 	}
 
+	std::strong_ordering Version::operator<=>(const Version& other) const
+	{
+		return Private::Version::Compare(*this, other);
+	}
 	bool Version::operator==(const Version& other) const
 	{
-		using namespace Private::Version;
-
-		return Compare(*this, other) == Cmp::EQ;
-	}
-	bool Version::operator!=(const Version& other) const
-	{
-		using namespace Private::Version;
-
-		const Cmp cmp = Compare(*this, other);
-		return cmp != Cmp::EQ && cmp != Cmp::Invalid;
-	}
-	bool Version::operator<(const Version& other) const
-	{
-		using namespace Private::Version;
-
-		return Compare(*this, other) == Cmp::LT;
-	}
-	bool Version::operator<=(const Version& other) const
-	{
-		using namespace Private::Version;
-
-		const Cmp cmp = Compare(*this, other);
-		return cmp == Cmp::LT || cmp == Cmp::EQ;
-	}
-	bool Version::operator>(const Version& other) const
-	{
-		using namespace Private::Version;
-
-		return Compare(*this, other) == Cmp::GT;
-	}
-	bool Version::operator>=(const Version& other) const
-	{
-		using namespace Private::Version;
-
-		const Cmp cmp = Compare(*this, other);
-		return cmp == Cmp::GT || cmp == Cmp::EQ;
+		return Private::Version::Compare(*this, other) == 0;
 	}
 }
 

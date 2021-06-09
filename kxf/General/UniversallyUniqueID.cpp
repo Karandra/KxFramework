@@ -2,6 +2,7 @@
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
 #include "RegEx.h"
+#include "Format.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/Utility/Common.h"
@@ -38,12 +39,6 @@ namespace
 	auto AsUUID(T&& uuid)
 	{
 		return CastAs<::UUID>(std::forward<T>(uuid));
-	}
-
-	int Compare(const kxf::NativeUUID& left, const kxf::NativeUUID& right) noexcept
-	{
-		RPC_STATUS status = RPC_S_OK;
-		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
 	}
 
 	kxf::NativeUUID DoCreateFromString(const kxf::String& value) noexcept
@@ -232,7 +227,7 @@ namespace kxf
 		{
 			auto DoPart = [&](auto value, size_t width, bool suppressSeparator = false)
 			{
-				String part = std::move(StringFormatter::Formatter(wxS("%1"))(value, width, 16, wxS('0'))).ToString();
+				String part = Format("{:0{}x}", value, width);
 				part.Truncate(width);
 
 				if (format & UUIDFormat::HexPrefix)
@@ -348,22 +343,5 @@ namespace kxf
 		std::array<uint8_t, 16> bytes;
 		std::memcpy(bytes.data(), &m_ID, std::size(bytes));
 		return bytes;
-	}
-
-	bool UniversallyUniqueID::operator<(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) < 0;
-	}
-	bool UniversallyUniqueID::operator<=(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) <= 0;
-	}
-	bool UniversallyUniqueID::operator>(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) > 0;
-	}
-	bool UniversallyUniqueID::operator>=(const NativeUUID& other) const noexcept
-	{
-		return Compare(m_ID, other) >= 0;
 	}
 }

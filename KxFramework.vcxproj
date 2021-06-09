@@ -81,7 +81,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxfPCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -257,6 +257,7 @@
     <ClInclude Include="kxf\General\DynamicVariablesCollection.h" />
     <ClInclude Include="kxf\General\ErrorCode.h" />
     <ClInclude Include="kxf\General\Enumerator.h" />
+    <ClInclude Include="kxf\General\Format.h" />
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\ILibraryInfo.h" />
@@ -567,15 +568,12 @@
     <ClInclude Include="kxf\General\IndexedEnum.h" />
     <ClInclude Include="kxf\General\Math.h" />
     <ClInclude Include="kxf\General\StdID.h" />
-    <ClInclude Include="kxf\General\MemorySpan.h" />
     <ClInclude Include="kxf\General\NativeUUID.h" />
     <ClInclude Include="kxf\General\Private\ExtraData.h" />
     <ClInclude Include="kxf\General\Private\String.h" />
     <ClInclude Include="kxf\General\Private\VersionImpl.h" />
     <ClInclude Include="kxf\General\Singleton.h" />
     <ClInclude Include="kxf\General\String.h" />
-    <ClInclude Include="kxf\General\StringFormatter.h" />
-    <ClInclude Include="kxf\General\StringFormatterTraits.h" />
     <ClInclude Include="kxf\General\UniversallyUniqueID.h" />
     <ClInclude Include="kxf\General\Version.h" />
     <ClInclude Include="kxf\General\WithOptions.h" />
@@ -695,6 +693,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Crypto\HashValue.cpp" />
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Font.cpp" />
@@ -746,6 +745,7 @@
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\ErrorCode.cpp" />
+    <ClCompile Include="kxf\General\Format.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\NativeUUID.cpp" />
@@ -933,7 +933,6 @@
     <ClCompile Include="kxf\General\Math.cpp" />
     <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />
     <ClCompile Include="kxf\General\String.cpp" />
-    <ClCompile Include="kxf\General\StringFormatter.cpp" />
     <ClCompile Include="kxf\General\Version.cpp" />
     <ClCompile Include="kxf\Localization\Common.cpp" />
     <ClCompile Include="kxf\Localization\Locale.cpp" />

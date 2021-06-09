@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "ObjectPtr.h"
+#include "IObject.h"
 
 namespace
 {

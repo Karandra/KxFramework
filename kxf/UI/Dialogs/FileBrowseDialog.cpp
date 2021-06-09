@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "FileBrowseDialog.h"
 #include "Private/FileBrowseDialogEvents.h"
+#include "kxf/General/Format.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
 
@@ -317,8 +318,8 @@ namespace kxf::UI
 			{
 				// Create label from filter
 				String temp = String(filter);
-				temp.Replace(wxS(";"), wxS(", "), true);
-				temp = String::Format(wxS("%1 (%1)"), label, temp);
+				temp.Replace(";", ", ", true);
+				temp = Format("{} ({})", label, temp);
 
 				auto& item = m_FilterList.emplace_back();
 				item.Name = std::move(temp);

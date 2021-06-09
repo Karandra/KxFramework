@@ -2,6 +2,7 @@
 #include "WMI.h"
 #include "SafeArray.h"
 #include "VariantProperty.h"
+#include "kxf/General/Format.h"
 #include "kxf/Utility/Enumerator.h"
 #include <Windows.h>
 #include <wbemcli.h>
@@ -168,7 +169,7 @@ namespace kxf
 	Enumerator<WMIClassObject> WMINamespace::SelectAll(const kxf::String& fromLocation)
 	{
 		// TODO: Add input sanitization of some kind?
-		return ExecuteQuery(String::Format(wxS("SELECT * FROM %1"), fromLocation));
+		return ExecuteQuery(Format("SELECT * FROM {}", fromLocation));
 	}
 
 	WMINamespace& WMINamespace::operator=(const WMINamespace&) noexcept = default;

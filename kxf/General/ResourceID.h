@@ -81,10 +81,6 @@ namespace kxf
 			{
 				return this == &other || m_Value == other.m_Value;
 			}
-			bool operator!=(const ResourceID& other) const noexcept
-			{
-				return !(*this == other);
-			}
 
 			ResourceID& operator=(const ResourceID&) = default;
 			ResourceID& operator=(ResourceID&&) noexcept = default;

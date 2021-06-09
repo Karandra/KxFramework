@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "kxf/General/RegEx.h"
 #include "kxf/General/String.h"
+#include "kxf/General/Format.h"
 #include "wx/window.h"
 
 namespace
@@ -15,13 +16,13 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto fixed = color.GetFixed8();
-				return String::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
+				return Format("rgb({}, {}, {})", fixed.Red, fixed.Green, fixed.Blue);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto fixed = color.GetFixed8();
 				const auto normalized = color.GetNormalized();
-				return String::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
+				return Format("rgba({}, {}, {}, {})", fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -39,13 +40,13 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto hsl = color.GetHSL();
-				return String::Format(wxS("hsl(%1, %2, %3)"), hsl.Hue.ToDegrees(), hsl.Saturation, hsl.Lightness);
+				return Format("hsl({}, {}, {})", hsl.Hue.ToDegrees(), hsl.Saturation, hsl.Lightness);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto hsl = color.GetHSL();
 				const auto normalized = color.GetNormalized();
-				return String::Format(wxS("hsla(%1, %2, %3, %4)"), hsl.Hue.ToDegrees(), hsl.Saturation, hsl.Lightness, normalized.Alpha);
+				return Format("hsla({}, {}, {}, {})", hsl.Hue.ToDegrees(), hsl.Saturation, hsl.Lightness, normalized.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -64,23 +65,12 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto fixed = color.GetFixed8();
-
-				StringFormatter::Formatter formatter(wxS("#%1%2%3"));
-				formatter(fixed.Red, 2, 16, '0');
-				formatter(fixed.Green, 2, 16, '0');
-				formatter(fixed.Blue, 2, 16, '0');
-				return formatter;
+				return Format("#{:0>2x}{:0>2x}{:0>2x}", fixed.Red, fixed.Green, fixed.Blue);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto fixed = color.GetFixed8();
-
-				StringFormatter::Formatter formatter(wxS("#%1%2%3%4"));
-				formatter(fixed.Red, 2, 16, '0');
-				formatter(fixed.Green, 2, 16, '0');
-				formatter(fixed.Blue, 2, 16, '0');
-				formatter(fixed.Alpha, 2, 16, '0');
-				return formatter;
+				return Format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", fixed.Red, fixed.Green, fixed.Blue, fixed.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -98,12 +88,12 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto hsl = color.GetHSL();
-				return String::Format(wxS("hsl(%1, %2%, %3%)"), static_cast<int>(hsl.Hue.ToDegrees()), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100));
+				return Format("hsl({}, {}%, {}%)", static_cast<int>(hsl.Hue.ToDegrees()), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100));
 			}
 			case C2SAlpha::Always:
 			{
 				const auto hsl = color.GetHSL();
-				return String::Format(wxS("hsl(%1, %2%, %3%, %4)"), static_cast<int>(hsl.Hue.ToDegrees()), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100), hsl.Alpha);
+				return Format("hsl({}, {}%, {}%, {})", static_cast<int>(hsl.Hue.ToDegrees()), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100), hsl.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{

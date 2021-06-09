@@ -55,28 +55,33 @@ namespace kxf
 				return IsNull();
 			}
 
+			constexpr auto operator<=>(const NativeUUID& other) const noexcept
+			{
+				if (auto cmp = Data1 <=> other.Data1; cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = Data2 <=> other.Data2; cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = Data3 <=> other.Data3; cmp != 0)
+				{
+					return cmp;
+				}
+
+				for (size_t i = 0; i < sizeof(NativeUUID::Data4); i++)
+				{
+					if (auto cmp = Data4[i] <=> other.Data4[i]; cmp != 0)
+					{
+						return cmp;
+					}
+				}
+				return std::strong_ordering::equal;
+			}
 			constexpr bool operator==(const NativeUUID& other) const noexcept
 			{
-				if (this == &other)
-				{
-					return true;
-				}
-				else if (Data1 == other.Data1 && Data2 == other.Data2 && Data3 == other.Data3)
-				{
-					for (size_t i = 0; i < sizeof(NativeUUID::Data4); i++)
-					{
-						if (Data4[i] != other.Data4[i])
-						{
-							return false;
-						}
-					}
-					return true;
-				}
-				return false;
-			}
-			constexpr bool operator!=(const NativeUUID& other) const noexcept
-			{
-				return !(*this == other);
+				return *this <=> other == 0;
 			}
 	};
 }
@@ -110,7 +115,7 @@ namespace std
 		static constexpr bool is_bounded = true;
 		static constexpr bool is_integer = true;
 		static constexpr bool is_signed = false;
-		static constexpr int radix = 2;
+		static constexpr int radix = 16;
 
 		static constexpr kxf::NativeUUID min() noexcept
 		{

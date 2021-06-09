@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "Win32CommonEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
+#include "kxf/Log/Common.h"
 #include <Windows.h>
 
 namespace kxf::EventSystem::Private
@@ -89,7 +90,7 @@ namespace kxf::EventSystem::Private
 				}
 				default:
 				{
-					wxLogDebug("unexpected 'MsgWaitForMultipleObjects' return value '%lu'", static_cast<unsigned long>(waitStatus));
+					Log::Debug("unexpected 'MsgWaitForMultipleObjects' return value '{}'", waitStatus);
 					break;
 				}
 			};

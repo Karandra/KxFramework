@@ -17,6 +17,7 @@
 #include <exception>
 #include <stdexcept>
 #include <utility>
+#include <compare>
 #include <tuple>
 
 // Often used wxWidgets headers
@@ -53,16 +54,6 @@
 
 // Main KxFramework header
 #include "kxf/Common.hpp"
-
-#include "kxf/General/String.h"
-#include "kxf/General/StringFormatter.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/StdID.h"
-#include "kxf/Drawing/Geometry.h"
-#include "kxf/Drawing/Angle.h"
-#include "kxf/Drawing/Color.h"
-#include "kxf/UI/StdButton.h"
-#include "kxf/UI/StdIcon.h"
 
 // Undef any remaining Windows headers stuff
 #include "kxf/System/UndefWindows.h"

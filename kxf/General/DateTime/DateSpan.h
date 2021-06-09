@@ -33,25 +33,6 @@ namespace kxf
 		private:
 			wxDateSpan m_Value;
 
-		private:
-			int Compare(const wxDateSpan& other) const noexcept
-			{
-				int result = m_Value.GetYears() - other.GetYears();
-				if (result == 0)
-				{
-					result = m_Value.GetMonths() - other.GetMonths();
-					if (result == 0)
-					{
-						result = m_Value.GetWeeks() - other.GetWeeks();
-						if (result == 0)
-						{
-							result = m_Value.GetDays() - other.GetDays();
-						}
-					}
-				}
-				return result;
-			}
-
 		public:
 			DateSpan() noexcept
 			{
@@ -157,29 +138,25 @@ namespace kxf
 				return m_Value;
 			}
 
+			std::strong_ordering operator<=>(const DateSpan& other) const noexcept
+			{
+				if (auto cmp = m_Value.GetYears() <=> other.GetYears(); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = m_Value.GetMonths() <=> other.GetMonths(); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = m_Value.GetWeeks() <=> other.GetWeeks(); cmp != 0)
+				{
+					return cmp;
+				}
+				return m_Value.GetDays() <=> other.GetDays();
+			}
 			bool operator==(const DateSpan& other) const noexcept
 			{
 				return m_Value == other.m_Value;
-			}
-			bool operator!=(const DateSpan& other) const noexcept
-			{
-				return !(*this == other);
-			}
-			bool operator<(const DateSpan& other) const noexcept
-			{
-				return Compare(other.m_Value) < 0;
-			}
-			bool operator<=(const DateSpan& other) const noexcept
-			{
-				return Compare(other.m_Value) <= 0;
-			}
-			bool operator>(const DateSpan& other) const noexcept
-			{
-				return Compare(other.m_Value) > 0;
-			}
-			bool operator>=(const DateSpan& other) const noexcept
-			{
-				return Compare(other.m_Value) >= 0;
 			}
 
 			DateSpan& operator+=(const DateSpan& other) noexcept

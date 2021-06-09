@@ -34,7 +34,7 @@ namespace kxf::RTTI
 		public:
 			void Invoke(IObject* object) noexcept override
 			{
-				m_Deleter(object);
+				std::invoke(m_Deleter, object);
 			}
 	};
 

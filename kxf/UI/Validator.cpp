@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "Validator.h"
 #include <wx/spinctrl.h>
+#include "kxf/General/Format.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace
@@ -99,7 +100,29 @@ namespace kxf::UI::Private
 		{
 			if (HWND textArea = ::GetWindow(spinInteger->GetHandle(), GW_HWNDPREV))
 			{
-				value = StringFormatter::Formatter(wxS("%1"))(spinInteger->GetValue(), 0, spinInteger->GetBase()).ToString();
+				switch (spinInteger->GetBase())
+				{
+					case 2:
+					{
+						value = Format("{:0b}", spinInteger->GetValue());
+						break;
+					}
+					case 8:
+					{
+						value = Format("{:0o}", spinInteger->GetValue());
+						break;
+					}
+					case 16:
+					{
+						value = Format("{:0x}", spinInteger->GetValue());
+						break;
+					}
+					default:
+					{
+						value = Format("{:0d}", spinInteger->GetValue());
+						break;
+					}
+				};
 
 				auto [selectionStart, selectionEnd] = ProcessSelectionRange(textArea, value, position);
 				ProcessTextSelection(value, position, selectionStart, selectionEnd);

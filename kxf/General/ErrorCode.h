@@ -100,10 +100,6 @@ namespace kxf
 			{
 				return IsSameAs(other);
 			}
-			bool operator!=(const ErrorCode& other) const noexcept
-			{
-				return !IsSameAs(other);
-			}
 
 			ErrorCode& operator=(ErrorCode&&) noexcept = default;
 			ErrorCode& operator=(const ErrorCode&) = delete;

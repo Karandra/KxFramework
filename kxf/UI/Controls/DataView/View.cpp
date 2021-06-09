@@ -5,6 +5,7 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "Renderer.h"
+#include "kxf/General/Format.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
@@ -780,7 +781,7 @@ namespace kxf::UI::DataView
 			String title = column->GetTitle();
 			if (title.IsEmpty())
 			{
-				title = String::Format(wxS("<%1>"), i + 1);
+				title = Format("<{}>", i + 1);
 			}
 
 			MenuItem* menuItem = menu.AddItem(title, NullString, wxITEM_CHECK);

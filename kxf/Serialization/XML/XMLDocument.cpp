@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "XMLDocument.h"
 #include "Private/Utility.h"
+#include "kxf/General/Format.h"
 #include "kxf/Network/URI.h"
 #include "kxf/Utility/SoftwareLicenseDB.h"
 
@@ -18,7 +19,7 @@ namespace kxf
 			m_Document.DeleteNode(m_Document.FirstChild());
 		}
 
-		String declaration = String::Format(wxS(R"(xml version="1.0" encoding="%1")"), m_DeclaredEncoding);
+		String declaration = Format(R"(xml version="1.0" encoding="{}")", m_DeclaredEncoding);
 		auto utf8 = declaration.ToUTF8();
 		m_Document.InsertFirstChild(m_Document.NewDeclaration(utf8.data()));
 	}

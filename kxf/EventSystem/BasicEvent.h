@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IEvent.h"
 #include "Private/EventWaitInfo.h"
+#include "kxf/General/DateTime.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::EventSystem

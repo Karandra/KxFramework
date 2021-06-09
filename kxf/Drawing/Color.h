@@ -532,25 +532,23 @@ namespace kxf
 				return !IsValid();
 			}
 
+			constexpr auto operator<=>(const Color&) const noexcept = default;
 			constexpr bool operator==(const Color& other) const noexcept
 			{
-				return this == &other || m_Value == other.m_Value;
+				return m_Value == other.m_Value;
 			}
-			constexpr bool operator==(const wxColour& other) const noexcept
+
+			std::strong_ordering operator<=>(const wxColour& other) const noexcept
+			{
+				return GetFixed8() <=> PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
+			}
+			bool operator==(const wxColour& other) const noexcept
 			{
 				if (IsValid() && other.IsOk())
 				{
 					return GetFixed8() == PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
 				}
 				return false;
-			}
-			constexpr bool operator!=(const Color& other) const noexcept
-			{
-				return !(*this == other);
-			}
-			constexpr bool operator!=(const wxColour& other) const noexcept
-			{
-				return !(*this == other);
 			}
 
 			constexpr Color& operator=(Color&&) noexcept = default;

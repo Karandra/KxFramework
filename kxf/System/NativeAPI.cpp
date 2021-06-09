@@ -41,7 +41,7 @@ namespace kxf::NativeAPI::Private
 			}
 			else
 			{
-				Log::Warning(wxS("Couldn't load \"%1\" library"), library.Name);
+				Log::Warning("Couldn't load \"{}\" library", library.Name);
 			}
 		}
 		return count;

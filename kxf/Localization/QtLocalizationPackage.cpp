@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "QtLocalizationPackage.h"
+#include "kxf/General/Format.h"
 #include "kxf/Serialization/XML.h"
 
 namespace kxf
@@ -28,7 +29,7 @@ namespace kxf
 						{
 							if (auto locationNode = messageNode.GetFirstChildElement(wxS("location")))
 							{
-								item.SetComment(String::Format(wxS("[Context=%1][FileName=%2][Line=%3]"), name, locationNode.GetAttribute(wxS("filename")), locationNode.GetAttribute(wxS("line"))));
+								item.SetComment(Format("[Context={}][FileName={}][Line={}]", name, locationNode.GetAttribute(wxS("filename")), locationNode.GetAttribute(wxS("line"))));
 							}
 
 							if (loadingScheme.Contains(LoadingScheme::OverwriteExisting))

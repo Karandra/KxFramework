@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "System.h"
+#include "kxf/General/Format.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include "kxf/System/UndefWindows.h"
@@ -32,10 +33,7 @@ namespace kxf::System::Private
 
 	String ResourceTypeToName(size_t id)
 	{
-		wchar_t buffer[64] = {};
-		swprintf_s(buffer, L"%zu", id);
-
-		return buffer;
+		return ToString(id);
 	}
 	String ResourceTypeToName(const wchar_t* id)
 	{
@@ -142,11 +140,11 @@ namespace kxf::System::Private
 			{
 				case KernelObjectNamespace::Local:
 				{
-					return String::Format(wxS("Local\\%1"), name);
+					return Format("Local\\{}", name);
 				}
 				case KernelObjectNamespace::Global:
 				{
-					return String::Format(wxS("Global\\%1"), name);
+					return Format("Global\\{}", name);
 				}
 			};
 		}

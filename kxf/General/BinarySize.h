@@ -196,34 +196,11 @@ namespace kxf
 			}
 
 			// Formatting
-			String Format(BinarySizeUnit unit = BinarySizeUnit::Auto, FlagSet<BinarySizeFormat> format = {}, int precision = -1) const;
+			String ToString(BinarySizeUnit unit = BinarySizeUnit::Auto, FlagSet<BinarySizeFormat> format = {}, int precision = -1) const;
 
 		public:
 			// Comparison
-			constexpr bool operator==(const BinarySize& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			constexpr bool operator!=(const BinarySize& other) const noexcept
-			{
-				return m_Value != other.m_Value;
-			}
-			constexpr bool operator<(const BinarySize& other) const noexcept
-			{
-				return m_Value < other.m_Value;
-			}
-			constexpr bool operator<=(const BinarySize& other) const noexcept
-			{
-				return m_Value <= other.m_Value;
-			}
-			constexpr bool operator>(const BinarySize& other) const noexcept
-			{
-				return m_Value > other.m_Value;
-			}
-			constexpr bool operator>=(const BinarySize& other) const noexcept
-			{
-				return m_Value >= other.m_Value;
-			}
+			constexpr auto operator<=>(const BinarySize&) const noexcept = default;
 
 			// Arithmetics
 			constexpr BinarySize operator+(const BinarySize& other) const noexcept

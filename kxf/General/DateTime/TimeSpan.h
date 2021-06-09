@@ -158,30 +158,7 @@ namespace kxf
 				return TimeSpan::GetMilliseconds();
 			}
 
-			constexpr bool operator==(const TimeSpan& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			constexpr bool operator!=(const TimeSpan& other) const noexcept
-			{
-				return !(*this == other);
-			}
-			constexpr bool operator<(const TimeSpan& other) const noexcept
-			{
-				return m_Value < other.m_Value;
-			}
-			constexpr bool operator<=(const TimeSpan& other) const noexcept
-			{
-				return m_Value <= other.m_Value;
-			}
-			constexpr bool operator>(const TimeSpan& other) const noexcept
-			{
-				return m_Value > other.m_Value;
-			}
-			constexpr bool operator>=(const TimeSpan& other) const noexcept
-			{
-				return m_Value >= other.m_Value;
-			}
+			constexpr auto operator<=>(const TimeSpan&) const noexcept = default;
 
 			constexpr TimeSpan& operator+=(const TimeSpan& other) noexcept
 			{

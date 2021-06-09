@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "Utility.h"
+#include "kxf/General/Format.h"
 #include <Windows.h>
 
 namespace kxf::Application::Private
@@ -14,7 +15,7 @@ namespace kxf::Application::Private
 		}
 		catch (std::exception& e)
 		{
-			what = String::Format(wxS("standard exception of type \"%s\" with message \"%s\""), typeid(e).name(), e.what());
+			what = Format("standard exception of type \"{}\" with message \"{}\"", typeid(e).name(), e.what());
 		}
 		catch (...)
 		{

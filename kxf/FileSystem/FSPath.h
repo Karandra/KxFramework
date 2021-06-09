@@ -190,6 +190,19 @@ namespace kxf
 				return std::move(m_Path);
 			}
 
+			auto operator<=>(const FSPath& other) const
+			{
+				return m_Path.CompareTo(other.m_Path, StringOpFlag::IgnoreCase);
+			}
+			auto operator<=>(const String& other) const
+			{
+				return m_Path.CompareTo(other, StringOpFlag::IgnoreCase);
+			}
+			auto operator<=>(const XChar* other) const
+			{
+				return m_Path.CompareTo(other, StringOpFlag::IgnoreCase);
+			}
+
 			bool operator==(const FSPath& other) const
 			{
 				return IsSameAs(other, false);
@@ -205,15 +218,6 @@ namespace kxf
 			
 			template<class T>
 			bool operator!=(T&& other) const
-			{
-				return !(*this == other);
-			}
-
-			bool operator!=(const String& other) const
-			{
-				return !(*this == other);
-			}
-			bool operator!=(const XChar* other) const
 			{
 				return !(*this == other);
 			}

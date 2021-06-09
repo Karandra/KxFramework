@@ -23,15 +23,15 @@ namespace kxf
 	}
 	String DefaultRPCExchanger::GetControlBufferName() const
 	{
-		return String::Format(wxS("%1:%2-ControlBuffer"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
 	}
 	String DefaultRPCExchanger::GetResultBufferName() const
 	{
-		return String::Format(wxS("%1:%2-ResultBuffer"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
 	}
 	String DefaultRPCExchanger::GetSessionMutexName() const
 	{
-		return String::Format(wxS("%1:%2-SessionMutex"), g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
 	}
 
 	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)

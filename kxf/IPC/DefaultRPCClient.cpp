@@ -2,10 +2,11 @@
 #include "DefaultRPCClient.h"
 #include "DefaultRPCEvent.h"
 #include "Private/DefaultRPCExchangerWindow.h"
-#include "kxf/Serialization/BinarySerializer.h"
+#include "kxf/Log/Common.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/IO/MemoryStream.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <Windows.h>
 
 namespace kxf
@@ -49,7 +50,7 @@ namespace kxf
 		}
 		catch (const BinarySerializerException& e)
 		{
-			wxLogError("Serialization exception: %s", e.what());
+			Log::Error("Serialization exception: {}", e.what());
 		}
 
 		DoDisconnectFromServer(false);

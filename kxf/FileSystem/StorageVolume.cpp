@@ -6,6 +6,7 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/System/HandlePtr.h"
+#include "kxf/General/Format.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 
@@ -165,7 +166,7 @@ namespace kxf
 	{
 		static_assert(ARRAYSIZE(StorageVolume::m_Path) >= g_VolumePathTotalLength + 1, "insufficient buffer size");
 
-		AssignPath(String::Format(wxS(R"(\\?\Volume{%1}\)"), id.ToString()));
+		AssignPath(Format(R"(\\?\Volume{}\)", id.ToString(UUIDFormat::CurlyBraces)));
 	}
 	StorageVolume::StorageVolume(const LegacyVolume& legacyVolume)
 	{

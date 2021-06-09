@@ -85,6 +85,14 @@ namespace kxf
 				return IsNull();
 			}
 
+			auto operator<=>(const Locale& other) const noexcept
+			{
+				if (this == &other)
+				{
+					return std::strong_ordering::equal;
+				}
+				return std::wstring_view(m_LocaleName) <=> std::wstring_view(other.m_LocaleName);
+			}
 			bool operator==(const Locale& other) const noexcept
 			{
 				if (this == &other)
@@ -96,10 +104,6 @@ namespace kxf
 					return std::wstring_view(m_LocaleName) == std::wstring_view(other.m_LocaleName);
 				}
 				return false;
-			}
-			bool operator!=(const Locale& other) const noexcept
-			{
-				return !(*this == other);
 			}
 	};
 }

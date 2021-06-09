@@ -403,12 +403,12 @@ namespace kxf::Sciter
 
 		auto SetAttribute = [&](const String& value)
 		{
-			GetRootElement().SetAttribute(wxS("window-blurbehind"), value);
+			GetRootElement().SetAttribute("window-blurbehind", value);
 			if (!value.IsEmpty())
 			{
-				return !ExecuteScript(String::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsUndefined();
+				return !ExecuteScript(Format("view.windowBlurbehind = #{};", value)).IsUndefined();
 			}
-			return !ExecuteScript(wxS("view.windowBlurbehind = #none;")).IsUndefined();
+			return !ExecuteScript("view.windowBlurbehind = #none;").IsUndefined();
 		};
 
 		switch (blurMode)

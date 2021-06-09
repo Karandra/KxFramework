@@ -3,6 +3,7 @@
 
 namespace kxf
 {
+	class UniversallyUniqueID;
 	class DefaultRPCExchanger;
 }
 

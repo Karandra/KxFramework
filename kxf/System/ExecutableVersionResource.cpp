@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "ExecutableVersionResource.h"
+#include "kxf/General/Format.h"
 #include <Windows.h>
 #include "UndefWindows.h"
 
@@ -99,10 +100,10 @@ namespace kxf
 	{
 		if (!IsNull())
 		{
-			String queryTemplate = wxString::Format(wxS("\\StringFileInfo\\%04x%04x"), static_cast<int>(m_LangID), static_cast<int>(m_CodePage));
+			String queryTemplate = Format("\\StringFileInfo\\{:04x}{:04x}", m_LangID, m_CodePage);
 			auto GetField = [&](const wchar_t* fieldName, bool isVersion = false) -> String
 			{
-				String query = String::Format(wxS("%1\\%2"), queryTemplate, fieldName);
+				String query = Format("{}\\{}", queryTemplate, fieldName);
 
 				UINT size = 0;
 				LPWSTR stringInfo = nullptr;

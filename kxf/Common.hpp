@@ -22,7 +22,9 @@
 #include <algorithm>
 #include <type_traits>
 #include <utility>
+#include <compare>
 #include <tuple>
+#include <span>
 
 // Essential headers
 #include "kxf/wxWidgets/Setup.h"

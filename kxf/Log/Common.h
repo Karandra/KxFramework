@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/General/String.h"
-#include "kxf/General/StringFormatter.h"
+#include "kxf/General/Format.h"
 
 namespace kxf::Log
 {
@@ -55,7 +55,7 @@ namespace kxf::Log
 		{
 			if (IsLevelEnabled(level))
 			{
-				LogString(level, String::Format(format, std::forward<Args>(arg)...));
+				LogString(level, Format(format, std::forward<Args>(arg)...));
 			}
 		}
 	}

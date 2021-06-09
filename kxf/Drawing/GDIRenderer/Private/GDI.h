@@ -1,5 +1,6 @@
 #pragma once
 #include "../../ColorDepth.h"
+#include "../../Geometry.h"
 #include "wx/msw/gdiimage.h"
 
 namespace kxf

@@ -324,14 +324,7 @@ namespace kxf::Geometry
 			constexpr OrderedPairTemplate& operator=(const OrderedPairTemplate&) noexcept = default;
 			constexpr OrderedPairTemplate& operator=(OrderedPairTemplate&&) noexcept = default;
 
-			constexpr bool operator==(const TDerived& other) const noexcept
-			{
-				return m_X == other.m_X && m_Y == other.m_Y;
-			}
-			constexpr bool operator!=(const TDerived& other) const noexcept
-			{
-				return m_X != other.m_X || m_Y != other.m_Y;
-			}
+			constexpr auto operator<=>(const OrderedPairTemplate&) const noexcept = default;
 
 			constexpr TDerived& operator+=(const TDerived& other) noexcept
 			{
@@ -1035,14 +1028,7 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr bool operator==(const TDerived& other) const noexcept
-			{
-				return m_X == other.m_X && m_Y == other.m_Y && m_Width == other.m_Width && m_Height == other.m_Height;
-			}
-			constexpr bool operator!=(const TDerived& other) const noexcept
-			{
-				return m_X != other.m_X || m_Y != other.m_Y || m_Width != other.m_Width || m_Height != other.m_Height;
-			}
+			constexpr auto operator<=>(const RectTemplate&) const noexcept = default;
 
 			constexpr TDerived operator+(const TDerived& other) const noexcept
 			{
@@ -1122,39 +1108,65 @@ namespace kxf::Geometry
 			}
 
 		public:
-			using TBase::operator==;
-			using TBase::operator!=;
+			constexpr auto operator<=>(const BasicPoint& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
+			}
+			constexpr bool operator==(const BasicPoint& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
+			}
+
+			auto operator<=>(const wxPoint& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.x); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Y <=> static_cast<TValue>(other.y);
+			}
 			bool operator==(const wxPoint& other) const noexcept
 			{
-				return *this == BasicPoint(other);
+				return *this <=> other == 0;
+			}
+
+			auto operator<=>(const wxRealPoint& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.x); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Y <=> static_cast<TValue>(other.y);
 			}
 			bool operator==(const wxRealPoint& other) const noexcept
 			{
-				return *this == BasicPoint(other);
+				return *this <=> other == 0;
+			}
+
+			auto operator<=>(const wxPoint2DInt& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Y <=> static_cast<TValue>(other.m_y);
 			}
 			bool operator==(const wxPoint2DInt& other) const noexcept
 			{
-				return *this == BasicPoint(other);
+				return *this <=> other == 0;
+			}
+
+			auto operator<=>(const wxPoint2DDouble& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Y <=> static_cast<TValue>(other.m_y);
 			}
 			bool operator==(const wxPoint2DDouble& other) const noexcept
 			{
-				return *this == BasicPoint(other);
-			}
-			bool operator!=(const wxPoint& other) const noexcept
-			{
-				return *this != BasicPoint(other);
-			}
-			bool operator!=(const wxRealPoint& other) const noexcept
-			{
-				return *this != BasicPoint(other);
-			}
-			bool operator!=(const wxPoint2DInt& other) const noexcept
-			{
-				return *this != BasicPoint(other);
-			}
-			bool operator!=(const wxPoint2DDouble& other) const noexcept
-			{
-				return *this != BasicPoint(other);
+				return *this <=> other == 0;
 			}
 
 			operator wxPoint() const noexcept
@@ -1246,15 +1258,26 @@ namespace kxf::Geometry
 			}
 
 		public:
-			using TBase::operator==;
-			using TBase::operator!=;
+			constexpr auto operator<=>(const BasicSize& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
+			}
+			constexpr bool operator==(const BasicSize& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
+			}
+
+			auto operator<=>(const wxSize& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.GetWidth()); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Y <=> static_cast<TValue>(other.GetHeight());
+			}
 			bool operator==(const wxSize& other) const noexcept
 			{
-				return *this == BasicSize(other);
-			}
-			bool operator!=(const wxSize& other) const noexcept
-			{
-				return *this != BasicSize(other);
+				return *this <=> other == 0;
 			}
 
 			operator wxSize() const noexcept
@@ -1294,31 +1317,76 @@ namespace kxf::Geometry
 			}
 
 		public:
-			using TBase::operator==;
-			using TBase::operator!=;
+			constexpr auto operator<=>(const BasicRect& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
+			}
+			constexpr bool operator==(const BasicRect& other) const noexcept
+			{
+				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
+			}
+
+			auto operator<=>(const wxRect& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.GetX()); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.GetY()); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.GetWidth()); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Height <=> static_cast<TValue>(other.GetHeight());
+			}
 			bool operator==(const wxRect& other) const noexcept
 			{
-				return *this == BasicRect(other);
+				return *this <=> other == 0;
+			}
+
+			auto operator<=>(const wxRect2DInt& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.m_y); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.m_width); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Height <=> static_cast<TValue>(other.m_height);
 			}
 			bool operator==(const wxRect2DInt& other) const noexcept
 			{
-				return *this == BasicRect(other);
+				return *this <=> other == 0;
+			}
+
+			auto operator<=>(const wxRect2DDouble& other) const noexcept
+			{
+				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.m_y); cmp != 0)
+				{
+					return cmp;
+				}
+				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.m_width); cmp != 0)
+				{
+					return cmp;
+				}
+				return TBase::m_Height <=> static_cast<TValue>(other.m_height);
 			}
 			bool operator==(const wxRect2DDouble& other) const noexcept
 			{
-				return *this == BasicRect(other);
-			}
-			bool operator!=(const wxRect& other) const noexcept
-			{
-				return *this != BasicRect(other);
-			}
-			bool operator!=(const wxRect2DInt& other) const noexcept
-			{
-				return *this != BasicRect(other);
-			}
-			bool operator!=(const wxRect2DDouble& other) const noexcept
-			{
-				return *this != BasicRect(other);
+				return *this <=> other == 0;
 			}
 
 			operator wxRect() const noexcept

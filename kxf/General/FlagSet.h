@@ -2,6 +2,7 @@
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Utility/TypeTraits.h"
 #include <utility>
+#include <format>
 #include <type_traits>
 
 namespace kxf
@@ -105,11 +106,9 @@ namespace kxf
 				return m_Value;
 			}
 
-			template<class T = TInt>
+			template<class T = TInt> requires(std::is_integral_v<T> || std::is_enum_v<T>)
 			constexpr T ToInt() const noexcept
 			{
-				static_assert(std::is_integral_v<T> || std::is_enum_v<T>, "integer type required");
-
 				return static_cast<T>(m_Value);
 			}
 
@@ -202,14 +201,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			constexpr bool operator==(const FlagSet& other) const noexcept
-			{
-				return Equals(other);
-			}
-			constexpr bool operator!=(const FlagSet& other) const noexcept
-			{
-				return !Equals(other);
-			}
+			constexpr auto operator<=>(const FlagSet&) const noexcept = default;
 
 			constexpr FlagSet& operator=(const FlagSet&) noexcept = default;
 			constexpr FlagSet& operator=(FlagSet&&) noexcept = default;
@@ -275,7 +267,6 @@ namespace kxf
 	};
 }
 
-
 namespace std
 {
 	template<class T>
@@ -284,6 +275,17 @@ namespace std
 		constexpr size_t operator()(const kxf::FlagSet<T>& flagSet) const noexcept
 		{
 			return std::hash<typename kxf::FlagSet<T>::TInt>()(flagSet.ToInt());
+		}
+	};
+
+	template<class TEnum, class TChar>
+	struct formatter<kxf::FlagSet<TEnum>, TChar>: formatter<typename kxf::FlagSet<TEnum>::TInt, TChar>
+	{
+		template<class TFormatContext>
+		auto format(const kxf::FlagSet<TEnum>& value, TFormatContext& formatContext)
+		{
+			using Tx = typename kxf::FlagSet<TEnum>::TInt;
+			return formatter<Tx, TChar>::format(value.ToInt(), formatContext);
 		}
 	};
 }

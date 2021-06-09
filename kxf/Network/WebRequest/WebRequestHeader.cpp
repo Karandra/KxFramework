@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "WebRequestHeader.h"
+#include "kxf/General/Format.h"
 
 namespace kxf
 {
@@ -49,7 +50,7 @@ namespace kxf
 		{
 			if (!m_Value.IsEmpty())
 			{
-				return String::Format(wxS("%1: %2"), m_Name, m_Value);
+				return kxf::Format("{}: {}", m_Name, m_Value);
 			}
 			else
 			{

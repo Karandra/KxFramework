@@ -100,14 +100,8 @@ namespace kxf
 				return IsNull();
 			}
 
-			bool operator==(const EventID& other) const noexcept
-			{
-				return this == &other || m_ID == other.m_ID;
-			}
-			bool operator!=(const EventID& other) const noexcept
-			{
-				return this != &other && m_ID != other.m_ID;
-			}
+			std::strong_ordering operator<=>(const EventID&) const noexcept = default;
+			bool operator==(const EventID&) const noexcept = default;
 
 			EventID& operator=(EventID&& other) noexcept
 			{
@@ -200,13 +194,16 @@ namespace kxf
 				return m_ID;
 			}
 
-			bool operator==(const EventTag& other) const noexcept
+			auto operator<=>(const EventTag&) const noexcept = default;
+			bool operator==(const EventTag&) const noexcept = default;
+
+			auto operator<=>(const EventID& other) const noexcept
 			{
-				return m_ID == other.m_ID;
+				return m_ID <=> other;
 			}
-			bool operator!=(const EventTag& other) const noexcept
+			bool operator==(const EventID& other) const noexcept
 			{
-				return m_ID != other.m_ID;
+				return m_ID == other;
 			}
 
 			EventTag& operator=(EventTag&& other) noexcept

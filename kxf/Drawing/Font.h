@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
+#include "kxf/General/String.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf

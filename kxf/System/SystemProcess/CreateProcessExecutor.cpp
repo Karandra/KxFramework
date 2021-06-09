@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "CreateProcessExecutor.h"
 #include "ProcessEvent.h"
+#include "kxf/General/Format.h"
 #include "kxf/System/Private/Shell.h"
 #include "kxf/System/Private/System.h"
 
@@ -259,11 +260,11 @@ namespace kxf::System
 		String commandLine = info.GetExecutableParameters();
 		if (commandLine.IsEmpty())
 		{
-			commandLine = String::Format(wxS("\"%1\""), m_ExecutablePath);
+			commandLine = Format("\"{}\"", m_ExecutablePath);
 		}
 		else
 		{
-			commandLine = String::Format(wxS("\"%1\" %2"), m_ExecutablePath, commandLine);
+			commandLine = Format("\"{}\" {}", m_ExecutablePath, commandLine);
 		}
 		m_CommandLineBuffer.AppendData(commandLine.wc_str(), commandLine.length() * sizeof(wchar_t) + sizeof(wchar_t));
 

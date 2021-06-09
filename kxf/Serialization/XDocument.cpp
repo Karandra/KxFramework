@@ -103,6 +103,6 @@ namespace kxf::XDocument
 	}
 	std::optional<bool> IXNode::ParseBool(const String& value) const
 	{
-		return Utility::ParsePool(value);
+		return Utility::ParseBool(value);
 	}
 }

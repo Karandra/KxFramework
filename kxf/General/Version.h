@@ -9,7 +9,7 @@ namespace kxf
 {
 	class KX_API Version final
 	{
-		friend Private::Version::Cmp Private::Version::Compare(const kxf::Version& left, const kxf::Version& right);
+		friend std::strong_ordering Private::Version::Compare(const kxf::Version& left, const kxf::Version& right);
 
 		public:
 			using TDefaultItem = Private::Version::DefaultFormat::Array;
@@ -92,12 +92,8 @@ namespace kxf
 				return IsEmpty();
 			}
 
+			std::strong_ordering operator<=>(const Version& other) const;
 			bool operator==(const Version& other) const;
-			bool operator!=(const Version& other) const;
-			bool operator<(const Version& other) const;
-			bool operator<=(const Version& other) const;
-			bool operator>(const Version& other) const;
-			bool operator>=(const Version& other) const;
 
 			operator String() const
 			{

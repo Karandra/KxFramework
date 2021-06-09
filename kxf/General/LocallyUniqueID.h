@@ -51,30 +51,7 @@ namespace kxf
 			}
 
 		public:
-			constexpr bool operator==(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID == other.m_ID;
-			}
-			constexpr bool operator!=(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID != other.m_ID;
-			}
-			constexpr bool operator<(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID < other.m_ID;
-			}
-			constexpr bool operator<=(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID <= other.m_ID;
-			}
-			constexpr bool operator>(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID > other.m_ID;
-			}
-			constexpr bool operator>=(const LocallyUniqueID& other) const noexcept
-			{
-				return m_ID >= other.m_ID;
-			}
+			constexpr auto operator<=>(const LocallyUniqueID&) const noexcept = default;
 	};
 }
 

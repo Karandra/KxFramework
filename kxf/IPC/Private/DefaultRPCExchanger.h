@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/General/String.h"
+#include "kxf/General/Format.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Threading/Mutex.h"
@@ -163,7 +164,7 @@ namespace kxf
 			auto read = Serialization::ReadObject(stream, value.m_Version);
 			if (value.m_Version != DefaultRPCProcedure::GetFormatVersion())
 			{
-				throw BinarySerializerException(String::Format("Unsupported version encountered during 'DefaultRPCProcedure' deserialization: %1 found, %2 expected",
+				throw BinarySerializerException(Format("Unsupported version encountered during 'DefaultRPCProcedure' deserialization: {} found, {} expected",
 												value.m_Version,
 												DefaultRPCProcedure::GetFormatVersion())
 				);

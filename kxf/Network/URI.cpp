@@ -545,17 +545,9 @@ namespace kxf
 	{
 		return m_URI == other.m_URI || (m_URI && other.m_URI && m_URI->IsSameAs(*other.m_URI));
 	}
-	bool URI::operator!=(const URI& other) const noexcept
-	{
-		return !(*this == other);
-	}
 	bool URI::operator==(const wxURI& other) const
 	{
 		return *this == URI(other);
-	}
-	bool URI::operator!=(const wxURI& other) const
-	{
-		return !(*this == other);
 	}
 
 	URI::operator wxURI() const
