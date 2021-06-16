@@ -35,7 +35,7 @@ namespace kxf
 	{
 	}
 	LocallyUniqueID::LocallyUniqueID(const String& value) noexcept
-		:m_ID(CreateFromString(value.wx_str()))
+		:m_ID(CreateFromString(value.xc_str()))
 	{
 	}
 

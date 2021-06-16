@@ -270,7 +270,7 @@ namespace kxf
 			void RethrowStoredException() override;
 
 			// Application::IDebugHandler
-			void OnAssertFailure(String file, int line, String function, String condition, String message) override;
+			void OnAssertFailure(const String& file, int line, const String& function, const String& condition, const String& message) override;
 
 			// Application::ICommandLine
 			void InitializeCommandLine(char** argv, size_t argc) override;

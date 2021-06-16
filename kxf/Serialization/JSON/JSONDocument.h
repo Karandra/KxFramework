@@ -54,12 +54,19 @@ namespace nlohmann
 	template<>
 	struct adl_serializer<wxString> final
 	{
-		static void to_json(json& jsonDocument, const wxString& value)
+		static void to_json(json& jsonDocument, const wxString& value);
+		static void from_json(const json& jsonDocument, wxString& value);
+	};
+
+	template<>
+	struct adl_serializer<kxf::String> final
+	{
+		static void to_json(json& jsonDocument, const kxf::String& value)
 		{
 			auto utf8 = value.ToUTF8();
 			jsonDocument = std::string_view(utf8.data(), utf8.length());
 		}
-		static void from_json(const json& jsonDocument, wxString& value)
+		static void from_json(const json& jsonDocument, kxf::String& value)
 		{
 			if (jsonDocument.is_null())
 			{
@@ -68,21 +75,8 @@ namespace nlohmann
 			else
 			{
 				const json::string_t& string = jsonDocument.get_ref<const json::string_t&>();
-				value = wxString::FromUTF8Unchecked(string.data(), string.length());
+				value = kxf::String::FromUTF8(string.data(), string.length());
 			}
-		}
-	};
-
-	template<>
-	struct adl_serializer<kxf::String> final
-	{
-		static void to_json(json& jsonDocument, const kxf::String& value)
-		{
-			adl_serializer<wxString>::to_json(jsonDocument, value.GetWxString());
-		}
-		static void from_json(const json& jsonDocument, kxf::String& value)
-		{
-			adl_serializer<wxString>::from_json(jsonDocument, value.GetWxString());
 		}
 	};
 }

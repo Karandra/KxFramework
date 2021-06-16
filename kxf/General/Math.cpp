@@ -14,11 +14,11 @@ namespace
 
 namespace kxf::Math
 {
-	wxUniChar GetDecimalSeparator()
+	UniChar GetDecimalSeparator()
 	{
 		return std::use_facet<std::numpunct<wxChar>>(std::cout.getloc()).decimal_point();
 	}
-	wxUniChar GetDecimalCSeparator()
+	UniChar GetDecimalCSeparator()
 	{
 		return wxS('.');
 	}
@@ -192,7 +192,7 @@ namespace kxf::Math
 
 	std::optional<int64_t> FromBase(const String& x, int base)
 	{
-		return x.ToInt<int64_t>(base);
+		return x.ToInteger<int64_t>(base);
 	}
 	String ToBase(int64_t x, int base)
 	{

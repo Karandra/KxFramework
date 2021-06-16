@@ -112,7 +112,7 @@ namespace kxf::Log
 		if (wxLog::IsLevelEnabled(logWxLevel, wxLOG_COMPONENT))
 		{
 			wxLogger logger(logWxLevel, __FILE__, __LINE__, __WXFUNCTION__, wxLOG_COMPONENT);
-			logger.Log(wxS("%s"), value.GetWxString());
+			logger.Log(wxS("%s"), value.xc_str());
 		}
 	}
 }

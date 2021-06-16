@@ -95,27 +95,27 @@ namespace
 
 			if (items.size() == shortVariant || items.size() == longVariant)
 			{
-				uuid.Data1 = items[0].ToInt<uint32_t>(16).value_or(0);
-				uuid.Data2 = items[1].ToInt<uint16_t>(16).value_or(0);
-				uuid.Data3 = items[2].ToInt<uint16_t>(16).value_or(0);
+				uuid.Data1 = items[0].ToInteger<uint32_t>(16).value_or(0);
+				uuid.Data2 = items[1].ToInteger<uint16_t>(16).value_or(0);
+				uuid.Data3 = items[2].ToInteger<uint16_t>(16).value_or(0);
 
 				if (items.size() == shortVariant)
 				{
 					const String& data4_01 = items[3];
-					uuid.Data4[0] = data4_01.Left(2).ToInt<uint8_t>(16).value_or(0);
-					uuid.Data4[1] = data4_01.Right(2).ToInt<uint8_t>(16).value_or(0);
+					uuid.Data4[0] = data4_01.Left(2).ToInteger<uint8_t>(16).value_or(0);
+					uuid.Data4[1] = data4_01.Right(2).ToInteger<uint8_t>(16).value_or(0);
 
 					const String& data4_27 = items[4];
 					for (size_t i = 2; i < std::size(uuid.Data4); i++)
 					{
-						uuid.Data4[i] = data4_27.Mid((i - 2) * 2, 2).ToInt<uint8_t>(16).value_or(0);
+						uuid.Data4[i] = data4_27.Mid((i - 2) * 2, 2).ToInteger<uint8_t>(16).value_or(0);
 					}
 				}
 				else if (items.size() == longVariant)
 				{
 					for (size_t i = 0; i < std::size(uuid.Data4); i++)
 					{
-						uuid.Data4[i] = items[3 + i].ToInt<uint8_t>(16).value_or(0);
+						uuid.Data4[i] = items[3 + i].ToInteger<uint8_t>(16).value_or(0);
 					}
 				}
 				return uuid;
@@ -196,7 +196,7 @@ namespace kxf
 	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format, const String& separator) const
 	{
 		// We don't allow characters that can occur in the UUID itself to be used as a separator
-		if (!separator.IsEmptyOrWhitespace() && separator != g_DefaultSeparator && separator.ContainsAnyOfCharacters(wxS("0x123456789abcdef"), StringOpFlag::IgnoreCase))
+		if (!separator.IsEmptyOrWhitespace() && separator != g_DefaultSeparator && separator.ContainsAnyOfCharacters(wxS("0x123456789abcdef"), StringActionFlag::IgnoreCase))
 		{
 			return {};
 		}

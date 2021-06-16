@@ -220,15 +220,15 @@ namespace kxf::RTTI
 
 	String ClassInfo::GetClassName() const
 	{
-		return String::FromView(DoGetNamePart(m_FullyQualifiedName, NamePart::ClassName));
+		return DoGetNamePart(m_FullyQualifiedName, NamePart::ClassName);
 	}
 	kxf::String ClassInfo::GetNamespace() const
 	{
-		return String::FromView(DoGetNamePart(m_FullyQualifiedName, NamePart::Namespace));
+		return DoGetNamePart(m_FullyQualifiedName, NamePart::Namespace);
 	}
 	String ClassInfo::GetFullyQualifiedName() const
 	{
-		return String::FromView(m_FullyQualifiedName);
+		return m_FullyQualifiedName;
 	}
 
 	bool ClassInfo::IsNull() const noexcept

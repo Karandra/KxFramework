@@ -49,10 +49,10 @@ namespace kxf
 
 	bool UserName::IsSameAs(const UserName& other) const noexcept
 	{
-		const bool namesSame = m_NameFormat == other.m_NameFormat && m_Name.IsSameAs(other.m_Name, StringOpFlag::IgnoreCase);
+		const bool namesSame = m_NameFormat == other.m_NameFormat && m_Name.IsSameAs(other.m_Name, StringActionFlag::IgnoreCase);
 		if (!m_Domain.IsEmpty())
 		{
-			return namesSame && m_Domain.IsSameAs(other.m_Domain, StringOpFlag::IgnoreCase);
+			return namesSame && m_Domain.IsSameAs(other.m_Domain, StringActionFlag::IgnoreCase);
 		}
 		return namesSame;
 	}

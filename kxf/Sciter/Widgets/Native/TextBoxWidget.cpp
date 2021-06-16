@@ -84,6 +84,6 @@ namespace kxf::Sciter
 {
 	String NativeTextBoxWidgetFactory::GetWidgetStylesheet() const
 	{
-		return String::FromView(g_Stylesheet);
+		return g_Stylesheet;
 	}
 }

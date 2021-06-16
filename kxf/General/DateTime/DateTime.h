@@ -359,41 +359,41 @@ namespace kxf
 			{
 				return m_Value.FormatISOTime();
 			}
-			String FormatISOCombined(const wxUniChar& sep = wxS('T')) const
+			String FormatISOCombined(const UniChar& sep = wxS('T')) const
 			{
-				return m_Value.FormatISOCombined(sep);
+				return m_Value.FormatISOCombined(sep.ToASCII().value_or('T'));
 			}
 
-			bool ParseDate(const String& date, String::const_iterator* end = nullptr)
+			bool ParseDate(const String& date)
 			{
-				String::const_iterator it;
-				return m_Value.ParseDate(date, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseDate(date, &it);
 			}
-			bool ParseTime(const String& time, String::const_iterator* end = nullptr)
+			bool ParseTime(const String& time)
 			{
-				String::const_iterator it;
-				return m_Value.ParseTime(time, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseTime(time, &it);
 			}
-			bool ParseCombined(const String& dateTime, String::const_iterator* end = nullptr)
+			bool ParseCombined(const String& dateTime)
 			{
-				String::const_iterator it;
-				return m_Value.ParseDateTime(dateTime, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseDateTime(dateTime, &it);
 			}
 
-			bool ParseFormat(const String& dateTime, wxString::const_iterator* end = nullptr)
+			bool ParseFormat(const String& dateTime)
 			{
-				String::const_iterator it;
-				return m_Value.ParseFormat(dateTime, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseFormat(dateTime, &it);
 			}
-			bool ParseFormat(const String& dateTime, const String& format, wxString::const_iterator* end = nullptr)
+			bool ParseFormat(const String& dateTime, const String& format)
 			{
-				String::const_iterator it;
-				return m_Value.ParseFormat(dateTime, format, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseFormat(dateTime, format, &it);
 			}
-			bool ParseFormat(const String& dateTime, const String& format, const DateTime& dateDefault, wxString::const_iterator* end = nullptr)
+			bool ParseFormat(const String& dateTime, const String& format, const DateTime& dateDefault)
 			{
-				String::const_iterator it;
-				return m_Value.ParseFormat(dateTime, format, dateDefault, end ? end : &it);
+				wxString::const_iterator it;
+				return m_Value.ParseFormat(dateTime, format, dateDefault, &it);
 			}
 
 			bool ParseISODate(const String& date)
@@ -404,9 +404,9 @@ namespace kxf
 			{
 				return m_Value.ParseISOTime(time);
 			}
-			bool ParseISOCombined(const String& dateTime, const wxUniChar& sep = wxS('T'))
+			bool ParseISOCombined(const String& dateTime, const UniChar& sep = wxS('T'))
 			{
-				return m_Value.ParseISOCombined(dateTime);
+				return m_Value.ParseISOCombined(dateTime, sep.ToASCII().value_or('T'));
 			}
 
 			bool ParseRFC822Date(const String& dateTime, wxString::const_iterator* end)

@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "Registry.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 #include "kxf/Utility/Enumerator.h"
 #include <Windows.h>
 #include "UndefWindows.h"
@@ -230,7 +231,7 @@ namespace
 		if (lastError && dataSize != 0)
 		{
 			String result;
-			if (lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, wxStringBuffer(result, dataSize - 1), &dataSize))
+			if (lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, Utility::StringBuffer(result, dataSize - 1).wc_str(), &dataSize))
 			{
 				return result;
 			}
@@ -422,7 +423,7 @@ namespace kxf
 				if (!view.empty())
 				{
 					count++;
-					if (!std::invoke(func, String::FromView(view)))
+					if (!std::invoke(func, view))
 					{
 						break;
 					}

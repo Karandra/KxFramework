@@ -13,7 +13,7 @@ namespace kxf::Sciter
 		protected:
 			Point m_Position = Point::UnspecifiedPosition();
 			wxKeyCode m_KeyCode = wxKeyCode::WXK_NONE;
-			wxUniChar m_UnicodeKey;
+			UniChar m_UnicodeKey;
 
 		public:
 			KeyEvent(Host& host)
@@ -38,11 +38,11 @@ namespace kxf::Sciter
 				m_KeyCode = keyCode;
 			}
 
-			wxUniChar GetUnicodeKey() const
+			UniChar GetUnicodeKey() const
 			{
 				return m_UnicodeKey;
 			}
-			void SetUnicodeKey(wxUniChar unicodeKey)
+			void SetUnicodeKey(UniChar unicodeKey)
 			{
 				m_UnicodeKey = unicodeKey;
 			}

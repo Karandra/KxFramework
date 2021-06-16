@@ -2,6 +2,7 @@
 #include "Locale.h"
 #include "Private/LocaleOptions.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 
 namespace
 {
@@ -60,7 +61,7 @@ namespace
 		if (length != 0)
 		{
 			String value;
-			if (::GetLocaleInfoEx(localeName, option, wxStringBuffer(value, length), length) != 0)
+			if (::GetLocaleInfoEx(localeName, option, Utility::StringBuffer(value, length), length) != 0)
 			{
 				return value;
 			}

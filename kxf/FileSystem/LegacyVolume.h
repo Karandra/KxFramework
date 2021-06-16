@@ -9,7 +9,7 @@ namespace kxf
 		public:
 			static Enumerator<LegacyVolume> EnumVolumes();
 
-			static LegacyVolume FromChar(const wxUniChar& value)
+			static LegacyVolume FromChar(const UniChar& value)
 			{
 				LegacyVolume drive;
 				drive.AssignFromChar(value);
@@ -17,11 +17,11 @@ namespace kxf
 			}
 			static LegacyVolume FromChar(char value)
 			{
-				return FromChar(wxUniChar(value));
+				return FromChar(UniChar(value));
 			}
 			static LegacyVolume FromChar(wchar_t value)
 			{
-				return FromChar(wxUniChar(value));
+				return FromChar(UniChar(value));
 			}
 			static LegacyVolume FromChar(const String& value)
 			{
@@ -40,7 +40,7 @@ namespace kxf
 			}
 
 		private:
-			void AssignFromChar(const wxUniChar& value);
+			void AssignFromChar(const UniChar& value);
 			void AssignFromIndex(int index);
 			String DoGetPath() const;
 
@@ -57,7 +57,7 @@ namespace kxf
 
 			FSPath GetPath() const;
 			int GetIndex() const;
-			wxUniChar GetChar() const;
+			UniChar GetChar() const;
 
 		public:
 			explicit operator bool() const noexcept

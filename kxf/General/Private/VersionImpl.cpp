@@ -103,8 +103,9 @@ namespace kxf::Private::Version
 	}
 	bool Parse(const String& source, DateTime& dateTime)
 	{
-		String::const_iterator it = source.begin();
-		return dateTime.ParseISOCombined(source) || dateTime.ParseISOCombined(source, ' ') || dateTime.ParseISODate(source) || dateTime.ParseRFC822Date(source, &it);
+		wxString temp = source;
+		wxString::const_iterator it = temp.begin();
+		return dateTime.ParseISOCombined(temp) || dateTime.ParseISOCombined(temp, ' ') || dateTime.ParseISODate(temp) || dateTime.ParseRFC822Date(temp, &it);
 	}
 
 	String Format(const DefaultFormat::Array& items, size_t itemCount)
@@ -122,11 +123,11 @@ namespace kxf::Private::Version
 				// Don't print '0' for first element if it has non-empty string part
 				if (i == 0 && num == 0 && *string)
 				{
-					result << string;
+					result += string;
 				}
 				else
 				{
-					result << ToString(num);
+					result += ToString(num);
 					if (*string)
 					{
 						result += string;

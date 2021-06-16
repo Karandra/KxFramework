@@ -15,11 +15,11 @@ namespace kxf
 			}
 			static SecretValue FromString(StringView view)
 			{
-				return FromString(String::FromView(view));
+				return FromString(String(view));
 			}
 			static SecretValue FromString(const char* data, size_t length = String::npos)
 			{
-				return FromString(String(data, length));
+				return FromString(String::FromUTF8(data, length));
 			}
 			static SecretValue FromString(const wchar_t* data, size_t length = String::npos)
 			{

@@ -4,8 +4,8 @@
 
 namespace kxf::Math
 {
-	KX_API wxUniChar GetDecimalSeparator();
-	KX_API wxUniChar GetDecimalCSeparator();
+	KX_API UniChar GetDecimalSeparator();
+	KX_API UniChar GetDecimalCSeparator();
 
 	KX_API double GetPI();
 	KX_API double GetHalfPI();

@@ -31,7 +31,7 @@ namespace
 	}
 	LPCWSTR GetNameOrID(const String& name)
 	{
-		if (auto id = name.ToInt<ULONG>())
+		if (auto id = name.ToInteger<ULONG>())
 		{
 			return MAKEINTRESOURCEW(*id);
 		}
@@ -282,15 +282,6 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	void* DynamicLibrary::GetExportedFunctionAddress(const wchar_t* name) const
-	{
-		if (m_Handle)
-		{
-			String temp = name;
-			return ::GetProcAddress(AsHMODULE(*m_Handle), temp.c_str());
-		}
-		return nullptr;
-	}
 	void* DynamicLibrary::GetExportedFunctionAddress(size_t ordinal) const
 	{
 		if (m_Handle)
@@ -493,7 +484,7 @@ namespace kxf
 			if (locale && !locale.IsInvariant())
 			{
 				// http://forum.sources.ru/index.php?showtopic=375357
-				if (auto stringID = name.ToInt<size_t>())
+				if (auto stringID = name.ToInteger<size_t>())
 				{
 					wxScopedCharBuffer data = GetResource(System::Private::ResourceTypeToName(RT_STRING), System::Private::ResourceTypeToName(*stringID / 16 + 1), locale);
 					if (data.length() != 0)
@@ -524,7 +515,7 @@ namespace kxf
 			}
 			else
 			{
-				if (auto id = name.ToInt<int>())
+				if (auto id = name.ToInteger<int>())
 				{
 					LPWSTR string = nullptr;
 					int length = LoadStringW(AsHMODULE(*m_Handle), *id, reinterpret_cast<LPWSTR>(&string), 0);

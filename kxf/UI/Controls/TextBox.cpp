@@ -49,7 +49,7 @@ namespace kxf::UI
 		::SendMessageW(GetHandle(), EM_LIMITTEXT, max, 0);
 	}
 
-	bool TextBox::SetPasswordChar(const wxUniChar& c)
+	bool TextBox::SetPasswordChar(const UniChar& c)
 	{
 		if (c)
 		{

@@ -89,7 +89,7 @@ namespace kxf::UI
 			bool SetTabWidth(size_t width = 16);
 			void SetLimit(size_t max);
 			
-			bool SetPasswordChar(const wxUniChar& c);
+			bool SetPasswordChar(const UniChar& c);
 			bool SetDefaultPasswordChar()
 			{
 				// Bold dot

@@ -138,7 +138,7 @@ namespace kxf::HTML::Private
 	const GumboNode* GetElementByTag(const GumboNode* node, const String& desiredTagName)
 	{
 		String tagName = GetTagName(node);
-		if (tagName.IsSameAs(desiredTagName, StringOpFlag::IgnoreCase))
+		if (tagName.IsSameAs(desiredTagName, StringActionFlag::IgnoreCase))
 		{
 			return node;
 		}

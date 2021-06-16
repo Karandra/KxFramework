@@ -10,6 +10,7 @@
 #include "kxf/System/HandlePtr.h"
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/RecursiveCollectionEnumerator.h"
 #include <wx/filename.h>
@@ -216,13 +217,13 @@ namespace kxf
 	}
 	FSPath NativeFileSystem::GetExecutingModuleWorkingDirectory()
 	{
-		DWORD length = ::GetCurrentDirectoryW(0, nullptr);
+		uint32_t length = ::GetCurrentDirectoryW(0, nullptr);
 		if (length != 0)
 		{
 			String result;
-			::GetCurrentDirectoryW(length, wxStringBuffer(result, length));
+			::GetCurrentDirectoryW(length, Utility::StringBuffer(result, length));
 
-			return FSPath(result).EnsureNamespaceSet(FSPathNamespace::Win32File);
+			return FSPath(std::move(result)).EnsureNamespaceSet(FSPathNamespace::Win32File);
 		}
 		return {};
 	}

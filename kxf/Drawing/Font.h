@@ -39,7 +39,7 @@ namespace kxf
 			{
 				if (m_FaceName.IsEmptyOrWhitespace())
 				{
-					m_FaceName.Clear();
+					m_FaceName.clear();
 				}
 			}
 

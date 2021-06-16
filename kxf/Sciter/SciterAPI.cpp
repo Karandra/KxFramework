@@ -24,7 +24,7 @@ namespace kxf::Sciter::Private
 	{
 		// Register master stylesheets
 		MasterStylesheetStorage& stylesheetStorage = MasterStylesheetStorage::GetInstance();
-		stylesheetStorage.AddItem(String::FromView(g_MasterStylesheet));
+		stylesheetStorage.AddItem(g_MasterStylesheet);
 
 		// Register widgets
 		TextBoxWidgetFactory::RegisterInstance();

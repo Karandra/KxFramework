@@ -153,7 +153,7 @@ namespace
 
 			FSPath m_Query;
 			FlagSet<FSActionFlag> m_Flags;
-			FlagSet<StringOpFlag> m_MatchFlags;
+			FlagSet<StringActionFlag> m_MatchFlags;
 
 		private:
 			std::optional<FileItem> DoItem(IEnumerator& enumerator, FileItem item, const FSPath& directory, std::vector<FSPath>& childDirectories)
@@ -219,7 +219,7 @@ namespace
 			ArchiveDirectoryEnumerator(const Archive& archive, FSPath rootPath, FSPath query, FlagSet<FSActionFlag> flags)
 				:RecursiveCollectionEnumerator(std::move(rootPath)), m_Archive(archive), m_Query(std::move(query)), m_Flags(flags)
 			{
-				m_MatchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
+				m_MatchFlags.Add(StringActionFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
 			}
 	};
 }

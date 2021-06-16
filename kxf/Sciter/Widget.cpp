@@ -15,7 +15,7 @@ namespace kxf::Sciter
 {
 	Widget* Widget::DoFromElement(const Element& element)
 	{
-		if (auto address = element.GetAttribute(Attribute::Widget).ToInt<size_t>())
+		if (auto address = element.GetAttribute(Attribute::Widget).ToInteger<size_t>())
 		{
 			return reinterpret_cast<Widget*>(*address);
 		}

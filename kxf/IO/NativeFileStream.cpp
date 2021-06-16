@@ -3,6 +3,7 @@
 #include "kxf/System/Win32Error.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/String.h"
 
 namespace
 {
@@ -66,7 +67,7 @@ namespace
 		if (length != 0)
 		{
 			String result;
-			if (::GetFinalPathNameByHandleW(handle, wxStringBuffer(result, length), length, flags) != 0)
+			if (::GetFinalPathNameByHandleW(handle, Utility::StringBuffer(result, length), length, flags) != 0)
 			{
 				return FSPath(std::move(result));
 			}

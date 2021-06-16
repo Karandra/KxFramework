@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "ResourceID.h"
 
-
 namespace kxf
 {
 	bool ResourceID::IsNull() const noexcept

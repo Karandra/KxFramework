@@ -164,7 +164,7 @@ namespace kxf::Sciter
 			String GetText() const;
 			bool SetText(const String& text) const
 			{
-				return SetText(text.GetView());
+				return SetText(text.xc_view());
 			}
 			bool SetText(StringView text) const;
 

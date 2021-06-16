@@ -3,35 +3,44 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/Utility/Common.h"
 #include <kxf/System/UndefWindows.h>
+#include <wx/string.h>
 #include <cctype>
 
 namespace
 {
-	char CharToLower(char c) noexcept
+	char DoCharToLower(char c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
 	}
-	char CharToUpper(char c) noexcept
+	char DoCharToUpper(char c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharUpperA(reinterpret_cast<LPSTR>(c)));
 	}
-	wchar_t CharToLower(wchar_t c) noexcept
+	wchar_t DoCharToLower(wchar_t c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
 	}
-	wchar_t CharToUpper(wchar_t c) noexcept
+	wchar_t DoCharToUpper(wchar_t c) noexcept
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<wchar_t>(::CharUpperW(reinterpret_cast<LPWSTR>(c)));
 	}
 
+	void StringMakeLower(std::wstring& string) noexcept
+	{
+		::CharLowerBuffW(string.data(), string.length());
+	}
+	void StringMakeUpper(std::wstring& string) noexcept
+	{
+		::CharUpperBuffW(string.data(), string.length());
+	}
 	void StringMakeLower(wxString& string) noexcept
 	{
 		::CharLowerBuffW(wxStringBuffer(string, string.length()), string.length());
@@ -40,6 +49,7 @@ namespace
 	{
 		::CharUpperBuffW(wxStringBuffer(string, string.length()), string.length());
 	}
+
 	wxString StringToLower(const wxScopedCharTypeBuffer<wxChar>& string) noexcept
 	{
 		wxString result = string;
@@ -53,7 +63,7 @@ namespace
 		return result;
 	}
 
-	std::strong_ordering CompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
+	std::strong_ordering DoCompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
 		{
@@ -64,7 +74,7 @@ namespace
 			return left <=> right;
 		}
 	}
-	std::strong_ordering CompareStrings(std::wstring_view left, std::wstring_view right, bool ignoreCase) noexcept
+	std::strong_ordering DoCompareStrings(std::wstring_view left, std::wstring_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
 		{
@@ -94,18 +104,6 @@ namespace
 		{
 			return left <=> right;
 		}
-	}
-	std::strong_ordering CompareChars(wxUniChar left, wxUniChar right) noexcept
-	{
-		if (left < right)
-		{
-			return std::strong_ordering::less;
-		}
-		else if (left > right)
-		{
-			return std::strong_ordering::greater;
-		}
-		return std::strong_ordering::equal;
 	}
 
 	template<class T>
@@ -239,7 +237,7 @@ namespace
 			}
 			else
 			{
-				if (expression[expressionIndex] == questionChar || (ignoreCase && CharToUpper(expression[expressionIndex]) == CharToUpper(name[nameIndex])) || (!ignoreCase && expression[expressionIndex] == name[nameIndex]))
+				if (expression[expressionIndex] == questionChar || (ignoreCase && DoCharToUpper(expression[expressionIndex]) == DoCharToUpper(name[nameIndex])) || (!ignoreCase && expression[expressionIndex] == name[nameIndex]))
 				{
 					expressionIndex++;
 					nameIndex++;
@@ -276,56 +274,152 @@ namespace
 
 		return IsNameInExpressionImpl(name, expression, ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT);
 	}
+
+	template<class T, class TFunc>
+	bool ConvertToInteger(T& value, int base, const kxf::XChar* start, TFunc&& func) noexcept
+	{
+		errno = 0;
+		kxf::XChar* end = nullptr;
+		auto result = std::invoke(func, start, &end, base);
+
+		if (end != start && errno == 0)
+		{
+			value = result;
+			return true;
+		}
+		return false;
+	}
+
+	template<class T, class TFunc>
+	bool ConvertToFloat(T& value, const kxf::XChar* start, TFunc&& func) noexcept
+	{
+		errno = 0;
+		kxf::XChar* end = nullptr;
+		auto result = std::invoke(func, start, &end);
+
+		if (end != start && errno == 0)
+		{
+			value = result;
+			return true;
+		}
+		return false;
+	}
 }
 
 namespace kxf
 {
 	const String NullString;
+
+	std::basic_string_view<XChar> StringViewOf(const String& string) noexcept
+	{
+		return {string.xc_str(), string.length()};
+	}
+
+	std::basic_string_view<wxChar> StringViewOf(const wxString& string) noexcept
+	{
+		return {string.wx_str(), string.length()};
+	}
+
+	template<class T>
+	std::basic_string_view<T> StringViewOf(const wxScopedCharTypeBuffer<T>& buffer) noexcept
+	{
+		return {buffer.data(), buffer.length()};
+	}
+
+	template<class T>
+	const auto ScopedCharBufferOf(T&& value) noexcept
+	{
+		auto view = StringViewOf(std::forward<T>(value));
+		using CharType = typename decltype(view)::value_type;
+
+		return wxScopedCharTypeBuffer<CharType>::CreateNonOwned(view.data(), view.length());
+	}
 }
 
 namespace kxf
 {
-	std::strong_ordering String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags) noexcept
+	// Comparison
+	std::strong_ordering String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringActionFlag> flags) noexcept
 	{
-		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
+		return DoCompareStrings(left, right, flags & StringActionFlag::IgnoreCase);
 	}
-	std::strong_ordering String::DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags) noexcept
+	std::strong_ordering String::DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringActionFlag> flags) noexcept
 	{
-		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
+		return DoCompareStrings(left, right, flags & StringActionFlag::IgnoreCase);
 	}
-	std::strong_ordering String::DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags) noexcept
+	std::strong_ordering String::DoCompare(UniChar left, UniChar right, FlagSet<StringActionFlag> flags) noexcept
 	{
-		if (flags & StringOpFlag::IgnoreCase)
+		if (flags & StringActionFlag::IgnoreCase)
 		{
-			return CompareChars(ToLower(left), ToLower(right));
+			return ToLower(left) <=> ToLower(right);
 		}
 		else
 		{
-			return CompareChars(left, right);
+			return left <=> right;
 		}
 	}
 
-	bool String::DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags) noexcept
+	bool String::DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringActionFlag> flags) noexcept
 	{
-		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
+		return IsNameInExpression(name, expression, flags & StringActionFlag::IgnoreCase);
 	}
-	bool String::DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags) noexcept
+	bool String::DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringActionFlag> flags) noexcept
 	{
-		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
+		return IsNameInExpression(name, expression, flags & StringActionFlag::IgnoreCase);
 	}
 
-	wxUniChar String::ToLower(wxUniChar c) noexcept
+	// Conversions
+	UniChar String::FromUTF8(char c)
 	{
-		return CharToUpper(static_cast<wchar_t>(c));
+		const char data[2] = {c, '\0'};
+		wxString result = wxString::FromUTF8(data, 1);
+		if (!result.IsEmpty())
+		{
+			return result[0].GetValue();
+		}
+		return {};
 	}
-	wxUniChar String::ToUpper(wxUniChar c) noexcept
+	String String::FromUTF8(const char* utf8, size_t length)
 	{
-		return CharToLower(static_cast<wchar_t>(c));
+		return wxString::FromUTF8(utf8, length);
+	}
+	std::string String::ToUTF8(std::wstring_view utf16)
+	{
+		auto converted = wxMBConvUTF8().cWC2MB(utf16.data(), utf16.length(), nullptr);
+		return {converted.data(), converted.length()};
+	}
+
+	String String::FromACP(const char* acp, size_t length)
+	{
+		return wxString(acp, length);
+	}
+	String String::FromASCII(const char* ascii, size_t length)
+	{
+		return wxString::FromAscii(ascii, length);
+	}
+	String String::FromASCII(std::string_view ascii)
+	{
+		return wxString::FromAscii(ascii.data(), ascii.length());
+	}
+
+	String String::FromFloatingPoint(double value, int precision)
+	{
+		return wxString::FromCDouble(value, precision);
+	}
+
+	// Case conversion
+	UniChar String::ToLower(UniChar c) noexcept
+	{
+		return DoCharToUpper(static_cast<XChar>(*c));
+	}
+	UniChar String::ToUpper(UniChar c) noexcept
+	{
+		return DoCharToLower(static_cast<XChar>(*c));
 	}
 
 	bool String::IsEmptyOrWhitespace() const noexcept
 	{
-		if (m_String.IsEmpty())
+		if (m_String.empty())
 		{
 			return true;
 		}
@@ -343,19 +437,19 @@ namespace kxf
 	}
 
 	// Comparison
-	bool String::DoStartsWith(std::string_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
+	bool String::DoStartsWith(std::string_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromView(pattern);
+		String patternCopy = FromUTF8(pattern);
 		return StartsWith(patternCopy, rest, flags);
 	}
-	bool String::DoStartsWith(std::wstring_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
+	bool String::DoStartsWith(std::wstring_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
 		if (pattern.empty())
 		{
 			return false;
 		}
 
-		flags.Remove(StringOpFlag::FromEnd);
+		flags.Remove(StringActionFlag::FromEnd);
 		const size_t pos = Find(pattern, 0, flags);
 		if (pos == 0)
 		{
@@ -368,19 +462,19 @@ namespace kxf
 		return false;
 	}
 	
-	bool String::DoEndsWith(std::string_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
+	bool String::DoEndsWith(std::string_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromView(pattern);
+		String patternCopy = FromUTF8(pattern);
 		return EndsWith(patternCopy, rest, flags);
 	}
-	bool String::DoEndsWith(std::wstring_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
+	bool String::DoEndsWith(std::wstring_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
 		if (pattern.empty())
 		{
 			return false;
 		}
 
-		const size_t pos = Find(pattern, 0, flags|StringOpFlag::FromEnd);
+		const size_t pos = Find(pattern, 0, flags|StringActionFlag::FromEnd);
 		if (pos == m_String.length() - pattern.length())
 		{
 			if (rest)
@@ -392,8 +486,31 @@ namespace kxf
 		return false;
 	}
 
+	// Construction
+	String::String(const wxString& other) noexcept
+		:m_String(StringViewOf(other))
+	{
+	}
+	String::String(wxString&& other) noexcept
+	{
+		Private::MoveWxString(m_String, std::move(other));
+	}
+
+	// Conversions
+	std::string String::ToASCII(char replaceWith) const
+	{
+		std::string ascii;
+		ascii.reserve(m_String.length());
+
+		for (const auto& c: m_String)
+		{
+			ascii += UniChar(c).ToASCII().value_or(replaceWith);
+		}
+		return ascii;
+	}
+
 	// Substring extraction
-	String String::AfterFirst(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
+	String String::AfterFirst(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags);
 		if (pos != npos)
@@ -413,9 +530,9 @@ namespace kxf
 		}
 		return {};
 	}
-	String String::AfterLast(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
+	String String::AfterLast(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags|StringOpFlag::FromEnd);
+		const size_t pos = Find(c, 0, flags|StringActionFlag::FromEnd);
 		if (pos != npos)
 		{
 			if (rest)
@@ -434,7 +551,7 @@ namespace kxf
 		return {};
 	}
 
-	String String::BeforeFirst(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
+	String String::BeforeFirst(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags);
 		if (pos != npos)
@@ -450,9 +567,9 @@ namespace kxf
 		}
 		return {};
 	}
-	String String::BeforeLast(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
+	String String::BeforeLast(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags|StringOpFlag::FromEnd);
+		const size_t pos = Find(c, 0, flags|StringActionFlag::FromEnd);
 		if (pos != npos)
 		{
 			if (rest)
@@ -480,21 +597,21 @@ namespace kxf
 	}
 
 	// Searching and replacing
-	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringOpFlag> flags) const
+	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromView(pattern);
-		return Find(StringViewOf(patternCopy), offset, flags);
+		String patternCopy = FromUTF8(pattern);
+		return DoFind(StringViewOf(patternCopy), offset, flags);
 	}
-	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringOpFlag> flags) const
+	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
 	{
-		if (!m_String.IsEmpty() && offset < m_String.length())
+		if (!m_String.empty() && offset < m_String.length())
 		{
-			if (flags & StringOpFlag::IgnoreCase)
+			if (flags & StringActionFlag::IgnoreCase)
 			{
 				wxString sourceL = StringToLower(ScopedCharBufferOf(m_String));
 				wxString patternL = StringToLower(ScopedCharBufferOf(pattern));
 
-				if (flags & StringOpFlag::FromEnd)
+				if (flags & StringActionFlag::FromEnd)
 				{
 					return sourceL.rfind(patternL, offset);
 				}
@@ -505,7 +622,7 @@ namespace kxf
 			}
 			else
 			{
-				if (flags & StringOpFlag::FromEnd)
+				if (flags & StringActionFlag::FromEnd)
 				{
 					return m_String.rfind(ScopedCharBufferOf(pattern), offset);
 				}
@@ -517,14 +634,14 @@ namespace kxf
 		}
 		return npos;
 	}
-	size_t String::DoFind(wxUniChar pattern, size_t offset, FlagSet<StringOpFlag> flags) const noexcept
+	size_t String::DoFind(UniChar pattern, size_t offset, FlagSet<StringActionFlag> flags) const noexcept
 	{
-		if (m_String.IsEmpty() || offset >= m_String.length())
+		if (m_String.empty() || offset >= m_String.length())
 		{
 			return npos;
 		}
 
-		if (flags & StringOpFlag::FromEnd)
+		if (flags & StringActionFlag::FromEnd)
 		{
 			for (size_t i = m_String.length() - 1 - offset; i != 0; i--)
 			{
@@ -547,18 +664,18 @@ namespace kxf
 		return npos;
 	}
 
-	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringOpFlag> flags)
+	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
 	{
-		String patternCopy = FromView(pattern);
-		String replacementCopy = FromView(replacement);
+		String patternCopy = FromUTF8(pattern);
+		String replacementCopy = FromUTF8(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
-	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringOpFlag> flags)
+	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
 	{
 		const size_t replacementLength = replacement.length();
 		const size_t patternLength = pattern.length();
 
-		if (m_String.IsEmpty() || patternLength == 0 || offset >= m_String.length())
+		if (m_String.empty() || patternLength == 0 || offset >= m_String.length())
 		{
 			return 0;
 		}
@@ -568,12 +685,12 @@ namespace kxf
 
 		wxString sourceL;
 		wxString patternL;
-		if (flags & StringOpFlag::IgnoreCase)
+		if (flags & StringActionFlag::IgnoreCase)
 		{
 			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(m_String)));
 			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(pattern)));
 
-			if (flags & StringOpFlag::FromEnd)
+			if (flags & StringActionFlag::FromEnd)
 			{
 				pos = sourceL.rfind(patternL, offset);
 			}
@@ -584,7 +701,7 @@ namespace kxf
 		}
 		else
 		{
-			if (flags & StringOpFlag::FromEnd)
+			if (flags & StringActionFlag::FromEnd)
 			{
 				pos = m_String.rfind(ScopedCharBufferOf(pattern), offset);
 			}
@@ -599,14 +716,14 @@ namespace kxf
 			m_String.replace(pos, patternLength, replacement.data(), replacement.length());
 			replacementCount++;
 
-			if (flags & StringOpFlag::FirstMatchOnly)
+			if (flags & StringActionFlag::FirstMatchOnly)
 			{
 				return replacementCount;
 			}
 
-			if (flags & StringOpFlag::IgnoreCase)
+			if (flags & StringActionFlag::IgnoreCase)
 			{
-				if (flags & StringOpFlag::FromEnd)
+				if (flags & StringActionFlag::FromEnd)
 				{
 					pos = sourceL.rfind(patternL, pos + replacementLength);
 				}
@@ -617,7 +734,7 @@ namespace kxf
 			}
 			else
 			{
-				if (flags & StringOpFlag::FromEnd)
+				if (flags & StringActionFlag::FromEnd)
 				{
 					pos = m_String.rfind(ScopedCharBufferOf(pattern), pos + replacementLength);
 				}
@@ -629,27 +746,27 @@ namespace kxf
 		}
 		return replacementCount;
 	}
-	size_t String::DoReplace(wxUniChar pattern, wxUniChar replacement, size_t offset, FlagSet<StringOpFlag> flags) noexcept
+	size_t String::DoReplace(UniChar pattern, UniChar replacement, size_t offset, FlagSet<StringActionFlag> flags) noexcept
 	{
-		if (m_String.IsEmpty() || offset >= m_String.length())
+		if (m_String.empty() || offset >= m_String.length())
 		{
 			return 0;
 		}
 
 		size_t replacementCount = 0;
-		auto TestAndReplace = [&](wxUniCharRef c)
+		auto TestAndReplace = [&](XChar& c)
 		{
 			if (Compare(c, pattern, flags) == 0)
 			{
-				c = replacement;
+				c = *replacement;
 				replacementCount++;
 
-				return !flags.Contains(StringOpFlag::FirstMatchOnly);
+				return !flags.Contains(StringActionFlag::FirstMatchOnly);
 			}
 			return true;
 		};
 
-		if (flags & StringOpFlag::FromEnd)
+		if (flags & StringActionFlag::FromEnd)
 		{
 			for (size_t i = m_String.length() - 1 - offset; i != 0; i--)
 			{
@@ -672,7 +789,7 @@ namespace kxf
 		return replacementCount;
 	}
 
-	bool String::DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringOpFlag> flags) const noexcept
+	bool String::DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringActionFlag> flags) const noexcept
 	{
 		for (auto c: pattern)
 		{
@@ -683,7 +800,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool String::DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringOpFlag> flags) const noexcept
+	bool String::DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringActionFlag> flags) const noexcept
 	{
 		for (auto c: pattern)
 		{
@@ -693,6 +810,89 @@ namespace kxf
 			}
 		}
 		return false;
+	}
+
+	// Conversion to numbers
+	bool String::DoToFloatingPoint(float& value) const noexcept
+	{
+		return ConvertToFloat(value, wc_str(), std::wcstof);
+	}
+	bool String::DoToFloatingPoint(double& value) const noexcept
+	{
+		return ConvertToFloat(value, wc_str(), std::wcstod);
+	}
+	bool String::DoToSignedInteger(int64_t& value, int base) const noexcept
+	{
+		return ConvertToInteger(value, base, wc_str(), std::wcstoll);
+	}
+	bool String::DoToUnsignedInteger(uint64_t& value, int base) const noexcept
+	{
+		return ConvertToInteger(value, base, wc_str(), std::wcstoull);
+	}
+
+	// Miscellaneous
+	String& String::Trim(FlagSet<StringActionFlag> flags)
+	{
+		wxString temp;
+		Private::MoveWxString(temp, std::move(m_String));
+
+		temp.Trim(flags & StringActionFlag::FromEnd);
+		Private::MoveWxString(m_String, std::move(temp));
+
+		return *this;
+	}
+
+	// Conversion
+	String::operator wxString() const
+	{
+		return wxString(xc_str(), length());
+	}
+
+	// Comparison
+	std::strong_ordering String::operator<=>(const wxString& other) const noexcept
+	{
+		return xc_view() <=> StringViewOf(other);
+	}
+}
+
+namespace kxf::Private
+{
+	const wxStringImpl& GetWxStringImpl(const wxString& string) noexcept
+	{
+		return string.ToStdWstring();
+	}
+	wxStringImpl& GetWxStringImpl(wxString& string) noexcept
+	{
+		return const_cast<wxStringImpl&>(string.ToStdWstring());
+	}
+
+	void MoveWxString(wxString& destination, wxString&& source) noexcept
+	{
+		if (&source != &destination)
+		{
+			// Also see a comment in the next overload
+			GetWxStringImpl(destination) = std::move(GetWxStringImpl(source));
+		}
+	}
+	void MoveWxString(wxString& destination, wxStringImpl&& source) noexcept
+	{
+		// wxString contains an extra buffer (m_convertedTo[W]Char) to hold converted string
+		// returned by 'wxString::AsCharBuf' but it seems it can be left untouched since wxString
+		// always rewrites its content when requested to make conversion and only changes its size
+		// when needed.
+
+		if (&source != &GetWxStringImpl(destination))
+		{
+			GetWxStringImpl(destination) = std::move(source);
+		}
+	}
+	void MoveWxString(wxStringImpl& destination, wxString&& source) noexcept
+	{
+		if (&GetWxStringImpl(source) != &destination)
+		{
+			// Also see a comment in the next overload
+			destination = std::move(GetWxStringImpl(source));
+		}
 	}
 }
 

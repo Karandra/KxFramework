@@ -14,6 +14,7 @@
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/UI/Common.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 #include <Windows.h>
@@ -57,7 +58,7 @@ namespace
 			if (hr.IsFalse() && length != 0)
 			{
 				String result;
-				if (hr = ::AssocQueryStringW(flags, option, value.wc_str(), nullptr, wxStringBuffer(result, length), &length))
+				if (hr = ::AssocQueryStringW(flags, option, value.wc_str(), nullptr, Utility::StringBuffer(result, length), &length))
 				{
 					return result;
 				}
@@ -105,7 +106,7 @@ namespace
 				{
 					if (extraData)
 					{
-						if (auto index = icon.AfterLast(',').ToInt<int>())
+						if (auto index = icon.AfterLast(',').ToInteger<int>())
 						{
 							*extraData = std::abs(*index);
 						}
@@ -522,7 +523,7 @@ namespace kxf::Shell
 
 		return KnownDirectoryDefinition::EnumItems([&](const KnownDirectoryDefinition::TItem& item)
 		{
-			return std::invoke(func, item.GetValue(), String::FromView(item.GetName()));
+			return std::invoke(func, item.GetValue(), String(item.GetName()));
 		});
 	}
 }

@@ -2,6 +2,7 @@
 #include "RunningSystemProcessStdIO.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include <wx/string.h>
 
 namespace
 {
@@ -16,7 +17,7 @@ namespace
 		{
 			if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 			{
-				result += String(buffer, wxConvWhateverWorks, stream.LastRead().ToBytes());
+				result += wxString(buffer, wxConvWhateverWorks, stream.LastRead().ToBytes());
 			}
 			else
 			{

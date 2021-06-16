@@ -221,7 +221,7 @@ namespace kxf::Private
 			}
 			String GetScheme() const
 			{
-				return String::FromView(FromTextRange(m_URI.scheme));
+				return FromTextRange(m_URI.scheme);
 			}
 
 			NetworkHostType GetHostType() const noexcept
@@ -250,7 +250,7 @@ namespace kxf::Private
 			}
 			String GetServer() const
 			{
-				return String::FromView(FromTextRange(m_URI.hostText));
+				return FromTextRange(m_URI.hostText);
 			}
 
 			bool HasPort() const noexcept
@@ -259,7 +259,7 @@ namespace kxf::Private
 			}
 			String GetPort() const
 			{
-				return String::FromView(FromTextRange(m_URI.portText));
+				return FromTextRange(m_URI.portText);
 			}
 
 			bool HasPath() const
@@ -290,7 +290,7 @@ namespace kxf::Private
 			}
 			String GetQuery() const
 			{
-				return String::FromView(FromTextRange(m_URI.query));
+				return FromTextRange(m_URI.query);
 			}
 
 			bool HasFragment() const noexcept
@@ -299,7 +299,7 @@ namespace kxf::Private
 			}
 			String GetFragment() const
 			{
-				return String::FromView(FromTextRange(m_URI.fragment));
+				return FromTextRange(m_URI.fragment);
 			}
 
 			bool HasUserInfo() const noexcept
@@ -308,7 +308,7 @@ namespace kxf::Private
 			}
 			String GetUserInfo() const
 			{
-				return String::FromView(FromTextRange(m_URI.userInfo));
+				return FromTextRange(m_URI.userInfo);
 			}
 			String GetUser() const
 			{
@@ -317,7 +317,7 @@ namespace kxf::Private
 				size_t pos = userInfo.find(':');
 				if (pos != StringView::npos)
 				{
-					return String::FromView(userInfo.substr(0, pos - 1));
+					return userInfo.substr(0, pos - 1);
 				}
 				return {};
 			}
@@ -328,7 +328,7 @@ namespace kxf::Private
 				size_t pos = userInfo.find(':');
 				if (pos != StringView::npos)
 				{
-					return String::FromView(userInfo.substr(pos + 1));
+					return userInfo.substr(pos + 1);
 				}
 				return {};
 			}
@@ -356,7 +356,7 @@ namespace kxf
 	}
 	String URI::Unescape(const String& source, LineBreakFormat lineBreakFormat, FlagSet<URIFlag> flags)
 	{
-		std::wstring buffer = source.ToStdWString();
+		std::wstring buffer(source.wc_view());
 		if (const wchar_t* outputTerminator = ::uriUnescapeInPlaceExW(buffer.data(), flags.Contains(URIFlag::SpacePlus), MapLineBreakFormat(lineBreakFormat)))
 		{
 			buffer.resize(outputTerminator - buffer.data());
@@ -483,7 +483,7 @@ namespace kxf
 	}
 	std::optional<uint16_t> URI::GetPortInt() const
 	{
-		return GetPort().ToInt<uint16_t>();
+		return GetPort().ToInteger<uint16_t>();
 	}
 	String URI::GetPort() const
 	{

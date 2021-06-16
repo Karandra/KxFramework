@@ -74,7 +74,7 @@ namespace kxf::Sciter
 			bool SetValue(StringView value) const;
 			bool SetValue(const String& value) const
 			{
-				return SetValue(value.GetView());
+				return SetValue(value.xc_view());
 			}
 
 		public:

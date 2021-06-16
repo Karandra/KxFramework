@@ -80,13 +80,13 @@ namespace kxf
 			bool ContainsPath(const FSPath& path, bool caseSensitive = false) const;
 			bool ContainsAnyOfCharacters(const String& characters, bool caseSensitive = false) const
 			{
-				return m_Path.ContainsAnyOfCharacters(characters, caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
+				return m_Path.ContainsAnyOfCharacters(characters, caseSensitive ? StringActionFlag::None : StringActionFlag::IgnoreCase);
 			}
 			bool ContainsSearchMask() const
 			{
 				return m_Path.ContainsAnyOfCharacters(wxS("*?"));
 			}
-			bool MatchesWildcards(const String& expression, FlagSet<StringOpFlag> flags = {}) const
+			bool MatchesWildcards(const String& expression, FlagSet<StringActionFlag> flags = {}) const
 			{
 				return m_Path.MatchesWildcards(expression, flags);
 			}
@@ -192,15 +192,15 @@ namespace kxf
 
 			auto operator<=>(const FSPath& other) const
 			{
-				return m_Path.CompareTo(other.m_Path, StringOpFlag::IgnoreCase);
+				return m_Path.CompareTo(other.m_Path, StringActionFlag::IgnoreCase);
 			}
 			auto operator<=>(const String& other) const
 			{
-				return m_Path.CompareTo(other, StringOpFlag::IgnoreCase);
+				return m_Path.CompareTo(other, StringActionFlag::IgnoreCase);
 			}
 			auto operator<=>(const XChar* other) const
 			{
-				return m_Path.CompareTo(other, StringOpFlag::IgnoreCase);
+				return m_Path.CompareTo(other, StringActionFlag::IgnoreCase);
 			}
 
 			bool operator==(const FSPath& other) const

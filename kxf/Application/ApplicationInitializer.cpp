@@ -11,7 +11,7 @@ namespace kxf
 	bool ApplicationInitializer::OnInitCommon()
 	{
 		wxDISABLE_DEBUG_SUPPORT();
-		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_Application.GetDisplayName().c_str()))
+		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_Application.GetDisplayName().nc_str()))
 		{
 			// This will tell 'wxInitialize' to use already existing application instance instead of attempting to create a new one
 			m_NativeApp = std::make_unique<Application::Private::NativeApp>(m_Application);

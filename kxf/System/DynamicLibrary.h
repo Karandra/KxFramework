@@ -110,10 +110,18 @@ namespace kxf
 			size_t EnumExportedFunctionNames(std::function<bool(String)> func) const;
 
 			void* GetExportedFunctionAddress(const char* name) const;
-			void* GetExportedFunctionAddress(const wchar_t* name) const;
+			void* GetExportedFunctionAddress(const wchar_t* name) const
+			{
+				if (m_Handle)
+				{
+					String temp = name;
+					return GetExportedFunctionAddress(temp.nc_str());
+				}
+				return nullptr;
+			}
 			void* GetExportedFunctionAddress(const String& name) const
 			{
-				return GetExportedFunctionAddress(name.wx_str());
+				return GetExportedFunctionAddress(name.nc_str());
 			}
 			void* GetExportedFunctionAddress(size_t ordinal) const;
 

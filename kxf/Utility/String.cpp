@@ -3,6 +3,36 @@
 
 namespace kxf::Utility
 {
+	char* StringBuffer::PrepareNarrowChars()
+	{
+		m_NarrowChars.resize(m_Length);
+		return m_NarrowChars.data();
+	}
+	wchar_t* StringBuffer::PrepareWideChars()
+	{
+		m_WideChars.resize(m_Length);
+		return m_WideChars.data();
+	}
+	void StringBuffer::Finalize()
+	{
+		switch (m_Type)
+		{
+			case Type::NarrowChars:
+			{
+				m_Value = String::FromUTF8(m_NarrowChars);
+				break;
+			}
+			case Type::WideChars:
+			{
+				m_Value = std::move(m_WideChars);
+				break;
+			}
+		};
+	}
+}
+
+namespace kxf::Utility
+{
 	std::optional<bool> ParseBool(const String& value)
 	{
 		if (value == wxS("false") || value == wxS("FALSE"))
@@ -13,7 +43,7 @@ namespace kxf::Utility
 		{
 			return true;
 		}
-		else if (auto iValue = value.ToInt<int>())
+		else if (auto iValue = value.ToInteger<int>())
 		{
 			return *iValue != 0;
 		}

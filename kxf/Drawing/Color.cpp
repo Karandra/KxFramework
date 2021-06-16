@@ -112,22 +112,22 @@ namespace kxf
 		{
 			if (value.front() == wxS('#'))
 			{
-				auto r = value.Mid(1, 2).ToInt<uint8_t>(16);
-				auto g = value.Mid(3, 2).ToInt<uint8_t>(16);
-				auto b = value.Mid(5, 2).ToInt<uint8_t>(16);
+				auto r = value.Mid(1, 2).ToInteger<uint8_t>(16);
+				auto g = value.Mid(3, 2).ToInteger<uint8_t>(16);
+				auto b = value.Mid(5, 2).ToInteger<uint8_t>(16);
 				if (r && g && b)
 				{
 					Utility::SetIfNotNull(colorSpace, ColorSpace::RGB);
 
-					auto a = value.Mid(7, 2).ToInt<uint8_t>(16);
+					auto a = value.Mid(7, 2).ToInteger<uint8_t>(16);
 					return FromFixed8(*r, *g, *b, a.value_or(255));
 				}
 			}
 			else if (RegEx regEx(wxS(R"(rgba?\((\d+),\s+(\d+),\s+(\d+),?\s*([\d\.]*)\))")); regEx.Matches(value))
 			{
-				auto r = regEx.GetMatch(value, 1).ToInt<uint8_t>();
-				auto g = regEx.GetMatch(value, 2).ToInt<uint8_t>();
-				auto b = regEx.GetMatch(value, 3).ToInt<uint8_t>();
+				auto r = regEx.GetMatch(value, 1).ToInteger<uint8_t>();
+				auto g = regEx.GetMatch(value, 2).ToInteger<uint8_t>();
+				auto b = regEx.GetMatch(value, 3).ToInteger<uint8_t>();
 
 				if (r && g && b)
 				{
@@ -158,7 +158,7 @@ namespace kxf
 	}
 	Color Color::FromColorName(const String& name)
 	{
-		return wxTheColourDatabase->Find(name.GetWxString());
+		return wxTheColourDatabase->Find(name);
 	}
 
 	String Color::ToString(C2SFormat format, C2SAlpha alpha, ColorSpace colorSpace) const

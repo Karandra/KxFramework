@@ -28,7 +28,7 @@ namespace kxf::XDocument
 			size_t indexStart = elementName.find(xPathSeparator);
 			if (indexStart != String::npos)
 			{
-				if (auto value = String::FromView(elementName.substr(indexStart + xPathSeparator.length())).ToInt<int>(10))
+				if (auto value = String(elementName.substr(indexStart + xPathSeparator.length())).ToInteger<int>(10))
 				{
 					index = std::clamp(*value, 0, std::numeric_limits<int>::max());
 					elementName = elementName.substr(0, indexStart);
@@ -83,14 +83,14 @@ namespace kxf::XDocument
 
 	std::optional<int64_t> IXNode::ParseInt(const String& value, int base) const
 	{
-		return value.ToInt<int64_t>(base);
+		return value.ToInteger<int64_t>(base);
 	}
 	std::optional<void*> IXNode::ParsePointer(const String& value) const
 	{
 		String intValue;
 		if (value.StartsWith(wxS("0x"), &intValue))
 		{
-			if (auto iValue = intValue.ToInt<size_t>(16))
+			if (auto iValue = intValue.ToInteger<size_t>(16))
 			{
 				return reinterpret_cast<void*>(*iValue);
 			}

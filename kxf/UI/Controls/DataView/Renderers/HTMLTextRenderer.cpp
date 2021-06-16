@@ -37,7 +37,7 @@ namespace kxf::UI::DataView
 	bool HTMLTextRenderer::SetDisplayValue(Any value)
 	{
 		m_Value = {};
-		m_ContentHTML.Clear();
+		m_ContentHTML.clear();
 
 		if (m_Value.FromAny(value))
 		{

@@ -1,30 +1,33 @@
 #pragma once
 #include "Common.h"
-#include "Private/String.h"
+#include "UniChar.h"
+#include "kxf/System/UndefWindows.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <format>
 #include <string>
 #include <string_view>
-#include "kxf/System/UndefWindows.h"
-#include "kxf/Serialization/BinarySerializer.h"
+class wxString;
 
 namespace kxf
 {
-	using XChar = wxChar;
+	using XChar = wchar_t;
 	using StringView = std::basic_string_view<XChar>;
 	KX_API extern const String NullString;
 
-	enum class StringOpFlag: uint32_t
+	enum class StringActionFlag: uint32_t
 	{
 		None = 0,
 		IgnoreCase = 1 << 0,
 		FromEnd = 1 << 1,
 		FirstMatchOnly = 1 << 2,
 	};
-	KxFlagSet_Declare(StringOpFlag);
+	KxFlagSet_Declare(StringActionFlag);
 }
 
 namespace kxf
 {
+	std::basic_string_view<XChar> StringViewOf(const String& string) noexcept;
+
 	template<class T>
 	std::basic_string_view<T> StringViewOf(const std::basic_string<T>& string) noexcept
 	{
@@ -37,20 +40,8 @@ namespace kxf
 		return view;
 	}
 
-	template<class T>
-	std::basic_string_view<T> StringViewOf(const wxScopedCharTypeBuffer<T>& buffer) noexcept
-	{
-		return {buffer.data(), buffer.length()};
-	}
-
-	template<class T>
-	std::enable_if_t<std::is_same_v<T, wxString> || std::is_same_v<T, String>, std::basic_string_view<XChar>> StringViewOf(const T& string) noexcept
-	{
-		return {string.wx_str(), string.length()};
-	}
-
-	template<class T>
-	std::enable_if_t<std::is_same_v<T, char> || std::is_same_v<T, wchar_t>, std::basic_string_view<T>> StringViewOf(const T* ptr) noexcept
+	template<class T> requires(std::is_same_v<T, char> || std::is_same_v<T, wchar_t>)
+	std::basic_string_view<T> StringViewOf(const T* ptr) noexcept
 	{
 		if (ptr)
 		{
@@ -59,34 +50,22 @@ namespace kxf
 		return {};
 	}
 
-	template<class T, size_t size>
-	std::enable_if_t<std::is_array_v<T>, std::basic_string_view<T>> StringViewOf(const T(&buffer)[size]) noexcept
+	template<class T> requires(std::is_bounded_array_v<T>)
+	auto StringViewOf(const T& buffer) noexcept
 	{
-		return buffer;
+		using Tx = std::remove_pointer_t<std::decay_t<T>>;
+		return StringViewOf<Tx>(buffer);
 	}
 
-	template<class T>
-	const auto ScopedCharBufferOf(T&& value) noexcept
-	{
-		auto view = StringViewOf(std::forward<T>(value));
-		using CharType = typename decltype(view)::value_type;
-
-		return wxScopedCharTypeBuffer<CharType>::CreateNonOwned(view.data(), view.length());
-	}
-
-	inline wxUniChar UniCharOf(wxUniChar c) noexcept
+	constexpr inline UniChar UniCharOf(char c) noexcept
 	{
 		return c;
 	}
-	inline wxUniChar UniCharOf(wxUniCharRef c) noexcept
+	constexpr inline UniChar UniCharOf(wchar_t c) noexcept
 	{
 		return c;
 	}
-	inline wxUniChar UniCharOf(char c) noexcept
-	{
-		return c;
-	}
-	inline wxUniChar UniCharOf(wchar_t c) noexcept
+	constexpr inline UniChar UniCharOf(UniChar c) noexcept
 	{
 		return c;
 	}
@@ -96,29 +75,67 @@ namespace kxf
 {
 	class KX_API String final
 	{
+		friend struct std::hash<String>;
+		friend struct BinarySerializer<String>;
+
+		private:
+			using string_type = std::basic_string<XChar>;
+
 		public:
+			using value_type = XChar;
 			using traits_type = std::char_traits<XChar>;
 			using allocator_type = std::allocator<XChar>;
 			
-			using iterator = wxString::iterator;
-			using const_iterator = wxString::const_iterator;
-			using reverse_iterator = wxString::reverse_iterator;
-			using const_reverse_iterator = wxString::const_reverse_iterator;
+			using iterator = string_type::iterator;
+			using const_iterator = string_type::const_iterator;
+			using reverse_iterator = string_type::reverse_iterator;
+			using const_reverse_iterator = string_type::const_reverse_iterator;
 
 		public:
 			static constexpr size_t npos = StringView::npos;
 
-			// Comparison
 		private:
-			static std::strong_ordering DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static std::strong_ordering DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static std::strong_ordering DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			// Utility
+			template<class T>
+			static constexpr bool IsAnyCharType() noexcept
+			{
+				using Tx = std::remove_const_t<std::remove_reference_t<T>>;
+				return !std::is_array_v<T> &&
+					!std::is_pointer_v<T> &&
+					(std::is_same_v<Tx, char> || std::is_same_v<Tx, wchar_t> || std::is_same_v<Tx, UniChar>);
+			}
+
+			template<class T>
+			static constexpr bool IsAnyStringType() noexcept
+			{
+				return !IsAnyCharType<T>();
+			}
+
+			template<class TChar>
+			static size_t CalcStringLength(const TChar* data, size_t length) noexcept
+			{
+				if (data)
+				{
+					if (length == npos)
+					{
+						return std::char_traits<TChar>::length(data);
+					}
+					return length;
+				}
+				return 0;
+			}
+
+		private:
+			// Comparison
+			static std::strong_ordering DoCompare(std::string_view left, std::string_view right, FlagSet<StringActionFlag> flags = {}) noexcept;
+			static std::strong_ordering DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringActionFlag> flags = {}) noexcept;
+			static std::strong_ordering DoCompare(UniChar left, UniChar right, FlagSet<StringActionFlag> flags = {}) noexcept;
 			
 		public:
 			template<class T1, class T2>
-			static std::strong_ordering Compare(T1&& left, T2&& right, FlagSet<StringOpFlag> flags = {}) noexcept
+			static std::strong_ordering Compare(T1&& left, T2&& right, FlagSet<StringActionFlag> flags = {}) noexcept
 			{
-				if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
+				if constexpr(IsAnyCharType<T1>() && IsAnyCharType<T2>())
 				{
 					return DoCompare(UniCharOf(std::forward<T1>(left)), UniCharOf(std::forward<T2>(right)), flags);
 				}
@@ -129,114 +146,52 @@ namespace kxf
 			}
 
 		private:
-			static bool DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static bool DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static bool DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringActionFlag> flags = {}) noexcept;
+			static bool DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringActionFlag> flags = {}) noexcept;
 
 		public:
 			template<class T1, class T2>
-			static int MatchesWildcards(T1&& name, T2&& expression, FlagSet<StringOpFlag> flags = {}) noexcept
+			static int MatchesWildcards(T1&& name, T2&& expression, FlagSet<StringActionFlag> flags = {}) noexcept
 			{
 				return DoMatchesWildcards(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
 			}
 
 			// Conversions
-			static String FromView(const std::string_view view)
-			{
-				return String(view);
-			}
-			static String FromView(const std::wstring_view view)
-			{
-				return String(view);
-			}
-
-			static wxUniChar FromUTF8(char c)
-			{
-				const char data[2] = {c, '\0'};
-				wxString result = wxString::FromUTF8(data, 1);
-				if (!result.IsEmpty())
-				{
-					return result[0];
-				}
-				return {};
-			}
-			static wxUniChar FromUTF8(char8_t c)
+			static UniChar FromUTF8(char c);
+			static UniChar FromUTF8(char8_t c)
 			{
 				return FromUTF8(static_cast<char>(c));
 			}
-			static String FromUTF8(const char* utf8, size_t length = npos)
-			{
-				return wxString::FromUTF8(utf8, length);
-			}
+			static String FromUTF8(const char* utf8, size_t length = npos);
 			static String FromUTF8(const char8_t* utf8, size_t length = npos)
 			{
-				return wxString::FromUTF8(reinterpret_cast<const char*>(utf8), length);
+				return FromUTF8(reinterpret_cast<const char*>(utf8), length);
 			}
 			static String FromUTF8(const std::string& utf8)
 			{
-				return wxString::FromUTF8(utf8.data(), utf8.length());
+				return FromUTF8(utf8.data(), utf8.length());
 			}
 			static String FromUTF8(std::string_view utf8)
 			{
-				return wxString::FromUTF8(utf8.data(), utf8.length());
+				return FromUTF8(utf8.data(), utf8.length());
 			}
-			static String FromUTF8(const wxScopedCharBuffer& utf8)
-			{
-				return wxString::FromUTF8(utf8.data(), utf8.length());
-			}
+			static std::string ToUTF8(std::wstring_view utf16);
 
-			static wxUniChar FromASCII(char c)
-			{
-				wxString result = wxString::FromAscii(c);
-				if (!result.IsEmpty())
-				{
-					return result[0];
-				}
-				return {};
-			}
-			static String FromASCII(const char* ascii, size_t length = npos)
-			{
-				return wxString::FromAscii(ascii, length);
-			}
-			static String FromASCII(std::string_view ascii)
-			{
-				return wxString::FromAscii(ascii.data(), ascii.length());
-			}
-			static String FromASCII(const wxScopedCharBuffer& ascii)
-			{
-				return wxString::FromAscii(ascii.data(), ascii.length());
-			}
+			static String FromACP(const char* acp, size_t length = npos);
+			static String FromASCII(const char* ascii, size_t length = npos);
+			static String FromASCII(std::string_view ascii);
 
-			static String From8BitData(const char* binaryData, size_t length = npos)
-			{
-				if (length != npos)
-				{
-					return wxString::From8BitData(binaryData, length);
-				}
-				return wxString::From8BitData(binaryData);
-			}
-			static String From8BitData(const wxScopedCharBuffer& binaryData)
-			{
-				return wxString::From8BitData(binaryData.data(), binaryData.length());
-			}
-
-			static String FromDouble(double value, int precision = -1)
-			{
-				return wxString::FromDouble(value, precision);
-			}
-			static String FromCDouble(double value, int precision = -1)
-			{
-				return wxString::FromCDouble(value, precision);
-			}
+			static String FromFloatingPoint(double value, int precision = -1);
 
 			// Case conversion
-			static wxUniChar ToLower(wxUniChar c) noexcept;
-			static wxUniChar ToUpper(wxUniChar c) noexcept;
+			static UniChar ToLower(UniChar c) noexcept;
+			static UniChar ToUpper(UniChar c) noexcept;
 
 			// Substring extraction
 			template<class TFunc>
-			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, FlagSet<StringOpFlag> flags = {})
+			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, FlagSet<StringActionFlag> flags = {})
 			{
-				const StringView view = string.GetView();
+				const StringView view = string.xc_view();
 
 				if (sep.empty() && !string.empty())
 				{
@@ -284,7 +239,7 @@ namespace kxf
 			{
 				if (length != 0)
 				{
-					const StringView view = string.GetView();
+					const StringView view = string.xc_view();
 
 					size_t count = 0;
 					for (size_t i = 0; i < view.length(); i += length)
@@ -303,7 +258,7 @@ namespace kxf
 				}
 				else
 				{
-					std::invoke(func, string.GetView());
+					std::invoke(func, string.xc_view());
 					return 1;
 				}
 				return 0;
@@ -325,105 +280,78 @@ namespace kxf
 			}
 
 		private:
-			wxString m_String;
+			string_type m_String;
+			mutable std::unique_ptr<std::string> m_ConvertedNC;
 
 		public:
 			String() = default;
+			String(const String& other)
+				:m_String(other.m_String)
+			{
+			}
+			String(String&&) noexcept = default;
 
-			// Copy
-			String(const String&) = default;
-			String(const wxString& other)
-				:m_String(other)
-			{
-			}
-			
-			// Move
-			String(String&& other) noexcept(Private::IsWxStringMoveable())
-			{
-				*this = std::move(other);
-			}
-			String(wxString&& other) noexcept(Private::IsWxStringMoveable())
-			{
-				*this = std::move(other);
-			}
-
-			#if Kx_WxStringConvertibleToStd
-			String(wxStringImpl&& other) noexcept(Private::IsWxStringMoveable())
-			{
-				*this = std::move(other);
-			}
-			#endif
+			String(const wxString& other) noexcept;
+			String(wxString&& other) noexcept;
 
 			// Char/wchar_t pointers
 			String(const char* data, size_t length = npos)
-				:m_String(data, Private::CheckStringLength(data, length))
-			{
-			}
-			String(const char* data, const wxMBConv& conv, size_t length = npos)
-				:m_String(data, conv, Private::CheckStringLength(data, length))
+				:String(FromUTF8(data, CalcStringLength(data, length)))
 			{
 			}
 			String(const char8_t* data, size_t length = npos)
-				:String(FromUTF8(data, Private::CheckStringLength(data, length)))
+				:String(FromUTF8(data, CalcStringLength(data, length)))
 			{
 			}
 			String(const wchar_t* data, size_t length = npos)
-				:m_String(data, Private::CheckStringLength(data, length))
+				:m_String(data, CalcStringLength(data, length))
 			{
 			}
 			
 			// std::[w]string[_view]
-			explicit String(const std::string& other)
-				:m_String(other.data(), other.length())
+			String(const std::string& other)
+				:String(FromUTF8(other))
 			{
 			}
-			explicit String(const std::string& other, const wxMBConv& conv)
-				:m_String(other.data(), conv, other.length())
+			String(const std::wstring& other)
+				:m_String(other)
 			{
 			}
-			explicit String(const std::wstring& other)
-				:m_String(other.data(), other.length())
+			String(std::basic_string<XChar>&& other)
+				:m_String(std::move(other))
 			{
 			}
 
-			explicit String(std::string_view other)
-				:m_String(other.data(), other.length())
+			String(std::string_view other)
+				:String(FromUTF8(other))
 			{
 			}
-			explicit String(std::string_view other, const wxMBConv& conv)
-				:m_String(other.data(), conv, other.length())
-			{
-			}
-			explicit String(std::wstring_view other)
+			String(std::basic_string_view<XChar> other)
 				:m_String(other.data(), other.length())
 			{
 			}
 
 			// Single char
 			String(char c, size_t count = 1)
-				:m_String(c, count)
+				:m_String(count, static_cast<XChar>(c))
 			{
 			}
 			String(wchar_t c, size_t count = 1)
-				:m_String(c, count)
+				:m_String(count, static_cast<XChar>(c))
 			{
 			}
-			String(wxUniChar c, size_t count = 1)
-				:m_String(c, count)
-			{
-			}
-			String(wxUniCharRef c, size_t count = 1)
-				:m_String(c, count)
+			String(UniChar c, size_t count = 1)
+				:m_String(count, static_cast<XChar>(*c))
 			{
 			}
 			
-			~String() noexcept = default;
+			~String() = default;
 
 		public:
 			// String length
 			bool IsEmpty() const noexcept
 			{
-				return m_String.IsEmpty();
+				return m_String.empty();
 			}
 			bool IsEmptyOrWhitespace() const noexcept;
 			size_t GetLength() const noexcept
@@ -436,111 +364,97 @@ namespace kxf
 			}
 
 			// Character access
-			StringView GetView() const noexcept
+			const string_type& impl_str() const noexcept
 			{
-				return StringViewOf(m_String);
+				return m_String;
 			}
-			auto c_str() const noexcept(std::is_same_v<XChar, char>)
+			string_type& impl_str() noexcept
+			{
+				return m_String;
+			}
+
+			wchar_t* data() noexcept
+			{
+				return m_String.data();
+			}
+			const wchar_t* data() const noexcept
+			{
+				return m_String.data();
+			}
+
+			std::basic_string_view<char> nc_view() const noexcept
+			{
+				m_ConvertedNC = std::make_unique<std::string>(ToUTF8());
+				return *m_ConvertedNC;
+			}
+			std::basic_string_view<wchar_t> wc_view() const noexcept
+			{
+				return {m_String.c_str(), m_String.length()};
+			}
+			std::basic_string_view<XChar> xc_view() const noexcept
+			{
+				return {m_String.c_str(), m_String.length()};
+			}
+
+			const char* nc_str() const noexcept(std::is_same_v<XChar, char>)
+			{
+				m_ConvertedNC = std::make_unique<std::string>(ToUTF8());
+				return m_ConvertedNC->c_str();
+			}
+			const wchar_t* wc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				return m_String.c_str();
 			}
-			auto wc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
+			const XChar* xc_str() const noexcept
 			{
-				return m_String.wc_str();
-			}
-			const XChar* wx_str() const noexcept
-			{
-				return m_String.wx_str();
+				return m_String.c_str();
 			}
 
-			wxUniChar operator[](size_t i) const
+			XChar& operator[](size_t i) noexcept
 			{
 				return m_String[i];
 			}
-			wxUniCharRef operator[](size_t i)
+			const XChar& operator[](size_t i) const noexcept
 			{
 				return m_String[i];
 			}
-
-			const wxString& GetWxString() const noexcept
-			{
-				return m_String;
-			}
-			wxString& GetWxString() noexcept
-			{
-				return m_String;
-			}
-			
-			#if Kx_WxStringConvertibleToStd
-			const wxStringImpl& GetStdImpl() const noexcept
-			{
-				return Private::GetWxStringImpl(m_String);
-			}
-			wxStringImpl& GetStdImpl() noexcept
-			{
-				return Private::GetWxStringImpl(m_String);
-			}
-			#endif
 
 			// Conversions
-			wxString TakeWxString() noexcept
-			{
-				wxString result;
-				Private::MoveWxString(result, std::move(m_String));
-				return result;
-			}
-			std::string ToStdString(const wxMBConv& conv = wxConvLibc) const
-			{
-				return m_String.ToStdString(conv);
-			}
-			std::wstring ToStdWString() const
-			{
-				return m_String.ToStdWstring();
-			}
-			
 			std::string ToUTF8() const
 			{
-				auto converted = m_String.ToUTF8();
-				return {converted.data(), converted.length()};
+				return ToUTF8(StringViewOf(m_String));
 			}
-			std::string ToASCII(char replaceWith = '_') const
-			{
-				auto converted = m_String.ToAscii();
-				return {converted.data(), converted.length()};
-			}
-			std::string To8BitData() const
-			{
-				auto converted = m_String.To8BitData();
-				return {converted.data(), converted.length()};
-			}
+			std::string ToASCII(char replaceWith = '_') const;
 
 			// Concatenation
 		private:
 			String& DoAppend(std::string_view other)
 			{
-				m_String.Append(other.data(), other.length());
+				auto converted = FromUTF8(other);
+				m_String.append(converted.wc_view());
+
 				return *this;
 			}
 			String& DoAppend(std::wstring_view other)
 			{
-				m_String.Append(other.data(), other.length());
+				m_String.append(other);
 				return *this;
 			}
-			String& DoAppend(wxUniChar c, size_t count = 1)
+			String& DoAppend(UniChar c, size_t count = 1)
 			{
-				m_String.Append(c, count);
+				m_String.append(count, *c);
 				return *this;
 			}
 
 		public:
-			template<class T>
-			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Append(T&& other)
+			template<class T> requires(IsAnyStringType<T>())
+			String& Append(T&& other)
 			{
 				return DoAppend(StringViewOf(std::forward<T>(other)));
 			}
 
-			template<class T>
-			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Append(T&& other, size_t count = 1)
+			template<class T> requires(IsAnyCharType<T>())
+			String& Append(T&& other, size_t count = 1)
 			{
 				return DoAppend(UniCharOf(std::forward<T>(other)), count);
 			}
@@ -551,16 +465,12 @@ namespace kxf
 				return Append(std::forward<T>(other));
 			}
 
-			template<class T>
-			String& operator<<(T&& other)
-			{
-				return Append(std::forward<T>(other));
-			}
-
 		private:
 			String& DoPrepend(std::string_view other)
 			{
-				m_String.insert(0, other.data(), other.length());
+				auto converted = FromUTF8(other);
+				m_String.insert(0, converted.wc_view());
+
 				return *this;
 			}
 			String& DoPrepend(std::wstring_view other)
@@ -568,21 +478,21 @@ namespace kxf
 				m_String.insert(0, other.data(), other.length());
 				return *this;
 			}
-			String& DoPrepend(wxUniChar c, size_t count = 1)
+			String& DoPrepend(UniChar c, size_t count = 1)
 			{
-				m_String.insert(0, count, c);
+				m_String.insert(0, count, *c);
 				return *this;
 			}
 			
 		public:
-			template<class T>
-			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Prepend(T&& other)
+			template<class T> requires(IsAnyStringType<T>())
+			String& Prepend(T&& other)
 			{
 				return DoPrepend(StringViewOf(std::forward<T>(other)));
 			}
 
-			template<class T>
-			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Prepend(T&& other, size_t count = 1)
+			template<class T> requires(IsAnyCharType<T>())
+			String& Prepend(T&& other, size_t count = 1)
 			{
 				return DoPrepend(UniCharOf(std::forward<T>(other)), count);
 			}
@@ -590,62 +500,56 @@ namespace kxf
 		private:
 			String& DoInsert(size_t pos, std::string_view other)
 			{
-				m_String.insert(pos, other.data(), other.length());
+				auto converted = FromUTF8(other);
+				m_String.insert(pos, converted.wc_view());
+
 				return *this;
 			}
 			String& DoInsert(size_t pos, std::wstring_view other)
 			{
-				m_String.insert(pos, other.data(), other.length());
+				m_String.insert(pos, other);
 				return *this;
 			}
-			String& DoInsert(size_t pos, wxUniChar c, size_t count = 1)
+			String& DoInsert(size_t pos, UniChar c, size_t count = 1)
 			{
-				m_String.insert(pos, count, c);
+				m_String.insert(pos, count, *c);
 				return *this;
 			}
 			
 		public:
-			template<class T>
-			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Insert(size_t pos, T&& other)
+			template<class T> requires(IsAnyStringType<T>())
+			String& Insert(size_t pos, T&& other)
 			{
 				return DoInsert(pos, StringViewOf(std::forward<T>(other)));
 			}
 
-			template<class T>
-			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Insert(size_t pos, T&& other, size_t count = 1)
+			template<class T> requires(IsAnyCharType<T>())
+			String& Insert(size_t pos, T&& other, size_t count = 1)
 			{
 				return DoInsert(pos, UniCharOf(std::forward<T>(other)), count);
 			}
 
-			// Comparison
 		private:
-			std::strong_ordering DoCompareTo(std::string_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, char>)
+			// Comparison
+			std::strong_ordering DoCompareTo(std::string_view other, FlagSet<StringActionFlag> flags = {}) const noexcept(std::is_same_v<XChar, char>)
 			{
-				#if wxUSE_UNICODE_WCHAR
 				return Compare(*this, String(other), flags);
-				#else
-				return Compare(GetView(), other, flags);
-				#endif
 			}
-			std::strong_ordering DoCompareTo(std::wstring_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, wchar_t>)
+			std::strong_ordering DoCompareTo(std::wstring_view other, FlagSet<StringActionFlag> flags = {}) const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
-				#if wxUSE_UNICODE_WCHAR
-				return Compare(GetView(), other, flags);
-				#else
-				return Compare(*this, String(other), flags);
-				#endif
+				return Compare(wc_view(), other, flags);
 			}
-			std::strong_ordering DoCompareTo(wxUniChar other, FlagSet<StringOpFlag> flags = {}) const noexcept
+			std::strong_ordering DoCompareTo(UniChar other, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				const XChar c[2] = {other, 0};
-				return Compare(GetView(), StringViewOf(c), flags);
+				const XChar c[2] = {other.GetAs<XChar>(), 0};
+				return Compare(wc_view(), StringViewOf(c), flags);
 			}
 
 		public:
 			template<class T>
-			std::strong_ordering CompareTo(T&& other, FlagSet<StringOpFlag> flags = {}) const
+			std::strong_ordering CompareTo(T&& other, FlagSet<StringActionFlag> flags = {}) const
 			{
-				if constexpr(Private::IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoCompareTo(UniCharOf(std::forward<T>(other)), flags);
 				}
@@ -656,25 +560,25 @@ namespace kxf
 			}
 
 			template<class T>
-			bool IsSameAs(T&& other, FlagSet<StringOpFlag> flags = {}) const
+			bool IsSameAs(T&& other, FlagSet<StringActionFlag> flags = {}) const
 			{
 				return CompareTo(std::forward<T>(other), flags) == 0;
 			}
 
 		private:
-			bool DoStartsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			bool DoStartsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			bool DoStartsWith(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoStartsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			bool DoStartsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			bool DoStartsWith(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				const XChar pattern[2] = {c, 0};
+				const XChar pattern[2] = {c.GetAs<XChar>(), 0};
 				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 
 		public:
 			template<class T>
-			bool StartsWith(T&& pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const
+			bool StartsWith(T&& pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const
 			{
-				if constexpr(Private::IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoStartsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
 				}
@@ -685,19 +589,19 @@ namespace kxf
 			}
 
 		private:
-			bool DoEndsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			bool DoEndsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			bool DoEndsWith(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoEndsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			bool DoEndsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			bool DoEndsWith(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				const XChar pattern[2] = {c, 0};
+				const XChar pattern[2] = {c.GetAs<XChar>(), 0};
 				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 
 		public:
 			template<class T>
-			bool EndsWith(T&& pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const
+			bool EndsWith(T&& pattern, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const
 			{
-				if constexpr(Private::IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoEndsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
 				}
@@ -708,35 +612,26 @@ namespace kxf
 			}
 
 		private:
-			bool DoMatchesWildcards(std::string_view expression, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoMatchesWildcards(std::string_view expression, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				#if wxUSE_UNICODE_WCHAR
-				String temp = FromView(expression);
-				return DoMatchesWildcards(GetView(), StringViewOf(temp), flags);
-				#else
-				return DoMatchesWildcards(GetView(), expression, flags);
-				#endif
+				auto converted = FromUTF8(expression);
+				return DoMatchesWildcards(wc_view(), StringViewOf(converted), flags);
 			}
-			bool DoMatchesWildcards(std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoMatchesWildcards(std::wstring_view expression, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				#if wxUSE_UNICODE_WCHAR
-				return DoMatchesWildcards(GetView(), expression, flags);
-				#else
-				String temp = FromView(expression);
-				return DoMatchesWildcards(GetView(), StringViewOf(temp), flags);
-				#endif
+				return DoMatchesWildcards(wc_view(), expression, flags);
 			}
-			bool DoMatchesWildcards(wxUniChar c, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoMatchesWildcards(UniChar c, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
-				const XChar expression[2] = {c, 0};
-				return DoMatchesWildcards(GetView(), StringViewOf(expression), flags);
+				const XChar expression[2] = {c.GetAs<XChar>(), 0};
+				return DoMatchesWildcards(wc_view(), StringViewOf(expression), flags);
 			}
 
 		public:
 			template<class T>
-			bool MatchesWildcards(T&& expression, FlagSet<StringOpFlag> flags = {}) const
+			bool MatchesWildcards(T&& expression, FlagSet<StringActionFlag> flags = {}) const
 			{
-				if constexpr(Private::IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoMatchesWildcards(UniCharOf(std::forward<T>(expression)), flags);
 				}
@@ -749,29 +644,43 @@ namespace kxf
 			// Substring extraction
 			String Mid(size_t offset, size_t count = String::npos) const
 			{
-				return m_String.Mid(offset, count);
+				if (offset < m_String.length())
+				{
+					return m_String.substr(offset, count);
+				}
+				return {};
 			}
 			String Left(size_t count) const
 			{
-				return m_String.Left(count);
+				return m_String.substr(0, count);
 			}
 			String Right(size_t count) const
 			{
-				return m_String.Right(count);
+				size_t offset = m_String.length() - count;
+				if (offset < m_String.length())
+				{
+					return m_String.substr(offset, count);
+				}
+				return {};
 			}
 			String SubString(size_t from, size_t to) const
 			{
-				return m_String.SubString(from, to);
+				size_t length = m_String.length();
+				if (from < to && from < length && to < length)
+				{
+					return m_String.substr(from, to - from);
+				}
+				return {};
 			}
 
-			String AfterFirst(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			String AfterLast(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			String AfterFirst(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			String AfterLast(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
 
-			String BeforeFirst(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
-			String BeforeLast(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			String BeforeFirst(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
+			String BeforeLast(UniChar c, String* rest = nullptr, FlagSet<StringActionFlag> flags = {}) const;
 
 			template<class TFunc>
-			size_t SplitBySeparator(const String& sep, TFunc&& func, FlagSet<StringOpFlag> flags = {}) const
+			size_t SplitBySeparator(const String& sep, TFunc&& func, FlagSet<StringActionFlag> flags = {}) const
 			{
 				return SplitBySeparator(*this, sep, std::forward<TFunc>(func), flags);
 			}
@@ -779,7 +688,7 @@ namespace kxf
 			template<class TFunc>
 			size_t SplitByLength(size_t length, TFunc&& func) const
 			{
-				return SplitByLength(StringViewOf(m_String), length, std::forward<TFunc>(func));
+				return SplitByLength(wc_view(), length, std::forward<TFunc>(func));
 			}
 
 			// Case conversion
@@ -796,9 +705,9 @@ namespace kxf
 
 			String& MakeCapitalized() noexcept
 			{
-				if (!m_String.IsEmpty())
+				if (!m_String.empty())
 				{
-					m_String[0] = ToUpper(m_String[0]);
+					m_String[0] = *ToUpper(m_String[0]);
 				}
 				return *this;
 			}
@@ -809,15 +718,15 @@ namespace kxf
 
 			// Searching and replacing
 		private:
-			size_t DoFind(std::string_view pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const;
-			size_t DoFind(std::wstring_view pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const;
-			size_t DoFind(wxUniChar pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const noexcept;
+			size_t DoFind(std::string_view pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const;
+			size_t DoFind(std::wstring_view pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const;
+			size_t DoFind(UniChar pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const noexcept;
 			
 		public:
 			template<class T>
-			size_t Find(T&& pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const
+			size_t Find(T&& pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const
 			{
-				if constexpr(Private::IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
 				}
@@ -828,33 +737,33 @@ namespace kxf
 			}
 
 		private:
-			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {});
-			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {});
-			size_t DoReplace(wxUniChar c, wxUniChar replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept;
-			size_t DoReplace(wxUniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept
+			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
+			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
+			size_t DoReplace(UniChar c, UniChar replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept;
+			size_t DoReplace(UniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
 			{
-				const char pattern[2] = {c, 0};
+				const char pattern[2] = {c.GetAs<char>(), 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
-			size_t DoReplace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept
+			size_t DoReplace(UniChar c, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
 			{
-				const wchar_t pattern[2] = {c, 0};
+				const wchar_t pattern[2] = {c.GetAs<XChar>(), 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
 			
 		public:
 			template<class T1, class T2>
-			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {})
+			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {})
 			{
-				if constexpr(Private::IsAnyStringType<T1>() && Private::IsAnyStringType<T2>())
+				if constexpr(IsAnyStringType<T1>() && IsAnyStringType<T2>())
 				{
 					return DoReplace(StringViewOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
 				}
-				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
+				else if constexpr(IsAnyCharType<T1>() && IsAnyCharType<T2>())
 				{
 					return DoReplace(UniCharOf(std::forward<T1>(pattern)), UniCharOf(std::forward<T2>(replacement)), offset, flags);
 				}
-				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyStringType<T2>())
+				else if constexpr(IsAnyCharType<T1>() && IsAnyStringType<T2>())
 				{
 					return DoReplace(UniCharOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
 				}
@@ -866,126 +775,109 @@ namespace kxf
 
 			String& ReplaceRange(size_t offset, size_t length, const String& replacement)
 			{
-				m_String.replace(offset, length, replacement);
+				m_String.replace(offset, length, replacement.wc_view());
 				return *this;
 			}
 			String& ReplaceRange(size_t offset, size_t length, std::string_view replacement)
 			{
-				m_String.replace(offset, length, replacement.data(), replacement.size());
+				auto converted = FromUTF8(replacement);
+				m_String.replace(offset, length, converted.wc_view());
+
 				return *this;
 			}
 			String& ReplaceRange(size_t offset, size_t length, std::wstring_view replacement)
 			{
-				m_String.replace(offset, length, replacement.data(), replacement.size());
+				m_String.replace(offset, length, replacement);
 				return *this;
 			}
 
 			String& ReplaceRange(iterator first, iterator last, const String& replacement)
 			{
-				m_String.replace(first, last, replacement);
+				m_String.replace(first, last, replacement.wc_view());
 				return *this;
 			}
 			String& ReplaceRange(iterator first, iterator last, std::string_view replacement)
 			{
-				m_String.replace(first, last, replacement.data(), replacement.size());
+				auto converted = FromUTF8(replacement);
+				m_String.replace(first, last, converted.wc_view());
+
 				return *this;
 			}
 			String& ReplaceRange(iterator first, iterator last, std::wstring_view replacement)
 			{
-				m_String.replace(first, last, replacement.data(), replacement.size());
+				m_String.replace(first, last, replacement);
 				return *this;
 			}
 
 			template<class T>
-			bool Contains(T&& pattern, FlagSet<StringOpFlag> flags = {}) const
+			bool Contains(T&& pattern, FlagSet<StringActionFlag> flags = {}) const
 			{
 				return Find(std::forward<T>(pattern), 0, flags) != npos;
 			}
 
 		private:
-			bool DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringOpFlag> flags = {}) const noexcept;
-			bool DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringOpFlag> flags = {}) const noexcept;
+			bool DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringActionFlag> flags = {}) const noexcept;
+			bool DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringActionFlag> flags = {}) const noexcept;
 
 		public:
 			template<class T>
-			bool ContainsAnyOfCharacters(T&& pattern, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool ContainsAnyOfCharacters(T&& pattern, FlagSet<StringActionFlag> flags = {}) const noexcept
 			{
 				return DoContainsAnyOfCharacters(StringViewOf(std::forward<T>(pattern)), flags);
 			}
 
+		private:
 			// Conversion to numbers
-			template<class T = double>
+			bool DoToFloatingPoint(float& value) const noexcept;
+			bool DoToFloatingPoint(double& value) const noexcept;
+			bool DoToSignedInteger(int64_t& value, int base) const noexcept;
+			bool DoToUnsignedInteger(uint64_t& value, int base) const noexcept;
+
+		public:
+			template<class T = double> requires(std::is_floating_point_v<T>)
 			std::optional<T> ToFloatingPoint() const noexcept
 			{
-				static_assert(std::is_floating_point_v<T>, "floating point type is required");
-
-				double value = 0;
-				if (m_String.ToDouble(&value))
+				if constexpr(std::is_same_v<T, float>)
 				{
-					return static_cast<T>(value);
-				}
-				return {};
-			}
-
-			template<class T = double>
-			std::optional<T> ToCFloatingPoint() const noexcept
-			{
-				static_assert(std::is_floating_point_v<T>, "floating point type is required");
-
-				double value = 0;
-				if (m_String.ToCDouble(&value))
-				{
-					return static_cast<T>(value);
-				}
-				return {};
-			}
-
-			template<class T>
-			std::optional<T> ToInt(int base = 10) const noexcept
-			{
-				static_assert(std::is_integral_v<T>, "integral type is required");
-
-				using Limits = std::numeric_limits<T>;
-				using Tint = std::conditional_t<std::is_unsigned_v<T>, unsigned long long, long long>;
-
-				Tint value = 0;
-				bool isSuccess = false;
-				if constexpr(std::is_unsigned_v<T>)
-				{
-					isSuccess = m_String.ToULongLong(&value, base);
+					float value = 0;
+					if (DoToFloatingPoint(value))
+					{
+						return static_cast<T>(value);
+					}
 				}
 				else
 				{
-					isSuccess = m_String.ToLongLong(&value, base);
-				}
-
-				if (isSuccess && value == std::clamp<Tint>(value, Limits::min(), Limits::max()))
-				{
-					return static_cast<T>(value);
+					double value = 0;
+					if (DoToFloatingPoint(value))
+					{
+						return static_cast<T>(value);
+					}
 				}
 				return {};
 			}
 
-			// Memory management
-			String Clone() const
+			template<class T = int> requires(std::is_integral_v<T>)
+			std::optional<T> ToInteger(int base = 10) const noexcept
 			{
-				return m_String;
-			}
-			void Clear() noexcept
-			{
-				m_String.Clear();
-			}
-			void Reserve(size_t capacity)
-			{
-				m_String.reserve(capacity);
-			}
-			void Shrink()
-			{
-				#if Kx_WxStringConvertibleToStd
-				GetStdImpl().shrink_to_fit();
-				#else
-				m_String.shrink_to_fit();
-				#endif
+				using Limits = std::numeric_limits<T>;
+				using TInt = std::conditional_t<std::is_unsigned_v<T>, uint64_t, int64_t>;
+
+				TInt value = 0;
+				bool isSuccess = false;
+				if constexpr(std::is_unsigned_v<T>)
+				{
+					isSuccess = DoToUnsignedInteger(value, base);
+				}
+				else
+				{
+					isSuccess = DoToSignedInteger(value, base);
+				}
+
+				if (isSuccess && value == std::clamp<TInt>(value, Limits::min(), Limits::max()))
+				{
+					return static_cast<T>(value);
+				}
+				return {};
 			}
 
 			// Miscellaneous
@@ -993,32 +885,42 @@ namespace kxf
 			{
 				for (const auto& c: m_String)
 				{
-					if (!c.IsAscii())
+					if (!UniChar(c).IsASCII())
 					{
 						return false;
 					}
 				}
 				return true;
 			}
-			String& Remove(size_t pos, size_t count)
+			String& Remove(size_t offset, size_t count)
 			{
-				m_String.Remove(pos, count);
+				if (offset < m_String.length())
+				{
+					m_String.erase(offset, count);
+				}
 				return *this;
 			}
 			String& RemoveFromEnd(size_t count)
 			{
-				m_String.RemoveLast(count);
+				size_t offset = m_String.length() - count;
+				if (offset < m_String.length())
+				{
+					m_String.erase(offset, count);
+				}
 				return *this;
 			}
 			String& Truncate(size_t length)
 			{
-				m_String.Truncate(length);
+				if (length < m_String.length())
+				{
+					m_String.resize(length);
+				}
 				return *this;
 			}
-			String& Trim(FlagSet<StringOpFlag> flags = {})
+			String& Trim(FlagSet<StringActionFlag> flags = {});
+			String Clone() const
 			{
-				m_String.Trim(flags & StringOpFlag::FromEnd);
-				return *this;
+				return m_String;
 			}
 
 			// Iterator interface
@@ -1101,142 +1003,112 @@ namespace kxf
 			{
 				m_String.reserve(capacity);
 			}
-			void resize(size_t capacity, wxUniChar c = '\0')
+			void resize(size_t capacity, XChar c = 0)
 			{
 				m_String.resize(capacity, c);
 			}
-			void assign(const char* data, size_t length = npos)
-			{
-				m_String.assign(data, length);
-			}
-			void assign(const wchar_t* data, size_t length = npos)
+			void assign(const XChar* data, size_t length = npos)
 			{
 				m_String.assign(data, length);
 			}
 			void shrink_to_fit()
 			{
-				Shrink();
+				m_String.shrink_to_fit();
 			}
 
-			wxUniChar at(size_t i) const
+			const XChar& at(size_t i) const
 			{
 				return m_String.at(i);
 			}
-			wxUniCharRef at(size_t i)
+			XChar& at(size_t i)
 			{
 				return m_String.at(i);
 			}
 
-			wxUniChar front() const
+			const XChar& front() const
 			{
-				return m_String[0];
+				return m_String.front();
 			}
-			wxUniCharRef front()
+			XChar& front()
 			{
-				return m_String[0];
+				return m_String.front();
 			}
 
-			wxUniChar back() const
+			const XChar& back() const
 			{
-				return m_String[m_String.length() - 1];
+				return m_String.back();
 			}
-			wxUniCharRef back()
+			XChar& back()
 			{
-				return m_String[m_String.length() - 1];
+				return m_String.back();
 			}
 
 		public:
-			// Copy assignment
-			String& operator=(const String&) = default;
-			String& operator=(const wxString& other)
+			String& operator=(const String& other)
 			{
-				m_String = other;
-				return *this;
-			}
-			String& operator=(std::string_view other)
-			{
-				m_String = ScopedCharBufferOf(other);
-				return *this;
-			}
-			String& operator=(std::wstring_view other)
-			{
-				m_String = ScopedCharBufferOf(other);
-				return *this;
-			}
-			
-			template<class T>
-			String& operator=(const T& other)
-			{
-				m_String = other;
-				return *this;
-			}
+				m_String = other.m_String;
+				m_ConvertedNC = nullptr;
 
-			// Move assignment
-			String& operator=(String&& other) noexcept(Private::IsWxStringMoveable())
-			{
-				Private::MoveWxString(m_String, std::move(other.m_String));
 				return *this;
 			}
-			String& operator=(wxString&& other) noexcept(Private::IsWxStringMoveable())
-			{
-				Private::MoveWxString(m_String, std::move(other));
-				return *this;
-			}
+			String& operator=(String&&) noexcept = default;
 
-			#if Kx_WxStringConvertibleToStd
-			String& operator=(wxStringImpl&& other) noexcept(Private::IsWxStringMoveable())
+			// Conversion
+			operator std::basic_string<XChar>() && noexcept
 			{
-				Private::MoveWxString(m_String, std::move(other));
-				return *this;
+				return std::move(m_String);
 			}
-			#endif
-
-			// Conversions
-			operator const wxString&() const
-			{
-				return GetWxString();
-			}
-			operator wxString&()
-			{
-				return GetWxString();
-			}
+			operator wxString() const;
 
 			// Comparison
 			std::strong_ordering operator<=>(const String& other) const noexcept
 			{
-				return GetView() <=> other.GetView();
+				return xc_view() <=> other.xc_view();
 			}
-			std::strong_ordering operator<=>(const wxString& other) const noexcept
-			{
-				return GetView() <=> StringViewOf(other);
-			}
+			std::strong_ordering operator<=>(const wxString& other) const noexcept;
 			std::strong_ordering operator<=>(const char* other) const
 			{
 				return CompareTo(other);
 			}
-			std::strong_ordering operator<=>(const wchar_t* other) const
+			std::strong_ordering operator<=>(const wchar_t* other) const noexcept
+			{
+				return CompareTo(other);
+			}
+			std::strong_ordering operator<=>(std::string_view other) const
+			{
+				return CompareTo(other);
+			}
+			std::strong_ordering operator<=>(std::wstring_view other) const noexcept
 			{
 				return CompareTo(other);
 			}
 
 			bool operator==(const String& other) const noexcept
 			{
-				return *this <=> other == std::strong_ordering::equal;
+				return *this <=> other == 0;
 			}
 			bool operator==(const wxString& other) const noexcept
 			{
-				return *this <=> other == std::strong_ordering::equal;
+				return *this <=> other == 0;
 			}
 			bool operator==(const char* other) const
 			{
-				return *this <=> other == std::strong_ordering::equal;
+				return *this <=> other == 0;
 			}
 			bool operator==(const wchar_t* other) const
 			{
-				return *this <=> other == std::strong_ordering::equal;
+				return *this <=> other == 0;
+			}
+			bool operator==(std::string_view other) const
+			{
+				return IsSameAs(other);
+			}
+			bool operator==(std::wstring_view other) const noexcept
+			{
+				return IsSameAs(other);
 			}
 
-			bool operator==(const wxUniChar& other) const noexcept
+			bool operator==(const UniChar& other) const noexcept
 			{
 				return IsSameAs(other);
 			}
@@ -1289,6 +1161,13 @@ namespace kxf
 	{
 		return ToString(static_cast<std::underlying_type_t<T>>(value));
 	}
+
+	namespace Private
+	{
+		void MoveWxString(wxString& destination, wxString&& source) noexcept;
+		void MoveWxString(wxString& destination, wxStringImpl&& source) noexcept;
+		void MoveWxString(wxStringImpl& destination, wxString&& source) noexcept;
+	}
 }
 
 namespace std
@@ -1298,7 +1177,7 @@ namespace std
 	{
 		size_t operator()(const kxf::String& string) const noexcept
 		{
-			return std::hash<kxf::StringView>()(string.GetView());
+			return std::hash<kxf::StringView>()(string.xc_view());
 		}
 	};
 }

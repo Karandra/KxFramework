@@ -25,7 +25,7 @@ namespace kxf::Sciter
 		Element node = GetElement();
 
 		m_NativeWindow->SetName(node.GetAttribute("name"));
-		if (auto id = node.GetAttribute("command-id").ToInt<wxWindowID>())
+		if (auto id = node.GetAttribute("command-id").ToInteger<wxWindowID>())
 		{
 			m_NativeWindow->SetId(*id);
 		}

@@ -138,7 +138,7 @@ namespace kxf
 	}
 	bool XMLDocument::Load(std::wstring_view xml)
 	{
-		Load(String::FromView(xml));
+		Load(String(xml));
 		return !IsNull();
 	}
 	bool XMLDocument::Load(IInputStream& stream)

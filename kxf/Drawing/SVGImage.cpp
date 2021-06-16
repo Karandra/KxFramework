@@ -66,7 +66,7 @@ namespace kxf
 			IO::InputStreamReader reader(stream);
 
 			auto document = std::make_shared<lunasvg::SVGDocument>();
-			if (document->loadFromData(reader.ReadStringUTF8(stream.GetSize().ToBytes()).ToStdString()))
+			if (document->loadFromData(reader.ReadStringUTF8(stream.GetSize().ToBytes()).ToUTF8()))
 			{
 				m_Document = std::move(document);
 				return true;

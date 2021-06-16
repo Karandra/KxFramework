@@ -131,7 +131,7 @@ namespace kxf::Application
 			virtual ~IDebugHandler() = default;
 
 		public:
-			virtual void OnAssertFailure(String file, int line, String function, String condition, String message) = 0;
+			virtual void OnAssertFailure(const String& file, int line, const String& function, const String& condition, const String& message) = 0;
 	};
 
 	class KX_API ICommandLine: public RTTI::Interface<ICommandLine>

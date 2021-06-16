@@ -26,7 +26,7 @@ namespace kxf::System::Private
 			{
 				::LocalFree(formattedMessage);
 			});
-			return String(formattedMessage, length).Trim().Trim(StringOpFlag::FromEnd);
+			return String(formattedMessage, length).Trim().Trim(StringActionFlag::FromEnd);
 		}
 		return {};
 	}

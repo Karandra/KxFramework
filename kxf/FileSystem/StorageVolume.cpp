@@ -132,7 +132,7 @@ namespace kxf
 
 					if (volume)
 					{
-						return std::make_pair(std::move(volume), LegacyVolume::FromChar(wxUniChar(disk[0])));
+						return std::make_pair(std::move(volume), LegacyVolume::FromChar(UniChar(disk[0])));
 					}
 				}
 				en.SkipCurrent();
@@ -154,8 +154,8 @@ namespace kxf
 	{
 		if (volume)
 		{
-			wxChar disk[] = wxS("\0:\\");
-			disk[0] = volume.GetChar();
+			XChar disk[] = wxS("\0:\\");
+			disk[0] = volume.GetChar().GetAs<XChar>();
 
 			return ::DeleteVolumeMountPointW(disk);
 		}
@@ -357,8 +357,8 @@ namespace kxf
 	{
 		if (volume)
 		{
-			wxChar disk[] = wxS("\0:\\");
-			disk[0] = volume.GetChar();
+			XChar disk[] = wxS("\0:\\");
+			disk[0] = volume.GetChar().GetAs<XChar>();
 
 			return ::SetVolumeMountPointW(disk, m_Path);
 		}

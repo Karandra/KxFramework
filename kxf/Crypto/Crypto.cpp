@@ -141,18 +141,18 @@ namespace kxf::Crypto
 	size_t Rot13(String& source) noexcept
 	{
 		size_t count = 0;
-		for (wxUniCharRef c: source)
+		for (XChar& c: source)
 		{
-			if (c.IsAscii())
+			if (UniChar(c).IsASCII())
 			{
 				if ((c >= wxS('A') && c <= wxS('M')) || (c >= wxS('a') && c <= wxS('m')))
 				{
-					c = wxUniChar(c.GetValue() + 13);
+					c += 13;
 					count++;
 				}
 				else if ((c >= wxS('N') && c <= wxS('Z')) || (c >= wxS('n') && c <= wxS('z')))
 				{
-					c = wxUniChar(c.GetValue() - 13);
+					c -= 13;
 					count++;
 				}
 			}
@@ -162,7 +162,7 @@ namespace kxf::Crypto
 	size_t UwUize(String& source) noexcept
 	{
 		size_t count = 0;
-		for (wxUniCharRef c: source)
+		for (XChar& c: source)
 		{
 			if (c == wxS('l') || c == wxS('r'))
 			{

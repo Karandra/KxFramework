@@ -51,7 +51,7 @@ namespace kxf
 			template<class T = int, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
 			std::optional<T> ToInt() const noexcept
 			{
-				return GetPath().ToInt<T>();
+				return GetPath().ToInteger<T>();
 			}
 
 			// URI

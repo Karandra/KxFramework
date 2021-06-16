@@ -40,12 +40,12 @@ namespace kxf
 					}
 					else if (auto stringView = any.AsPtr<std::string_view>())
 					{
-						value = String::FromView(*stringView);
+						value = String(*stringView);
 						return true;
 					}
 					else if (auto wstringView = any.AsPtr<std::wstring_view>())
 					{
-						value = String::FromView(*wstringView);
+						value = String(*wstringView);
 						return true;
 					}
 					else if (value = any.IntToString(); !value.IsEmpty())
@@ -90,7 +90,7 @@ namespace kxf
 						// Convert to signed int
 						if (const String* ptr = any.AsPtr<String>())
 						{
-							if (auto iValue = ptr->ToInt<int64_t>())
+							if (auto iValue = ptr->ToInteger<int64_t>())
 							{
 								value = static_cast<T>(*iValue);
 								return true;
@@ -102,7 +102,7 @@ namespace kxf
 						// Convert to unsigned int
 						if (const String* ptr = any.AsPtr<String>())
 						{
-							if (auto iValue = ptr->ToInt<uint64_t>())
+							if (auto iValue = ptr->ToInteger<uint64_t>())
 							{
 								value = static_cast<T>(*iValue);
 								return true;

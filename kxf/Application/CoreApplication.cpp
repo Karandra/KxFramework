@@ -714,7 +714,7 @@ namespace kxf
 	}
 
 	// Application::IDebugHandler
-	void CoreApplication::OnAssertFailure(String file, int line, String function, String condition, String message)
+	void CoreApplication::OnAssertFailure(const String& file, int line, const String& function, const String& condition, const String& message)
 	{
 		if (wxLog* log = wxLog::GetActiveTarget(); log && log->IsEnabled() && log->IsLevelEnabled(wxLOG_Debug, wxLOG_COMPONENT))
 		{

@@ -1,8 +1,9 @@
 #include "KxfPCH.h"
 #include "FileOperations.h"
 #include "kxf/General/RegEx.h"
-#include <shlwapi.h>
+#include "kxf/Utility/String.h"
 #include <wx/filename.h>
+#include <shlwapi.h>
 #include "kxf/System/UndefWindows.h"
 
 namespace
@@ -14,10 +15,10 @@ namespace
 
 		String path = filePath.GetFullPath(FSPathNamespace::Win32File);
 		const DWORD length = func(path.wc_str(), nullptr, 0);
-		if (length)
+		if (length != 0)
 		{
 			String result;
-			func(path.wc_str(), wxStringBuffer(result, length), length);
+			func(path.wc_str(), Utility::StringBuffer(result, length), length);
 
 			FSPath fsPath = std::move(result);
 			fsPath.EnsureNamespaceSet(filePath.GetNamespace());
@@ -54,7 +55,7 @@ namespace kxf::FileSystem
 			{
 				String result;
 				LPWSTR oldPathStart = nullptr;
-				::GetFullPathNameW(pathString.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
+				::GetFullPathNameW(pathString.wc_str(), length, Utility::StringBuffer(result, length), &oldPathStart);
 
 				FSPath fsPath = std::move(result);
 				fsPath.EnsureNamespaceSet(relativePath.GetNamespace());
@@ -75,7 +76,7 @@ namespace kxf::FileSystem
 
 				String source = path.GetFullPath();
 				String result;
-				::PathCompactPathExW(wxStringBuffer(result, maxCharacters), source.wc_str(), maxCharacters, 0);
+				::PathCompactPathExW(Utility::StringBuffer(result, maxCharacters), source.wc_str(), maxCharacters, 0);
 
 				return FSPath(std::move(result)).SetNamespace(path.GetNamespace());
 			}

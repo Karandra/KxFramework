@@ -40,7 +40,7 @@ namespace kxf
 	{
 	}
 	BinarySerializerException::BinarySerializerException(const std::wstring& message)
-		:BinarySerializerException(String::FromView(message))
+		:BinarySerializerException(String(message))
 	{
 	}
 	BinarySerializerException::BinarySerializerException(const String& message)

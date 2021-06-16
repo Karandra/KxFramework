@@ -9,6 +9,7 @@
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/Enumerator.h"
 #include "kxf/Utility/Literals.h"
+#include "kxf/Utility/String.h"
 #include <wx/settings.h>
 
 #include <Windows.h>
@@ -303,7 +304,7 @@ namespace kxf::System
 		String userName;
 		DWORD userNameLength = 0;
 		::GetUserNameW(nullptr, &userNameLength);
-		if (!::GetUserNameW(wxStringBuffer(userName, userNameLength), &userNameLength))
+		if (!::GetUserNameW(Utility::StringBuffer(userName, userNameLength), &userNameLength))
 		{
 			return {};
 		}
@@ -625,7 +626,7 @@ namespace kxf::System
 		if (length != 0)
 		{
 			String result;
-			if (::ExpandEnvironmentStringsW(strings.wc_str(), wxStringBuffer(result, length - 1), length) != 0)
+			if (::ExpandEnvironmentStringsW(strings.wc_str(), Utility::StringBuffer(result, length - 1), length) != 0)
 			{
 				return result;
 			}
@@ -638,7 +639,7 @@ namespace kxf::System
 		if (length != 0)
 		{
 			String result;
-			::GetEnvironmentVariableW(name.wc_str(), wxStringBuffer(result, length), length);
+			::GetEnvironmentVariableW(name.wc_str(), Utility::StringBuffer(result, length), length);
 			return result;
 		}
 		return {};
@@ -662,7 +663,7 @@ namespace kxf::System
 					StringView name(current, separator - current);
 					StringView value(separator + 1);
 
-					return EnvironmentVariable{String::FromView(name), String::FromView(value)};
+					return EnvironmentVariable{String(name), String(value)};
 				}
 				enumerator.SkipCurrent();
 			}

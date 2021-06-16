@@ -4,6 +4,7 @@
 #include "kxf/System/Private/System.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include <PsAPI.h>
@@ -204,7 +205,7 @@ namespace kxf
 			String parameters;
 
 			FSPath path = GetExecutablePath();
-			if (commandLine.StartsWith(path.GetFullPath(), &parameters, StringOpFlag::IgnoreCase))
+			if (commandLine.StartsWith(path.GetFullPath(), &parameters, StringActionFlag::IgnoreCase))
 			{
 				return parameters;
 			}
@@ -236,7 +237,7 @@ namespace kxf
 						{
 							String result;
 							const size_t resultLength = (processParameters.CommandLine.Length + 1) / sizeof(wchar_t);
-							if (::ReadProcessMemory(m_Handle, processParameters.CommandLine.Buffer, wxStringBuffer(result, resultLength), processParameters.CommandLine.Length, &read))
+							if (::ReadProcessMemory(m_Handle, processParameters.CommandLine.Buffer, Utility::StringBuffer(result, resultLength).wc_str(), processParameters.CommandLine.Length, &read))
 							{
 								return result;
 							}

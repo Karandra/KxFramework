@@ -41,7 +41,7 @@ namespace kxf::Sciter
 			}
 			void SetValue(const String& value)
 			{
-				SetValue(value.GetView());
+				SetValue(value.xc_view());
 			}
 
 			bool HasLabel() const

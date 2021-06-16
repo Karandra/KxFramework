@@ -112,12 +112,10 @@ namespace kxf
 	FSPath ShellLink::GetIconLocation() const
 	{
 		int index = 0;
-		int length = 0;
-
-		if (HResult(m_ShellLink->GetIconLocation(nullptr, length, &index)))
+		if (HResult(m_ShellLink->GetIconLocation(nullptr, 0, &index)))
 		{
-			String path;
-			if (HResult(m_ShellLink->GetIconLocation(wxStringBuffer(path, length), length, &index)))
+			wchar_t path[std::numeric_limits<int16_t>::max()] = {};
+			if (HResult(m_ShellLink->GetIconLocation(path, std::size(path), &index)))
 			{
 				return path;
 			}

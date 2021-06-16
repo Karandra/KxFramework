@@ -79,7 +79,7 @@ namespace kxf
 				if (m_Response && m_Connection)
 				{
 					m_Response->m_StatusCode = m_Connection->get_response_code();
-					m_Response->m_StatusText = String::FromView(m_Connection->get_response_msg());
+					m_Response->m_StatusText = m_Connection->get_response_msg();
 				}
 			}
 

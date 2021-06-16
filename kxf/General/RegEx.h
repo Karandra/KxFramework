@@ -93,10 +93,7 @@ namespace kxf
 				return m_RegEx.GetMatch(&start, &length, index);
 			}
 
-			size_t Replace(String& text, const String& replacement, size_t maxMatches = 0) const
-			{
-				return std::clamp(m_RegEx.Replace(&text.GetWxString(), replacement, maxMatches), 0, std::numeric_limits<int>::max());
-			}
+			size_t Replace(String& text, const String& replacement, size_t maxMatches = 0) const;
 			size_t ReplaceAll(String& text, const String& replacement) const
 			{
 				return Replace(text, replacement, 0);

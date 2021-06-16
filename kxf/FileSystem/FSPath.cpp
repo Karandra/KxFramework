@@ -37,7 +37,7 @@ namespace
 	{
 		using namespace kxf;
 
-		return path.Find(c, 0, reverse ? StringOpFlag::FromEnd : StringOpFlag::None);
+		return path.Find(c, 0, reverse ? StringActionFlag::FromEnd : StringActionFlag::None);
 	}
 	kxf::String ExtractBefore(const kxf::String& path, wxChar c, bool reverse = false)
 	{
@@ -140,7 +140,7 @@ namespace kxf
 		bool removeNextSlash = false;
 		for (size_t i = 0; i < m_Path.length(); i++)
 		{
-			wxUniCharRef c = m_Path[i];
+			auto& c = m_Path[i];
 
 			// Replace forward slashes with backward slashes
 			if (c == wxS('/'))
@@ -271,7 +271,7 @@ namespace kxf
 	}
 	bool FSPath::IsSameAs(const FSPath& other, bool caseSensitive) const
 	{
-		return m_Namespace == other.m_Namespace && m_Path.IsSameAs(other.m_Path, caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
+		return m_Namespace == other.m_Namespace && m_Path.IsSameAs(other.m_Path, caseSensitive ? StringActionFlag::None : StringActionFlag::IgnoreCase);
 	}
 	bool FSPath::IsAbsolute() const
 	{
@@ -284,7 +284,7 @@ namespace kxf
 	}
 	bool FSPath::ContainsPath(const FSPath& path, bool caseSensitive) const
 	{
-		return m_Path.Contains(path.GetFullPath(), caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
+		return m_Path.Contains(path.GetFullPath(), caseSensitive ? StringActionFlag::None : StringActionFlag::IgnoreCase);
 	}
 
 	size_t FSPath::GetComponentCount() const
@@ -315,7 +315,7 @@ namespace kxf
 
 		return Utility::EnumerateIndexableContainer<String>(std::move(parts), [](StringView view)
 		{
-			return String::FromView(view);
+			return String(view);
 		});
 	}
 	String FSPath::GetFullPath(FSPathNamespace withNamespace, FlagSet<FSPathFormat> format) const
@@ -377,7 +377,7 @@ namespace kxf
 			if (drive)
 			{
 				// Replace the disk designator
-				m_Path[0] = drive.GetChar();
+				m_Path[0] = drive.GetChar().GetAs<XChar>();
 			}
 			else
 			{
@@ -392,8 +392,8 @@ namespace kxf
 			{
 				// Replace with legacy drive path
 				char disk[] = "\0:\\";
-				disk[0] = drive.GetChar();
-				m_Path.GetWxString().replace(0, g_VolumePathTotalLength, disk, std::size(disk) - 1);
+				disk[0] = drive.GetChar().GetAs<XChar>();
+				m_Path.ReplaceRange(0, g_VolumePathTotalLength, StringViewOf(disk));
 			}
 			else
 			{
@@ -406,7 +406,7 @@ namespace kxf
 		{
 			// Perpend a new disk designator
 			char disk[] = "\0:\\";
-			disk[0] = drive.GetChar();
+			disk[0] = drive.GetChar().GetAs<XChar>();
 			m_Path.Prepend(disk);
 
 			Normalize();
@@ -421,7 +421,7 @@ namespace kxf
 			{
 				// Replace with volume path
 				String path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-				m_Path.GetWxString().replace(0, 2, path);
+				m_Path.ReplaceRange(0, 2, path);
 			}
 			else
 			{
@@ -436,7 +436,7 @@ namespace kxf
 			{
 				// Replace with a new volume path
 				String path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-				m_Path.GetWxString().replace(0, g_VolumePathTotalLength, path);
+				m_Path.ReplaceRange(0, g_VolumePathTotalLength, path);
 			}
 			else
 			{
@@ -546,17 +546,17 @@ namespace kxf
 	{
 		if (CheckStringOnAssignName(name))
 		{
-			const size_t pos = m_Path.Find(g_PathSeparator, 0, StringOpFlag::FromEnd);
+			const size_t pos = m_Path.Find(g_PathSeparator, 0, StringActionFlag::FromEnd);
 			if (pos != String::npos)
 			{
 				const size_t dot = m_Path.Find(wxS('.'), pos);
 				if (dot != String::npos)
 				{
-					m_Path.GetWxString().replace(pos + 1, dot - pos, name);
+					m_Path.ReplaceRange(pos + 1, dot - pos, name);
 				}
 				else
 				{
-					m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, name);
+					m_Path.ReplaceRange(pos + 1, m_Path.length() - pos, name);
 				}
 				Normalize();
 			}
@@ -573,10 +573,10 @@ namespace kxf
 	{
 		auto Replace = [this](const String& ext)
 		{
-			const size_t pos = m_Path.Find(wxS('.'), 0, StringOpFlag::FromEnd);
+			const size_t pos = m_Path.Find(wxS('.'), 0, StringActionFlag::FromEnd);
 			if (pos != String::npos)
 			{
-				m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, ext);
+				m_Path.ReplaceRange(pos + 1, m_Path.length() - pos, ext);
 			}
 			else
 			{
@@ -605,7 +605,7 @@ namespace kxf
 		// return: Common Files\Microsoft
 
 		String fullPath = GetFullPath();
-		if (fullPath.Left(start.GetLength()).IsSameAs(start.m_Path, StringOpFlag::IgnoreCase))
+		if (fullPath.Left(start.GetLength()).IsSameAs(start.m_Path, StringActionFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(0, start.GetLength());
 		}
@@ -618,7 +618,7 @@ namespace kxf
 		// return: C:\Program Files (x86)
 
 		String fullPath = GetFullPath();
-		if (fullPath.Right(end.GetLength()).IsSameAs(end.m_Path, StringOpFlag::IgnoreCase))
+		if (fullPath.Right(end.GetLength()).IsSameAs(end.m_Path, StringActionFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(fullPath.length() - end.GetLength(), end.GetLength());
 		}

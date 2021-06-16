@@ -178,7 +178,7 @@ namespace kxf::SevenZip
 	{
 		auto Test = [&](const XChar* ext)
 		{
-			return extension.IsSameAs(ext, StringOpFlag::IgnoreCase);
+			return extension.IsSameAs(ext, StringActionFlag::IgnoreCase);
 		};
 
 		if (Test(wxS("7z")))

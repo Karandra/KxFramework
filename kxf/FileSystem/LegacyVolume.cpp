@@ -36,15 +36,15 @@ namespace kxf
 		};
 	}
 
-	void LegacyVolume::AssignFromChar(const wxUniChar& value)
+	void LegacyVolume::AssignFromChar(const UniChar& value)
 	{
-		char c = g_InvalidDrive;
-		if (value.GetAsChar(&c))
+		m_Drive = g_InvalidDrive;
+		if (auto c = value.ToASCII())
 		{
-			c = std::toupper(c);
-			if (IsDriveLetterValid(c))
+			c = std::toupper(*c);
+			if (IsDriveLetterValid(*c))
 			{
-				m_Drive = c;
+				m_Drive = *c;
 			}
 		}
 	}
@@ -61,7 +61,7 @@ namespace kxf
 		if (IsValid())
 		{
 			XChar disk[] = wxS("\0:\\");
-			disk[0] = wxUniChar(m_Drive);
+			disk[0] = UniChar(m_Drive).GetAs<XChar>();
 			return disk;
 		}
 		return {};
@@ -93,7 +93,7 @@ namespace kxf
 		}
 		return -1;
 	}
-	wxUniChar LegacyVolume::GetChar() const
+	UniChar LegacyVolume::GetChar() const
 	{
 		if (IsValid())
 		{

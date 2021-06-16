@@ -15,7 +15,7 @@ namespace kxf::Private
 	{
 		if constexpr((sizeof...(Args)) == 0)
 		{
-			return String::FromView(format);
+			return String(format);
 		}
 
 		try
@@ -25,7 +25,7 @@ namespace kxf::Private
 		catch (const std::format_error& e)
 		{
 			LogFormatterException(e);
-			return String::FromView(format);
+			return String(format);
 		}
 		return {};
 	}
@@ -59,7 +59,7 @@ namespace kxf
 		if (format)
 		{
 			auto utf8 = String::FromUTF8(format);
-			return Private::DoFromat(utf8.GetView(), std::forward<Args>(arg)...);
+			return Private::DoFromat(utf8.xc_view(), std::forward<Args>(arg)...);
 		}
 		return {};
 	}
@@ -78,7 +78,7 @@ namespace kxf
 	String Format(std::string_view format, Args&&... arg)
 	{
 		auto utf8 = String::FromUTF8(format);
-		return Private::DoFromat(utf8.GetView(), std::forward<Args>(arg)...);
+		return Private::DoFromat(utf8.xc_view(), std::forward<Args>(arg)...);
 	}
 
 	template<class... Args>
@@ -90,7 +90,7 @@ namespace kxf
 	template<class... Args>
 	String Format(const String& format, Args&&... arg)
 	{
-		return Private::DoFromat(format.GetView(), std::forward<Args>(arg)...);
+		return Private::DoFromat(format.xc_view(), std::forward<Args>(arg)...);
 	}
 
 	template<class... Args>
@@ -108,7 +108,7 @@ namespace kxf
 		if (format)
 		{
 			auto utf8 = String::FromUTF8(format);
-			return Private::DoFormattedSize(utf8.GetView(), std::forward<Args>(arg)...);
+			return Private::DoFormattedSize(utf8.xc_view(), std::forward<Args>(arg)...);
 		}
 		return 0;
 	}
@@ -127,7 +127,7 @@ namespace kxf
 	size_t FormattedSize(std::string_view format, Args&&... arg)
 	{
 		auto utf8 = String::FromUTF8(format);
-		return Private::DoFormattedSize(utf8.GetView(), std::forward<Args>(arg)...);
+		return Private::DoFormattedSize(utf8.xc_view(), std::forward<Args>(arg)...);
 	}
 
 	template<class... Args>
@@ -139,7 +139,7 @@ namespace kxf
 	template<class... Args>
 	size_t FormattedSize(const String& format, Args&&... arg)
 	{
-		return Private::DoFormattedSize(format.GetView(), std::forward<Args>(arg)...);
+		return Private::DoFormattedSize(format.xc_view(), std::forward<Args>(arg)...);
 	}
 }
 
@@ -163,7 +163,7 @@ namespace std
 		template<class TFormatContext>
 		auto format(const kxf::String& value, TFormatContext& formatContext)
 		{
-			return std::formatter<std::wstring_view, wchar_t>::format(value.GetView(), formatContext);
+			return std::formatter<std::wstring_view, wchar_t>::format(value.xc_view(), formatContext);
 		}
 	};
 
@@ -197,7 +197,7 @@ namespace std
 		auto format(const T& value, TFormatContext& formatContext)
 		{
 			auto converted = kxf::String::FromUTF8(value, N != 0 ? N - 1 : 0);
-			return std::formatter<std::wstring_view, wchar_t>::format(converted.GetView(), formatContext);
+			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
 		}
 	};
 
@@ -220,7 +220,7 @@ namespace std
 		auto format(const char* value, TFormatContext& formatContext)
 		{
 			auto converted = kxf::String::FromUTF8(value);
-			return std::formatter<std::wstring_view, wchar_t>::format(converted.GetView(), formatContext);
+			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
 		}
 	};
 
@@ -243,7 +243,7 @@ namespace std
 		auto format(std::string_view value, TFormatContext& formatContext)
 		{
 			auto converted = kxf::String::FromUTF8(value);
-			return std::formatter<std::wstring_view, wchar_t>::format(converted.GetView(), formatContext);
+			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
 		}
 	};
 

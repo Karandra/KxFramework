@@ -61,7 +61,7 @@ namespace
 		if (format & BinarySizeFormat::Fractional)
 		{
 			// Default precision is 2 digits
-			result = String::FromCDouble(static_cast<double>(value), precision >= 0 ? precision : 2);
+			result = String::FromFloatingPoint(static_cast<double>(value), precision >= 0 ? precision : 2);
 		}
 		else
 		{

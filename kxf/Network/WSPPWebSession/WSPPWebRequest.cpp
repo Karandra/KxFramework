@@ -69,12 +69,12 @@ namespace kxf
 		m_Client.set_fail_handler([this](TConnectionHandle handle)
 		{
 			UpdateResponseData();
-			ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), String::FromView(m_Connection->get_response_msg()));
+			ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), m_Connection->get_response_msg());
 		});
 		m_Client.set_close_handler([this](TConnectionHandle handle)
 		{
 			UpdateResponseData();
-			ChangeStateAndNotify(WebRequestState::Completed, m_Connection->get_response_code(), String::FromView(m_Connection->get_response_msg()));
+			ChangeStateAndNotify(WebRequestState::Completed, m_Connection->get_response_code(), m_Connection->get_response_msg());
 		});
 		m_Client.set_message_handler([this](TConnectionHandle handle, std::shared_ptr<TMessage> message)
 		{
@@ -292,7 +292,7 @@ namespace kxf
 				UpdateResponseData();
 				if (const auto& status = m_Connection->get_response_msg(); !status.empty())
 				{
-					ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), String::FromView(status));
+					ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), status);
 				}
 				else
 				{

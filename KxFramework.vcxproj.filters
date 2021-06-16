@@ -511,9 +511,6 @@
     <ClInclude Include="kxf\General\String.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Private\String.h">
-      <Filter>kxf\General\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Utility\String.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
@@ -1933,6 +1930,9 @@
     <ClInclude Include="kxf\General\Format.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\UniChar.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2883,6 +2883,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Crypto\HashValue.cpp">
       <Filter>kxf\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\RegEx.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\StreamReaderWriter.cpp">
+      <Filter>kxf\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

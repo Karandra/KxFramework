@@ -199,7 +199,7 @@ namespace kxf
 
 			String ToString() const override
 			{
-				return String::FromView(IndexedEnumValue::ToString());
+				return String(IndexedEnumValue::ToString());
 			}
 			String GetMessage(const Locale& locale = {}) const override
 			{

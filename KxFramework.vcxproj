@@ -269,6 +269,7 @@
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
+    <ClInclude Include="kxf\General\UniChar.h" />
     <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
@@ -570,7 +571,6 @@
     <ClInclude Include="kxf\General\StdID.h" />
     <ClInclude Include="kxf\General\NativeUUID.h" />
     <ClInclude Include="kxf\General\Private\ExtraData.h" />
-    <ClInclude Include="kxf\General\Private\String.h" />
     <ClInclude Include="kxf\General\Private\VersionImpl.h" />
     <ClInclude Include="kxf\General\Singleton.h" />
     <ClInclude Include="kxf\General\String.h" />
@@ -749,6 +749,7 @@
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\NativeUUID.cpp" />
+    <ClCompile Include="kxf\General\RegEx.cpp" />
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
@@ -757,6 +758,7 @@
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\IO\NullStream.cpp" />
+    <ClCompile Include="kxf\IO\StreamReaderWriter.cpp" />
     <ClCompile Include="kxf\IPC\DefaultRPCClient.cpp" />
     <ClCompile Include="kxf\IPC\DefaultRPCEvent.cpp" />
     <ClCompile Include="kxf\IPC\DefaultRPCServer.cpp" />

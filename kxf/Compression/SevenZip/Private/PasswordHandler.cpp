@@ -30,7 +30,7 @@ namespace kxf::SevenZip::Private
 			String value = std::move(event).GetPassword().ToString();
 			if (!value.IsEmpty())
 			{
-				*password = _bstr_t(value.wx_str()).Detach();
+				*password = _bstr_t(value.wc_str()).Detach();
 				Utility::SetIfNotNull(passwordIsDefined, 1);
 			}
 			else

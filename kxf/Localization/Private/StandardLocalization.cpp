@@ -163,7 +163,8 @@ namespace kxf::Localization::Private
 				wxAcceleratorEntry accelerator = wxGetStockAccelerator(ToInt(id));
 				if (accelerator.IsOk())
 				{
-					result << wxS('\t') << accelerator.ToString();
+					result += wxS('\t');
+					result += accelerator.ToString();
 				}
 			}
 			#endif
