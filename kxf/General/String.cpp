@@ -855,13 +855,13 @@ namespace kxf
 	}
 }
 
-namespace kxf::Private
+namespace kxf
 {
-	const wxStringImpl& GetWxStringImpl(const wxString& string) noexcept
+	const String::string_type& GetWxStringImpl(const wxString& string) noexcept
 	{
 		return string.ToStdWstring();
 	}
-	wxStringImpl& GetWxStringImpl(wxString& string) noexcept
+	String::string_type& GetWxStringImpl(wxString& string) noexcept
 	{
 		return const_cast<wxStringImpl&>(string.ToStdWstring());
 	}
@@ -874,7 +874,7 @@ namespace kxf::Private
 			GetWxStringImpl(destination) = std::move(GetWxStringImpl(source));
 		}
 	}
-	void MoveWxString(wxString& destination, wxStringImpl&& source) noexcept
+	void MoveWxString(wxString& destination, String::string_type&& source) noexcept
 	{
 		// wxString contains an extra buffer (m_convertedTo[W]Char) to hold converted string
 		// returned by 'wxString::AsCharBuf' but it seems it can be left untouched since wxString
@@ -886,7 +886,7 @@ namespace kxf::Private
 			GetWxStringImpl(destination) = std::move(source);
 		}
 	}
-	void MoveWxString(wxStringImpl& destination, wxString&& source) noexcept
+	void MoveWxString(String::string_type& destination, wxString&& source) noexcept
 	{
 		if (&GetWxStringImpl(source) != &destination)
 		{

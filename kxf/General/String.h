@@ -78,10 +78,8 @@ namespace kxf
 		friend struct std::hash<String>;
 		friend struct BinarySerializer<String>;
 
-		private:
-			using string_type = std::basic_string<XChar>;
-
 		public:
+			using string_type = std::basic_string<XChar>;
 			using value_type = XChar;
 			using traits_type = std::char_traits<XChar>;
 			using allocator_type = std::allocator<XChar>;
@@ -1139,7 +1137,7 @@ namespace kxf
 	}
 
 	// Conversion
-	template<class T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+	template<class T> requires(std::is_arithmetic_v<T>)
 	String ToString(T value)
 	{
 		if constexpr(std::is_same_v<XChar, char>)
@@ -1156,17 +1154,34 @@ namespace kxf
 		}
 	}
 
-	template<class T, std::enable_if_t<std::is_enum_v<T>, int> = 0>
+	template<class T> requires(std::is_enum_v<T>)
 	String ToString(T value)
 	{
 		return ToString(static_cast<std::underlying_type_t<T>>(value));
 	}
 
+	// String literal operators
+	String operator "" _s(const char* ptr, size_t length)
+	{
+		return String::FromUTF8(ptr, length);
+	}
+	String operator "" _s(const char8_t* ptr, size_t length)
+	{
+		return String::FromUTF8(ptr, length);
+	}
+	String operator "" _s(const wchar_t* ptr, size_t length)
+	{
+		return String(ptr, length);
+	}
+
 	namespace Private
 	{
+		const String::string_type& GetWxStringImpl(const wxString& string) noexcept;
+		String::string_type& GetWxStringImpl(wxString& string) noexcept;
+
 		void MoveWxString(wxString& destination, wxString&& source) noexcept;
-		void MoveWxString(wxString& destination, wxStringImpl&& source) noexcept;
-		void MoveWxString(wxStringImpl& destination, wxString&& source) noexcept;
+		void MoveWxString(wxString& destination, String::string_type&& source) noexcept;
+		void MoveWxString(String::string_type& destination, wxString&& source) noexcept;
 	}
 }
 
@@ -1191,4 +1206,3 @@ namespace kxf
 		uint64_t Deserialize(IInputStream& stream, String& value) const;
 	};
 }
-
