@@ -48,7 +48,7 @@ namespace
 	COMPtr<IEnumWbemClassObject> GetWbemEnumerator(IWbemServices& service, const String& query)
 	{
 		COMPtr<IEnumWbemClassObject> wbemEnumerator;
-		if (HResult result = service.ExecQuery(ToBSTR(wxS("WQL")), ToBSTR(query), WBEM_FLAG_FORWARD_ONLY|WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wbemEnumerator))
+		if (HResult result = service.ExecQuery(ToBSTR("WQL"), ToBSTR(query), WBEM_FLAG_FORWARD_ONLY|WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wbemEnumerator))
 		{
 			return wbemEnumerator;
 		}
@@ -117,7 +117,7 @@ namespace kxf
 			// Only return the class object if it has its 'dynamic' qualifier set ti 'true'
 			if (auto qualifierSet = classObject.GetQualifierSet())
 			{
-				if (qualifierSet.GetValue(wxS("Dynamic")).QueryAs<bool>() == true)
+				if (qualifierSet.GetValue("Dynamic").QueryAs<bool>() == true)
 				{
 					String name = classObject.GetClassName();
 					if (!name.IsEmpty())
@@ -128,7 +128,7 @@ namespace kxf
 			}
 			enumerator.SkipCurrent();
 			return {};
-		}, const_cast<WMINamespace&>(*this), &WMINamespace::SelectAll, wxS("meta_class"));
+		}, const_cast<WMINamespace&>(*this), &WMINamespace::SelectAll, "meta_class");
 	}
 	Enumerator<String> WMINamespace::EnumChildNamespaces() const
 	{
@@ -144,7 +144,7 @@ namespace kxf
 				enumerator.SkipCurrent();
 			}
 			return {};
-		}, const_cast<WMINamespace&>(*this), &WMINamespace::SelectAll, wxS("__NAMESPACE"));
+		}, const_cast<WMINamespace&>(*this), &WMINamespace::SelectAll, "__NAMESPACE");
 	}
 
 	Enumerator<WMIClassObject> WMINamespace::ExecuteQuery(const kxf::String& query)
@@ -217,11 +217,11 @@ namespace kxf
 
 	String WMIClassObject::GetName() const
 	{
-		return GetProperty(wxS("Name")).GetAs<String>();
+		return GetProperty("Name").GetAs<String>();
 	}
 	String WMIClassObject::GetClassName() const
 	{
-		return GetProperty(wxS("__Class")).GetAs<String>();
+		return GetProperty("__Class").GetAs<String>();
 	}
 
 	Enumerator<String> WMIClassObject::EnumPropertyNames(FlagSet<WMIClassObjectFlag> flags) const

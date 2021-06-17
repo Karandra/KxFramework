@@ -52,7 +52,7 @@ namespace kxf
 
 	FSPath ShellLink::GetTarget() const
 	{
-		wxChar buffer[INT16_MAX] = {};
+		XChar buffer[INT16_MAX] = {};
 		WIN32_FIND_DATAW findData = {};
 		if (HResult(m_ShellLink->GetPath(buffer, std::size(buffer), &findData, 0)))
 		{
@@ -68,7 +68,7 @@ namespace kxf
 
 	String ShellLink::GetArguments() const
 	{
-		wxChar buffer[INT16_MAX] = {};
+		XChar buffer[INT16_MAX] = {};
 		if (HResult(m_ShellLink->GetArguments(buffer, std::size(buffer))))
 		{
 			return buffer;
@@ -82,7 +82,7 @@ namespace kxf
 
 	FSPath ShellLink::GetWorkingDirectory() const
 	{
-		wxChar buffer[INT16_MAX] = {};
+		XChar buffer[INT16_MAX] = {};
 		if (HResult(m_ShellLink->GetWorkingDirectory(buffer, std::size(buffer))))
 		{
 			return buffer;
@@ -97,7 +97,7 @@ namespace kxf
 
 	String ShellLink::GetDescription() const
 	{
-		wxChar buffer[INFOTIPSIZE] = {};
+		XChar buffer[INFOTIPSIZE] = {};
 		if (HResult(m_ShellLink->GetDescription(buffer, std::size(buffer))))
 		{
 			return buffer;

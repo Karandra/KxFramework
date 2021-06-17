@@ -227,7 +227,7 @@ namespace kxf::UI
 						   FlagSet<WindowStyle> style
 	)
 	{
-		if (wxVScrolledWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), wxS("ThumbView")))
+		if (wxVScrolledWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), "ThumbView"))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

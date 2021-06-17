@@ -11,7 +11,7 @@ namespace kxf
 			m_Items.clear();
 		}
 
-		if (XMLNode resourcesNode = xml.QueryElement(wxS("resources")))
+		if (XMLNode resourcesNode = xml.QueryElement("resources"))
 		{
 			m_Items.reserve(resourcesNode.GetChildrenCount());
 
@@ -22,11 +22,11 @@ namespace kxf
 				{
 					if (item)
 					{
-						if (auto maxLength = itemNode.QueryAttributeInt(wxS("maxLength")))
+						if (auto maxLength = itemNode.QueryAttributeInt("maxLength"))
 						{
 							item.SetMaxLength(*maxLength);
 						}
-						if (auto comment = itemNode.QueryAttribute(wxS("comment")))
+						if (auto comment = itemNode.QueryAttribute("comment"))
 						{
 							item.SetComment(std::move(*comment));
 						}
@@ -49,56 +49,56 @@ namespace kxf
 				};
 
 				FlagSet<LocalizationItemFlag> flags;
-				flags.Mod(LocalizationItemFlag::Translatable, itemNode.GetAttributeBool(wxS("translatable"), true));
+				flags.Mod(LocalizationItemFlag::Translatable, itemNode.GetAttributeBool("translatable", true));
 
 				const String itemName = itemNode.GetName();
-				if (itemName == wxS("string"))
+				if (itemName == "string")
 				{
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, itemNode.GetValue(), flags));
+					AddItem(itemNode.GetAttribute("name"), LocalizationItem(*this, itemNode.GetValue(), flags));
 				}
-				else if (itemName == wxS("string-array"))
+				else if (itemName == "string-array")
 				{
 					LocalizationItem::TMultipleItems items;
 					items.reserve(itemNode.GetChildrenCount());
 
-					for (XMLNode node: itemNode.EnumChildElements(wxS("item")))
+					for (XMLNode node: itemNode.EnumChildElements("item"))
 					{
 						if (items.emplace_back(node.GetValue()).IsEmpty())
 						{
 							items.pop_back();
 						}
 					}
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, items, flags));
+					AddItem(itemNode.GetAttribute("name"), LocalizationItem(*this, items, flags));
 				}
-				else if (itemName == wxS("plurals"))
+				else if (itemName == "plurals")
 				{
 					LocalizationItem::TPlurals plurals;
-					for (XMLNode node : itemNode.EnumChildElements(wxS("item")))
+					for (XMLNode node : itemNode.EnumChildElements("item"))
 					{
-						const String name = node.GetAttribute(wxS("quantity"));
-						if (name == wxS("one"))
+						const String name = node.GetAttribute("quantity");
+						if (name == "one")
 						{
 							plurals.emplace(LocalizationItemQuantity::One, node.GetValue());
 							return true;
 						}
-						else if (name == wxS("few"))
+						else if (name == "few")
 						{
 							plurals.emplace(LocalizationItemQuantity::Few, node.GetValue());
 							return true;
 						}
-						else if (name == wxS("many"))
+						else if (name == "many")
 						{
 							plurals.emplace(LocalizationItemQuantity::Many, node.GetValue());
 							return true;
 						}
-						else if (name == wxS("other"))
+						else if (name == "other")
 						{
 							plurals.emplace(LocalizationItemQuantity::Other, node.GetValue());
 							return true;
 						}
 						return false;
 					}
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, plurals, flags));
+					AddItem(itemNode.GetAttribute("name"), LocalizationItem(*this, plurals, flags));
 				}
 				return true;
 			}
@@ -114,7 +114,7 @@ namespace kxf
 			if (!done)
 			{
 				done = true;
-				return wxS("xml");
+				return "xml";
 			}
 			return {};
 		};

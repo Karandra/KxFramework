@@ -20,9 +20,9 @@ namespace kxf::Drawing::Private
 
 	SVGImageHandler::SVGImageHandler()
 	{
-		m_name = wxS("Scalable Vector Graphics");
-		m_mime = wxS("image/svg+xml");
-		m_extension = wxS("svg");
+		m_name = "Scalable Vector Graphics";
+		m_mime = "image/svg+xml";
+		m_extension = "svg";
 		m_type = Drawing::Private::RegisterWxBitmapType(ImageFormat::SVG);
 	}
 

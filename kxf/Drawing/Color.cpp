@@ -110,7 +110,7 @@ namespace kxf
 	{
 		if (!value.IsEmpty())
 		{
-			if (value.front() == wxS('#'))
+			if (value.front() == '#')
 			{
 				auto r = value.Mid(1, 2).ToInteger<uint8_t>(16);
 				auto g = value.Mid(3, 2).ToInteger<uint8_t>(16);

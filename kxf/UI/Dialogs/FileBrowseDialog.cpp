@@ -252,7 +252,7 @@ namespace kxf::UI
 	{
 		if (m_Instance)
 		{
-			if (extension.length() > 0 && extension[0] == wxS('.'))
+			if (extension.length() > 0 && extension[0] == '.')
 			{
 				m_Instance->SetDefaultExtension(extension.Mid(1).wc_str());
 			}
@@ -337,7 +337,7 @@ namespace kxf::UI
 	}
 	size_t FileBrowseDialog::AddUnivsersalFilter()
 	{
-		return AddFilter(wxS("*"), wxS("*"));
+		return AddFilter("*", "*");
 	}
 
 	FSPath FileBrowseDialog::GetResult() const

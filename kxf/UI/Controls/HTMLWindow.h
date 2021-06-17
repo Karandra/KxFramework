@@ -133,7 +133,7 @@ namespace kxf::UI
 			String GetPage() const
 			{
 				const wxString* source = wxHtmlWindow::GetParser()->GetSource();
-				return source ? *source : wxS("");
+				return source ? *source : "";
 			}
 			bool IsEmpty() const
 			{

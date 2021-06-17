@@ -216,19 +216,19 @@ namespace kxf
 	{
 		if (System::IsWindows10OrGreater())
 		{
-			return SystemAppearance::IsDark() ? wxS("ModernUI Dark") : wxS("ModernUI Light");
+			return SystemAppearance::IsDark() ? "ModernUI Dark" : "ModernUI Light";
 		}
 		else if (System::IsWindows8OrGreater())
 		{
-			return wxS("ModernUI");
+			return "ModernUI";
 		}
 		else if (System::IsWindowsVistaOrGreater())
 		{
-			return ::IsAppThemed() ? wxS("Aero") : wxS("Classic");
+			return ::IsAppThemed() ? "Aero" : "Classic";
 		}
 		else if (System::IsWindowsXPOrGreater())
 		{
-			return ::IsAppThemed() ? wxS("Luna") : wxS("Classic");
+			return ::IsAppThemed() ? "Luna" : "Classic";
 		}
 		return {};
 	}

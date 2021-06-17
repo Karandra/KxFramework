@@ -11,7 +11,7 @@ namespace
 	using namespace kxf;
 	using namespace kxf::UI;
 
-	const wxChar* GetStringOrNull(const String& text)
+	const XChar* GetStringOrNull(const String& text)
 	{
 		return text.IsEmpty() ? nullptr : text.wc_str();
 	}

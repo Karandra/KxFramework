@@ -132,11 +132,11 @@ namespace kxf
 
 namespace kxf::Compression
 {
-	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr XChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
+	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr XChar section##_##name[] = "User/" wxS(#section) "/" wxS(#name);
 
 	namespace Property
 	{
-		#define Kx_Compression_DeclareBaseProperty(section, name) constexpr XChar section##_##name[] = wxS("Archive/") wxS(#section) wxS("/") wxS(#name);
+		#define Kx_Compression_DeclareBaseProperty(section, name) constexpr XChar section##_##name[] = "Archive/" wxS(#section) "/" wxS(#name);
 
 		Kx_Compression_DeclareBaseProperty(Common, FilePath);
 		Kx_Compression_DeclareBaseProperty(Common, ItemCount);

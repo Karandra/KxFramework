@@ -5,15 +5,15 @@ namespace
 {
 	constexpr struct
 	{
-		static constexpr kxf::XChar OPTIONS[] = wxS("OPTIONS");
-		static constexpr kxf::XChar GET[] = wxS("GET");
-		static constexpr kxf::XChar HEAD[] = wxS("HEAD");
-		static constexpr kxf::XChar POST[] = wxS("POST");
-		static constexpr kxf::XChar PUT[] = wxS("PUT");
-		static constexpr kxf::XChar DELETE[] = wxS("DELETE");
-		static constexpr kxf::XChar TRACE[] = wxS("TRACE");
-		static constexpr kxf::XChar CONNECT[] = wxS("CONNECT");
-		static constexpr kxf::XChar PATCH[] = wxS("PATCH");
+		static constexpr char OPTIONS[] = "OPTIONS";
+		static constexpr char GET[] = "GET";
+		static constexpr char HEAD[] = "HEAD";
+		static constexpr char POST[] = "POST";
+		static constexpr char PUT[] = "PUT";
+		static constexpr char DELETE[] = "DELETE";
+		static constexpr char TRACE[] = "TRACE";
+		static constexpr char CONNECT[] = "CONNECT";
+		static constexpr char PATCH[] = "PATCH";
 	} g_MethodNames;
 }
 

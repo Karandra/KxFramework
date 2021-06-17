@@ -18,27 +18,27 @@ namespace kxf::Sciter
 
 		// Styles
 		FlagSet<TextBoxStyle> widgetStyle;
-		widgetStyle.Add(TextBoxStyle::Capitalize, node.GetStyleAttribute("text-transform") == wxS("capitalize"));
+		widgetStyle.Add(TextBoxStyle::Capitalize, node.GetStyleAttribute("text-transform") == "capitalize");
 		widgetStyle.Add(TextBoxStyle::ProcessEnter, node.HasStyleAttribute("native-process-enter"));
 		widgetStyle.Add(TextBoxStyle::ProcessTab, node.HasStyleAttribute("native-process-tab"));
-		widgetStyle.Add(TextBoxStyle::Multiline, node.GetStyleAttribute("native-text-multiline") == wxS("auto"));
-		widgetStyle.Add(TextBoxStyle::NoVScroll, node.GetStyleAttribute("native-scrollbar-vertical") == wxS("none"));
-		widgetStyle.Add(TextBoxStyle::AutoURL, node.GetStyleAttribute("native-text-url") == wxS("auto"));
+		widgetStyle.Add(TextBoxStyle::Multiline, node.GetStyleAttribute("native-text-multiline") == "auto");
+		widgetStyle.Add(TextBoxStyle::NoVScroll, node.GetStyleAttribute("native-scrollbar-vertical") == "none");
+		widgetStyle.Add(TextBoxStyle::AutoURL, node.GetStyleAttribute("native-text-url") == "auto");
 
 		String textAlign = node.GetStyleAttribute("text-align");
-		widgetStyle.Add(TextBoxStyle::AlignLeft, textAlign.IsEmpty() || textAlign == wxS("left"));
-		widgetStyle.Add(TextBoxStyle::AlignRight, textAlign == wxS("right"));
-		widgetStyle.Add(TextBoxStyle::AlignCenter, textAlign == wxS("AlignCenter"));
+		widgetStyle.Add(TextBoxStyle::AlignLeft, textAlign.IsEmpty() || textAlign == "left");
+		widgetStyle.Add(TextBoxStyle::AlignRight, textAlign == "right");
+		widgetStyle.Add(TextBoxStyle::AlignCenter, textAlign == "AlignCenter");
 
 		String textWrap = node.GetStyleAttribute("native-text-wrap");
-		widgetStyle.Add(TextBoxStyle::BestWrap, textWrap.IsEmpty() || textWrap == wxS("auto"));
-		widgetStyle.Add(TextBoxStyle::CharWrap, textWrap == wxS("char"));
-		widgetStyle.Add(TextBoxStyle::WordWrap, textWrap == wxS("word"));
-		widgetStyle.Add(TextBoxStyle::DoNotWrap, textWrap == wxS("none"));
+		widgetStyle.Add(TextBoxStyle::BestWrap, textWrap.IsEmpty() || textWrap == "auto");
+		widgetStyle.Add(TextBoxStyle::CharWrap, textWrap == "char");
+		widgetStyle.Add(TextBoxStyle::WordWrap, textWrap == "word");
+		widgetStyle.Add(TextBoxStyle::DoNotWrap, textWrap == "none");
 
 		String technology = node.GetStyleAttribute("native-technology");
-		widgetStyle.Add(TextBoxStyle::Rich, technology == wxS("rich"));
-		widgetStyle.Add(TextBoxStyle::Rich2, textWrap == wxS("rich2"));
+		widgetStyle.Add(TextBoxStyle::Rich, technology == "rich");
+		widgetStyle.Add(TextBoxStyle::Rich2, textWrap == "rich2");
 		
 		if (TextBox::Create(GetAttachmentParent(), wxID_NONE, node.GetText(), widgetStyle))
 		{
@@ -63,11 +63,11 @@ namespace kxf::Sciter
 			}
 
 			String password = node.GetStyleAttribute("native-password-mask");
-			if (password == wxS("auto"))
+			if (password == "auto")
 			{
 				TextBox::SetDefaultPasswordChar();
 			}
-			else if (password != wxS("none"))
+			else if (password != "none")
 			{
 				TextBox::SetPasswordChar(password.front());
 			}

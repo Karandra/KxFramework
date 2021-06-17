@@ -98,7 +98,7 @@ namespace kxf::FileSystem
 				if (source.length() > static_cast<size_t>(maxCharacters))
 				{
 					source.RemoveFromEnd(source.length() - maxCharacters - 3);
-					source += wxS("...");
+					source += "...";
 				}
 				return FSPath(std::move(source)).SetNamespace(path.GetNamespace());
 			}

@@ -21,7 +21,7 @@ namespace kxf::Compression::LZ4
 {
 	String GetLibraryName()
 	{
-		return wxS("LZ4");
+		return "LZ4";
 	}
 	Version GetLibraryVersion()
 	{

@@ -258,11 +258,11 @@ namespace kxf::UI
 
 		if (m_IsAuthNeeded)
 		{
-			DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryFlag::Resource);
+			DynamicLibrary library("ImageRes.dll", DynamicLibraryFlag::Resource);
 			if (library)
 			{
 				// 78 is the index of UAC shield icon
-				if (ImageBundle bundle = library.GetIconBundleResource(wxS("78")))
+				if (ImageBundle bundle = library.GetIconBundleResource("78"))
 				{
 					if (BitmapImage image = bundle.GetImage(GetSize(), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{

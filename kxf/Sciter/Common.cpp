@@ -11,7 +11,7 @@ namespace kxf::Sciter
 
 	String GetLibraryName()
 	{
-		return wxS("Sciter");
+		return "Sciter";
 	}
 	Version GetLibraryVersion()
 	{
@@ -89,11 +89,11 @@ namespace kxf::Sciter
 
 			case SizeUnit::pr:
 			{
-				return wxS("%");
+				return "%";
 			}
 			case SizeUnit::sp:
 			{
-				return wxS("%%");
+				return "%%";
 			}
 		};
 		return {};

@@ -84,7 +84,7 @@ namespace kxf
 			}
 			bool ContainsSearchMask() const
 			{
-				return m_Path.ContainsAnyOfCharacters(wxS("*?"));
+				return m_Path.ContainsAnyOfCharacters("*?");
 			}
 			bool MatchesWildcards(const String& expression, FlagSet<StringActionFlag> flags = {}) const
 			{

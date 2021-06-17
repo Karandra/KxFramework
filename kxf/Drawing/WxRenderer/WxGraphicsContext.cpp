@@ -466,7 +466,7 @@ namespace kxf
 		wxDouble height = 0;
 		wxDouble descent = 0;
 		wxDouble externalLeading = 0;
-		m_Context->GetTextExtent(wxS("W"), &width, &height, &descent, &externalLeading);
+		m_Context->GetTextExtent("W", &width, &height, &descent, &externalLeading);
 
 		if (!oldFont.IsNull())
 		{

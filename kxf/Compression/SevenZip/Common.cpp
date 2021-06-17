@@ -8,7 +8,7 @@ namespace kxf::SevenZip
 {
 	String GetLibraryName()
 	{
-		return wxS("7-Zip");
+		return "7-Zip";
 	}
 	Version GetLibraryVersion()
 	{
@@ -81,47 +81,47 @@ namespace kxf::SevenZip
 		{
 			case CompressionFormat::SevenZip:
 			{
-				return wxS("7-Zip");
+				return "7-Zip";
 			}
 			case CompressionFormat::Zip:
 			{
-				return wxS("ZIP");
+				return "ZIP";
 			}
 			case CompressionFormat::Rar:
 			{
-				return wxS("RAR");
+				return "RAR";
 			}
 			case CompressionFormat::Rar5:
 			{
-				return wxS("RAR5");
+				return "RAR5";
 			}
 			case CompressionFormat::GZip:
 			{
-				return wxS("GZip");
+				return "GZip";
 			}
 			case CompressionFormat::BZip2:
 			{
-				return wxS("BZip2");
+				return "BZip2";
 			}
 			case CompressionFormat::Tar:
 			{
-				return wxS("TAR");
+				return "TAR";
 			}
 			case CompressionFormat::Lzma:
 			{
-				return wxS("LZMA");
+				return "LZMA";
 			}
 			case CompressionFormat::Lzma86:
 			{
-				return wxS("LZMA 86");
+				return "LZMA 86";
 			}
 			case CompressionFormat::Cab:
 			{
-				return wxS("CAB");
+				return "CAB";
 			}
 			case CompressionFormat::Iso:
 			{
-				return wxS("ISO");
+				return "ISO";
 			}
 		}
 		return {};
@@ -132,96 +132,96 @@ namespace kxf::SevenZip
 		{
 			case CompressionFormat::SevenZip:
 			{
-				return wxS("7z");
+				return "7z";
 			}
 			case CompressionFormat::Zip:
 			{
-				return wxS("zip");
+				return "zip";
 			}
 			case CompressionFormat::Rar:
 			case CompressionFormat::Rar5:
 			{
-				return wxS("rar");
+				return "rar";
 			}
 			case CompressionFormat::GZip:
 			{
-				return wxS("gz");
+				return "gz";
 			}
 			case CompressionFormat::BZip2:
 			{
-				return wxS("bz2");
+				return "bz2";
 			}
 			case CompressionFormat::Tar:
 			{
-				return wxS("tar");
+				return "tar";
 			}
 			case CompressionFormat::Lzma:
 			{
-				return wxS("lzma");
+				return "lzma";
 			}
 			case CompressionFormat::Lzma86:
 			{
-				return wxS("lzma86");
+				return "lzma86";
 			}
 			case CompressionFormat::Cab:
 			{
-				return wxS("cab");
+				return "cab";
 			}
 			case CompressionFormat::Iso:
 			{
-				return wxS("iso");
+				return "iso";
 			}
 		}
 		return {};
 	}
 	CompressionFormat GetFormatByExtension(const String& extension)
 	{
-		auto Test = [&](const XChar* ext)
+		auto Test = [&](const char* ext)
 		{
 			return extension.IsSameAs(ext, StringActionFlag::IgnoreCase);
 		};
 
-		if (Test(wxS("7z")))
+		if (Test("7z"))
 		{
 			return CompressionFormat::SevenZip;
 		}
-		if (Test(wxS("zip")))
+		if (Test("zip"))
 		{
 			return CompressionFormat::Zip;
 		}
-		if (Test(wxS("rar")))
+		if (Test("rar"))
 		{
 			return CompressionFormat::Rar;
 		}
-		if (Test(wxS("rar5")))
+		if (Test("rar5"))
 		{
 			return CompressionFormat::Rar5;
 		}
-		if (Test(wxS("gz")) || Test(wxS("gzip")))
+		if (Test("gz") || Test("gzip"))
 		{
 			return CompressionFormat::GZip;
 		}
-		if (Test(wxS("bz2")) || Test(wxS("bzip2")))
+		if (Test("bz2") || Test("bzip2"))
 		{
 			return CompressionFormat::BZip2;
 		}
-		if (Test(wxS("tar")))
+		if (Test("tar"))
 		{
 			return CompressionFormat::Tar;
 		}
-		if (Test(wxS("lz")) || Test(wxS("lzma")))
+		if (Test("lz") || Test("lzma"))
 		{
 			return CompressionFormat::Lzma;
 		}
-		if (Test(wxS("lz86")) || Test(wxS("lzma86")))
+		if (Test("lz86") || Test("lzma86"))
 		{
 			return CompressionFormat::Lzma86;
 		}
-		if (Test(wxS("cab")))
+		if (Test("cab"))
 		{
 			return CompressionFormat::Cab;
 		}
-		if (Test(wxS("iso")))
+		if (Test("iso"))
 		{
 			return CompressionFormat::Iso;
 		}

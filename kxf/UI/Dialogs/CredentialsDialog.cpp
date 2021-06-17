@@ -9,7 +9,7 @@
 
 namespace
 {
-	const wxChar* GetStringOrNull(const kxf::String& text)
+	const kxf::XChar* GetStringOrNull(const kxf::String& text)
 	{
 		return text.IsEmpty() ? nullptr : text.wc_str();
 	}

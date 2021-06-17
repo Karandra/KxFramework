@@ -58,7 +58,7 @@ namespace kxf::TextDocument
 	String Read(const FSPath& filePath, LineBreakFormat lineBreakFormat)
 	{
 		String result;
-		const wxChar* lineBreak = wxTextFile::GetEOL(MapLineBreakType(lineBreakFormat));
+		const XChar* lineBreak = wxTextFile::GetEOL(MapLineBreakType(lineBreakFormat));
 
 		Read(filePath, [&](String line)
 		{
@@ -97,7 +97,7 @@ namespace kxf::TextDocument
 		if (auto stream = NativeFileSystem().OpenToWrite(filePath, disposition))
 		{
 			const wxTextFileType lineBreakFormatWx = MapLineBreakType(lineBreakFormat);
-			const wxChar* lineBreak = wxTextFile::GetEOL(lineBreakFormatWx);
+			const XChar* lineBreak = wxTextFile::GetEOL(lineBreakFormatWx);
 			bool isSuccess = true;
 
 			IO::OutputStreamWriter writer(*stream);

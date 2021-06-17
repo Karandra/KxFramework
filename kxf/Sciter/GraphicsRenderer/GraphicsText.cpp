@@ -47,7 +47,7 @@ namespace kxf::Sciter
 	}
 	bool GraphicsText::CreateForElementAndStyle(const String& text, const Element& element, const String& style)
 	{
-		const wxChar* stylePtr = style.IsEmpty() ? nullptr : style.wc_str();
+		const XChar* stylePtr = style.IsEmpty() ? nullptr : style.wc_str();
 		size_t styleLength = style.IsEmpty() ? 0 : style.length();
 
 		HTEXT handle = nullptr;

@@ -158,13 +158,13 @@ namespace kxf::XDocument
 				return {};
 			}
 
-			wxChar GetXPathSeparator() const
+			XChar GetXPathSeparator() const
 			{
-				return wxS('/');
+				return '/';
 			}
 			virtual String GetXPathIndexSeparator() const
 			{
-				return wxS("::");
+				return "::";
 			}
 			virtual void SetXPathIndexSeparator(const String& value)
 			{

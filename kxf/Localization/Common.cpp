@@ -18,7 +18,7 @@ namespace
 		// Extract locale name from names like 'en-US.Application.xml'
 		if (Locale locale = Localization::Private::LocaleFromFileName(item.GetName()))
 		{
-			String name = item.GetName().BeforeLast(wxS('.'));
+			String name = item.GetName().BeforeLast('.');
 			if (!name.IsEmpty())
 			{
 				return std::invoke(func, std::move(locale), std::move(item));

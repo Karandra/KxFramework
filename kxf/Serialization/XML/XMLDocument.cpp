@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr kxf::XChar g_Copyright[] = wxS("Copyright© Lee Thomason");
+	constexpr char g_Copyright[] = "Copyright© Lee Thomason";
 }
 
 namespace kxf
@@ -51,7 +51,7 @@ namespace kxf
 				public:
 					String GetName() const override
 					{
-						return wxS("TinyXML2");
+						return "TinyXML2";
 					}
 					Version GetVersion() const override
 					{
@@ -59,7 +59,7 @@ namespace kxf
 					}
 					URI GetHomePage() const override
 					{
-						return wxS("https://github.com/leethomason/tinyxml2");
+						return "https://github.com/leethomason/tinyxml2";
 					}
 					uint32_t GetAPILevel() const override
 					{

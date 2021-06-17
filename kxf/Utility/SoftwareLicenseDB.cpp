@@ -64,7 +64,7 @@ namespace
 {
 	kxf::String LoadLicense(const kxf::String& name)
 	{
-		auto buffer = kxf::Utility::LoadResource(kxf::DynamicLibrary::GetCurrentModule(), wxS("GNU_GPLv3"), wxS("SOFTWARELICENSEDB"));
+		auto buffer = kxf::Utility::LoadResource(kxf::DynamicLibrary::GetCurrentModule(), "GNU_GPLv3", "SOFTWARELICENSEDB");
 		if (buffer.length() != 0)
 		{
 			return {buffer.data(), buffer.length()};

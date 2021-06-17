@@ -6,13 +6,13 @@ namespace kxf::Localization::Private
 {
 	namespace EmbeddedResourceType
 	{
-		constexpr XChar Android[] = wxS("AndroidLocalizationPackage");
-		constexpr XChar Windows[] = wxS("WindowsLocalizationPackage");
-		constexpr XChar Qt[] = wxS("QtLocalizationPackage");
+		constexpr XChar Android[] = kxS("AndroidLocalizationPackage");
+		constexpr XChar Windows[] = kxS("WindowsLocalizationPackage";)
+		constexpr XChar Qt[] = kxS("QtLocalizationPackage");
 	}
 
 	inline Locale LocaleFromFileName(const String& name)
 	{
-		return name.BeforeFirst(wxS('.'));
+		return name.BeforeFirst('.');
 	}
 }

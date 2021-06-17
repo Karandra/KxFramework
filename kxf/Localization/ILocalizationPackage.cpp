@@ -30,7 +30,7 @@ namespace kxf
 	const kxf::String& ILocalizationPackage::GetPluralStringForNumber(const LocalizationItem& item, int value) const
 	{
 		// TODO: Make this configurable inside the localization file itself somehow
-		if (GetLocale() == wxS("ru-RU"))
+		if (GetLocale() == "ru-RU")
 		{
 			return PluralStringRussian(item, value);
 		}

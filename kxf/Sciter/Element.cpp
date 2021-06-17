@@ -31,7 +31,7 @@ namespace
 		for (size_t i = 0; i < value.length(); i++)
 		{
 			auto c = value[i];
-			if (!std::isdigit(c) && c != wxS('.'))
+			if (!std::isdigit(c) && c != '.')
 			{
 				value.Truncate(i);
 				break;
@@ -1013,23 +1013,23 @@ namespace kxf::Sciter
 					String value = regEx.GetMatch(fontFamily, i).Trim().Trim(StringActionFlag::FromEnd);
 					if (i == regEx.GetMatchCount())
 					{
-						if (value == wxS("fantasy"))
+						if (value == "fantasy")
 						{
 							font.SetFamily(FontFamily::Fantasy);
 						}
-						else if (value == wxS("serif"))
+						else if (value == "serif")
 						{
 							font.SetFamily(FontFamily::Serif);
 						}
-						else if (value == wxS("sans-serif"))
+						else if (value == "sans-serif")
 						{
 							font.SetFamily(FontFamily::SansSerif);
 						}
-						else if (value == wxS("cursive"))
+						else if (value == "cursive")
 						{
 							font.SetFamily(FontFamily::Cursive);
 						}
-						else if (value == wxS("monospace"))
+						else if (value == "monospace")
 						{
 							font.SetFamily(FontFamily::FixedWidth);
 						}
@@ -1048,15 +1048,15 @@ namespace kxf::Sciter
 		// Style
 		if (String fontStyle = GetStyleAttribute("font-style"); !fontStyle.IsEmpty())
 		{
-			if (fontStyle == wxS("normal"))
+			if (fontStyle == "normal")
 			{
 				font.SetStyle(FontStyle::Normal);
 			}
-			else if (fontStyle == wxS("italic"))
+			else if (fontStyle == "italic")
 			{
 				font.SetStyle(FontStyle::Italic);
 			}
-			else if (fontStyle == wxS("oblique"))
+			else if (fontStyle == "oblique")
 			{
 				font.SetStyle(FontStyle::Oblique);
 			}
@@ -1065,11 +1065,11 @@ namespace kxf::Sciter
 		// Text decoration
 		if (String textDecoration = GetStyleAttribute("text-decoration"); !textDecoration.IsEmpty())
 		{
-			if (textDecoration.Contains(wxS("underline")))
+			if (textDecoration.Contains("underline"))
 			{
 				font.AddStyle(FontStyle::Underline);
 			}
-			if (textDecoration.Contains(wxS("line-through")))
+			if (textDecoration.Contains("line-through"))
 			{
 				font.AddStyle(FontStyle::Strikethrough);
 			}
@@ -1099,23 +1099,23 @@ namespace kxf::Sciter
 				{
 					case FontFamily::Fantasy:
 					{
-						return wxS("fantasy");
+						return "fantasy";
 					}
 					case FontFamily::Serif:
 					{
-						return wxS("serif");
+						return "serif";
 					}
 					case FontFamily::SansSerif:
 					{
-						return wxS("sans-serif");
+						return "sans-serif";
 					}
 					case FontFamily::Cursive:
 					{
-						return wxS("cursive");
+						return "cursive";
 					}
 					case FontFamily::FixedWidth:
 					{
-						return wxS("monospace");
+						return "monospace";
 					}
 				};
 				return {};
@@ -1125,11 +1125,11 @@ namespace kxf::Sciter
 				const auto style = font.GetStyle();
 				if (style.Contains(FontStyle::Italic))
 				{
-					return wxS("italic");
+					return "italic";
 				}
 				else if (style.Contains(FontStyle::Oblique))
 				{
-					return wxS("oblique");
+					return "oblique";
 				}
 				return {};
 			};
@@ -1140,15 +1140,15 @@ namespace kxf::Sciter
 				const auto style = font.GetStyle();
 				if (style.Contains(FontStyle::Underline))
 				{
-					textDecoration += wxS("underline");
+					textDecoration += "underline";
 				}
 				if (style.Contains(FontStyle::Strikethrough))
 				{
 					if (!textDecoration.IsEmpty())
 					{
-						textDecoration += wxS(' ');
+						textDecoration += ' ';
 					}
-					textDecoration += wxS("line-through");
+					textDecoration += "line-through";
 				}
 				return {};
 			};
@@ -1255,13 +1255,13 @@ namespace kxf::Sciter
 			return count;
 		};
 
-		if (query.IsEmptyOrWhitespace() || query == wxS('*'))
+		if (query.IsEmptyOrWhitespace() || query == '*')
 		{
-			return DoSelectWidgets(wxS("[Widget]"));
+			return DoSelectWidgets("[Widget]");
 		}
 		else
 		{
-			return DoSelectWidgets(String(wxS("[Widget] ")) + query);
+			return DoSelectWidgets(String("[Widget] ") + query);
 		}
 	}
 	Widget* Element::SelectAnyWidget(const String& query) const

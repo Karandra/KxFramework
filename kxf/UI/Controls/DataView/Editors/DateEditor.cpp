@@ -48,7 +48,7 @@ namespace kxf::UI::DataView
 		}
 		else if (String string; std::move(value).GetAs(string))
 		{
-			return m_Value.ParseISOCombined(string) || m_Value.ParseISOCombined(string, wxS(' ')) || m_Value.ParseTime(string);
+			return m_Value.ParseISOCombined(string) || m_Value.ParseISOCombined(string, ' ') || m_Value.ParseTime(string);
 		}
 		return false;
 	}

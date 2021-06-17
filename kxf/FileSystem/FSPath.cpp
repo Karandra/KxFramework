@@ -19,10 +19,42 @@ namespace
 	constexpr size_t g_VolumePathPrefixLength = 6;
 	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 2;
 
-	constexpr wxChar g_PathSeparator = wxS('\\');
+	constexpr char g_PathSeparator = '\\';
 }
 namespace
 {
+	size_t FindChar(const kxf::String& path, kxf::XChar c, bool reverse = false)
+	{
+		using namespace kxf;
+
+		return path.Find(c, 0, reverse ? StringActionFlag::FromEnd : StringActionFlag::None);
+	}
+	size_t RemoveLeadingSpaces(kxf::String& path)
+	{
+		const std::locale locale;
+		size_t removedCount = 0;
+		bool removeSpaces = true;
+
+		for (size_t i = 0; i < path.length(); i++)
+		{
+			// Remove any leading space characters
+			if (removeSpaces)
+			{
+				if (std::isspace(static_cast<kxf::XChar>(path[i]), locale))
+				{
+					path.Remove(i, 1);
+					removedCount++;
+					i--;
+				}
+				else
+				{
+					removeSpaces = false;
+				}
+			}
+		}
+		return removedCount;
+	}
+
 	kxf::String ConcatWithNamespace(const kxf::String& path, kxf::FSPathNamespace withNamespace)
 	{
 		using namespace kxf;
@@ -33,13 +65,7 @@ namespace
 		}
 		return path;
 	}
-	size_t FindChar(const kxf::String& path, wxChar c, bool reverse = false)
-	{
-		using namespace kxf;
-
-		return path.Find(c, 0, reverse ? StringActionFlag::FromEnd : StringActionFlag::None);
-	}
-	kxf::String ExtractBefore(const kxf::String& path, wxChar c, bool reverse = false)
+	kxf::String ExtractBefore(const kxf::String& path, kxf::XChar c, bool reverse = false)
 	{
 		using namespace kxf;
 
@@ -55,7 +81,7 @@ namespace
 		}
 		return {};
 	}
-	kxf::String ExtractAfter(const kxf::String& path, wxChar c, size_t count = kxf::String::npos, bool reverse = false)
+	kxf::String ExtractAfter(const kxf::String& path, kxf::XChar c, size_t count = kxf::String::npos, bool reverse = false)
 	{
 		using namespace kxf;
 
@@ -70,31 +96,6 @@ namespace
 			return result;
 		}
 		return {};
-	}
-	size_t RemoveLeadingSpaces(kxf::String& path)
-	{
-		const std::locale locale;
-		size_t removedCount = 0;
-		bool removeSpaces = true;
-
-		for (size_t i = 0; i < path.length(); i++)
-		{
-			// Remove any leading space characters
-			if (removeSpaces)
-			{
-				if (std::isspace(static_cast<wxChar>(path[i]), locale))
-				{
-					path.Remove(i, 1);
-					removedCount++;
-					i--;
-				}
-				else
-				{
-					removeSpaces = false;
-				}
-			}
-		}
-		return removedCount;
 	}
 }
 
@@ -143,7 +144,7 @@ namespace kxf
 			auto& c = m_Path[i];
 
 			// Replace forward slashes with backward slashes
-			if (c == wxS('/'))
+			if (c == '/')
 			{
 				c = g_PathSeparator;
 			}
@@ -151,7 +152,7 @@ namespace kxf
 			// Remove any leading space characters
 			if (removeSpaces)
 			{
-				if (std::isspace(static_cast<wxChar>(c), locale))
+				if (std::isspace(static_cast<XChar>(c), locale))
 				{
 					m_Path.Remove(i, 1);
 					i--;
@@ -184,7 +185,7 @@ namespace kxf
 
 	bool FSPath::CheckIsLegacyVolume(const String& path) const
 	{
-		if (path.length() >= 2 && path[1] == wxS(':'))
+		if (path.length() >= 2 && path[1] == ':')
 		{
 			return LegacyVolume::FromChar(path[0]).IsValid();
 		}
@@ -196,8 +197,8 @@ namespace kxf
 		// so it'll be this instead: 'Volume{66843779-55ae-45c5-9abe-b67ccee14079}'.
 		if (path.length() >= g_VolumePathTotalLength)
 		{
-			const bool prefixCorrect = std::char_traits<wxChar>::compare(path.wc_str(), wxS("Volume"), g_VolumePathPrefixLength) == 0;
-			const bool bracesCorrect = path[g_VolumePathPrefixLength] == wxS('{') && path[g_VolumePathTotalLength - 1] == wxS('}');
+			const bool prefixCorrect = std::char_traits<XChar>::compare(path.wc_str(), L"Volume", g_VolumePathPrefixLength) == 0;
+			const bool bracesCorrect = path[g_VolumePathPrefixLength] == '{' && path[g_VolumePathTotalLength - 1] == '}';
 			return prefixCorrect && bracesCorrect;
 		}
 		return false;
@@ -290,7 +291,7 @@ namespace kxf
 	size_t FSPath::GetComponentCount() const
 	{
 		size_t count = 0;
-		for (wxChar c: m_Path)
+		for (XChar c: m_Path)
 		{
 			if (c == g_PathSeparator)
 			{
@@ -549,7 +550,7 @@ namespace kxf
 			const size_t pos = m_Path.Find(g_PathSeparator, 0, StringActionFlag::FromEnd);
 			if (pos != String::npos)
 			{
-				const size_t dot = m_Path.Find(wxS('.'), pos);
+				const size_t dot = m_Path.Find('.', pos);
 				if (dot != String::npos)
 				{
 					m_Path.ReplaceRange(pos + 1, dot - pos, name);
@@ -567,25 +568,25 @@ namespace kxf
 	String FSPath::GetExtension() const
 	{
 		// Return extension without a dot
-		return ExtractAfter(m_Path, wxS('.'), String::npos, true);
+		return ExtractAfter(m_Path, '.', String::npos, true);
 	}
 	FSPath& FSPath::SetExtension(const String& ext)
 	{
 		auto Replace = [this](const String& ext)
 		{
-			const size_t pos = m_Path.Find(wxS('.'), 0, StringActionFlag::FromEnd);
+			const size_t pos = m_Path.Find('.', 0, StringActionFlag::FromEnd);
 			if (pos != String::npos)
 			{
 				m_Path.ReplaceRange(pos + 1, m_Path.length() - pos, ext);
 			}
 			else
 			{
-				m_Path += wxS('.');
+				m_Path += '.';
 				m_Path += ext;
 			}
 		};
 
-		if (String extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
+		if (String extWithoutDot; ext.StartsWith('.', &extWithoutDot))
 		{
 			Replace(extWithoutDot);
 		}

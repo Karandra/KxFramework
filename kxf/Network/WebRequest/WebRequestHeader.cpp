@@ -6,15 +6,15 @@ namespace kxf
 {
 	WebRequestHeader WebRequestHeader::UserAgent(String value)
 	{
-		return {wxS("User-Agent"), std::move(value)};
+		return {"User-Agent", std::move(value)};
 	}
 	WebRequestHeader WebRequestHeader::Referer(String value)
 	{
-		return {wxS("Referer"), std::move(value)};
+		return {"Referer", std::move(value)};
 	}
 	WebRequestHeader WebRequestHeader::Cookie(String value)
 	{
-		return {wxS("Cookie"), std::move(value)};
+		return {"Cookie", std::move(value)};
 	}
 
 	bool WebRequestHeader::AddValue(const String& value, WebRequestHeaderFlag separator)

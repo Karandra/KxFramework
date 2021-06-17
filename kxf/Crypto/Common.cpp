@@ -7,7 +7,7 @@ namespace kxf::Crypto
 {
 	String GetLibraryName()
 	{
-		return wxS("OpenSSL");
+		return "OpenSSL";
 	}
 	Version GetLibraryVersion()
 	{

@@ -655,11 +655,11 @@ namespace kxf::UI::DataView
 
 		if ([this, parent]()
 		{
-			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, wxS("HeaderCtrl")))
+			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, "HeaderCtrl"))
 			{
 				return false;
 			}
-			if (!MSWCreateControl(WC_HEADER, wxS(""), wxDefaultPosition, wxDefaultSize))
+			if (!MSWCreateControl(WC_HEADER, "", wxDefaultPosition, wxDefaultSize))
 			{
 				return false;
 			}

@@ -308,7 +308,7 @@ namespace kxf::Sciter
 	}
 	bool Host::EnableSystemTheme(bool enable)
 	{
-		::SetWindowTheme(m_SciterWindow.GetHandle(), enable ? wxS("Explorer") : nullptr, nullptr);
+		::SetWindowTheme(m_SciterWindow.GetHandle(), enable ? L"Explorer" : nullptr, nullptr);
 
 		m_Style.Mod(HostStyle::SystemTheme, enable);
 		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_UX_THEMING, enable);
@@ -361,7 +361,7 @@ namespace kxf::Sciter
 
 		auto SetAttribute = [&](const String& value)
 		{
-			if (GetRootElement().SetAttribute(wxS("window-frame"), value))
+			if (GetRootElement().SetAttribute("window-frame", value))
 			{
 				Reload();
 				return true;
@@ -373,23 +373,23 @@ namespace kxf::Sciter
 		{
 			case WindowFrame::Standard:
 			{
-				return SetAttribute(wxS("none"));
+				return SetAttribute("none");
 			}
 			case WindowFrame::Solid:
 			{
-				return SetAttribute(wxS("solid"));
+				return SetAttribute("solid");
 			}
 			case WindowFrame::SolidWithShadow:
 			{
-				return SetAttribute(wxS("solid-with-shadow"));
+				return SetAttribute("solid-with-shadow");
 			}
 			case WindowFrame::Extended:
 			{
-				return SetAttribute(wxS("extended"));
+				return SetAttribute("extended");
 			}
 			case WindowFrame::Transparent:
 			{
-				return SetAttribute(wxS("transparent"));
+				return SetAttribute("transparent");
 			}
 		};
 		return false;
@@ -419,23 +419,23 @@ namespace kxf::Sciter
 			}
 			case WindowBlurBehind::Auto:
 			{
-				return SetAttribute(wxS("auto"));
+				return SetAttribute("auto");
 			}
 			case WindowBlurBehind::Light:
 			{
-				return SetAttribute(wxS("light"));
+				return SetAttribute("light");
 			}
 			case WindowBlurBehind::UltraLight:
 			{
-				return SetAttribute(wxS("ultra-light"));
+				return SetAttribute("ultra-light");
 			}
 			case WindowBlurBehind::Dark:
 			{
-				return SetAttribute(wxS("dark"));
+				return SetAttribute("dark");
 			}
 			case WindowBlurBehind::UltraDark:
 			{
-				return SetAttribute(wxS("ultra-dark"));
+				return SetAttribute("ultra-dark");
 			}
 		};
 		return false;
@@ -455,17 +455,17 @@ namespace kxf::Sciter
 	{
 		if (m_SciterWindow.IsTopLevel())
 		{
-			Utility::SetIfNotNull(reason, wxS("Always supported for top-level windows"));
+			Utility::SetIfNotNull(reason, "Always supported for top-level windows");
 			return true;
 		}
 		else if (m_Renderer)
 		{
-			Utility::SetIfNotNull(reason, wxS("Graphics renderer can enable transparency even for child windows"));
+			Utility::SetIfNotNull(reason, "Graphics renderer can enable transparency even for child windows");
 			return true;
 		}
 		else
 		{
-			Utility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use graphics renderer"));
+			Utility::SetIfNotNull(reason, "Not a top-level window and doesn't use graphics renderer");
 			return false;
 		}
 	}
@@ -475,23 +475,23 @@ namespace kxf::Sciter
 	}
 	bool Host::SetBackgroundColor(const Color& color)
 	{
-		return GetRootElement().SetStyleAttribute(wxS("background-color"), color);
+		return GetRootElement().SetStyleAttribute("background-color", color);
 	}
 	bool Host::SetForegroundColor(const Color& color)
 	{
-		return GetRootElement().SetStyleAttribute(wxS("color"), color);
+		return GetRootElement().SetStyleAttribute("color", color);
 	}
 
 	UI::LayoutDirection Host::GetLayoutDirection() const
 	{
 		using namespace UI;
 
-		String value = GetRootElement().GetStyleAttribute(wxS("direction"));
-		if (value == wxS("ltr"))
+		String value = GetRootElement().GetStyleAttribute("direction");
+		if (value == "ltr")
 		{
 			return LayoutDirection::LeftToRight;
 		}
-		else if (value == wxS("rtl"))
+		else if (value == "rtl")
 		{
 			return LayoutDirection::RightToLeft;
 		}
@@ -505,17 +505,17 @@ namespace kxf::Sciter
 		{
 			case LayoutDirection::LeftToRight:
 			{
-				GetRootElement().SetStyleAttribute(wxS("direction"), wxS("ltr"));
+				GetRootElement().SetStyleAttribute("direction", "ltr");
 				break;
 			}
 			case LayoutDirection::RightToLeft:
 			{
-				GetRootElement().SetStyleAttribute(wxS("direction"), wxS("rtl"));
+				GetRootElement().SetStyleAttribute("direction", "rtl");
 				break;
 			}
 			default:
 			{
-				GetRootElement().RemoveStyleAttribute(wxS("direction"));
+				GetRootElement().RemoveStyleAttribute("direction");
 			}
 		};
 	}

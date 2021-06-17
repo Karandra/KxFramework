@@ -41,7 +41,7 @@ namespace
 	}
 	kxf::String FormatTimeAsTaskDelay(const kxf::TimeSpan& delay)
 	{
-		return delay.Format(wxS("PT%HH%MM%SS"));
+		return delay.Format("PT%HH%MM%SS");
 	}
 }
 
@@ -195,7 +195,7 @@ namespace kxf::System
 			);
 			if (hr)
 			{
-				m_TaskService->GetFolder(BstrFromString(!taskFolder ? wxS('\\') : taskFolder.GetFullPath()), &m_TaskFolder);
+				m_TaskService->GetFolder(BstrFromString(!taskFolder ? '\\' : taskFolder.GetFullPath()), &m_TaskFolder);
 			}
 		}
 	}

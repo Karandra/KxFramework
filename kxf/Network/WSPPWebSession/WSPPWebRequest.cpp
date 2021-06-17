@@ -202,7 +202,7 @@ namespace kxf
 				}
 				catch (...)
 				{
-					wxLogDebug(wxS("WSPPWebRequest::DoRegisterHandlers: exception occurred"));
+					wxLogDebug("WSPPWebRequest::DoRegisterHandlers: exception occurred");
 				}
 			}
 			return nullptr;
@@ -255,7 +255,7 @@ namespace kxf
 		}
 		catch (...)
 		{
-			wxLogDebug(wxS("WSPPWebRequest::DoPrepareSendData: exception occurred"));
+			wxLogDebug("WSPPWebRequest::DoPrepareSendData: exception occurred");
 		}
 	}
 	void WSPPWebRequest::DoPrepareReceiveData()
@@ -284,7 +284,7 @@ namespace kxf
 				else
 				{
 					UpdateResponseData();
-					ChangeStateAndNotify(WebRequestState::Failed, {}, wxS("Failed to connect"));
+					ChangeStateAndNotify(WebRequestState::Failed, {}, "Failed to connect");
 				}
 			}
 			catch (...)
@@ -296,14 +296,14 @@ namespace kxf
 				}
 				else
 				{
-					ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), wxS("WSPPWebRequest::DoPerformRequest[m_Client.run]: exception occurred"));
+					ChangeStateAndNotify(WebRequestState::Failed, m_Connection->get_response_code(), "WSPPWebRequest::DoPerformRequest[m_Client.run]: exception occurred");
 				}
 			}
 		}
 		else
 		{
 			UpdateResponseData();
-			ChangeStateAndNotify(WebRequestState::Failed, {}, wxS("Failed to create connection"));
+			ChangeStateAndNotify(WebRequestState::Failed, {}, "Failed to create connection");
 		}
 	}
 	void WSPPWebRequest::DoResetState()

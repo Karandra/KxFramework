@@ -25,13 +25,13 @@ namespace kxf::Sciter
 
 	String FSPathToSciterAddress(const FSPath& path)
 	{
-		return path ? String(wxS("file://")) + path.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator) : wxS("about:blank");
+		return path ? String("file://") + path.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator) : "about:blank";
 	}
 	String URIToSciterAddress(const URI& uri)
 	{
 		if (!uri.HasScheme())
 		{
-			return String(wxS("file://")) + uri.BuildURI();
+			return String("file://") + uri.BuildURI();
 		}
 		return uri.BuildURI();
 	}

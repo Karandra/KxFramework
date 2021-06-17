@@ -110,12 +110,12 @@ namespace kxf
 	String HResult::GetSource() const
 	{
 		_bstr_t result = _com_error(m_Value, m_ErrorInfo).Source();
-		return static_cast<const wxChar*>(result);
+		return static_cast<const XChar*>(result);
 	}
 	String HResult::GetHelpFile() const
 	{
 		_bstr_t result = _com_error(m_Value, m_ErrorInfo).HelpFile();
-		return static_cast<const wxChar*>(result);
+		return static_cast<const XChar*>(result);
 	}
 	uint32_t HResult::GetHelpContext() const noexcept
 	{
@@ -124,7 +124,7 @@ namespace kxf
 	String HResult::GetDescription() const
 	{
 		_bstr_t result = _com_error(m_Value, m_ErrorInfo).Description();
-		return static_cast<const wxChar*>(result);
+		return static_cast<const XChar*>(result);
 	}
 	uint32_t HResult::GetFacility() const noexcept
 	{

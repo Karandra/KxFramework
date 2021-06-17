@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr wxChar g_MnemonicSuffix[] = wxS("_MM");
+	constexpr kxf::XChar g_MnemonicSuffix[] = kxS("_MM");
 
 	std::optional<kxf::String> DoGetLocalizedString(kxf::String id, wxStockLabelQueryFlag flags)
 	{
@@ -151,7 +151,7 @@ namespace kxf::Localization::Private
 			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITHOUT_ELLIPSIS)
 			{
 				String baseLabel;
-				if (result.EndsWith(wxS("..."), &baseLabel) && !baseLabel.IsEmpty())
+				if (result.EndsWith("...", &baseLabel) && !baseLabel.IsEmpty())
 				{
 					result = std::move(baseLabel);
 				}
@@ -163,7 +163,7 @@ namespace kxf::Localization::Private
 				wxAcceleratorEntry accelerator = wxGetStockAccelerator(ToInt(id));
 				if (accelerator.IsOk())
 				{
-					result += wxS('\t');
+					result += '\t';
 					result += accelerator.ToString();
 				}
 			}
@@ -180,7 +180,7 @@ namespace kxf::Localization::Private
 		{																										\
 			if (client == ctx)																					\
 			{																									\
-				result = DoGetLocalizedString(wxS(#stockid) wxS("_LONG"), flags).value_or(wxS(defaultLabel));	\
+				result = DoGetLocalizedString(wxS(#stockid) "_LONG", flags).value_or(wxS(defaultLabel));	\
 			}																									\
 			break;																								\
 		}

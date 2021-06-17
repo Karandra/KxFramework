@@ -16,8 +16,8 @@ namespace
 	{
 		value.Trim();
 		value.Trim(kxf::StringActionFlag::FromEnd);
-		value.Replace(wxS("\r"), kxf::NullString);
-		value.Replace(wxS("\n"), kxf::NullString);
+		value.Replace('\r', kxf::NullString);
+		value.Replace('\n', kxf::NullString);
 	}
 	kxf::String GetHeaderName(const char* source, size_t length)
 	{
@@ -262,7 +262,7 @@ namespace kxf
 	{
 		if (m_SendStorage != WebRequestStorage::None)
 		{
-			if (m_Method.IsEmpty() || m_Method.IsSameAs(wxS("POST"), StringActionFlag::IgnoreCase))
+			if (m_Method.IsEmpty() || m_Method.IsSameAs("POST", StringActionFlag::IgnoreCase))
 			{
 				// Make sure to use read callback
 				m_Handle.SetOption(CURLOPT_POSTFIELDSIZE, 0);
@@ -271,18 +271,18 @@ namespace kxf
 				// Switch to post
 				m_Handle.SetOption(CURLOPT_POST, true);
 			}
-			else if (m_Method.IsSameAs(wxS("PUT"), StringActionFlag::IgnoreCase))
+			else if (m_Method.IsSameAs("PUT", StringActionFlag::IgnoreCase))
 			{
 				m_Handle.SetOption(CURLOPT_INFILESIZE_LARGE, m_SendStream->GetSize().ToBytes());
 				m_Handle.SetOption(CURLOPT_UPLOAD, true);
 			}
 		}
 
-		if (m_Method.IsSameAs(wxS("HEAD"), StringActionFlag::IgnoreCase))
+		if (m_Method.IsSameAs("HEAD", StringActionFlag::IgnoreCase))
 		{
 			m_Handle.SetOption(CURLOPT_NOBODY, true);
 		}
-		if (m_Method.IsSameAs(wxS("GET"), StringActionFlag::IgnoreCase))
+		if (m_Method.IsSameAs("GET", StringActionFlag::IgnoreCase))
 		{
 			m_Handle.SetOption(CURLOPT_HTTPGET, true);
 		}

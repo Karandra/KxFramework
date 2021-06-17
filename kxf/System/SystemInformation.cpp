@@ -311,10 +311,10 @@ namespace kxf::System
 		userInfo.Name = std::move(userName);
 
 		// Organization
-		RegistryKey key(RegistryRootKey::LocalMachine, wxS("Software\\Microsoft\\Windows NT\\CurrentVersion"), RegistryAccess::Read);
+		RegistryKey key(RegistryRootKey::LocalMachine, "Software\\Microsoft\\Windows NT\\CurrentVersion", RegistryAccess::Read);
 		if (key)
 		{
-			if (auto value = key.GetStringValue(wxS("RegisteredOrganization")))
+			if (auto value = key.GetStringValue("RegisteredOrganization"))
 			{
 				userInfo.Organization = std::move(*value);
 			}
@@ -477,7 +477,7 @@ namespace kxf::System
 	}
 	Enumerator<String> EnumStandardSounds()
 	{
-		RegistryKey key(RegistryRootKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
+		RegistryKey key(RegistryRootKey::CurrentUser, "AppEvents\\EventLabels", RegistryAccess::Read|RegistryAccess::Enumerate);
 		if (key)
 		{
 			return Utility::MakeForwardingEnumerator([](String&& value, IEnumerator& enumerator)

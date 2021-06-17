@@ -12,7 +12,7 @@
 
 namespace
 {
-	constexpr kxf::XChar g_SharedPrefix[] = wxS("kxf::DefaultRPCExchanger");
+	constexpr kxf::XChar g_SharedPrefix[] = kxS("kxf::DefaultRPCExchanger");
 }
 
 namespace kxf

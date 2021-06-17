@@ -15,7 +15,7 @@ namespace
 	// https://www.codeproject.com/Articles/2783/How-to-programmatically-use-the-Recycle-Bin
 	// https://oipapio.com/question-589504
 
-	std::optional<SHQUERYRBINFO> QueryRecycleBin(const wxChar* path)
+	std::optional<SHQUERYRBINFO> QueryRecycleBin(const kxf::XChar* path)
 	{
 		SHQUERYRBINFO queryInfo = {};
 		queryInfo.cbSize = sizeof(queryInfo);
@@ -40,9 +40,9 @@ namespace kxf
 		if (volume)
 		{
 			m_Path[0] = volume.GetChar().GetAs<XChar>();
-			m_Path[1] = wxS(':');
-			m_Path[2] = wxS('\\');
-			m_Path[3] = wxS('\0');
+			m_Path[1] = ':';
+			m_Path[2] = '\\';
+			m_Path[3] = '\0';
 		}
 	}
 

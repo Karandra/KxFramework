@@ -39,9 +39,9 @@ namespace kxf::XDocument
 	}
 	bool IXNode::ContainsValueForbiddenCharacters(const String& value)
 	{
-		for (wxChar c: value)
+		for (XChar c: value)
 		{
-			if (c == wxS('&') || c == wxS('<') || c == wxS('>'))
+			if (c == '&' || c == '<' || c == '>')
 			{
 				return true;
 			}
@@ -63,7 +63,7 @@ namespace kxf::XDocument
 		char buffer[64] = {};
 		if (IntToChars(buffer, reinterpret_cast<size_t>(value), 16))
 		{
-			return String(wxS("0x")) + buffer;
+			return String("0x") + buffer;
 		}
 		return {};
 	}
@@ -78,7 +78,7 @@ namespace kxf::XDocument
 	}
 	String IXNode::FormatBool(bool value) const
 	{
-		return value ? wxS("1") : wxS("0");
+		return value ? "1" : "0";
 	}
 
 	std::optional<int64_t> IXNode::ParseInt(const String& value, int base) const
@@ -88,7 +88,7 @@ namespace kxf::XDocument
 	std::optional<void*> IXNode::ParsePointer(const String& value) const
 	{
 		String intValue;
-		if (value.StartsWith(wxS("0x"), &intValue))
+		if (value.StartsWith("0x", &intValue))
 		{
 			if (auto iValue = intValue.ToInteger<size_t>(16))
 			{

@@ -102,7 +102,7 @@ namespace
 			case SHQueryAssociation::DefaultIcon:
 			{
 				const String icon = Query(ASSOCSTR::ASSOCSTR_DEFAULTICON);
-				if (icon != wxS("%1"))
+				if (icon != "%1")
 				{
 					if (extraData)
 					{
@@ -377,7 +377,7 @@ namespace kxf::Shell
 		if (filePath)
 		{
 			// AssocQueryString requires extension with the dot
-			return DoQueryAssociation(wxS('.') + filePath.GetExtension(), option, extraData);
+			return DoQueryAssociation('.' + filePath.GetExtension(), option, extraData);
 		}
 		return {};
 	}
@@ -389,7 +389,7 @@ namespace kxf::Shell
 	String GetLocalizedName(const FSPath& path, int* resourceID)
 	{
 		int resID = 0;
-		wxChar buffer[INT16_MAX] = {};
+		XChar buffer[INT16_MAX] = {};
 		String pathString = path.GetFullPath();
 
 		if (HResult(::SHGetLocalizedName(pathString.wc_str(), buffer, std::size(buffer), &resID)).IsOK())
@@ -441,13 +441,13 @@ namespace kxf::Shell
 				case KnownDirectoryID::ProgramFilesX64:
 				{
 					isEnvUsed = true;
-					envVariable = wxS("%ProgramW6432%");
+					envVariable = "%ProgramW6432%";
 					break;
 				}
 				case KnownDirectoryID::CommonFilesX64:
 				{
 					isEnvUsed = true;
-					envVariable = wxS("%CommonProgramW6432%");
+					envVariable = "%CommonProgramW6432%";
 					break;
 				}
 			};

@@ -96,7 +96,7 @@ namespace kxf
 
 	String GDIRendererNative::GetName() const
 	{
-		return wxS("GDIRendererNative (UxTheme + wxRendererNative)");
+		return "GDIRendererNative (UxTheme + wxRendererNative)";
 	}
 	Version GDIRendererNative::GetVersion() const
 	{

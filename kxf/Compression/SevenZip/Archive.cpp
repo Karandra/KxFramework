@@ -33,20 +33,20 @@ namespace
 		{
 			case CompressionMethod::LZMA:
 			{
-				return wxS("LZMA");
+				return "LZMA";
 			}
 			case CompressionMethod::BZIP2:
 			{
-				return wxS("BZip2");
+				return "BZip2";
 			}
 			case CompressionMethod::PPMD:
 			{
-				return wxS("PPMd");
+				return "PPMd";
 			}
 		};
 
 		// LZMA2 is the default
-		return wxS("LZMA2");
+		return "LZMA2";
 	}
 	String FormatMethodString(int dictionarySize, SevenZip::CompressionMethod method)
 	{

@@ -17,12 +17,12 @@ namespace kxf::Private::Version
 			using Array = std::array<DefaultFormat, ItemCount>;
 
 		public:
-			wxChar m_String[ItemCount + 1] = {};
+			XChar m_String[ItemCount + 1] = {};
 			int m_Numeric = -1;
 
 		public:
 			DefaultFormat() = default;
-			DefaultFormat(int number, const wxChar* str = nullptr, size_t count = 0)
+			DefaultFormat(int number, const XChar* str = nullptr, size_t count = 0)
 				:m_Numeric(number)
 			{
 				SetString(str, count);
@@ -35,59 +35,16 @@ namespace kxf::Private::Version
 			}
 			bool HasString() const
 			{
-				return m_String[0] != wxS('\0');
+				return m_String[0] != '\0';
 			}
-			void SetString(const wxChar* str, size_t count = 0)
+			void SetString(const XChar* str, size_t count = 0)
 			{
 				if (!str)
 				{
-					str = wxS("");
+					str = kxS("");
 					count = 0;
 				}
-				std::char_traits<wxChar>::copy(m_String, str, std::min(ItemCount, count));
-			}
-	};
-
-	class StringAdapter final
-	{
-		private:
-			std::basic_string_view<wxChar, std::char_traits<wxChar>> m_Str;
-
-		public:
-			StringAdapter(const wxChar* s)
-				:m_Str(s)
-			{
-			}
-
-		public:
-			bool empty() const
-			{
-				return m_Str.empty();
-			}
-
-			bool operator==(const StringAdapter& other) const
-			{
-				return empty() == other.empty() || m_Str == other.m_Str;
-			}
-			bool operator!=(const StringAdapter& other) const
-			{
-				return !(*this == other);
-			}
-			bool operator<(const StringAdapter& other) const
-			{
-				return empty() || m_Str < other.m_Str;
-			}
-			bool operator<=(const StringAdapter& other) const
-			{
-				return empty() || m_Str <= other.m_Str;
-			}
-			bool operator>(const StringAdapter& other) const
-			{
-				return !empty() || m_Str > other.m_Str;
-			}
-			bool operator>=(const StringAdapter& other) const
-			{
-				return !empty() || m_Str >= other.m_Str;
+				std::char_traits<XChar>::copy(m_String, str, std::min(ItemCount, count));
 			}
 	};
 }

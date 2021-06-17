@@ -39,15 +39,15 @@ namespace kxf::Sciter
 	LayoutFlow Widget::GetLayoutFlow() const
 	{
 		String flow = m_Element.GetStyleAttribute("flow");
-		if (flow == wxS("horizontal"))
+		if (flow == "horizontal")
 		{
 			return LayoutFlow::Horizontal;
 		}
-		else if (flow == wxS("vertical"))
+		else if (flow == "vertical")
 		{
 			return LayoutFlow::Vertical;
 		}
-		else if (flow == wxS("text"))
+		else if (flow == "text")
 		{
 			return LayoutFlow::Text;
 		}

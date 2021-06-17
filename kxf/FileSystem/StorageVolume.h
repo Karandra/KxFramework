@@ -99,7 +99,7 @@ namespace kxf
 			{
 				if (this != &other)
 				{
-					return m_Length == other.m_Length && std::char_traits<wxChar>::compare(m_Path, other.m_Path, m_Length) == 0;
+					return m_Length == other.m_Length && std::char_traits<XChar>::compare(m_Path, other.m_Path, m_Length) == 0;
 				}
 				return true;
 			}

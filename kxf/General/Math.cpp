@@ -16,11 +16,11 @@ namespace kxf::Math
 {
 	UniChar GetDecimalSeparator()
 	{
-		return std::use_facet<std::numpunct<wxChar>>(std::cout.getloc()).decimal_point();
+		return std::use_facet<std::numpunct<XChar>>(std::cout.getloc()).decimal_point();
 	}
 	UniChar GetDecimalCSeparator()
 	{
-		return wxS('.');
+		return '.';
 	}
 
 	double GetPI()
@@ -230,7 +230,7 @@ namespace kxf::Math
 
 				return result;
 			}
-			return wxS("0");
+			return "0";
 		}
 		return {};
 	}

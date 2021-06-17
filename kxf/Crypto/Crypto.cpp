@@ -145,12 +145,12 @@ namespace kxf::Crypto
 		{
 			if (UniChar(c).IsASCII())
 			{
-				if ((c >= wxS('A') && c <= wxS('M')) || (c >= wxS('a') && c <= wxS('m')))
+				if ((c >= 'A' && c <= 'M') || (c >= 'a' && c <= 'm'))
 				{
 					c += 13;
 					count++;
 				}
-				else if ((c >= wxS('N') && c <= wxS('Z')) || (c >= wxS('n') && c <= wxS('z')))
+				else if ((c >= 'N' && c <= 'Z') || (c >= 'n' && c <= 'z'))
 				{
 					c -= 13;
 					count++;
@@ -164,14 +164,14 @@ namespace kxf::Crypto
 		size_t count = 0;
 		for (XChar& c: source)
 		{
-			if (c == wxS('l') || c == wxS('r'))
+			if (c == 'l' || c == 'r')
 			{
-				c = wxS('w');
+				c = 'w';
 				count++;
 			}
-			else if (c == wxS('L') || c == wxS('R'))
+			else if (c == 'L' || c == 'R')
 			{
-				c = wxS('W');
+				c = 'W';
 				count++;
 			}
 		}

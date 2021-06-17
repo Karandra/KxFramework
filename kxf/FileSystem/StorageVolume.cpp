@@ -90,7 +90,7 @@ namespace kxf
 	{
 		return [handle = make_handle_ptr<::FindVolumeClose, HANDLE, INVALID_HANDLE_VALUE>(nullptr)](IEnumerator& en) mutable -> std::optional<StorageVolume>
 		{
-			wxChar volumeGuidPath[64] = {};
+			XChar volumeGuidPath[64] = {};
 			if (!handle)
 			{
 				handle = ::FindFirstVolumeW(volumeGuidPath, std::size(volumeGuidPath));
@@ -121,7 +121,7 @@ namespace kxf
 		{
 			if (driveLetter <= g_LastLegacyVolume)
 			{
-				XChar disk[] = wxS("\0:\\");
+				XChar disk[] = kxS("\0:\\");
 				disk[0] = driveLetter++;
 
 				XChar volumeGuidPath[64] = {};
@@ -154,7 +154,7 @@ namespace kxf
 	{
 		if (volume)
 		{
-			XChar disk[] = wxS("\0:\\");
+			XChar disk[] = kxS("\0:\\");
 			disk[0] = volume.GetChar().GetAs<XChar>();
 
 			return ::DeleteVolumeMountPointW(disk);
@@ -191,7 +191,7 @@ namespace kxf
 
 	bool StorageVolume::IsNull() const noexcept
 	{
-		return m_Path[0] == wxS('\0') || m_Length != g_VolumePathTotalLength;
+		return m_Path[0] == '\0' || m_Length != g_VolumePathTotalLength;
 	}
 	bool StorageVolume::DoesExist() const noexcept
 	{
@@ -222,7 +222,7 @@ namespace kxf
 
 	String StorageVolume::GetLabel() const
 	{
-		wxChar buffer[MAX_PATH + 1] = {};
+		XChar buffer[MAX_PATH + 1] = {};
 		::GetVolumeInformationW(m_Path, buffer, std::size(buffer), nullptr, nullptr, nullptr, nullptr, 0);
 		return buffer;
 	}
@@ -247,7 +247,7 @@ namespace kxf
 	}
 	String StorageVolume::GetFileSystem() const noexcept
 	{
-		wxChar buffer[MAX_PATH + 1] = {};
+		XChar buffer[MAX_PATH + 1] = {};
 		::GetVolumeInformationW(m_Path, nullptr, 0, nullptr, nullptr, nullptr, buffer, std::size(buffer));
 		return buffer;
 	}
@@ -357,7 +357,7 @@ namespace kxf
 	{
 		if (volume)
 		{
-			XChar disk[] = wxS("\0:\\");
+			XChar disk[] = kxS("\0:\\");
 			disk[0] = volume.GetChar().GetAs<XChar>();
 
 			return ::SetVolumeMountPointW(disk, m_Path);

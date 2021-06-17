@@ -19,9 +19,9 @@ namespace kxf::Application::Private
 		}
 		catch (...)
 		{
-			what = wxS("unknown exception");
+			what = "unknown exception";
 		}
-		wxMessageOutputBest().Printf(wxS("Unhandled %s; terminating %s.\n"), what.wc_str(), wxIsMainThread() ? wxS("the application") : wxS("the thread in which it happened"));
+		wxMessageOutputBest().Printf("Unhandled %s; terminating %s.\n", what.wc_str(), wxIsMainThread() ? "the application" : "the thread in which it happened");
 	}
 	void OnFatalException()
 	{
@@ -37,8 +37,8 @@ namespace kxf::Application::Private
 		// Ask the user about what to do: use the WinAPI function here as it could be dangerous to use any framework code in this state.
 		// TODO: Use 'TaskDialog[Indirect]' instead.
 		const auto result = ::MessageBoxW(nullptr,
-										  wxS("An unhandled exception occurred. Press \"Abort\" to terminate the program,\r\n\"Retry\" to exit the program normally and \"Ignore\" to try to continue."),
-										  wxS("Unhandled exception"),
+										  L"An unhandled exception occurred. Press \"Abort\" to terminate the program,\r\n\"Retry\" to exit the program normally and \"Ignore\" to try to continue.",
+										  L"Unhandled exception",
 										  MB_ABORTRETRYIGNORE|MB_ICONERROR|MB_TASKMODAL);
 		switch (result)
 		{

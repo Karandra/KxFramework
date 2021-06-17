@@ -11,18 +11,18 @@ namespace kxf
 			m_Items.clear();
 		}
 
-		if (XMLNode rootNode = xml.QueryElement(wxS("root")))
+		if (XMLNode rootNode = xml.QueryElement("root"))
 		{
 			m_Items.reserve(rootNode.GetChildrenCount());
 
 			size_t count = 0;
-			for (XMLNode itemNode: rootNode.EnumChildElements(wxS("data")))
+			for (XMLNode itemNode: rootNode.EnumChildElements("data"))
 			{
 				auto AddItem = [&](ResourceID id, LocalizationItem item)
 				{
 					if (item)
 					{
-						if (auto comment = itemNode.GetFirstChildElement(wxS("comment")).QueryValue())
+						if (auto comment = itemNode.GetFirstChildElement("comment").QueryValue())
 						{
 							item.SetComment(std::move(*comment));
 						}
@@ -44,7 +44,7 @@ namespace kxf
 					return false;
 				};
 
-				AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, itemNode.GetFirstChildElement(wxS("value")).GetValue(), LocalizationItemFlag::Translatable));
+				AddItem(itemNode.GetAttribute("name"), LocalizationItem(*this, itemNode.GetFirstChildElement("value").GetValue(), LocalizationItemFlag::Translatable));
 			}
 			return count != 0;
 		}
@@ -60,12 +60,12 @@ namespace kxf
 				case 0:
 				{
 					count++;
-					return wxS("resx");
+					return "resx";
 				}
 				case 1:
 				{
 					count++;
-					return wxS("resw");
+					return "resw";
 				}
 			};
 			return {};

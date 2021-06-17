@@ -35,15 +35,15 @@ namespace kxf
 		{
 			case Type::GDIPlus:
 			{
-				return wxS("GDI+");
+				return "GDI+";
 			}
 			case Type::Direct2D:
 			{
-				return wxS("Direct2D");
+				return "Direct2D";
 			}
 			case Type::Cairo:
 			{
-				return wxS("Cairo");
+				return "Cairo";
 			}
 		};
 		return m_Renderer.GetName();

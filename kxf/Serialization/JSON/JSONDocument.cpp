@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr kxf::XChar g_Copyright[] = wxS("Copyright© 2013-2021 Niels Lohmann");
+	constexpr char g_Copyright[] = "Copyright© 2013-2021 Niels Lohmann";
 }
 
 namespace kxf
@@ -75,7 +75,7 @@ namespace kxf
 	// ILibraryInfo
 	String JSONDocument::GetName() const
 	{
-		return wxS("JSON for Modern C++");
+		return "JSON for Modern C++";
 	}
 	Version JSONDocument::GetVersion() const
 	{
@@ -83,7 +83,7 @@ namespace kxf
 	}
 	URI JSONDocument::GetHomePage() const
 	{
-		return wxS("https://github.com/nlohmann/json");
+		return "https://github.com/nlohmann/json";
 	}
 	uint32_t JSONDocument::GetAPILevel() const
 	{

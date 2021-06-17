@@ -13,8 +13,8 @@
 
 namespace
 {
-	constexpr kxf::XChar g_DefaultSeparator[] = wxS("-");
-	constexpr kxf::XChar g_RFC_URN[] = wxS("urn:uuid:");
+	constexpr kxf::XChar g_DefaultSeparator[] = kxS("-");
+	constexpr kxf::XChar g_RFC_URN[] = kxS("urn:uuid:");
 
 	template<class T, class TUUID>
 	auto CastAs(TUUID&& uuid)
@@ -69,7 +69,7 @@ namespace
 
 			// Construct a regex that can match a single group and apply it as many times as we need to
 			// find all required groups but no more than the maximum we can have.
-			RegEx regEx(wxS("(?:0?x?)([\\dabcdef]+)"), RegExFlag::IgnoreCase);
+			RegEx regEx("(?:0?x?)([\\dabcdef]+)", RegExFlag::IgnoreCase);
 
 			std::vector<String> items;
 			for (size_t i = 0; i < std::max(shortVariant, longVariant); i++)
@@ -196,7 +196,7 @@ namespace kxf
 	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format, const String& separator) const
 	{
 		// We don't allow characters that can occur in the UUID itself to be used as a separator
-		if (!separator.IsEmptyOrWhitespace() && separator != g_DefaultSeparator && separator.ContainsAnyOfCharacters(wxS("0x123456789abcdef"), StringActionFlag::IgnoreCase))
+		if (!separator.IsEmptyOrWhitespace() && separator != g_DefaultSeparator && separator.ContainsAnyOfCharacters("0x123456789abcdef", StringActionFlag::IgnoreCase))
 		{
 			return {};
 		}
@@ -208,19 +208,19 @@ namespace kxf
 		std::pair<XChar, XChar> braces = {0, 0};
 		if (format & UUIDFormat::CurlyBraces)
 		{
-			braces = {wxS('{'), wxS('}')};
+			braces = {'{', '}'};
 		}
 		else if (format & UUIDFormat::SquareBraces)
 		{
-			braces = {wxS('['), wxS(']')};
+			braces = {'[', ']'};
 		}
 		else if (format & UUIDFormat::AngleBraces)
 		{
-			braces = {wxS('<'), wxS('>')};
+			braces = {'<', '>'};
 		}
 		else if (format & UUIDFormat::Parentheses)
 		{
-			braces = {wxS('('), wxS(')')};
+			braces = {'(', ')'};
 		}
 
 		if (format & UUIDFormat::HexPrefix || format & UUIDFormat::Grouped)
@@ -232,7 +232,7 @@ namespace kxf
 
 				if (format & UUIDFormat::HexPrefix)
 				{
-					uuid += wxS("0x");
+					uuid += "0x";
 				}
 				uuid += std::move(part);
 

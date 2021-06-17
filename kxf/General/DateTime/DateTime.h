@@ -359,7 +359,7 @@ namespace kxf
 			{
 				return m_Value.FormatISOTime();
 			}
-			String FormatISOCombined(const UniChar& sep = wxS('T')) const
+			String FormatISOCombined(const UniChar& sep = 'T') const
 			{
 				return m_Value.FormatISOCombined(sep.ToASCII().value_or('T'));
 			}
@@ -404,7 +404,7 @@ namespace kxf
 			{
 				return m_Value.ParseISOTime(time);
 			}
-			bool ParseISOCombined(const String& dateTime, const UniChar& sep = wxS('T'))
+			bool ParseISOCombined(const String& dateTime, const UniChar& sep = 'T')
 			{
 				return m_Value.ParseISOCombined(dateTime, sep.ToASCII().value_or('T'));
 			}

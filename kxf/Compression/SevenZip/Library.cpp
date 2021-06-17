@@ -6,7 +6,7 @@ namespace
 {
 	using CreateObjectFunc = HRESULT(__stdcall*)(const ::GUID* classID, const ::GUID* interfaceID, void** outObject);
 
-	constexpr wxChar g_DefaultLibraryPath[] = wxS("7z.dll");
+	constexpr auto g_DefaultLibraryPath = "7z.dll";
 }
 
 namespace kxf::SevenZip

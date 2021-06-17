@@ -119,8 +119,8 @@ namespace kxf
 					if (isVersion)
 					{
 						// Normalize the version string
-						result.Replace(wxS(','), wxS("."));
-						result.Replace(wxS(" "), wxS(""));
+						result.Replace(',', ".");
+						result.Replace(" ", "");
 					}
 					return result;
 				}

@@ -57,7 +57,7 @@ namespace kxf
 	{
 		if (auto value = AsPtr<bool>())
 		{
-			return *value ? wxS("true") : wxS("false");
+			return *value ? "true" : "false";
 		}
 		return {};
 	}
@@ -65,11 +65,11 @@ namespace kxf
 	{
 		if (const String* ptr = AsPtr<String>())
 		{
-			if (*ptr == wxS("true") || *ptr == wxS("TRUE"))
+			if (*ptr == "true" || *ptr == "TRUE")
 			{
 				return true;
 			}
-			else if (*ptr == wxS("false") || *ptr == wxS("FALSE"))
+			else if (*ptr == "false" || *ptr == "FALSE")
 			{
 				return false;
 			}

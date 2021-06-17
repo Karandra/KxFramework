@@ -7,20 +7,20 @@
 namespace kxf::ImageOption
 {
 	// Common
-	constexpr auto FileName = wxS("FileName");
-	constexpr auto Quality = wxS("quality");
+	constexpr auto FileName = "FileName";
+	constexpr auto Quality = "quality";
 
-	constexpr auto DPI = wxS("DPI");
-	constexpr auto Resolution = wxS("Resolution");
-	constexpr auto ResolutionX = wxS("ResolutionX");
-	constexpr auto ResolutionY = wxS("ResolutionY");
-	constexpr auto ResolutionUnit = wxS("ResolutionUnit");
+	constexpr auto DPI = "DPI";
+	constexpr auto Resolution = "Resolution";
+	constexpr auto ResolutionX = "ResolutionX";
+	constexpr auto ResolutionY = "ResolutionY";
+	constexpr auto ResolutionUnit = "ResolutionUnit";
 
-	constexpr auto DesiredWidth = wxS("MaxWidth");
-	constexpr auto DesiredHeight = wxS("MaxHeight");
+	constexpr auto DesiredWidth = "MaxWidth";
+	constexpr auto DesiredHeight = "MaxHeight";
 
-	constexpr auto OriginalWidth = wxS("OriginalWidth");
-	constexpr auto OriginalHeight = wxS("OriginalHeight");
+	constexpr auto OriginalWidth = "OriginalWidth";
+	constexpr auto OriginalHeight = "OriginalHeight";
 
 	namespace PNG
 	{
@@ -42,9 +42,9 @@ namespace kxf::ImageOption
 	}
 	namespace SVG
 	{
-		constexpr auto CurrentTime = wxS("CurrentTime");
-		constexpr auto HasAnimation = wxS("HasAnimation");
-		constexpr auto AnimationDuration = wxS("AnimationDuration");
+		constexpr auto CurrentTime = "CurrentTime";
+		constexpr auto HasAnimation = "HasAnimation";
+		constexpr auto AnimationDuration = "AnimationDuration";
 	}
 	namespace TIFF
 	{

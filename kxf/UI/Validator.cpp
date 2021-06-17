@@ -49,7 +49,7 @@ namespace
 
 namespace kxf::UI::Private
 {
-	void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, wxChar& character)
+	void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, XChar& character)
 	{
 		// Look in "common/valnum.cpp" at line 166 (v3.1.3).
 		/*

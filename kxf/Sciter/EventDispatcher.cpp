@@ -787,7 +787,7 @@ namespace kxf::Sciter
 				if (parameters.cmd == DOCUMENT_CLOSE_REQUEST)
 				{
 					ScriptValue value;
-					value.SetString(wxS("cancel"), ScriptValue::StringType::Symbol);
+					value.SetString("cancel", ScriptValue::StringType::Symbol);
 					GetSciterAPI()->ValueCopy(&parameters.data, ToSciterScriptValue(value.GetNativeValue()));
 				}
 			}

@@ -26,7 +26,7 @@ namespace
 		for (const String& stylesheet: items)
 		{
 			fullCSS += stylesheet;
-			fullCSS += wxS('\n');
+			fullCSS += '\n';
 		}
 
 		return fullCSS;

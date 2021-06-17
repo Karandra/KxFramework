@@ -60,7 +60,7 @@ namespace kxf
 	}
 	BinarySize WSPPWebResponse::GetContentLength() const
 	{
-		if (auto value = GetHeader(wxS("Content-Length")).ToInteger<int64_t>())
+		if (auto value = GetHeader("Content-Length").ToInteger<int64_t>())
 		{
 			return BinarySize::FromBytes(*value);
 		}
@@ -68,7 +68,7 @@ namespace kxf
 	}
 	String WSPPWebResponse::GetContentType() const
 	{
-		return GetHeader(wxS("Content-Type"));
+		return GetHeader("Content-Type");
 	}
 
 	String WSPPWebResponse::GetHeader(const String& name) const

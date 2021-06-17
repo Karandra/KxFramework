@@ -60,7 +60,7 @@ namespace kxf
 	{
 		if (IsValid())
 		{
-			XChar disk[] = wxS("\0:\\");
+			XChar disk[] = kxS("\0:\\");
 			disk[0] = UniChar(m_Drive).GetAs<XChar>();
 			return disk;
 		}

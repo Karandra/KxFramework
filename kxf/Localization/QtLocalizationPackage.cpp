@@ -12,24 +12,24 @@ namespace kxf
 			m_Items.clear();
 		}
 
-		if (XMLNode tsNode = xml.QueryElement(wxS("TS")))
+		if (XMLNode tsNode = xml.QueryElement("TS"))
 		{
 			m_Locale = tsNode.GetAttribute("language");
 			m_Version = tsNode.GetAttribute("version");
 
 			size_t count = 0;
-			for (const XMLNode& contextNode: tsNode.EnumChildElements(wxS("context")))
+			for (const XMLNode& contextNode: tsNode.EnumChildElements("context"))
 			{
-				String name = contextNode.GetFirstChildElement(wxS("name")).GetValue();
-				for (const XMLNode& messageNode: contextNode.EnumChildElements(wxS("message")))
+				String name = contextNode.GetFirstChildElement("name").GetValue();
+				for (const XMLNode& messageNode: contextNode.EnumChildElements("message"))
 				{
 					auto AddItem = [&](ResourceID id, LocalizationItem item)
 					{
 						if (item)
 						{
-							if (auto locationNode = messageNode.GetFirstChildElement(wxS("location")))
+							if (auto locationNode = messageNode.GetFirstChildElement("location"))
 							{
-								item.SetComment(Format("[Context={}][FileName={}][Line={}]", name, locationNode.GetAttribute(wxS("filename")), locationNode.GetAttribute(wxS("line"))));
+								item.SetComment(Format("[Context={}][FileName={}][Line={}]", name, locationNode.GetAttribute("filename"), locationNode.GetAttribute("line")));
 							}
 
 							if (loadingScheme.Contains(LoadingScheme::OverwriteExisting))
@@ -46,7 +46,7 @@ namespace kxf
 						return false;
 					};
 
-					AddItem(messageNode.GetFirstChildElement(wxS("source")).GetValue(), LocalizationItem(*this, messageNode.GetFirstChildElement(wxS("translation")).GetValue(), LocalizationItemFlag::Translatable));
+					AddItem(messageNode.GetFirstChildElement("source").GetValue(), LocalizationItem(*this, messageNode.GetFirstChildElement("translation").GetValue(), LocalizationItemFlag::Translatable));
 					return true;
 				}
 				return true;
@@ -63,7 +63,7 @@ namespace kxf
 			if (!done)
 			{
 				done = true;
-				return wxS("ts");
+				return "ts";
 			}
 			return {};
 		};

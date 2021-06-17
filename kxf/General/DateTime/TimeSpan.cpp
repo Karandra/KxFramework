@@ -28,15 +28,15 @@ namespace kxf
 	{
 		if (flags & TimeFormatFlag::NoMinutes)
 		{
-			return Format(wxS("%H"));
+			return Format("%H");
 		}
 		else if (flags & TimeFormatFlag::NoSeconds)
 		{
-			return Format(wxS("%H:%M"));
+			return Format("%H:%M");
 		}
 		else
 		{
-			return Format(wxS("%H:%M:%S"));
+			return Format("%H:%M:%S");
 		}
 	}
 }

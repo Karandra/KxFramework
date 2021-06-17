@@ -48,7 +48,7 @@ namespace kxf::Sciter
 			if (!g_SciterLibrary)
 			{
 				// Try to load using default name to retain original Sciter usage pattern
-				LoadLibrary(wxS("Sciter.dll"));
+				LoadLibrary("Sciter.dll");
 			}
 
 			if (g_SciterLibrary)

@@ -40,7 +40,7 @@ namespace kxf::Sciter
 	{
 		public:
 			NativeTextBoxWidgetFactory()
-				:StdWidgetFactory(wxS("NativeTextBox"))
+				:StdWidgetFactory("NativeTextBox")
 			{
 			}
 

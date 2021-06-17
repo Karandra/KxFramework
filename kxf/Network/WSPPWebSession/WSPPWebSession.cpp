@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr kxf::XChar g_Copyright[] = wxS("Copyright (c) 2014, Peter Thorson. All rights reserved.");
+	constexpr char g_Copyright[] = "Copyright (c) 2014, Peter Thorson. All rights reserved.";
 }
 
 namespace kxf
@@ -53,7 +53,7 @@ namespace kxf
 	// ILibraryInfo
 	String WSPPWebSession::GetName() const
 	{
-		return wxS("WebSocket++");
+		return "WebSocket++";
 	}
 	Version WSPPWebSession::GetVersion() const
 	{
@@ -61,7 +61,7 @@ namespace kxf
 	}
 	URI WSPPWebSession::GetHomePage() const
 	{
-		return wxS("https://www.zaphoyd.com/projects/websocketpp");
+		return "https://www.zaphoyd.com/projects/websocketpp";
 	}
 	uint32_t WSPPWebSession::GetAPILevel() const
 	{

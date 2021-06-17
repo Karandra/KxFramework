@@ -103,11 +103,11 @@ namespace kxf
 	// IGraphicsRenderer
 	String GDIGraphicsRenderer::GetName() const
 	{
-		return wxS("GDI");
+		return "GDI";
 	}
 	Version GDIGraphicsRenderer::GetVersion() const
 	{
-		return wxS("1.0");
+		return "1.0";
 	}
 
 	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)

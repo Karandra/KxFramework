@@ -4,8 +4,8 @@
 
 namespace
 {
-	constexpr wxChar g_SAMSeparator = wxS('\\');
-	constexpr wxChar g_UPNSeparator = wxS('@');
+	constexpr char g_SAMSeparator = '\\';
+	constexpr char g_UPNSeparator = '@';
 }
 
 namespace kxf

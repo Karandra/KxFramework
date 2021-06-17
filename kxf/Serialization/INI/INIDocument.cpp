@@ -21,11 +21,11 @@ namespace kxf
 {
 	String INIDocument::GetLibraryName()
 	{
-		return wxS("SimpleINI");
+		return "SimpleINI";
 	}
 	Version INIDocument::GetLibraryVersion()
 	{
-		return wxS("4.17");
+		return "4.17";
 	}
 
 	void INIDocument::Init()

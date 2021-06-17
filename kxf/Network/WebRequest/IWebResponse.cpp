@@ -17,9 +17,9 @@ namespace kxf
 {
 	FSPath IWebResponse::GetSuggestedFilePath() const
 	{
-		if (String contentDisposition = GetHeader(wxS("Content-Disposition")); !contentDisposition.IsEmpty())
+		if (String contentDisposition = GetHeader("Content-Disposition"); !contentDisposition.IsEmpty())
 		{
-			if (RegEx regEx(wxS("filename=\"(.+)\""), RegExFlag::IgnoreCase); regEx.Matches(contentDisposition))
+			if (RegEx regEx("filename=\"(.+)\"", RegExFlag::IgnoreCase); regEx.Matches(contentDisposition))
 			{
 				return regEx.GetMatch(contentDisposition, 1);
 			}

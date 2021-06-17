@@ -141,8 +141,8 @@ namespace kxf::UI::DataView
 	{
 		for (size_t i = 0; i < string.size(); i++)
 		{
-			const wxChar c = string[i];
-			if (c == wxS('\r') || c == wxS('\n'))
+			const XChar c = string[i];
+			if (c == '\r' || c == '\n')
 			{
 				return i;
 			}

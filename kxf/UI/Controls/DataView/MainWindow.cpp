@@ -2209,7 +2209,7 @@ namespace kxf::UI::DataView
 		{
 			case UniformHeight::Default:
 			{
-				int userHeight = wxSystemOptions::GetOptionInt(wxS("Kx::UI::DataView::DefaultRowHeight"));
+				int userHeight = wxSystemOptions::GetOptionInt("Kx::UI::DataView::DefaultRowHeight");
 				if (userHeight > 0)
 				{
 					return userHeight;

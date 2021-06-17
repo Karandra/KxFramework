@@ -205,7 +205,7 @@ namespace kxf
 			static TEnum FromOrExpression(const TString& string, TEnum initialValue = GetNullValue())
 			{
 				TInt intValue = static_cast<TInt>(initialValue);
-				String::SplitBySeparator(string, wxS('|'), [&intValue](StringView value)
+				String::SplitBySeparator(string, '|', [&intValue](StringView value)
 				{
 					if (const TItem* item = FindByName(TString(value.data(), value.size())))
 					{
@@ -224,7 +224,7 @@ namespace kxf
 					{
 						if (!stringExpr.empty())
 						{
-							stringExpr += wxS('|');
+							stringExpr += '|';
 						}
 						stringExpr += item.GetName();
 					}

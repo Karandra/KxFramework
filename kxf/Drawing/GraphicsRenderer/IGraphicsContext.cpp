@@ -6,7 +6,7 @@
 
 namespace
 {
-	constexpr auto g_EllipseReplacement = wxS("...");
+	constexpr auto g_EllipseReplacement = "...";
 }
 
 namespace
@@ -61,7 +61,7 @@ namespace
 					bool lastWasMnemonic = false;
 					for (auto it = text.begin(); it != text.end(); ++it, ++n)
 					{
-						if (*it == wxS('&') && !lastWasMnemonic)
+						if (*it == '&' && !lastWasMnemonic)
 						{
 							if (it + 1 != text.end())
 							{
@@ -400,7 +400,7 @@ namespace kxf
 			String currentLine;
 			for (auto it = text.begin(); ; ++it)
 			{
-				if (it == text.end() || *it == wxS('\n'))
+				if (it == text.end() || *it == '\n')
 				{
 					currentLine.Trim();
 					currentLine = DoEllipsizeSingleLine(currentLine, *this, maxWidth, mode, flags, font, replacementWidth);
@@ -415,11 +415,11 @@ namespace kxf
 					result += *it;
 					currentLine.clear();
 				}
-				else if (flags.Contains(EllipsizeFlag::ExpandTabs) && *it == wxS('\t'))
+				else if (flags.Contains(EllipsizeFlag::ExpandTabs) && *it == '\t')
 				{
 					// We need also to expand tabs to properly calc their size.
 					// Windows natively expands the TABs to 6 spaces. Do the same
-					currentLine += wxS("      ");
+					currentLine += "      ";
 				}
 				else
 				{

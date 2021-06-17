@@ -14,6 +14,8 @@ namespace kxf
 	using StringView = std::basic_string_view<XChar>;
 	KX_API extern const String NullString;
 
+	#define kxS(x)	L ## x
+
 	enum class StringActionFlag: uint32_t
 	{
 		None = 0,
@@ -736,6 +738,16 @@ namespace kxf
 
 		private:
 			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
+			size_t DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {})
+			{
+				auto patternConverted = FromUTF8(pattern);
+				return DoReplace(patternConverted.wc_view(), replacement, offset, flags);
+			}
+			size_t DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {})
+			{
+				auto replacementConverted = FromUTF8(replacement);
+				return DoReplace(pattern, replacementConverted.wc_view(), offset, flags);
+			}
 			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
 			size_t DoReplace(UniChar c, UniChar replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept;
 			size_t DoReplace(UniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
@@ -1161,17 +1173,30 @@ namespace kxf
 	}
 
 	// String literal operators
-	String operator "" _s(const char* ptr, size_t length)
+	inline String operator"" _s(const char* ptr, size_t length)
 	{
 		return String::FromUTF8(ptr, length);
 	}
-	String operator "" _s(const char8_t* ptr, size_t length)
+	inline String operator"" _s(const char8_t* ptr, size_t length)
 	{
 		return String::FromUTF8(ptr, length);
 	}
-	String operator "" _s(const wchar_t* ptr, size_t length)
+	inline String operator"" _s(const wchar_t* ptr, size_t length)
 	{
 		return String(ptr, length);
+	}
+
+	inline std::basic_string_view<char> operator"" _sv(const char* ptr, size_t length)
+	{
+		return {ptr, length};
+	}
+	inline std::basic_string_view<char8_t> operator"" _sv(const char8_t* ptr, size_t length)
+	{
+		return {ptr, length};
+	}
+	inline std::basic_string_view<wchar_t> operator"" _sv(const wchar_t* ptr, size_t length)
+	{
+		return {ptr, length};
 	}
 
 	namespace Private

@@ -315,7 +315,7 @@ namespace kxf
 		return {string.xc_str(), string.length()};
 	}
 
-	std::basic_string_view<wxChar> StringViewOf(const wxString& string) noexcept
+	std::basic_string_view<XChar> StringViewOf(const wxString& string) noexcept
 	{
 		return {string.wx_str(), string.length()};
 	}

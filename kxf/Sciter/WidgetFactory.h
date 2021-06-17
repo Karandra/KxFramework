@@ -51,7 +51,7 @@ namespace kxf::Sciter
 					fullyQualifiedName.reserve(m_Namespace.length() + m_ClassName.length() + 1);
 
 					fullyQualifiedName += m_Namespace;
-					fullyQualifiedName += wxS('.');
+					fullyQualifiedName += '.';
 					fullyQualifiedName += m_ClassName;
 					return fullyQualifiedName;
 				}
@@ -60,7 +60,7 @@ namespace kxf::Sciter
 
 			bool IsStandardClass() const
 			{
-				return m_Namespace == wxS("kxf");
+				return m_Namespace == "kxf";
 			}
 
 		public:
@@ -72,7 +72,7 @@ namespace kxf::Sciter
 	{
 		public:
 			StdWidgetFactory(String className)
-				:WidgetFactory(std::move(className), wxS("kxf"))
+				:WidgetFactory(std::move(className), "kxf")
 			{
 			}
 	};

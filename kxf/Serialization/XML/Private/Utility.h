@@ -4,7 +4,7 @@
 
 namespace kxf::XML::Private
 {
-	constexpr wxChar DefaultDeclaredEncoding[] = wxS("utf-8");
+	constexpr char DefaultDeclaredEncoding[] = "utf-8";
 
 	class DefaultXMLPrinter: public tinyxml2::XMLPrinter
 	{

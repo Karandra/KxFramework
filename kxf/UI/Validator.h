@@ -4,7 +4,7 @@
 
 namespace kxf::UI::Private
 {
-	KX_API void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, wxChar& character);
+	KX_API void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, XChar& character);
 }
 
 namespace kxf::UI
@@ -16,7 +16,7 @@ namespace kxf::UI
 			using Base = wxIntegerValidator<T>;
 
 		protected:
-			bool IsCharOk(const wxString& value, int position, wxChar character) const override
+			bool IsCharOk(const wxString& value, int position, XChar character) const override
 			{
 				UI::Private::GetValidatorControlValue(*this, const_cast<wxString&>(value), position, character);
 				return Base::IsCharOk(value, position, character);
@@ -42,7 +42,7 @@ namespace kxf::UI
 			using Base = wxFloatingPointValidator<T>;
 
 		protected:
-			bool IsCharOk(const wxString& value, int position, wxChar character) const override
+			bool IsCharOk(const wxString& value, int position, XChar character) const override
 			{
 				UI::Private::GetValidatorControlValue(*this, const_cast<wxString&>(value), position, character);
 				return Base::IsCharOk(value, position, character);

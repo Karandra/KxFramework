@@ -72,7 +72,7 @@ namespace kxf::Sciter
 	{
 		public:
 			TextBoxWidgetFactory()
-				:StdWidgetFactory(wxS("TextBox"))
+				:StdWidgetFactory("TextBox")
 			{
 			}
 

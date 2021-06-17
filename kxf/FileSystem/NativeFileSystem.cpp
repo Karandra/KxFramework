@@ -130,7 +130,7 @@ namespace
 				}
 				else
 				{
-					return (directory / wxS("*")).GetFullPathWithNS(FSPathNamespace::Win32File);
+					return (directory / "*").GetFullPathWithNS(FSPathNamespace::Win32File);
 				}
 			}
 			std::optional<FileItem> DoItem(IEnumerator& enumerator, WIN32_FIND_DATAW& findInfo, const FSPath& directory, std::vector<FSPath>& childDirectories)

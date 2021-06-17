@@ -13,16 +13,16 @@ namespace kxf::UI
 
 	String HTMLWindow::ProcessPlainText(const String& text)
 	{
-		if (text.StartsWith(wxS("<html>")) && text.EndsWith(wxS("</html>")))
+		if (text.StartsWith("<html>") && text.EndsWith("</html>"))
 		{
 			return text;
 		}
 		else
 		{
 			String temp = text;
-			temp.Replace(wxS("\r\n"), wxS("<br/>"));
-			temp.Replace(wxS("\r"), wxS("<br/>"));
-			temp.Replace(wxS("\n"), wxS("<br/>"));
+			temp.Replace("\r\n", "<br/>");
+			temp.Replace("\r", "<br/>");
+			temp.Replace("\n", "<br/>");
 			return temp;
 		}
 	}
@@ -38,7 +38,7 @@ namespace kxf::UI
 				fixedFace = fixedFont.GetFaceName();
 			};
 
-			if (fixedFont.SetFaceName(wxS("Consolas")) || fixedFont.SetFaceName(wxS("Courier New")))
+			if (fixedFont.SetFaceName("Consolas") || fixedFont.SetFaceName("Courier New"))
 			{
 				UsingFixedFont();
 			}
@@ -281,7 +281,7 @@ namespace kxf::UI
 							FlagSet<HTMLWindowStyle> style
 	)
 	{
-		if (wxHtmlWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), wxS("HTMLWindow")))
+		if (wxHtmlWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), "HTMLWindow"))
 		{
 			m_BackgroundColor = wxHtmlWindow::GetBackgroundColour();
 			SetBorders(2);

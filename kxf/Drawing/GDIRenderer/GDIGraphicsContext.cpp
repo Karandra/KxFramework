@@ -396,7 +396,7 @@ namespace kxf
 		{
 			auto GetExtent = [&](const GDIFont& font)
 			{
-				if (text.ContainsAnyOfCharacters(wxS("\r\n")))
+				if (text.ContainsAnyOfCharacters("\r\n"))
 				{
 					return m_DC.GetMultiLineTextExtent(text, font);
 				}

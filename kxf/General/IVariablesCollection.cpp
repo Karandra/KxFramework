@@ -13,18 +13,18 @@ namespace
 
 		return ExpandVariables(source, [&](const String& ns, const String& id) -> String
 		{
-			if (ns == wxS("LCIT"))
+			if (ns == "LCIT")
 			{
 				if (auto app = ICoreApplication::GetInstance())
 				{
 					return app->GetLocalizationPackage().GetItem(id).GetString();
 				}
 			}
-			else if (ns == wxS("ENV"))
+			else if (ns == "ENV")
 			{
 				return System::GetEnvironmentVariable(id);
 			}
-			else if (ns == wxS("SHDir"))
+			else if (ns == "SHDir")
 			{
 				KnownDirectoryID desiredDirectoryID = KnownDirectoryID::None;
 				Shell::EnumKnownDirectories([&](KnownDirectoryID directoryID, String directoryName)
@@ -61,19 +61,19 @@ namespace kxf
 			for (size_t i = 0; i < result.length(); i++)
 			{
 				// Find the variable anchor
-				if (result[i] == wxS('$'))
+				if (result[i] == '$')
 				{
 					entryStartPos = i;
 				}
 
 				// We're at the beginning of the variable name
-				if (entryStartPos != String::npos && result[i] == wxS('('))
+				if (entryStartPos != String::npos && result[i] == '(')
 				{
 					varNameStartPos = i + 1;
 				}
 
 				// We've found the end of the variable, extract namespace and call the provided callback
-				if (entryStartPos != String::npos && varNameStartPos != String::npos && result[i] == wxS(')'))
+				if (entryStartPos != String::npos && varNameStartPos != String::npos && result[i] == ')')
 				{
 					Utility::ScopeGuard atExit = [&]()
 					{

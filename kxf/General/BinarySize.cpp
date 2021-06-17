@@ -17,23 +17,23 @@ namespace
 			{
 				case BinarySizeUnit::Bytes:
 				{
-					return localizationPackage.GetItem(wxS("BinarySizeUnit.Bytes"));
+					return localizationPackage.GetItem("BinarySizeUnit.Bytes");
 				}
 				case BinarySizeUnit::KiloBytes:
 				{
-					return localizationPackage.GetItem(wxS("BinarySizeUnit.KB"));
+					return localizationPackage.GetItem("BinarySizeUnit.KB");
 				}
 				case BinarySizeUnit::MegaBytes:
 				{
-					return localizationPackage.GetItem(wxS("BinarySizeUnit.MB"));
+					return localizationPackage.GetItem("BinarySizeUnit.MB");
 				}
 				case BinarySizeUnit::GigaBytes:
 				{
-					return localizationPackage.GetItem(wxS("BinarySizeUnit.GB"));
+					return localizationPackage.GetItem("BinarySizeUnit.GB");
 				}
 				case BinarySizeUnit::TeraBytes:
 				{
-					return localizationPackage.GetItem(wxS("BinarySizeUnit.TB"));
+					return localizationPackage.GetItem("BinarySizeUnit.TB");
 				}
 			};
 		}
@@ -45,7 +45,7 @@ namespace
 		{
 			if (auto label = GetSizeUnitString(unit))
 			{
-				result += wxS(' ');
+				result += ' ';
 				result += *label;
 
 				return true;
