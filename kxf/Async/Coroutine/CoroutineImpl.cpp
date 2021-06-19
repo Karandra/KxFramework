@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "CoroutineImpl.h"
+#include "kxf/Application/ICoreApplication.h"
 #include <chrono>
 
 namespace kxf::Async
@@ -23,7 +24,7 @@ namespace kxf::Async
 namespace kxf::Async
 {
 	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<CoroutineBase> coroutine)
-		:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(std::move(coroutine))
+		:m_Coroutine(std::move(coroutine))
 	{
 	}
 
@@ -48,7 +49,7 @@ namespace kxf::Async
 
 	void CoroutineBase::QueueExecution(std::unique_ptr<CoroutineBase> coroutine)
 	{
-		wxApp::GetInstance()->QueueEvent(new CoroutineExecutor(std::move(coroutine)));
+		ICoreApplication::GetInstance()->QueueEvent(std::make_unique<CoroutineExecutor>(std::move(coroutine)));
 	}
 	void CoroutineBase::DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time)
 	{

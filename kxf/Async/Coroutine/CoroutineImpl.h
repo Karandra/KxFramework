@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/Async/Common.h"
+#include "kxf/EventSystem/IndirectInvocationEvent.h"
 #include "YieldInstruction.h"
 #include <wx/timer.h>
 #include <utility>
@@ -17,7 +18,7 @@ namespace kxf::Async
 
 namespace kxf::Async
 {
-	class CoroutineTimer final: public wxTimer
+	class KX_API CoroutineTimer final: public wxTimer
 	{
 		private:
 			std::unique_ptr<CoroutineBase> m_Coroutine;
@@ -27,7 +28,7 @@ namespace kxf::Async
 			void Wait(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time);
 			std::unique_ptr<CoroutineBase> Relinquish();
 	};
-	class CoroutineExecutor final: public wxAsyncMethodCallEvent
+	class KX_API CoroutineExecutor final: public EventSystem::IndirectInvocationEvent
 	{
 		private:
 			std::unique_ptr<CoroutineBase> m_Coroutine;
@@ -36,10 +37,13 @@ namespace kxf::Async
 			CoroutineExecutor(std::unique_ptr<CoroutineBase> coroutine);
 
 		public:
-			CoroutineExecutor* Clone() const override
+			// IEvent
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return nullptr;
+				return std::make_unique<CoroutineExecutor>(std::move(*this));
 			}
+
+			// IIndirectInvocationEvent
 			void Execute() override;
 	};
 }
