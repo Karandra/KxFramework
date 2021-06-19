@@ -16,11 +16,7 @@ namespace kxf
 											   nullptr,
 											   nullptr);
 
-			// Resulting length includes null terminator
-			if (length > 1)
-			{
-				return length - 1;
-			}
+			return length;
 		}
 		return 0;
 	}
@@ -33,11 +29,7 @@ namespace kxf
 											   reinterpret_cast<const char*>(source.data()), source.size(),
 											   destination.data(), destination.size());
 
-			// Resulting length includes null terminator
-			if (length > 1)
-			{
-				return length - 1;
-			}
+			return length;
 		}
 		return 0;
 	}
