@@ -177,7 +177,6 @@ namespace kxf
 			}
 			static std::string ToUTF8(std::wstring_view utf16);
 
-			static String FromACP(const char* acp, size_t length = npos);
 			static String FromASCII(const char* ascii, size_t length = npos);
 			static String FromASCII(std::string_view ascii);
 

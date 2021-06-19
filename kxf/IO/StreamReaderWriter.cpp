@@ -5,21 +5,6 @@
 
 namespace kxf
 {
-	bool IO::InputStreamReader::ReadStringACP(String& value, size_t size)
-	{
-		std::vector<char> buffer;
-		if (ReadVector(buffer, size))
-		{
-			DoRemoveTrailingNulls(buffer);
-			value = String::FromACP(buffer.data(), buffer.size());
-			return true;
-		}
-		else
-		{
-			value.clear();
-			return false;
-		}
-	}
 	bool IO::InputStreamReader::ReadStringASCII(String& value, size_t size)
 	{
 		std::vector<char> buffer;
@@ -84,11 +69,6 @@ namespace kxf
 
 namespace kxf
 {
-	bool IO::OutputStreamWriter::WriteStringACP(const String& value)
-	{
-		const auto buffer = value.nc_view();
-		return WriteBuffer(buffer.data(), buffer.length());
-	}
 	bool IO::OutputStreamWriter::WriteStringASCII(const String& value, char replaceWith)
 	{
 		const auto buffer = value.ToASCII(replaceWith);

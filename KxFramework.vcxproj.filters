@@ -1933,6 +1933,15 @@
     <ClInclude Include="kxf\General\UniChar.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IEncodingConverter.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Private\NativeEncodingConverter.h">
+      <Filter>kxf\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Private\WhateverWorksEncodingConverter.h">
+      <Filter>kxf\General\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2889,6 +2898,15 @@
     </ClCompile>
     <ClCompile Include="kxf\IO\StreamReaderWriter.cpp">
       <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\IEncodingConverter.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Private\NativeEncodingConverter.cpp">
+      <Filter>kxf\General\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Private\WhateverWorksEncodingConverter.cpp">
+      <Filter>kxf\General\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

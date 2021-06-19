@@ -258,6 +258,7 @@
     <ClInclude Include="kxf\General\ErrorCode.h" />
     <ClInclude Include="kxf\General\Enumerator.h" />
     <ClInclude Include="kxf\General\Format.h" />
+    <ClInclude Include="kxf\General\IEncodingConverter.h" />
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\ILibraryInfo.h" />
@@ -266,6 +267,8 @@
     <ClInclude Include="kxf\General\NullVariablesCollection.h" />
     <ClInclude Include="kxf\General\OptionalPtr.h" />
     <ClInclude Include="kxf\General\OptionalRef.h" />
+    <ClInclude Include="kxf\General\Private\NativeEncodingConverter.h" />
+    <ClInclude Include="kxf\General\Private\WhateverWorksEncodingConverter.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
@@ -746,9 +749,12 @@
     <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\ErrorCode.cpp" />
     <ClCompile Include="kxf\General\Format.cpp" />
+    <ClCompile Include="kxf\General\IEncodingConverter.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\NativeUUID.cpp" />
+    <ClCompile Include="kxf\General\Private\NativeEncodingConverter.cpp" />
+    <ClCompile Include="kxf\General\Private\WhateverWorksEncodingConverter.cpp" />
     <ClCompile Include="kxf\General\RegEx.cpp" />
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
