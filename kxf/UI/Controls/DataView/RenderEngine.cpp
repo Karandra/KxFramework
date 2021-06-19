@@ -234,7 +234,7 @@ namespace kxf::UI::DataView
 			const size_t lineBreakPos = FindFirstLineBreak(string);
 			if (lineBreakPos != String::npos)
 			{
-				return MeasureString(string.Left(lineBreakPos), GetEffectiveFontIfNeeded());
+				return MeasureString(string.SubLeft(lineBreakPos), GetEffectiveFontIfNeeded());
 			}
 			else
 			{
@@ -285,7 +285,7 @@ namespace kxf::UI::DataView
 				const size_t lineBreakPos = FindFirstLineBreak(string);
 				if (lineBreakPos != String::npos)
 				{
-					gc.DrawText(Ellipsize().Left(lineBreakPos), textRect.GetPosition());
+					gc.DrawText(Ellipsize().SubLeft(lineBreakPos), textRect.GetPosition());
 				}
 				else
 				{

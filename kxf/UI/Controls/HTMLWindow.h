@@ -218,7 +218,7 @@ namespace kxf::UI
 			wxString GetRange(long from, long to) const override
 			{
 				const String text = const_cast<HTMLWindow*>(this)->ToText();
-				return text.SubString(from, to);
+				return text.SubRange(from, to);
 			}
 			void SetInsertionPoint(long pos) override
 			{

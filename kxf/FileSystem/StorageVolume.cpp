@@ -185,7 +185,7 @@ namespace kxf
 		if (path.HasVolume())
 		{
 			// Volume paths should be in following format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\'.
-			AssignPath(path.GetFullPathWithNS(FSPathNamespace::Win32File, FSPathFormat::TrailingSeparator).Left(g_VolumePathTotalLength));
+			AssignPath(path.GetFullPathWithNS(FSPathNamespace::Win32File, FSPathFormat::TrailingSeparator).SubLeft(g_VolumePathTotalLength));
 		}
 	}
 

@@ -641,7 +641,7 @@ namespace kxf
 			}
 
 			// Substring extraction
-			String Mid(size_t offset, size_t count = String::npos) const
+			String SubMid(size_t offset, size_t count = String::npos) const
 			{
 				if (offset < m_String.length())
 				{
@@ -649,11 +649,11 @@ namespace kxf
 				}
 				return {};
 			}
-			String Left(size_t count) const
+			String SubLeft(size_t count) const
 			{
 				return m_String.substr(0, count);
 			}
-			String Right(size_t count) const
+			String SubRight(size_t count) const
 			{
 				size_t offset = m_String.length() - count;
 				if (offset < m_String.length())
@@ -662,12 +662,12 @@ namespace kxf
 				}
 				return {};
 			}
-			String SubString(size_t from, size_t to) const
+			String SubRange(size_t from, size_t to) const
 			{
 				size_t length = m_String.length();
 				if (from < to && from < length && to < length)
 				{
-					return m_String.substr(from, to - from);
+					return m_String.substr(from, to - from + 1);
 				}
 				return {};
 			}

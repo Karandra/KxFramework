@@ -254,7 +254,7 @@ namespace kxf::UI
 		{
 			if (extension.length() > 0 && extension[0] == '.')
 			{
-				m_Instance->SetDefaultExtension(extension.Mid(1).wc_str());
+				m_Instance->SetDefaultExtension(extension.SubMid(1).wc_str());
 			}
 			else
 			{

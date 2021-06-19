@@ -86,8 +86,8 @@ namespace kxf
 					const size_t varNameLength = i - varNameStartPos;
 					if (varNameLength != 0 && varNameStartPos >= 2)
 					{
-						const String varNamespace = result.SubString(entryStartPos + 1, varNameStartPos - 2);
-						const String varName = result.Mid(varNameStartPos, varNameLength);
+						const String varNamespace = result.SubRange(entryStartPos + 1, varNameStartPos - 2);
+						const String varName = result.SubMid(varNameStartPos, varNameLength);
 
 						String value = std::invoke(onVariable, varNamespace, varName);
 						if (!value.IsEmpty())

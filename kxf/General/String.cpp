@@ -515,14 +515,14 @@ namespace kxf
 			{
 				if (pos != 0)
 				{
-					*rest = SubString(0, pos - 1);
+					*rest = SubRange(0, pos - 1);
 				}
 				else
 				{
 					rest->clear();
 				}
 			}
-			return Mid(pos + 1);
+			return SubMid(pos + 1);
 		}
 		return {};
 	}
@@ -535,14 +535,14 @@ namespace kxf
 			{
 				if (pos != 0)
 				{
-					*rest = SubString(0, pos - 1);
+					*rest = SubRange(0, pos - 1);
 				}
 				else
 				{
 					rest->clear();
 				}
 			}
-			return Mid(pos + 1);
+			return SubMid(pos + 1);
 		}
 		return {};
 	}
@@ -554,11 +554,11 @@ namespace kxf
 		{
 			if (rest)
 			{
-				*rest = Mid(pos + 1);
+				*rest = SubMid(pos + 1);
 			}
 			if (pos != 0)
 			{
-				return SubString(0, pos - 1);
+				return SubRange(0, pos - 1);
 			}
 		}
 		return {};
@@ -570,11 +570,11 @@ namespace kxf
 		{
 			if (rest)
 			{
-				*rest = Mid(pos + 1);
+				*rest = SubMid(pos + 1);
 			}
 			if (pos != 0)
 			{
-				return SubString(0, pos - 1);
+				return SubRange(0, pos - 1);
 			}
 		}
 		return {};

@@ -72,7 +72,7 @@ namespace
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != String::npos)
 		{
-			String result = path.Left(pos);
+			String result = path.SubLeft(pos);
 			if (!result.IsEmpty() && result.back() == g_PathSeparator)
 			{
 				result.RemoveFromEnd(1);
@@ -88,7 +88,7 @@ namespace
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != String::npos && pos + 1 < path.length())
 		{
-			String result = path.Mid(pos + 1, count);
+			String result = path.SubMid(pos + 1, count);
 			if (!result.IsEmpty() && result[0] == g_PathSeparator)
 			{
 				result.Remove(0, 1);
@@ -462,12 +462,12 @@ namespace kxf
 		if (HasLegacyVolume())
 		{
 			// Return after the disk designator
-			return m_Path.Mid(2);
+			return m_Path.SubMid(2);
 		}
 		else if (HasVolume())
 		{
 			// Return after GUID path
-			return m_Path.Mid(g_VolumePathTotalLength);
+			return m_Path.SubMid(g_VolumePathTotalLength);
 		}
 		else
 		{
@@ -606,7 +606,7 @@ namespace kxf
 		// return: Common Files\Microsoft
 
 		String fullPath = GetFullPath();
-		if (fullPath.Left(start.GetLength()).IsSameAs(start.m_Path, StringActionFlag::IgnoreCase))
+		if (fullPath.SubLeft(start.GetLength()).IsSameAs(start.m_Path, StringActionFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(0, start.GetLength());
 		}
@@ -619,7 +619,7 @@ namespace kxf
 		// return: C:\Program Files (x86)
 
 		String fullPath = GetFullPath();
-		if (fullPath.Right(end.GetLength()).IsSameAs(end.m_Path, StringActionFlag::IgnoreCase))
+		if (fullPath.SubRight(end.GetLength()).IsSameAs(end.m_Path, StringActionFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(fullPath.length() - end.GetLength(), end.GetLength());
 		}

@@ -102,13 +102,13 @@ namespace
 				if (items.size() == shortVariant)
 				{
 					const String& data4_01 = items[3];
-					uuid.Data4[0] = data4_01.Left(2).ToInteger<uint8_t>(16).value_or(0);
-					uuid.Data4[1] = data4_01.Right(2).ToInteger<uint8_t>(16).value_or(0);
+					uuid.Data4[0] = data4_01.SubLeft(2).ToInteger<uint8_t>(16).value_or(0);
+					uuid.Data4[1] = data4_01.SubRight(2).ToInteger<uint8_t>(16).value_or(0);
 
 					const String& data4_27 = items[4];
 					for (size_t i = 2; i < std::size(uuid.Data4); i++)
 					{
-						uuid.Data4[i] = data4_27.Mid((i - 2) * 2, 2).ToInteger<uint8_t>(16).value_or(0);
+						uuid.Data4[i] = data4_27.SubMid((i - 2) * 2, 2).ToInteger<uint8_t>(16).value_or(0);
 					}
 				}
 				else if (items.size() == longVariant)

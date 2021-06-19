@@ -112,14 +112,14 @@ namespace kxf
 		{
 			if (value.front() == '#')
 			{
-				auto r = value.Mid(1, 2).ToInteger<uint8_t>(16);
-				auto g = value.Mid(3, 2).ToInteger<uint8_t>(16);
-				auto b = value.Mid(5, 2).ToInteger<uint8_t>(16);
+				auto r = value.SubMid(1, 2).ToInteger<uint8_t>(16);
+				auto g = value.SubMid(3, 2).ToInteger<uint8_t>(16);
+				auto b = value.SubMid(5, 2).ToInteger<uint8_t>(16);
 				if (r && g && b)
 				{
 					Utility::SetIfNotNull(colorSpace, ColorSpace::RGB);
 
-					auto a = value.Mid(7, 2).ToInteger<uint8_t>(16);
+					auto a = value.SubMid(7, 2).ToInteger<uint8_t>(16);
 					return FromFixed8(*r, *g, *b, a.value_or(255));
 				}
 			}

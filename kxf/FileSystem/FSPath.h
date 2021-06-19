@@ -273,7 +273,7 @@ namespace kxf
 namespace kxf
 {
 	template<>
-	struct BinarySerializer<FSPath> final
+	struct KX_API BinarySerializer<FSPath> final
 	{
 		uint64_t Serialize(IOutputStream& stream, const FSPath& value) const;
 		uint64_t Deserialize(IInputStream& stream, FSPath& value) const;
