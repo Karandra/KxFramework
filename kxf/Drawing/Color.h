@@ -10,8 +10,6 @@ class wxWindow;
 
 namespace kxf
 {
-	class String;
-
 	enum class C2SFormat
 	{
 		CSS,

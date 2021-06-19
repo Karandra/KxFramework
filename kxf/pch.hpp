@@ -4,14 +4,16 @@
 #include <SDKDDKVer.h>
 
 // Standard library
+#include <string>
+#include <string_view>
 #include <array>
 #include <vector>
 #include <map>
 #include <set>
+#include <variant>
 #include <unordered_map>
 #include <unordered_set>
 #include <functional>
-#include <variant>
 #include <atomic>
 #include <locale>
 #include <exception>
@@ -52,7 +54,7 @@
 #include <wx/mstream.h>
 #include <wx/datetime.h>
 
-// Main KxFramework header
+// Main kxf header
 #include "kxf/Common.hpp"
 
 // Undef any remaining Windows headers stuff

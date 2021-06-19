@@ -4,11 +4,6 @@
 
 namespace kxf
 {
-	class String;
-}
-
-namespace kxf
-{
 	class KX_API IEncodingConverter: public RTTI::Interface<IEncodingConverter>
 	{
 		KxRTTI_DeclareIID(IEncodingConverter, {0x31d9a1b0, 0x446e, 0x4569, {0x9f, 0x90, 0x79, 0xe1, 0xef, 0x23, 0xc3, 0x25}});

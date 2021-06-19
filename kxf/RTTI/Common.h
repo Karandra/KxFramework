@@ -2,14 +2,13 @@
 #include "kxf/Common.hpp"
 #include <typeinfo>
 #include <type_traits>
+#include <string_view>
 #include <functional>
 
 namespace kxf
 {
 	class IID;
 	class IObject;
-
-	class String;
 }
 namespace kxf::RTTI
 {

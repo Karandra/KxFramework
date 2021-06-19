@@ -2,10 +2,6 @@
 #include "Common.h"
 #include <array>
 
-namespace kxf
-{
-	class String;
-}
 namespace kxf::Crypto::Private
 {
 	template<size_t bitLength, class T>

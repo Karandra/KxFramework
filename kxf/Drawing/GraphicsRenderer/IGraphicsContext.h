@@ -14,7 +14,6 @@ class wxScrollHelper;
 namespace kxf
 {
 	class Font;
-	class String;
 	class SVGImage;
 	class BitmapImage;
 
