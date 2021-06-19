@@ -146,7 +146,7 @@ namespace kxf
 			}
 			unique_function(const unique_function&) = delete;
 
-			template<class TFunc, std::enable_if_t<CheckTargetType<TFunc>(), int> = 0>
+			template<class TFunc> requires(CheckTargetType<TFunc>())
 			unique_function(TFunc&& func)
 			{
 				CreateTarget(std::forward<TFunc>(func));
@@ -165,7 +165,7 @@ namespace kxf
 
 			void swap(unique_function& other) noexcept
 			{
-				std::swap(m_Target, other.m_Target);
+				std::swap(*this, other);
 			}
 
 			R invoke(Args&&... arg) const
@@ -195,7 +195,7 @@ namespace kxf
 				}
 			}
 
-			template<class TFunc, std::enable_if_t<CheckTargetType<TFunc>(), int> = 0>
+			template<class TFunc> requires(CheckTargetType<TFunc>())
 			void assign(TFunc&& func)
 			{
 				DestroyTarget();
@@ -245,7 +245,7 @@ namespace kxf
 			}
 			unique_function& operator=(const unique_function&) = delete;
 
-			template<class TFunc, std::enable_if_t<CheckTargetType<TFunc>(), int> = 0>
+			template<class TFunc> requires(CheckTargetType<TFunc>())
 			unique_function& operator=(TFunc&& func)
 			{
 				assign(std::forward<TFunc>(func));
