@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/RTTI/RTTI.h"
+#include "kxf/General/UniqueFunction.h"
 
 namespace kxf
 {
@@ -35,9 +36,9 @@ namespace kxf::Compression
 		private:
 			const IArchiveExtract& m_Archive;
 
-			std::function<bool()> m_ShouldCancel;
-			std::function<OutputStreamDelegate(const FileItem&)> m_OnGetStream;
-			std::function<bool(const FileItem&, IOutputStream&)> m_OnOperationCompleted;
+			unique_function<bool()> m_ShouldCancel;
+			unique_function<OutputStreamDelegate(const FileItem&)> m_OnGetStream;
+			unique_function<bool(const FileItem&, IOutputStream&)> m_OnOperationCompleted;
 
 		private:
 			bool ShouldCancel() const override
