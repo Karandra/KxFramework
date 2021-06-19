@@ -103,7 +103,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>/WHOLEARCHIVE:wxbase31u.lib /WHOLEARCHIVE:wxbase31u_net.lib /WHOLEARCHIVE:wxmsw31u_adv.lib /WHOLEARCHIVE:wxmsw31u_aui.lib /WHOLEARCHIVE:wxmsw31u_core.lib /WHOLEARCHIVE:wxmsw31u_gl.lib /WHOLEARCHIVE:wxmsw31u_html.lib /WHOLEARCHIVE:wxmsw31u_media.lib /WHOLEARCHIVE:wxmsw31u_propgrid.lib /WHOLEARCHIVE:wxmsw31u_qa.lib /WHOLEARCHIVE:wxmsw31u_ribbon.lib /WHOLEARCHIVE:wxmsw31u_richtext.lib /WHOLEARCHIVE:wxmsw31u_stc.lib /WHOLEARCHIVE:wxmsw31u_webview.lib /WHOLEARCHIVE:wxmsw31u_xrc.lib /WHOLEARCHIVE:wxregexu.lib /WHOLEARCHIVE:wxscintilla.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>/WHOLEARCHIVE:wxbase31ud.lib /WHOLEARCHIVE:wxbase31ud_net.lib /WHOLEARCHIVE:wxmsw31ud_adv.lib /WHOLEARCHIVE:wxmsw31ud_aui.lib /WHOLEARCHIVE:wxmsw31ud_core.lib /WHOLEARCHIVE:wxmsw31ud_gl.lib /WHOLEARCHIVE:wxmsw31ud_html.lib /WHOLEARCHIVE:wxmsw31ud_media.lib /WHOLEARCHIVE:wxmsw31ud_propgrid.lib /WHOLEARCHIVE:wxmsw31ud_qa.lib /WHOLEARCHIVE:wxmsw31ud_ribbon.lib /WHOLEARCHIVE:wxmsw31ud_richtext.lib /WHOLEARCHIVE:wxmsw31ud_stc.lib /WHOLEARCHIVE:wxmsw31ud_webview.lib /WHOLEARCHIVE:wxmsw31ud_xrc.lib /WHOLEARCHIVE:wxregexud.lib /WHOLEARCHIVE:wxscintillad.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

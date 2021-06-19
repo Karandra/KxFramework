@@ -14,7 +14,7 @@
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/wxWidgets/Application.h"
 #include "kxf/wxWidgets/EvtHandlerWrapper.h"
-#include <wx/cmdline.h>
+#include "kxf/wxWidgets/Setup.h"
 
 namespace
 {
