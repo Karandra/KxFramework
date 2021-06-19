@@ -177,7 +177,6 @@ namespace kxf
 			}
 			static std::string ToUTF8(std::wstring_view utf16);
 
-			static String FromACP(const char* acp, size_t length = npos);
 			static String FromASCII(const char* ascii, size_t length = npos);
 			static String FromASCII(std::string_view ascii);
 
@@ -1201,12 +1200,12 @@ namespace kxf
 
 	namespace Private
 	{
-		const String::string_type& GetWxStringImpl(const wxString& string) noexcept;
-		String::string_type& GetWxStringImpl(wxString& string) noexcept;
+		KX_API const String::string_type& GetWxStringImpl(const wxString& string) noexcept;
+		KX_API String::string_type& GetWxStringImpl(wxString& string) noexcept;
 
-		void MoveWxString(wxString& destination, wxString&& source) noexcept;
-		void MoveWxString(wxString& destination, String::string_type&& source) noexcept;
-		void MoveWxString(String::string_type& destination, wxString&& source) noexcept;
+		KX_API void MoveWxString(wxString& destination, wxString&& source) noexcept;
+		KX_API void MoveWxString(wxString& destination, String::string_type&& source) noexcept;
+		KX_API void MoveWxString(String::string_type& destination, wxString&& source) noexcept;
 	}
 }
 
@@ -1225,7 +1224,7 @@ namespace std
 namespace kxf
 {
 	template<>
-	struct BinarySerializer<String> final
+	struct KX_API BinarySerializer<String> final
 	{
 		uint64_t Serialize(IOutputStream& stream, const String& value) const;
 		uint64_t Deserialize(IInputStream& stream, String& value) const;

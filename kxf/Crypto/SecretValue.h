@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/General/String.h"
+#include "kxf/General/IEncodingConverter.h"
 #include <vector>
 
 namespace kxf
@@ -12,10 +13,6 @@ namespace kxf
 			{
 				auto utf8 = string.ToUTF8();
 				return SecretValue(utf8.data(), utf8.length());
-			}
-			static SecretValue FromString(StringView view)
-			{
-				return FromString(String(view));
 			}
 			static SecretValue FromString(const char* data, size_t length = String::npos)
 			{
@@ -60,7 +57,7 @@ namespace kxf
 				return m_Storage.data();
 			}
 			
-			String ToString(const wxMBConv& conv = wxConvWhateverWorks) const;
+			String ToString(IEncodingConverter& encodingConverter = EncodingConverter_WhateverWorks) const;
 			void Wipe() noexcept;
 
 		public:

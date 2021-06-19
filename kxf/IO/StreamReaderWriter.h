@@ -143,14 +143,6 @@ namespace kxf::IO
 				return values;
 			}
 
-			bool ReadStringACP(String& value, size_t size);
-			String ReadStringACP(size_t size)
-			{
-				String value;
-				ReadStringACP(value, size);
-				return value;
-			}
-
 			bool ReadStringASCII(String& value, size_t size);
 			String ReadStringASCII(size_t size)
 			{
@@ -304,7 +296,6 @@ namespace kxf::IO
 				return DoWriteContainter(values);
 			}
 
-			bool WriteStringACP(const String& value);
 			bool WriteStringASCII(const String& value, char replaceWith = '_');
 			bool WriteStringUTF8(const String& value);
 			bool WriteStringUTF16(const String& value);

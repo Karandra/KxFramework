@@ -103,24 +103,3 @@ namespace kxf
 		return g_Copyright;
 	}
 }
-
-namespace nlohmann
-{
-	void adl_serializer<wxString>::to_json(json& jsonDocument, const wxString& value)
-	{
-		auto utf8 = value.ToUTF8();
-		jsonDocument = std::string_view(utf8.data(), utf8.length());
-	}
-	void adl_serializer<wxString>::from_json(const json& jsonDocument, wxString& value)
-	{
-		if (jsonDocument.is_null())
-		{
-			value.clear();
-		}
-		else
-		{
-			const json::string_t& string = jsonDocument.get_ref<const json::string_t&>();
-			value = wxString::FromUTF8(string.data(), string.length());
-		}
-	}
-}

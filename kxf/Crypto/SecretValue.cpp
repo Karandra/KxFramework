@@ -4,9 +4,9 @@
 
 namespace kxf
 {
-	String SecretValue::ToString(const wxMBConv& conv) const
+	String SecretValue::ToString(IEncodingConverter& encodingConverter) const
 	{
-		return wxString(m_Storage.data(), conv, m_Storage.size());
+		return encodingConverter.ToWideChar<uint8_t>(m_Storage);
 	}
 	void SecretValue::Wipe() noexcept
 	{

@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "String.h"
+#include "IEncodingConverter.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/Utility/Common.h"
 #include <kxf/System/UndefWindows.h>
@@ -372,34 +373,29 @@ namespace kxf
 	UniChar String::FromUTF8(char c)
 	{
 		const char data[2] = {c, '\0'};
-		wxString result = wxString::FromUTF8(data, 1);
+		String result = FromUTF8(data, 1);
 		if (!result.IsEmpty())
 		{
-			return result[0].GetValue();
+			return result.front();
 		}
 		return {};
 	}
 	String String::FromUTF8(const char* utf8, size_t length)
 	{
-		return wxString::FromUTF8(utf8, length);
+		return EncodingConverter_UTF8.ToWideChar(utf8, length);
 	}
 	std::string String::ToUTF8(std::wstring_view utf16)
 	{
-		auto converted = wxMBConvUTF8().cWC2MB(utf16.data(), utf16.length(), nullptr);
-		return {converted.data(), converted.length()};
+		return EncodingConverter_UTF8.ToMultiByte(utf16);
 	}
 
-	String String::FromACP(const char* acp, size_t length)
-	{
-		return wxString(acp, length);
-	}
 	String String::FromASCII(const char* ascii, size_t length)
 	{
-		return wxString::FromAscii(ascii, length);
+		return EncodingConverter_ASCII.ToWideChar(ascii, length);
 	}
 	String String::FromASCII(std::string_view ascii)
 	{
-		return wxString::FromAscii(ascii.data(), ascii.length());
+		return EncodingConverter_ASCII.ToWideChar(ascii);
 	}
 
 	String String::FromFloatingPoint(double value, int precision)
@@ -502,9 +498,9 @@ namespace kxf
 		std::string ascii;
 		ascii.reserve(m_String.length());
 
-		for (const auto& c: m_String)
+		for (UniChar c: m_String)
 		{
-			ascii += UniChar(c).ToASCII().value_or(replaceWith);
+			ascii += c.ToASCII().value_or(replaceWith);
 		}
 		return ascii;
 	}
@@ -855,7 +851,7 @@ namespace kxf
 	}
 }
 
-namespace kxf
+namespace kxf::Private
 {
 	const String::string_type& GetWxStringImpl(const wxString& string) noexcept
 	{

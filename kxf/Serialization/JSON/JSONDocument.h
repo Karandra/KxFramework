@@ -52,13 +52,6 @@ namespace kxf
 namespace nlohmann
 {
 	template<>
-	struct adl_serializer<wxString> final
-	{
-		static void to_json(json& jsonDocument, const wxString& value);
-		static void from_json(const json& jsonDocument, wxString& value);
-	};
-
-	template<>
 	struct adl_serializer<kxf::String> final
 	{
 		static void to_json(json& jsonDocument, const kxf::String& value)
