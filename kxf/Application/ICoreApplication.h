@@ -11,8 +11,9 @@ namespace kxf
 	class IEventFilter;
 	class IEventExecutor;
 
-	class FSActionEvent;
 	class IThreadPool;
+	class FSActionEvent;
+	class CommandLineParser;
 }
 
 namespace kxf::Application
@@ -145,11 +146,11 @@ namespace kxf::Application
 			virtual void InitializeCommandLine(char** argv, size_t argc) = 0;
 			virtual void InitializeCommandLine(wchar_t** argv, size_t argc) = 0;
 
-			virtual size_t EnumCommandLineArgs(std::function<bool(String)> func) const = 0;
-			virtual void OnCommandLineInit(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineParsed(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineError(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineHelp(wxCmdLineParser& parser) = 0;
+			virtual Enumerator<String> EnumCommandLineArgs() const = 0;
+			virtual void OnCommandLineInit(CommandLineParser& parser) = 0;
+			virtual bool OnCommandLineParsed(CommandLineParser& parser) = 0;
+			virtual bool OnCommandLineError(CommandLineParser& parser) = 0;
+			virtual bool OnCommandLineHelp(CommandLineParser& parser) = 0;
 	};
 }
 

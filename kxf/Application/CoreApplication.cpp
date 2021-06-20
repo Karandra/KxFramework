@@ -6,6 +6,7 @@
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
 #include "kxf/General/Format.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/NtStatus.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -729,7 +730,7 @@ namespace kxf
 		m_ArgVA = argv;
 		m_ArgVW = nullptr;
 
-		m_CommandLineParser.SetCmdLine(argc, argv);
+		m_CommandLineParser.SetCommandLine(argc, argv);
 		OnCommandLineInit(m_CommandLineParser);
 	}
 	void CoreApplication::InitializeCommandLine(wchar_t** argv, size_t argc)
@@ -738,33 +739,33 @@ namespace kxf
 		m_ArgVA = nullptr;
 		m_ArgVW = argv;
 		
-		m_CommandLineParser.SetCmdLine(argc, argv);
+		m_CommandLineParser.SetCommandLine(argc, argv);
 		OnCommandLineInit(m_CommandLineParser);
 	}
 
-	size_t CoreApplication::EnumCommandLineArgs(std::function<bool(String)> func) const
+	Enumerator<String> CoreApplication::EnumCommandLineArgs() const
 	{
-		size_t count = 0;
-		for (size_t i = 0; i < m_CommandLineParser.GetParamCount(); i++)
+		if (m_CommandLineParser)
 		{
-			count++;
-			if (!std::invoke(func, m_CommandLineParser.GetParam(i)))
-			{
-				break;
-			}
+			return m_CommandLineParser.EnumParameters();
 		}
-		return count;
+		return {};
 	}
-	void CoreApplication::OnCommandLineInit(wxCmdLineParser& parser)
+	void CoreApplication::OnCommandLineInit(CommandLineParser& parser)
 	{
-		switch (m_CommandLineParser.Parse(false))
+		if (!m_CommandLineParser)
 		{
-			case 0:
+			return;
+		}
+
+		switch (m_CommandLineParser.Parse())
+		{
+			case CommandLineParserResult::Success:
 			{
 				OnCommandLineParsed(m_CommandLineParser);
 				break;
 			}
-			case -1:
+			case CommandLineParserResult::HelpRequested:
 			{
 				OnCommandLineHelp(m_CommandLineParser);
 				break;
@@ -776,18 +777,24 @@ namespace kxf
 			}
 		};
 	}
-	bool CoreApplication::OnCommandLineParsed(wxCmdLineParser& parser)
+	bool CoreApplication::OnCommandLineParsed(CommandLineParser& parser)
 	{
 		return true;
 	}
-	bool CoreApplication::OnCommandLineError(wxCmdLineParser& parser)
+	bool CoreApplication::OnCommandLineError(CommandLineParser& parser)
 	{
-		parser.Usage();
+		if (parser)
+		{
+			parser.ShowUsage();
+		}
 		return false;
 	}
-	bool CoreApplication::OnCommandLineHelp(wxCmdLineParser& parser)
+	bool CoreApplication::OnCommandLineHelp(CommandLineParser& parser)
 	{
-		parser.Usage();
+		if (parser)
+		{
+			parser.ShowUsage();
+		}
 		return false;
 	}
 }

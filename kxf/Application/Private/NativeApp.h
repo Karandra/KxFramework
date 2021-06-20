@@ -3,7 +3,6 @@
 #include "../ICoreApplication.h"
 #include "../IGUIApplication.h"
 #include "kxf/wxWidgets/Application.h"
-#include <wx/cmdline.h>
 
 namespace kxf::Application::Private
 {
@@ -125,19 +124,18 @@ namespace kxf::Application::Private
 			// Command line
 			void OnInitCmdLine(wxCmdLineParser& parser) override
 			{
-				m_App.OnCommandLineInit(parser);
 			}
 			bool OnCmdLineParsed(wxCmdLineParser& parser) override
 			{
-				return m_App.OnCommandLineParsed(parser);
+				return true;
 			}
 			bool OnCmdLineError(wxCmdLineParser& parser) override
 			{
-				return m_App.OnCommandLineError(parser);
+				return true;
 			}
 			bool OnCmdLineHelp(wxCmdLineParser& parser) override
 			{
-				return m_App.OnCommandLineHelp(parser);
+				return true;
 			}
 
 			// GUI

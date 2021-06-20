@@ -1,12 +1,12 @@
 #pragma once
 #include "Common.h"
 #include "ICoreApplication.h"
+#include "CommandLineParser.h"
 #include "kxf/Threading/LockGuard.h"
 #include "kxf/Threading/ThreadPool.h"
 #include "kxf/Threading/RecursiveRWLock.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
-#include <wx/cmdline.h>
 
 namespace kxf
 {
@@ -64,7 +64,7 @@ namespace kxf
 			std::exception_ptr m_StoredException;
 
 			// Application::ICommandLine
-			wxCmdLineParser m_CommandLineParser;
+			CommandLineParser m_CommandLineParser;
 			size_t m_ArgC = 0;
 			char** m_ArgVA = nullptr;
 			wchar_t** m_ArgVW = nullptr;
@@ -276,10 +276,10 @@ namespace kxf
 			void InitializeCommandLine(char** argv, size_t argc) override;
 			void InitializeCommandLine(wchar_t** argv, size_t argc) override;
 
-			size_t EnumCommandLineArgs(std::function<bool(String)> func) const override;
-			void OnCommandLineInit(wxCmdLineParser& parser) override;
-			bool OnCommandLineParsed(wxCmdLineParser& parser) override;
-			bool OnCommandLineError(wxCmdLineParser& parser) override;
-			bool OnCommandLineHelp(wxCmdLineParser& parser) override;
+			Enumerator<String> EnumCommandLineArgs() const override;
+			void OnCommandLineInit(CommandLineParser& parser) override;
+			bool OnCommandLineParsed(CommandLineParser& parser) override;
+			bool OnCommandLineError(CommandLineParser& parser) override;
+			bool OnCommandLineHelp(CommandLineParser& parser) override;
 	};
 }

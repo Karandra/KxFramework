@@ -120,6 +120,7 @@
     <ClInclude Include="kxfResources.h" />
     <ClInclude Include="kxf\Application.hpp" />
     <ClInclude Include="kxf\Application\ApplicationInitializer.h" />
+    <ClInclude Include="kxf\Application\CommandLineParser.h" />
     <ClInclude Include="kxf\Application\Common.h" />
     <ClInclude Include="kxf\Application\CoreApplication.h" />
     <ClInclude Include="kxf\Application\GUIApplication.h" />
@@ -681,6 +682,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\Application\ApplicationInitializer.cpp" />
+    <ClCompile Include="kxf\Application\CommandLineParser.cpp" />
     <ClCompile Include="kxf\Application\CoreApplication.cpp" />
     <ClCompile Include="kxf\Application\GUIApplication.cpp" />
     <ClCompile Include="kxf\Application\ICoreApplication.cpp" />
