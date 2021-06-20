@@ -1,51 +1,43 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/Version.h"
-#include "kxf/General/String.h"
-#include <wx/zstream.h>
+#include "kxf/IO/StreamDelegate.h"
+class wxZlibInputStream;
+class wxZlibOutputStream;
 
 namespace kxf
 {
-	enum class ZLibHeaderType
+	enum class ZLibHeader
 	{
-		None = wxZLIB_NO_HEADER,
-		Auto = wxZLIB_AUTO,
-		ZLib = wxZLIB_ZLIB,
-		GZip = wxZLIB_GZIP,
-	};
-}
+		None = -1,
 
-namespace kxf::Compression::ZLib
-{
-	KX_API String GetLibraryName();
-	KX_API Version GetLibraryVersion();
+		Auto,
+		ZLib,
+		GZip,
+	};
 }
 
 namespace kxf
 {
-	class KX_API ZLibInputStream: public wxZlibInputStream
+	class KX_API ZLibInputStream final: public InputStreamDelegate
 	{
-		public:
-			ZLibInputStream(wxInputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibInputStream(stream, ToInt(header))
-			{
-			}
-			ZLibInputStream(std::unique_ptr<wxInputStream> stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibInputStream(stream.release(), ToInt(header))
-			{
-			}
-	};
+		private:
+			std::unique_ptr<wxZlibInputStream> m_ZStream;
 
-	class KX_API ZLibOutputStream: public wxZlibOutputStream
-	{
 		public:
-			ZLibOutputStream(wxOutputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibOutputStream(stream, ToInt(header))
-			{
-			}
-			ZLibOutputStream(std::unique_ptr<wxOutputStream> stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibOutputStream(stream.release(), ToInt(header))
-			{
-			}
+			ZLibInputStream(IInputStream& stream, ZLibHeader header = ZLibHeader::Auto);
+			ZLibInputStream(std::unique_ptr<IInputStream> stream, ZLibHeader header = ZLibHeader::Auto);
+	};
+}
+
+namespace kxf
+{
+	class KX_API ZLibOutputStream final: public OutputStreamDelegate
+	{
+		private:
+			std::unique_ptr<wxZlibOutputStream> m_ZStream;
+
+		public:
+			ZLibOutputStream(IOutputStream& stream, ZLibHeader header = ZLibHeader::Auto);
+			ZLibOutputStream(std::unique_ptr<IOutputStream> stream, ZLibHeader header = ZLibHeader::Auto);
 	};
 }

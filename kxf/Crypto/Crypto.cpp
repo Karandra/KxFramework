@@ -1,7 +1,9 @@
 #include "KxfPCH.h"
 #include "Crypto.h"
+#include "kxf/General/String.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/Utility/ScopeGuard.h"
+
 #include <wx/base64.h> 
 #include <wx/regex.h> 
 #include "OpenSSL/opensslv.h"

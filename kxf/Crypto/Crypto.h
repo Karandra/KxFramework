@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "HashValue.h"
-#include "kxf/General/String.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf::Crypto

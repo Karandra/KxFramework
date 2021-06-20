@@ -24,11 +24,10 @@ namespace kxf::Private
 			{
 			}
 			
-			template<class T>
+			template<class T> requires(std::is_base_of_v<TBaseStream, T>)
 			DelegateStreamBase(std::unique_ptr<T> stream)
 				:m_Stream(std::move(stream))
 			{
-				static_assert(std::is_base_of_v<TBaseStream, T>, "must inherit from 'TBaseStream' (wx[Input/Output]Stream)");
 			}
 
 			DelegateStreamBase(DelegateStreamBase&&) noexcept = default;
