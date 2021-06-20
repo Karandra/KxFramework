@@ -5,15 +5,16 @@
 #include "kxf/General/Common.h"
 #include "kxf/General/FlagSet.h"
 #include "kxf/Serialization/BinarySerializer.h"
-#include <wx/affinematrix2d.h>
+
 #include <cmath>
+class wxAffineMatrix2D;
 
 namespace kxf::Geometry
 {
-	template<class TValue_>
+	template<class TValue_> requires(std::is_arithmetic_v<TValue_>)
 	class BasicAffineMatrix final
 	{
-		template<class T>
+		template<class T> requires(std::is_arithmetic_v<T>)
 		friend class BasicAffineMatrix;
 
 		friend struct BinarySerializer<BasicAffineMatrix<TValue_>>;
@@ -32,7 +33,7 @@ namespace kxf::Geometry
 		public:
 			constexpr BasicAffineMatrix() noexcept = default;
 
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr BasicAffineMatrix(T m11, T m12, T m21, T m22, T tx, T ty) noexcept
 				:m_11(static_cast<TValue>(m11)), m_12(static_cast<TValue>(m12)),
 				m_21(static_cast<TValue>(m21)), m_22(static_cast<TValue>(m22)),
@@ -40,26 +41,12 @@ namespace kxf::Geometry
 			{
 			}
 
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr BasicAffineMatrix(const BasicAffineMatrix<T>& other) noexcept
 				:m_11(static_cast<TValue>(other.m_11)), m_12(static_cast<TValue>(other.m_12)),
 				m_21(static_cast<TValue>(other.m_21)), m_22(static_cast<TValue>(other.m_22)),
 				m_tx(static_cast<TValue>(other.m_tx)), m_ty(static_cast<TValue>(other.m_ty))
 			{
-			}
-
-			BasicAffineMatrix(const wxAffineMatrix2D& other) noexcept
-			{
-				wxMatrix2D matrix;
-				wxPoint2DDouble txy;
-				other.Get(&matrix, &txy);
-
-				m_11 = static_cast<TValue>(matrix.m_11);
-				m_12 = static_cast<TValue>(matrix.m_12);
-				m_21 = static_cast<TValue>(matrix.m_21);
-				m_22 = static_cast<TValue>(matrix.m_22);
-				m_tx = static_cast<TValue>(txy.m_x);
-				m_ty = static_cast<TValue>(txy.m_y);
 			}
 
 		public:
@@ -72,7 +59,7 @@ namespace kxf::Geometry
 				return m_11 * m_22 - m_12 * m_21;
 			}
 
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr void GetElements(T& m11, T& m12, T& m21, T& m22, T& tx, T& ty) const noexcept
 			{
 				m11 = static_cast<T>(m_11);
@@ -83,7 +70,7 @@ namespace kxf::Geometry
 				ty = static_cast<T>(m_ty);
 			}
 
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr void SetElements(T m11, T m12, T m21, T m22, T tx, T ty) noexcept
 			{
 				m_11 = static_cast<TValue>(m11);
@@ -92,6 +79,20 @@ namespace kxf::Geometry
 				m_22 = static_cast<TValue>(m22);
 				m_tx = static_cast<TValue>(tx);
 				m_ty = static_cast<TValue>(ty);
+			}
+
+			template<class T> requires(std::is_arithmetic_v<T>)
+			constexpr BasicAffineMatrix<T> Cast() const noexcept
+			{
+				return
+				{
+					static_cast<T>(m_11),
+					static_cast<T>(m_12),
+					static_cast<T>(m_21),
+					static_cast<T>(m_22),
+					static_cast<T>(m_tx),
+					static_cast<T>(m_ty)
+				};
 			}
 
 			constexpr bool IsInvertible() const noexcept
@@ -127,12 +128,12 @@ namespace kxf::Geometry
 				// matrix' = other| m_21 m_22  0 | x | m_21  m_22   0 |
 				//                | m_tx m_ty  1 |   | m_tx  m_ty   1 |
 
-				TValue m11;
-				TValue m12;
-				TValue m21;
-				TValue m22;
-				TValue tx;
-				TValue ty;
+				TValue m11 = 0;
+				TValue m12 = 0;
+				TValue m21 = 0;
+				TValue m22 = 0;
+				TValue tx = 0;
+				TValue ty = 0;
 				other.GetElements(m11, m12, m21, m22, tx, ty);
 
 				m_tx += tx * m_11 + ty * m_21;
@@ -222,17 +223,7 @@ namespace kxf::Geometry
 			}
 
 		public:
-			operator wxAffineMatrix2D() const noexcept
-			{
-				wxMatrix2D matrix(static_cast<wxDouble>(m_11), static_cast<wxDouble>(m_12), static_cast<wxDouble>(m_21), static_cast<wxDouble>(m_22));
-				wxPoint2DDouble txy(static_cast<wxDouble>(m_tx), static_cast<wxDouble>(m_ty));
-
-				wxAffineMatrix2D affineMatrix;
-				affineMatrix.Set(matrix, txy);
-				return affineMatrix;
-			}
-
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr bool operator==(const BasicAffineMatrix<T>& other) const noexcept
 			{
 				if (this == &other)
@@ -245,7 +236,7 @@ namespace kxf::Geometry
 				}
 			}
 
-			template<class T, class = std::enable_if_t<std::is_arithmetic_v<T>>>
+			template<class T> requires(std::is_arithmetic_v<T>)
 			constexpr bool operator!=(const BasicAffineMatrix<T>& other) const noexcept
 			{
 				if (this != &other)
@@ -265,6 +256,12 @@ namespace kxf
 	using AffineMatrix = Geometry::BasicAffineMatrix<int>;
 	using AffineMatrixF = Geometry::BasicAffineMatrix<float>;
 	using AffineMatrixD = Geometry::BasicAffineMatrix<double>;
+
+	namespace Private
+	{
+		AffineMatrixD FromWxAffineMatrix(const wxAffineMatrix2D& matrixWx) noexcept;
+		wxAffineMatrix2D ToWxAffineMatrix(const AffineMatrixD& matrix) noexcept;
+	}
 }
 
 namespace kxf

@@ -669,11 +669,11 @@ namespace kxf
 			}
 			AffineMatrix GetTransformMatrix() const
 			{
-				return m_DC->GetTransformMatrix();
+				return Private::FromWxAffineMatrix(m_DC->GetTransformMatrix());
 			}
 			bool SetTransformMatrix(const AffineMatrix& transform)
 			{
-				return m_DC->SetTransformMatrix(transform);
+				return m_DC->SetTransformMatrix(Private::ToWxAffineMatrix(transform));
 			}
 			void ResetTransformMatrix()
 			{

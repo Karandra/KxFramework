@@ -317,7 +317,6 @@
     <ClInclude Include="kxf\Network\CURLWebSession\CURLWebRequest.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLWebSession.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\LibCURLUtility.h" />
-    <ClInclude Include="kxf\Network\CURLWebSession\Utility.h" />
     <ClInclude Include="kxf\Network\Private\BasicWebRequest.h" />
     <ClInclude Include="kxf\Network\Private\BasicWebSession.h" />
     <ClInclude Include="kxf\Network\WebRequest.h" />
@@ -699,6 +698,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Crypto\HashValue.cpp" />
+    <ClCompile Include="kxf\Drawing\AffineMatrix.cpp" />
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Font.cpp" />

@@ -1794,7 +1794,6 @@
     <ClInclude Include="kxf\Threading\IThreadPool.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\Utility.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
@@ -2913,6 +2912,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Application\CommandLineParser.cpp">
       <Filter>kxf\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\AffineMatrix.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
