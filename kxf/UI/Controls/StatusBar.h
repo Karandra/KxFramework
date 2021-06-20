@@ -21,6 +21,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::StatusBarStyle);
+	KxFlagSet_Extend(UI::StatusBarStyle, UI::WindowStyle);
 }
 
 namespace kxf::UI
@@ -28,7 +29,7 @@ namespace kxf::UI
 	class KX_API StatusBar: public wxSystemThemedControl<WindowRefreshScheduler<wxStatusBar>>
 	{
 		public:
-			static constexpr FlagSet<StatusBarStyle> DefaultStyle = CombineFlags<StatusBarStyle>(StatusBarStyle::SizeGrip|StatusBarStyle::ShowTips|StatusBarStyle::EllipsizeEnd, WindowStyle::FullRepaintOnResize);;
+			static constexpr FlagSet<StatusBarStyle> DefaultStyle = (StatusBarStyle::SizeGrip|StatusBarStyle::ShowTips|StatusBarStyle::EllipsizeEnd)|WindowStyle::FullRepaintOnResize;
 
 		private:
 			void SetFieldsCount(int count, const int* widths) override;

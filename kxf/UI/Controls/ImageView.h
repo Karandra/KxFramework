@@ -24,7 +24,7 @@ namespace kxf::UI
 	class KX_API ImageView: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{
 		public:
-			static constexpr FlagSet<WindowStyle> DefaultStyle = CombineFlags<WindowStyle>(WindowBorder::Theme);
+			static constexpr FlagSet<WindowStyle> DefaultStyle = WindowStyle::None|WindowBorder::Theme;
 
 		private:
 			wxGraphicsRenderer* m_Renderer = nullptr;

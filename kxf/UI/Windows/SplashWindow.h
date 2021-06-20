@@ -15,6 +15,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::SplashWindowStyle);
+	KxFlagSet_Extend(UI::SplashWindowStyle, UI::WindowStyle);
 }
 
 namespace kxf::UI

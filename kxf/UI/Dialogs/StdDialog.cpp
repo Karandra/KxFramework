@@ -344,7 +344,7 @@ namespace kxf::UI
 			m_ViewLabel = new Label(m_ContentPanel, wxID_NONE, {}, LabelStyle::None);
 			m_ViewLabel->SetMaxSize(FromDIP(Size(wxDefaultCoord, 23)));
 
-			m_ContentPanelLine = new UI::Panel(this, wxID_NONE, CombineFlags<WindowStyle>(WindowBorder::None));
+			m_ContentPanelLine = new UI::Panel(this, wxID_NONE, WindowStyle::None|WindowBorder::None);
 			m_ContentPanelLine->SetPosition(Point(0, 0));
 			m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
 			m_ContentPanelLine->SetMaxSize(FromDIP(Size(wxDefaultCoord, 1)));

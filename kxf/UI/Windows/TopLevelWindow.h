@@ -23,6 +23,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::TopLevelWindowStyle);
+	KxFlagSet_Extend(UI::TopLevelWindowStyle, UI::WindowStyle);
 }
 
 namespace kxf::UI::Private

@@ -7,11 +7,11 @@
 
 namespace kxf::UI::DataView
 {
-	bool DnDInfo::DoCheckOperation(const wxDataFormat& format, DNDOpType desiredType) const
+	bool DnDInfo::DoCheckOperation(const wxDataFormat& format, FlagSet<DNDOpType> desiredType) const
 	{
 		if (const DNDOperationInfo* info = GetOperationInfo(format))
 		{
-			return Utility::HasFlag(info->GetType(), desiredType);
+			return info->GetType().Contains(desiredType);
 		}
 		return false;
 	}
@@ -82,7 +82,7 @@ namespace kxf::UI::DataView
 			m_Distance.Y() = mousePos.GetY() - linePos.GetY();
 			m_HintPosition = GetHintPosition(mousePos);
 
-			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap.ToWxBitmap(), {}, CombineFlags<SplashWindowStyle>(TopLevelWindowStyle::StayOnTop));
+			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap.ToWxBitmap(), {}, SplashWindowStyle::None|(WindowStyle::None|TopLevelWindowStyle::StayOnTop));
 			m_DragImage->SetTransparent(225);
 			m_DragImage->Update();
 			m_DragImage->Show();

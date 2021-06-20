@@ -19,6 +19,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::TextBoxDialogStyle);
+	KxFlagSet_Extend(UI::TextBoxDialogStyle, UI::DialogStyle);
 }
 
 namespace kxf::UI
@@ -26,7 +27,7 @@ namespace kxf::UI
 	class KX_API TextBoxDialog: public StdDialog
 	{
 		public:
-			static constexpr FlagSet<TextBoxDialogStyle> DefaultStyle = CombineFlags<TextBoxDialogStyle>(*StdDialog::DefaultStyle);
+			static constexpr FlagSet<TextBoxDialogStyle> DefaultStyle = TextBoxDialogStyle::None|*StdDialog::DefaultStyle;
 			static constexpr int DefaultWidth = 300;
 			static constexpr int DefaultMLWidth = 450;
 			static constexpr int DefaultMLHeight = 200;

@@ -19,12 +19,12 @@ namespace kxf::UI::DataView
 	{
 		private:
 			wxDataObjectSimple* m_DropDataObject = nullptr;
-			DNDOpType m_Type = DNDOpType::None;
+			FlagSet<DNDOpType> m_Type;
 			bool m_IsPreferedDrop = false;
 
 		public:
 			DNDOperationInfo() = default;
-			DNDOperationInfo(wxDataObjectSimple& dataObject, DNDOpType type, bool isPreferredDrop = false)
+			DNDOperationInfo(wxDataObjectSimple& dataObject, FlagSet<DNDOpType> type, bool isPreferredDrop = false)
 				:m_DropDataObject(&dataObject), m_Type(type), m_IsPreferedDrop(isPreferredDrop)
 			{
 			}
@@ -34,7 +34,7 @@ namespace kxf::UI::DataView
 			{
 				return m_DropDataObject && m_Type != DNDOpType::None;
 			}
-			DNDOpType GetType() const
+			FlagSet<DNDOpType> GetType() const
 			{
 				return m_Type;
 			}
@@ -45,7 +45,7 @@ namespace kxf::UI::DataView
 
 			void Combine(const DNDOperationInfo& other)
 			{
-				m_Type = (DNDOpType)(m_Type|other.m_Type);
+				m_Type = m_Type|other.m_Type;
 				m_DropDataObject = other.m_DropDataObject;
 				m_IsPreferedDrop = other.m_IsPreferedDrop;
 			}
@@ -69,7 +69,7 @@ namespace kxf::UI::DataView
 			std::map<wxDataFormat, DNDOperationInfo> m_DataFormats;
 
 		private:
-			bool DoCheckOperation(const wxDataFormat& format, DNDOpType desiredType) const;
+			bool DoCheckOperation(const wxDataFormat& format, FlagSet<DNDOpType> desiredType) const;
 			Result DoChangeOperation(const wxDataFormat& format, const DNDOperationInfo& info);
 
 		public:

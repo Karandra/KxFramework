@@ -31,7 +31,7 @@ namespace kxf::UI
 	{
 		m_DialogResizeSide = wxHORIZONTAL;
 
-		if (StdDialog::Create(parent, id, caption, pos, size, buttons, CombineFlags<DialogStyle>(*style)))
+		if (StdDialog::Create(parent, id, caption, pos, size, buttons, DialogStyle::None|*style))
 		{
 			const Size size(DefaultComboBoxWidth, wxDefaultCoord);
 			const FlagSet<ComboBoxStyle> comboBoxFlags = ComboBox::DefaultStyle.Clone().Mod(ComboBoxStyle::ReadOnly, style & ComboBoxDialogStyle::ReadOnly);

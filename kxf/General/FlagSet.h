@@ -20,10 +20,43 @@ namespace kxf
 			static_assert(std::is_enum_v<T>, "enum type required");	\
 			static_assert(std::is_unsigned_v<std::underlying_type_t<T>>, "underlying type of the enum must be unsigned integer");	\
 		}
+
+	#define KxFlagSet_Extend(TDerived, TBase)	\
+		inline constexpr Private::FlagSetIntermediate<TBase> operator|(TBase left, TDerived right) noexcept	\
+		{	\
+			using Tx = std::underlying_type_t<TBase>;	\
+			using Ty = std::underlying_type_t<TDerived>;	\
+			return Private::FlagSetIntermediate<TBase>(static_cast<TBase>(static_cast<Tx>(left) | static_cast<Ty>(right)));	\
+		}	\
+		inline constexpr Private::FlagSetIntermediate<TDerived> operator|(TDerived left, TBase right) noexcept	\
+		{	\
+			using Tx = std::underlying_type_t<TDerived>;	\
+			using Ty = std::underlying_type_t<TBase>;	\
+			return Private::FlagSetIntermediate<TDerived>(static_cast<TDerived>(static_cast<Tx>(left) | static_cast<Ty>(right)));	\
+		}	\
+		\
+		inline constexpr Private::FlagSetIntermediate<TBase> operator|(Private::FlagSetIntermediate<TBase> left, Private::FlagSetIntermediate<TDerived> right) noexcept	\
+		{	\
+			using Tx = std::underlying_type_t<TBase>;	\
+			using Ty = std::underlying_type_t<TDerived>;	\
+			return Private::FlagSetIntermediate<TBase>(static_cast<TBase>(static_cast<Tx>(left.Value) | static_cast<Ty>(right.Value)));	\
+		}	\
+		inline constexpr Private::FlagSetIntermediate<TDerived> operator|(Private::FlagSetIntermediate<TDerived> left, Private::FlagSetIntermediate<TBase> right) noexcept	\
+		{	\
+			using Tx = std::underlying_type_t<TDerived>;	\
+			using Ty = std::underlying_type_t<TBase>;	\
+			return Private::FlagSetIntermediate<TDerived>(static_cast<TDerived>(static_cast<Tx>(left.Value) | static_cast<Ty>(right.Value)));	\
+		}
 }
 
 namespace kxf
 {
+	template<class TEnum> requires(std::is_enum_v<TEnum>)
+	constexpr auto FlagSetValue(size_t index) noexcept
+	{
+		return static_cast<std::underlying_type_t<TEnum>>(1) << index;
+	}
+
 	template<class TInt, class TEnum> requires(std::is_enum_v<TEnum>)
 	constexpr TInt ToInt(TEnum value) noexcept
 	{
@@ -41,24 +74,52 @@ namespace kxf
 	{
 		return static_cast<TEnum>(value);
 	}
+}
 
+namespace kxf
+{
+	namespace Private
+	{
+		template<class TEnum>
+		struct FlagSetIntermediate final
+		{
+			public:
+				TEnum Value = static_cast<TEnum>(0);
+
+			public:
+				constexpr FlagSetIntermediate() noexcept = default;
+				constexpr explicit FlagSetIntermediate(TEnum value) noexcept
+					:Value(value)
+				{
+				}
+
+			public:
+				constexpr operator TEnum() const noexcept
+				{
+					return Value;
+				}
+
+				constexpr FlagSetIntermediate& operator|=(TEnum other) noexcept
+				{
+					using Tx = std::underlying_type_t<TEnum>;
+					Value = static_cast<TEnum>(static_cast<Tx>(Value) | static_cast<Tx>(other));
+
+					return *this;
+				}
+		};
+	}
 	template<class TEnum> requires(IsFlagSet_v<TEnum>)
-	constexpr TEnum operator|(TEnum left, TEnum right) noexcept
+	constexpr Private::FlagSetIntermediate<TEnum> operator|(TEnum left, TEnum right) noexcept
 	{
 		using Tx = std::underlying_type_t<TEnum>;
-		return static_cast<TEnum>(static_cast<Tx>(left) | static_cast<Tx>(right));
+		return Private::FlagSetIntermediate<TEnum>(static_cast<TEnum>(static_cast<Tx>(left) | static_cast<Tx>(right)));
 	}
 
-	template<class TEnum, class... Args> requires((IsFlagSet_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...))
-	constexpr TEnum CombineFlags(Args&&... arg) noexcept
+	template<class TEnum> requires(IsFlagSet_v<TEnum>)
+	constexpr Private::FlagSetIntermediate<TEnum> operator|(Private::FlagSetIntermediate<TEnum> left, TEnum right) noexcept
 	{
-		return static_cast<TEnum>((static_cast<std::underlying_type_t<std::remove_const_t<std::remove_reference_t<Args>>>>(arg) | ...));
-	}
-
-	template<class TEnum> requires(std::is_enum_v<TEnum>)
-	constexpr auto FlagSetValue(size_t index) noexcept
-	{
-		return static_cast<std::underlying_type_t<TEnum>>(1) << index;
+		left |= right;
+		return left;
 	}
 }
 
@@ -76,8 +137,12 @@ namespace kxf
 
 		public:
 			constexpr FlagSet() noexcept = default;
-			constexpr FlagSet(TEnum values) noexcept
-				:m_Value(values)
+			constexpr FlagSet(TEnum value) noexcept
+				:m_Value(value)
+			{
+			}
+			constexpr FlagSet(Private::FlagSetIntermediate<TEnum> values) noexcept
+				:m_Value(values.Value)
 			{
 			}
 			constexpr FlagSet(const FlagSet&) noexcept = default;

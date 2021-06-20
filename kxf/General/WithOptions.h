@@ -2,13 +2,34 @@
 #include "Common.h"
 #include "FlagSet.h"
 
+namespace kxf::Private
+{
+	template<class TEnum>
+	struct WithOptionsValue final
+	{
+		public:
+			TEnum Value = static_cast<TEnum>(0);
+
+		public:
+			constexpr WithOptionsValue() noexcept = default;
+			constexpr WithOptionsValue(TEnum value) noexcept
+				:Value(value)
+			{
+			}
+			constexpr WithOptionsValue(Private::FlagSetIntermediate<TEnum> value) noexcept
+				:Value(value.Value)
+			{
+			}
+	};
+}
+
 namespace kxf
 {
-	template<class TEnum, TEnum initialValue = static_cast<TEnum>(0)>
+	template<class TEnum, Private::WithOptionsValue<TEnum> initialValue = Private::WithOptionsValue<TEnum>()>
 	class WithOptions
 	{
 		private:
-			FlagSet<TEnum> m_Flags = initialValue;
+			FlagSet<TEnum> m_Flags = initialValue.Value;
 
 		protected:
 			constexpr WithOptions() noexcept = default;

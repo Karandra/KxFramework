@@ -28,7 +28,7 @@ namespace kxf::UI::DataView
 
 	wxWindow* ComboBoxEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		const ComboBoxStyle comboBoxStyles = ComboBoxStyle::Dropdown|ComboBoxStyle::ProcessEnter|(IsEditable() ? ComboBoxStyle::None : ComboBoxStyle::ReadOnly);
+		const FlagSet<ComboBoxStyle> comboBoxStyles = ComboBoxStyle::Dropdown|ComboBoxStyle::ProcessEnter|(IsEditable() ? ComboBoxStyle::None : ComboBoxStyle::ReadOnly);
 		wxComboBox* editor = nullptr;
 
 		// Create the control

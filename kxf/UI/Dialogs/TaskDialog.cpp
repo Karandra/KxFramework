@@ -149,7 +149,7 @@ namespace kxf::UI
 							FlagSet<TaskDialogStyle> style
 	)
 	{
-		if (Dialog::Create(m_Parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), CombineFlags<DialogStyle>(*style)))
+		if (Dialog::Create(m_Parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), DialogStyle::None|*style))
 		{
 			m_Style = style;
 			m_Parent = wxGetTopLevelParent(parent);

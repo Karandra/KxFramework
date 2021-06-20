@@ -278,7 +278,7 @@ namespace kxf::UI::DataView
 
 	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const String& name)
 	{
-		m_Styles = CombineFlags<CtrlStyle>(*style, WindowStyle::ScrollHorizontal|WindowStyle::ScrollVertical);
+		m_Styles = *style|(WindowStyle::ScrollHorizontal|WindowStyle::ScrollVertical);
 		SetWindowExStyle(m_ExtraStyles);
 
 		if (ViewBase::Create(parent, id, pos, size, m_Styles.ToInt(), GetClassInfo()->GetClassName()))

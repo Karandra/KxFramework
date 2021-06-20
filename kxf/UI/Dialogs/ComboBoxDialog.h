@@ -16,6 +16,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::ComboBoxDialogStyle);
+	KxFlagSet_Extend(UI::ComboBoxDialogStyle, UI::DialogStyle);
 }
 
 namespace kxf::UI
@@ -23,7 +24,7 @@ namespace kxf::UI
 	class KX_API ComboBoxDialog: public StdDialog
 	{
 		public:
-			static constexpr FlagSet<ComboBoxDialogStyle> DefaultStyle = CombineFlags<ComboBoxDialogStyle>(*StdDialog::DefaultStyle, ComboBoxDialogStyle::ReadOnly);
+			static constexpr FlagSet<ComboBoxDialogStyle> DefaultStyle = ComboBoxDialogStyle::ReadOnly|*StdDialog::DefaultStyle;
 			static constexpr int DefaultComboBoxWidth = 300;
 
 		private:

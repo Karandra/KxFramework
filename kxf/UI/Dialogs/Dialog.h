@@ -27,7 +27,10 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::DialogStyle);
+	KxFlagSet_Extend(UI::DialogStyle, UI::WindowStyle);
+
 	KxFlagSet_Declare(UI::DialogExStyle);
+	KxFlagSet_Extend(UI::DialogExStyle, UI::WindowExStyle);
 }
 
 namespace kxf::UI
@@ -35,7 +38,7 @@ namespace kxf::UI
 	class KX_API Dialog: public TopLevelWindow<wxDialog>
 	{
 		public:
-			static constexpr FlagSet<DialogStyle> DefaultStyle = CombineFlags<DialogStyle>(DialogStyle::DefaultStyle|DialogStyle::Shaped, TopLevelWindowStyle::Resizeable);
+			static constexpr FlagSet<DialogStyle> DefaultStyle = (DialogStyle::DefaultStyle|DialogStyle::Shaped)|(WindowStyle::None|TopLevelWindowStyle::Resizeable);
 
 		public:
 			static void SetStdLabels(wxSizer* sizer);

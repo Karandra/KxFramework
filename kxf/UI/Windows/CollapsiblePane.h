@@ -14,6 +14,7 @@ namespace kxf::UI
 namespace kxf
 {
 	KxFlagSet_Declare(UI::CollapsiblePaneStyle);
+	KxFlagSet_Extend(UI::CollapsiblePaneStyle, UI::WindowStyle);
 }
 
 namespace kxf::UI
@@ -21,7 +22,7 @@ namespace kxf::UI
 	class KX_API CollapsiblePane: public wxCollapsiblePane
 	{
 		public:
-			static constexpr FlagSet<CollapsiblePaneStyle> DefaultStyle = CombineFlags<CollapsiblePaneStyle>(CollapsiblePaneStyle::NoTLWResize, WindowStyle::TabTraversal, WindowBorder::None);
+			static constexpr FlagSet<CollapsiblePaneStyle> DefaultStyle = CollapsiblePaneStyle::NoTLWResize|(WindowStyle::TabTraversal|WindowBorder::None);
 
 		private:
 			wxEvtHandler m_EvtHandler;

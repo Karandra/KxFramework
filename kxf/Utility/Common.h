@@ -76,6 +76,12 @@ namespace kxf::Utility
 	{
 		return std::unique_ptr<TTarget>(dynamic_cast<TTarget*>(source.release()));
 	}
+
+	template<class T, class... Args> requires((std::is_integral_v<T> || std::is_enum_v<T>) && (std::is_enum_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...))
+	constexpr T CombineEnumFlags(Args&&... arg) noexcept
+	{
+		return static_cast<T>((static_cast<std::underlying_type_t<std::remove_const_t<std::remove_reference_t<Args>>>>(arg) | ...));
+	}
 }
 
 namespace kxf::Utility

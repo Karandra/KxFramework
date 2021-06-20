@@ -75,7 +75,7 @@ namespace kxf::UI
 								  FlagSet<FileBrowseDialogStyle> style
 	)
 	{
-		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), CombineFlags<DialogStyle>(*style)))
+		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), DialogStyle::None|*style))
 		{
 			m_Parent = parent;
 			m_Style = style;

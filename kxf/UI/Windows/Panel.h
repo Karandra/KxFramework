@@ -9,7 +9,7 @@ namespace kxf::UI
 	class KX_API Panel: public wxSystemThemedControl<wxPanel>
 	{
 		public:
-			static constexpr FlagSet<WindowStyle> DefaultStyle = CombineFlags<WindowStyle>(WindowStyle::TabTraversal, WindowBorder::None);
+			static constexpr FlagSet<WindowStyle> DefaultStyle = WindowStyle::TabTraversal|WindowBorder::None;
 
 		public:
 			Panel() = default;

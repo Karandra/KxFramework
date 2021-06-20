@@ -50,7 +50,7 @@ namespace kxf::UI
 		m_DialogResizeSide = static_cast<wxOrientation>(-1);
 		m_Options = style;
 
-		if (StdDialog::Create(parent, id, caption, pos, size, buttons, CombineFlags<DialogStyle>(*style)))
+		if (StdDialog::Create(parent, id, caption, pos, size, buttons, DialogStyle::None|*style))
 		{
 			Size size(DefaultWidth, wxDefaultCoord);
 

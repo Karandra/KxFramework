@@ -3,6 +3,7 @@
 #include "kxf/Localization/Common.h"
 #include "kxf/UI/Controls/Button.h"
 #include "kxf/UI/Dialogs/Dialog.h"
+#include "kxf/Utility/Common.h"
 
 namespace kxf::UI
 {
@@ -117,11 +118,11 @@ namespace kxf::UI
 				m_HasFirstPrepend = true;
 				InsertSpacer(0, button->FromDIP(Size(6, wxDefaultCoord).GetWidth()));
 			}
-			Insert(1, button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), border);
+			Insert(1, button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), border);
 		}
 		else
 		{
-			Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), border);
+			Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), border);
 		}
 	}
 	void StdDialogButtonSizer::Realize()
@@ -134,7 +135,7 @@ namespace kxf::UI
 		{
 			if (button)
 			{
-				Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
+				Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
 			}
 		};
 		AddStdButton(m_ButtonAffirmative);
@@ -159,7 +160,7 @@ namespace kxf::UI
 
 		for (wxAnyButton* button: m_NonStandardButtons)
 		{
-			Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Right), GetSpacing(button));
+			Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Right), GetSpacing(button));
 		}
 	}
 }
