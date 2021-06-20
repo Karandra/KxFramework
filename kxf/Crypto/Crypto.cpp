@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "Crypto.h"
+#include "kxf/IO/IStream.h"
 #include "kxf/General/String.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/Utility/ScopeGuard.h"
@@ -21,13 +22,13 @@ namespace
 
 	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).ToBytes();
 
-	template<class THashContext, size_t hashLength, class TInitFunc, class TUpdateFunc, class TFinalFunc>
-	std::optional<HashValue<hashLength * 8>> DoCalcHash1(IInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept
+	template<class THashContext, size_t hashLength, class TInitFunc, class TUpdateFunc, class TFinalFunc, class TValue = uint8_t>
+	HashValue<hashLength * 8> DoCalcHash1(IInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept
 	{
 		THashContext hashContext;
 		if (std::invoke(initFunc, &hashContext) != 0)
 		{
-			uint8_t buffer[g_StreamBlockSize] = {};
+			TValue buffer[g_StreamBlockSize] = {};
 			while (stream.CanRead())
 			{
 				if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
@@ -41,7 +42,7 @@ namespace
 			}
 
 			HashValue<hashLength * 8> hash;
-			if (std::invoke(finalFunc, hash.data(), &hashContext) != 0)
+			if (std::invoke(finalFunc, reinterpret_cast<TValue*>(hash.data()), &hashContext) != 0)
 			{
 				return hash;
 			}
@@ -49,8 +50,8 @@ namespace
 		return {};
 	}
 
-	template<size_t bitLength, class THashAlgorithm>
-	std::optional<HashValue<bitLength>> DoCalcHash2(IInputStream& stream, THashAlgorithm&& algorithFunc) noexcept
+	template<size_t bitLength, class THashAlgorithm, class TValue = uint8_t>
+	HashValue<bitLength> DoCalcHash2(IInputStream& stream, THashAlgorithm&& algorithFunc) noexcept
 	{
 		if (const EVP_MD* algorithm = std::invoke(algorithFunc))
 		{
@@ -65,7 +66,7 @@ namespace
 
 			if (context && EVP_DigestInit_ex(context, algorithm, nullptr) == 1)
 			{
-				uint8_t buffer[g_StreamBlockSize] = {};
+				TValue buffer[g_StreamBlockSize] = {};
 				while (stream.CanRead())
 				{
 					if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
@@ -83,7 +84,7 @@ namespace
 
 				HashValue<bitLength> hash;
 				unsigned int length = EVP_MD_size(algorithm);
-				if (EVP_DigestFinal_ex(context, hash.data(), &length) == 1 && length <= hash.length())
+				if (EVP_DigestFinal_ex(context, reinterpret_cast<TValue*>(hash.data()), &length) == 1 && length <= hash.length())
 				{
 					return hash;
 				}
@@ -92,13 +93,13 @@ namespace
 		return {};
 	}
 
-	template<size_t hashLength, class TInitFunc, class TFreeFunc, class TResetFunc, class TUpdateFunc, class TFinalFunc>
-	std::optional<HashValue<hashLength>> DoCalcXXHash(IInputStream& stream,
-													  TInitFunc&& initFunc,
-													  TFreeFunc&& freeFunc,
-													  TResetFunc&& resetFunc,
-													  TUpdateFunc&& updateFunc,
-													  TFinalFunc&& finalFunc
+	template<size_t hashLength, class TInitFunc, class TFreeFunc, class TResetFunc, class TUpdateFunc, class TFinalFunc, class TValue = uint8_t>
+	HashValue<hashLength> DoCalcXXHash(IInputStream& stream,
+									   TInitFunc&& initFunc,
+									   TFreeFunc&& freeFunc,
+									   TResetFunc&& resetFunc,
+									   TUpdateFunc&& updateFunc,
+									   TFinalFunc&& finalFunc
 	) noexcept
 	{
 		if (auto* state = std::invoke(initFunc))
@@ -113,7 +114,7 @@ namespace
 			if (std::invoke(resetFunc, state, 0) != XXH_ERROR)
 			{
 				// Feed the state with input data, any size, any number of times
-				uint8_t buffer[g_StreamBlockSize] = {};
+				TValue buffer[g_StreamBlockSize] = {};
 				while (stream.CanRead())
 				{
 					if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
@@ -180,7 +181,7 @@ namespace kxf::Crypto
 		return count;
 	}
 
-	std::optional<HashValue<32>> CRC32(IInputStream& stream) noexcept
+	HashValue<32> CRC32(IInputStream& stream) noexcept
 	{
 		constexpr uint32_t initialValue = 0xFFFFFFFFu;
 		constexpr uint32_t table[] =
@@ -243,68 +244,68 @@ namespace kxf::Crypto
 		}
 		return ~result;
 	}
-	std::optional<HashValue<128>> MD5(IInputStream& stream) noexcept
+	HashValue<128> MD5(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<MD5_CTX, MD5_DIGEST_LENGTH>(stream, MD5_Init, MD5_Update, MD5_Final);
 	}
-	
-	std::optional<HashValue<160>> SHA1(IInputStream& stream) noexcept
+
+	HashValue<160> SHA1(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<SHA_CTX, SHA_DIGEST_LENGTH>(stream, SHA1_Init, SHA1_Update, SHA1_Final);
 	}
 
-	std::optional<HashValue<224>> SHA2_224(IInputStream& stream) noexcept
+	HashValue<224> SHA2_224(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<SHA256_CTX, SHA224_DIGEST_LENGTH>(stream, SHA224_Init, SHA224_Update, SHA224_Final);
 	}
-	std::optional<HashValue<256>> SHA2_256(IInputStream& stream) noexcept
+	HashValue<256> SHA2_256(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<SHA256_CTX, SHA256_DIGEST_LENGTH>(stream, SHA256_Init, SHA256_Update, SHA256_Final);
 	}
-	std::optional<HashValue<384>> SHA2_384(IInputStream& stream) noexcept
+	HashValue<384> SHA2_384(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<SHA512_CTX, SHA384_DIGEST_LENGTH>(stream, SHA384_Init, SHA384_Update, SHA384_Final);
 	}
-	std::optional<HashValue<512>> SHA2_512(IInputStream& stream) noexcept
+	HashValue<512> SHA2_512(IInputStream& stream) noexcept
 	{
 		return DoCalcHash1<SHA512_CTX, SHA512_DIGEST_LENGTH>(stream, SHA512_Init, SHA512_Update, SHA512_Final);
 	}
 
-	std::optional<HashValue<224>> SHA3_224(IInputStream& stream) noexcept
+	HashValue<224> SHA3_224(IInputStream& stream) noexcept
 	{
 		return DoCalcHash2<224>(stream, EVP_sha3_224);
 	}
-	std::optional<HashValue<256>> SHA3_256(IInputStream& stream) noexcept
+	HashValue<256> SHA3_256(IInputStream& stream) noexcept
 	{
 		return DoCalcHash2<256>(stream, EVP_sha3_256);
 	}
-	std::optional<HashValue<384>> SHA3_384(IInputStream& stream) noexcept
+	HashValue<384> SHA3_384(IInputStream& stream) noexcept
 	{
 		return DoCalcHash2<384>(stream, EVP_sha3_384);
 	}
-	std::optional<HashValue<512>> SHA3_512(IInputStream& stream) noexcept
+	HashValue<512> SHA3_512(IInputStream& stream) noexcept
 	{
 		return DoCalcHash2<512>(stream, EVP_sha3_512);
 	}
 
-	std::optional<HashValue<32>> xxHash_32(const void* data, size_t size) noexcept
+	HashValue<32> xxHash_32(const void* data, size_t size) noexcept
 	{
 		return XXH32(data, size, 0);
 	}
-	std::optional<HashValue<64>> xxHash_64(const void* data, size_t size) noexcept
+	HashValue<64> xxHash_64(const void* data, size_t size) noexcept
 	{
 		return XXH64(data, size, 0);
 	}
-	std::optional<HashValue<128>> xxHash_128(const void* data, size_t size) noexcept
+	HashValue<128> xxHash_128(const void* data, size_t size) noexcept
 	{
 		XXH128_hash_t result = XXH3_128bits(data, size);
 		return HashValue<128>(&result, sizeof(result));
 	}
-	std::optional<HashValue<32>> xxHash_32(IInputStream& stream) noexcept
+	HashValue<32> xxHash_32(IInputStream& stream) noexcept
 	{
 		return DoCalcXXHash<32>(stream, XXH32_createState, XXH32_freeState, XXH32_reset, XXH32_update, XXH32_digest);
 	}
-	std::optional<HashValue<64>> xxHash_64(IInputStream& stream) noexcept
+	HashValue<64> xxHash_64(IInputStream& stream) noexcept
 	{
 		return DoCalcXXHash<64>(stream, XXH64_createState, XXH64_freeState, XXH64_reset, XXH64_update, XXH64_digest);
 	}

@@ -6,7 +6,7 @@ namespace kxf
 {
 	String SecretValue::ToString(IEncodingConverter& encodingConverter) const
 	{
-		return encodingConverter.ToWideChar<uint8_t>(m_Storage);
+		return encodingConverter.ToWideChar<std::byte>(m_Storage);
 	}
 	void SecretValue::Wipe() noexcept
 	{

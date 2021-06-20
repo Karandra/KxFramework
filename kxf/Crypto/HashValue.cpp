@@ -5,12 +5,12 @@
 
 namespace kxf::Crypto::Private
 {
-	String HashValueToString(std::span<const uint8_t> data)
+	String HashValueToString(std::span<const std::byte> data)
 	{
 		String result;
 		result.reserve(data.size() * 2);
 
-		for (uint8_t x: data)
+		for (std::byte x: data)
 		{
 			result += Format("{:02x}", x);
 		};

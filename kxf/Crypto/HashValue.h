@@ -7,10 +7,10 @@ namespace kxf::Crypto::Private
 	template<size_t bitLength, class T>
 	constexpr bool IsHashConvertibleToInteger() noexcept
 	{
-		return std::is_integral_v<T> && std::is_unsigned_v<T> && (sizeof(T) <= bitLength / 8) && (bitLength == 8 || bitLength == 16 || bitLength == 32 || bitLength == 64);
+		return std::is_unsigned_v<T> && (sizeof(T) <= bitLength / 8) && (bitLength == 8 || bitLength == 16 || bitLength == 32 || bitLength == 64);
 	}
 
-	String HashValueToString(std::span<const uint8_t> data);
+	String HashValueToString(std::span<const std::byte> data);
 }
 
 namespace kxf::Crypto
@@ -27,34 +27,53 @@ namespace kxf::Crypto
 			}
 
 		private:
-			std::array<uint8_t, bitLength / 8> m_Hash;
+			std::array<std::byte, bitLength / 8> m_Hash;
 
 		public:
-			constexpr HashValue() noexcept = default;
-			HashValue(const void* data, size_t length) noexcept
+			constexpr HashValue() noexcept
+			{
+				m_Hash.fill(std::byte{0});
+			}
+			constexpr HashValue(const void* data, size_t length) noexcept
 			{
 				if (length == m_Hash.size())
 				{
 					std::memcpy(m_Hash.data(), data, length);
 				}
+				else
+				{
+					m_Hash.fill(std::byte{0});
+				}
 			}
 
 			template<class T, class = std::enable_if_t<Private::IsHashConvertibleToInteger<bitLength, T>()>>
-			HashValue(T intValue)
+			constexpr HashValue(T intValue) noexcept
 				:HashValue(&intValue, sizeof(intValue))
 			{
 			}
 
 		public:
+			constexpr bool IsNull() const noexcept
+			{
+				for (std::byte c: m_Hash)
+				{
+					if (c != 0)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+
 			constexpr size_t length() const noexcept
 			{
 				return m_Hash.size();
 			}
-			constexpr const uint8_t* data() const noexcept
+			constexpr const std::byte* data() const noexcept
 			{
 				return m_Hash.data();
 			}
-			constexpr uint8_t* data() noexcept
+			constexpr std::byte* data() noexcept
 			{
 				return m_Hash.data();
 			}
@@ -99,7 +118,34 @@ namespace kxf::Crypto
 				}
 			}
 
+			constexpr auto begin() noexcept
+			{
+				return m_Hash.begin();
+			}
+			constexpr auto begin() const noexcept
+			{
+				return m_Hash.begin();
+			}
+
+			constexpr auto end() noexcept
+			{
+				return m_Hash.end();
+			}
+			constexpr auto end() const noexcept
+			{
+				return m_Hash.end();
+			}
+
 		public:
+			explicit constexpr operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			constexpr bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+
 			constexpr bool operator==(const HashValue& other) const noexcept
 			{
 				return m_Hash == other.m_Hash;

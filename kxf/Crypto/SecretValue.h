@@ -24,7 +24,7 @@ namespace kxf
 			}
 
 		private:
-			std::vector<uint8_t> m_Storage;
+			std::vector<std::byte> m_Storage;
 
 		public:
 			SecretValue() noexcept = default;
