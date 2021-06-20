@@ -24,35 +24,41 @@ namespace kxf
 
 namespace kxf
 {
-	template<class TInt, class TEnum>
-	constexpr std::enable_if_t<std::is_enum_v<TEnum>, TInt> ToInt(TEnum value) noexcept
+	template<class TInt, class TEnum> requires(std::is_enum_v<TEnum>)
+	constexpr TInt ToInt(TEnum value) noexcept
 	{
 		return static_cast<TInt>(value);
 	}
 
-	template<class TEnum, class TInt = std::underlying_type_t<TEnum>>
-	constexpr std::enable_if_t<std::is_enum_v<TEnum>, TInt> ToInt(TEnum value) noexcept
+	template<class TEnum, class TInt = std::underlying_type_t<TEnum>> requires(std::is_enum_v<TEnum>)
+	constexpr TInt ToInt(TEnum value) noexcept
 	{
 		return static_cast<TInt>(value);
 	}
 
-	template<class TEnum, class TInt>
-	constexpr std::enable_if_t<std::is_enum_v<TEnum>, TEnum> FromInt(TInt value) noexcept
+	template<class TEnum, class TInt> requires(std::is_enum_v<TEnum>)
+	constexpr TEnum FromInt(TInt value) noexcept
 	{
 		return static_cast<TEnum>(value);
 	}
 
-	template<class TEnum>
-	constexpr std::enable_if_t<IsFlagSet_v<TEnum>, TEnum> operator|(TEnum left, TEnum right) noexcept
+	template<class TEnum> requires(IsFlagSet_v<TEnum>)
+	constexpr TEnum operator|(TEnum left, TEnum right) noexcept
 	{
-		using Tint = std::underlying_type_t<TEnum>;
-		return static_cast<TEnum>(static_cast<Tint>(left) | static_cast<Tint>(right));
+		using Tx = std::underlying_type_t<TEnum>;
+		return static_cast<TEnum>(static_cast<Tx>(left) | static_cast<Tx>(right));
 	}
 
-	template<class TEnum, class... Args>
-	constexpr std::enable_if_t<(IsFlagSet_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...), TEnum> CombineFlags(Args&&... arg) noexcept
+	template<class TEnum, class... Args> requires((IsFlagSet_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...))
+	constexpr TEnum CombineFlags(Args&&... arg) noexcept
 	{
 		return static_cast<TEnum>((static_cast<std::underlying_type_t<std::remove_const_t<std::remove_reference_t<Args>>>>(arg) | ...));
+	}
+
+	template<class TEnum> requires(std::is_enum_v<TEnum>)
+	constexpr auto FlagSetValue(size_t index) noexcept
+	{
+		return static_cast<std::underlying_type_t<TEnum>>(1) << index;
 	}
 }
 

@@ -16,7 +16,7 @@ namespace kxf
 			TStorage m_Storage;
 
 		public:
-			template<class... Args, std::enable_if_t<std::is_constructible_v<TValue, Args...>, int> = 0>
+			template<class... Args> requires(std::is_constructible_v<TValue, Args...>)
 			AlignedObjectStorage(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue, Args...>)
 			{
 				m_Storage.Construct(std::forward<Args>(arg)...);
