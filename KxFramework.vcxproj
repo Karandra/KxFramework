@@ -233,6 +233,7 @@
     <ClInclude Include="kxf\EventSystem\IEventFilter.h" />
     <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\IEvtHandler.h" />
+    <ClInclude Include="kxf\EventSystem\ITimer.h" />
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
     <ClInclude Include="kxf\EventSystem\Private\EventWaitInfo.h" />
     <ClInclude Include="kxf\EventSystem\SignalExecutor.h" />
@@ -240,6 +241,8 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\GenericTimer.h" />
+    <ClInclude Include="kxf\EventSystem\TimerEvent.h" />
     <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
     <ClInclude Include="kxf\General\AlignedBuffer.h" />
@@ -740,6 +743,7 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\GenericTimer.cpp" />
     <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp" />

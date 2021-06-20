@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/Async/Common.h"
+#include "kxf/EventSystem/GenericTimer.h"
 #include "kxf/EventSystem/IndirectInvocationEvent.h"
 #include "YieldInstruction.h"
 #include <wx/timer.h>
@@ -18,13 +19,15 @@ namespace kxf::Async
 
 namespace kxf::Async
 {
-	class KX_API CoroutineTimer final: public wxTimer
+	class KX_API CoroutineTimer final: public GenericTimer
 	{
 		private:
 			std::unique_ptr<CoroutineBase> m_Coroutine;
 
+		protected:
+			void OnNotify() override;
+
 		public:
-			void Notify() override;
 			void Wait(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time);
 			std::unique_ptr<CoroutineBase> Relinquish();
 	};

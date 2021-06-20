@@ -1944,6 +1944,15 @@
     <ClInclude Include="kxf\Application\CommandLineParser.h">
       <Filter>kxf\Application</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\EventSystem\GenericTimer.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\ITimer.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\TimerEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2915,6 +2924,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\AffineMatrix.cpp">
       <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\GenericTimer.cpp">
+      <Filter>kxf\EventSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

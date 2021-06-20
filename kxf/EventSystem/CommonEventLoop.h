@@ -36,7 +36,6 @@ namespace kxf
 			void OnYieldFor(FlagSet<EventCategory> toProcess) override = 0;
 			int OnRun() override;
 
-
 		public:
 			CommonEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
 				:m_WxEventLoop(*this, allowedToYield), m_AllowedToYield(allowedToYield)

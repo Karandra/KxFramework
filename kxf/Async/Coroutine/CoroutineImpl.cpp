@@ -5,19 +5,20 @@
 
 namespace kxf::Async
 {
-	void CoroutineTimer::Notify()
+	void CoroutineTimer::OnNotify()
 	{
 		CoroutineBase::QueueExecution(std::move(m_Coroutine));
 	}
+
 	std::unique_ptr<CoroutineBase> CoroutineTimer::Relinquish()
 	{
-		wxTimer::Stop();
+		Stop();
 		return std::move(m_Coroutine);
 	}
 	void CoroutineTimer::Wait(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time)
 	{
 		m_Coroutine = std::move(coroutine);
-		wxTimer::StartOnce(time.GetMilliseconds());
+		Start(time);
 	}
 }
 
