@@ -5,7 +5,7 @@
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
-
+#include <wx/image.h>
 
 namespace
 {
@@ -40,86 +40,179 @@ namespace kxf
 		return wxImage::GetImageCount(warpper, Drawing::Private::MapImageFormat(format));
 	}
 
+	BitmapImage::BitmapImage(const wxImage& other)
+		:m_Image(std::make_unique<wxImage>(other))
+	{
+	}
+	BitmapImage::BitmapImage(const BitmapImage& other)
+	{
+		if (other)
+		{
+			m_Image = std::make_unique<wxImage>(*other.m_Image);
+		}
+	}
+
 	BitmapImage::BitmapImage(const GDIIcon& other)
-		:m_Image(std::move(other.ToBitmapImage().m_Image))
+		:m_Image(other.ToBitmapImage().m_Image)
 	{
 	}
 	BitmapImage::BitmapImage(const GDIBitmap& other)
-		:m_Image(std::move(other.ToBitmapImage().m_Image))
+		:m_Image(other.ToBitmapImage().m_Image)
 	{
 	}
 	BitmapImage::BitmapImage(const GDICursor& other)
-		:m_Image(std::move(other.ToBitmapImage().m_Image))
+		:m_Image(other.ToBitmapImage().m_Image)
 	{
+	}
+
+	BitmapImage::BitmapImage(const Size& size)
+		:m_Image(std::make_unique<wxImage>(size.GetWidth(), size.GetHeight(), false))
+	{
+	}
+	BitmapImage::BitmapImage(const Size& size, uint8_t* rgb)
+		:m_Image(std::make_unique<wxImage>(size.GetWidth(), size.GetHeight(), rgb, true))
+	{
+	}
+	BitmapImage::BitmapImage(const Size& size, uint8_t* rgb, uint8_t* alpha)
+		:m_Image(std::make_unique<wxImage>(size.GetWidth(), size.GetHeight(), rgb, alpha, true))
+	{
+	}
+	BitmapImage::BitmapImage(const Size& size, wxMemoryBuffer& rgb)
+		:m_Image(std::make_unique<wxImage>(size.GetWidth(), size.GetHeight(), static_cast<unsigned char*>(rgb.release()), false))
+	{
+	}
+	BitmapImage::BitmapImage(const Size& size, wxMemoryBuffer& rgb, wxMemoryBuffer& alpha)
+		:m_Image(std::make_unique<wxImage>(size.GetWidth(), size.GetHeight(), static_cast<unsigned char*>(rgb.release()), static_cast<unsigned char*>(alpha.release()), false))
+	{
+	}
+
+	BitmapImage::~BitmapImage() = default;
+
+	// IImage2D
+	bool BitmapImage::IsNull() const
+	{
+		return !m_Image || !m_Image->IsOk();
+	}
+	bool BitmapImage::IsSameAs(const IImage2D& other) const
+	{
+		if (this == &other)
+		{
+			return true;
+		}
+		else if (auto image = other.QueryInterface<BitmapImage>())
+		{
+			return m_Image == image->m_Image || m_Image->IsSameAs(*image->m_Image);
+		}
+		return false;
+	}
+	std::unique_ptr<IImage2D> BitmapImage::CloneImage2D() const
+	{
+		if (m_Image)
+		{
+			return std::make_unique<BitmapImage>(m_Image->Copy());
+		}
+		return std::make_unique<BitmapImage>();
 	}
 
 	// IImage2D: Create, save and load
 	void BitmapImage::Create(const Size& size)
 	{
-		m_Image.Create(size, false);
+		m_Image = std::make_unique<wxImage>(size, false);
 	}
 	bool BitmapImage::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
 	{
+		if (!m_Image)
+		{
+			m_Image = std::make_unique<wxImage>();
+		}
+
 		wxWidgets::InputStreamWrapperWx warpper(stream);
-		return m_Image.LoadFile(warpper, Drawing::Private::MapImageFormat(format), index == IImage2D::npos ? -1 : static_cast<int>(index));
+		return m_Image->LoadFile(warpper, Drawing::Private::MapImageFormat(format), index == IImage2D::npos ? -1 : static_cast<int>(index));
 	}
 	bool BitmapImage::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
-		if (m_Image.IsOk() && format != ImageFormat::None)
+		if (m_Image && m_Image->IsOk() && format != ImageFormat::None)
 		{
 			wxWidgets::OutputStreamWrapperWx warpper(stream);
 			if (format == ImageFormat::Any)
 			{
 				// Save to either original format or as a PNG
-				if (auto type = m_Image.GetType(); type != wxBitmapType::wxBITMAP_TYPE_INVALID && wxBitmapType::wxBITMAP_TYPE_ANY)
+				if (auto type = m_Image->GetType(); type != wxBitmapType::wxBITMAP_TYPE_INVALID && wxBitmapType::wxBITMAP_TYPE_ANY)
 				{
-					return m_Image.SaveFile(warpper, type);
+					return m_Image->SaveFile(warpper, type);
 				}
 				else
 				{
-					return m_Image.SaveFile(warpper, wxBitmapType::wxBITMAP_TYPE_PNG);
+					return m_Image->SaveFile(warpper, wxBitmapType::wxBITMAP_TYPE_PNG);
 				}
 			}
 			else
 			{
-				return m_Image.SaveFile(warpper, Drawing::Private::MapImageFormat(format));
+				return m_Image->SaveFile(warpper, Drawing::Private::MapImageFormat(format));
 			}
 		}
 		return false;
 	}
 
 	// IImage2D: Properties
+	Size BitmapImage::GetSize() const
+	{
+		return m_Image && m_Image->IsOk() ? Size(m_Image->GetSize()) : Size::UnspecifiedSize();
+	}
+	int BitmapImage::GetWidth() const
+	{
+		return m_Image && m_Image->IsOk() ? m_Image->GetWidth() : Size::UnspecifiedSize().GetWidth();
+	}
+	int BitmapImage::GetHeight() const
+	{
+		return m_Image && m_Image->IsOk() ? m_Image->GetWidth() : Size::UnspecifiedSize().GetHeight();
+	}
+	ColorDepth BitmapImage::GetColorDepth() const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			return m_Image->HasAlpha() ? ColorDepthDB::BPP32 : ColorDepthDB::BPP24;
+		}
+		return {};
+	}
 	UniversallyUniqueID BitmapImage::GetFormat() const
 	{
-		return Drawing::Private::MapImageFormat(m_Image.GetType());
+		if (m_Image)
+		{
+			return Drawing::Private::MapImageFormat(m_Image->GetType());
+		}
+		return {};
 	}
 
 	// IImage2D: Options
 	std::optional<String> BitmapImage::GetOption(const String& name) const
 	{
-		if (m_Image.HasOption(name))
+		if (m_Image && m_Image->HasOption(name))
 		{
-			return m_Image.GetOption(name);
+			return m_Image->GetOption(name);
 		}
 		return {};
 	}
 	std::optional<int> BitmapImage::GetOptionInt(const String& name) const
 	{
-		if (m_Image.HasOption(name))
+		if (m_Image)
 		{
-			return m_Image.GetOptionInt(name);
-		}
-		else if (name == ImageOption::DPI)
-		{
-			if (m_Image.GetOptionInt(ImageOption::ResolutionUnit) == wxIMAGE_RESOLUTION_NONE)
+			if (m_Image->HasOption(name))
 			{
-				if (m_Image.HasOption(ImageOption::Resolution))
+				return m_Image->GetOptionInt(name);
+			}
+			else if (name == ImageOption::DPI)
+			{
+				if (m_Image->GetOptionInt(ImageOption::ResolutionUnit) == wxIMAGE_RESOLUTION_NONE)
 				{
-					return m_Image.GetOptionInt(ImageOption::Resolution);
-				}
-				else if (m_Image.HasOption(ImageOption::ResolutionX) || m_Image.GetOptionInt(ImageOption::ResolutionY))
-				{
-					return std::min(m_Image.GetOptionInt(ImageOption::ResolutionX), m_Image.GetOptionInt(ImageOption::ResolutionY));
+					if (m_Image->HasOption(ImageOption::Resolution))
+					{
+						return m_Image->GetOptionInt(ImageOption::Resolution);
+					}
+					else if (m_Image->HasOption(ImageOption::ResolutionX) || m_Image->GetOptionInt(ImageOption::ResolutionY))
+					{
+						return std::min(m_Image->GetOptionInt(ImageOption::ResolutionX), m_Image->GetOptionInt(ImageOption::ResolutionY));
+					}
 				}
 			}
 		}
@@ -128,34 +221,40 @@ namespace kxf
 
 	void BitmapImage::SetOption(const String& name, int value)
 	{
-		if (name == ImageOption::DPI)
+		if (m_Image)
 		{
-			m_Image.SetOption(ImageOption::ResolutionUnit, wxIMAGE_RESOLUTION_NONE);
-			m_Image.SetOption(ImageOption::Resolution, value);
-			m_Image.SetOption(ImageOption::ResolutionX, value);
-			m_Image.SetOption(ImageOption::ResolutionY, value);
+			if (name == ImageOption::DPI)
+			{
+				m_Image->SetOption(ImageOption::ResolutionUnit, wxIMAGE_RESOLUTION_NONE);
+				m_Image->SetOption(ImageOption::Resolution, value);
+				m_Image->SetOption(ImageOption::ResolutionX, value);
+				m_Image->SetOption(ImageOption::ResolutionY, value);
 
-			return;
+				return;
+			}
+			m_Image->SetOption(name, value);
 		}
-		m_Image.SetOption(name, value);
 	}
 	void BitmapImage::SetOption(const String& name, const String& value)
 	{
-		m_Image.SetOption(name, value);
+		if (m_Image)
+		{
+			m_Image->SetOption(name, value);
+		}
 	}
 
 	// IImage2D: Conversion
 	BitmapImage BitmapImage::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			if (!size.IsFullySpecified() || m_Image.GetSize() == size)
+			if (!size.IsFullySpecified() || m_Image->GetSize() == size)
 			{
-				return m_Image;
+				return *m_Image;
 			}
 			else
 			{
-				BitmapImage clone = m_Image;
+				BitmapImage clone = *m_Image;
 				clone.Rescale(size, interpolationQuality);
 				return clone;
 			}
@@ -164,15 +263,15 @@ namespace kxf
 	}
 	GDIBitmap BitmapImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			if (!size.IsFullySpecified() || m_Image.GetSize() == size)
+			if (!size.IsFullySpecified() || m_Image->GetSize() == size)
 			{
-				return wxBitmap(m_Image, *ColorDepthDB::BPP32);
+				return wxBitmap(*m_Image, *ColorDepthDB::BPP32);
 			}
 			else
 			{
-				BitmapImage clone = m_Image;
+				BitmapImage clone = *m_Image;
 				clone.Rescale(size, interpolationQuality);
 				return wxBitmap(clone.ToWxImage(), *ColorDepthDB::BPP32);
 			}
@@ -183,13 +282,13 @@ namespace kxf
 	// IBitmapImage: Pixel data
 	std::vector<PackedRGBA<uint8_t>> BitmapImage::GetPixelDataRGBA() const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
 			std::vector<PackedRGBA<uint8_t>> bufferRGBA;
-			bufferRGBA.resize(GetImageBufferSize(m_Image));
+			bufferRGBA.resize(GetImageBufferSize(*m_Image));
 
-			const auto rgb = m_Image.GetData();
-			const auto alpha = m_Image.GetAlpha();
+			const auto rgb = m_Image->GetData();
+			const auto alpha = m_Image->GetAlpha();
 			for (size_t i = 0; i < bufferRGBA.size(); i++)
 			{
 				const auto pixel = rgb + i;
@@ -204,11 +303,11 @@ namespace kxf
 	{
 		AssertPackedColorLayout();
 
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
 			std::vector<PackedRGB<uint8_t>> bufferRGB;
-			bufferRGB.resize(GetImageBufferSize(m_Image));
-			std::memcpy(bufferRGB.data(), m_Image.GetData(), GetImageBufferSize(m_Image, 3));
+			bufferRGB.resize(GetImageBufferSize(*m_Image));
+			std::memcpy(bufferRGB.data(), m_Image->GetData(), GetImageBufferSize(*m_Image, 3));
 
 			return bufferRGB;
 		}
@@ -216,27 +315,27 @@ namespace kxf
 	}
 	std::vector<uint8_t> BitmapImage::GetPixelDataAlpha() const
 	{
-		if (m_Image.IsOk() && m_Image.HasAlpha())
+		if (m_Image && m_Image->IsOk() && m_Image->HasAlpha())
 		{
-			const auto alpha = m_Image.GetAlpha();
-			return {alpha, alpha + GetImageBufferSize(m_Image)};
+			const auto alpha = m_Image->GetAlpha();
+			return {alpha, alpha + GetImageBufferSize(*m_Image)};
 		}
 		return {};
 	}
 
 	void BitmapImage::SetPixelDataRGBA(const PackedRGBA<uint8_t>* pixelData)
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			if (!m_Image.HasAlpha())
+			if (!m_Image->HasAlpha())
 			{
-				m_Image.InitAlpha();
+				m_Image->InitAlpha();
 			}
 
-			auto targetRGB = m_Image.GetData();
-			auto targetAlpha = m_Image.GetAlpha();
+			auto targetRGB = m_Image->GetData();
+			auto targetAlpha = m_Image->GetAlpha();
 
-			const size_t totalSize = GetImageBufferSize(m_Image);
+			const size_t totalSize = GetImageBufferSize(*m_Image);
 			for (size_t i = 0; i < totalSize; i++)
 			{
 				// Copy first 3 components for RGB data
@@ -252,63 +351,133 @@ namespace kxf
 	}
 	void BitmapImage::SetPixelDataRGB(const PackedRGB<uint8_t>* pixelDataRGB)
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
 			AssertPackedColorLayout();
 
-			std::memcpy(m_Image.GetData(), pixelDataRGB, GetImageBufferSize(m_Image, 3));
+			std::memcpy(m_Image->GetData(), pixelDataRGB, GetImageBufferSize(*m_Image, 3));
 		}
 	}
 	void BitmapImage::SetPixelDataAlpha(const uint8_t* pixelDataAlpha)
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			if (!m_Image.HasAlpha())
+			if (!m_Image->HasAlpha())
 			{
-				m_Image.InitAlpha();
+				m_Image->InitAlpha();
 			}
-			std::memcpy(m_Image.GetAlpha(), pixelDataAlpha, GetImageBufferSize(m_Image));
+			std::memcpy(m_Image->GetAlpha(), pixelDataAlpha, GetImageBufferSize(*m_Image));
 		}
 	}
 
 	void BitmapImage::ClearPixelDataRGBA(uint8_t value)
 	{
-		m_Image.Clear(value);
-		if (!m_Image.HasAlpha())
+		if (m_Image)
 		{
-			m_Image.InitAlpha();
+			m_Image->Clear(value);
+			if (!m_Image->HasAlpha())
+			{
+				m_Image->InitAlpha();
+			}
+			std::memset(m_Image->GetAlpha(), value, GetImageBufferSize(*m_Image));
 		}
-		std::memset(m_Image.GetAlpha(), value, GetImageBufferSize(m_Image));
 	}
 	void BitmapImage::ClearPixelDataRGB(uint8_t value)
 	{
-		m_Image.Clear(value);
+		if (m_Image)
+		{
+			m_Image->Clear(value);
+		}
 	}
 	void BitmapImage::ClearPixelDataAlpha(uint8_t value)
 	{
-		if (!m_Image.HasAlpha())
+		if (m_Image)
 		{
-			m_Image.InitAlpha();
+			if (!m_Image->HasAlpha())
+			{
+				m_Image->InitAlpha();
+			}
+			std::memset(m_Image->GetAlpha(), value, GetImageBufferSize(*m_Image));
 		}
-		std::memset(m_Image.GetAlpha(), value, GetImageBufferSize(m_Image));
+	}
+
+	PackedRGBA<uint8_t> BitmapImage::GetPixelRGBA(const Point& pos) const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			return {GetRed(pos), GetGreen(pos), GetBlue(pos), GetAlpha(pos)};
+		}
+		return {};
+	}
+	kxf::PackedRGB<uint8_t> BitmapImage::GetPixelRGB(const Point& pos) const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			return {GetRed(pos), GetGreen(pos), GetBlue(pos)};
+		}
+		return {};
+	}
+
+	void BitmapImage::SetPixelRGBA(const Point& pos, const PackedRGBA<uint8_t>& color)
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			InitAlpha();
+
+			m_Image->SetRGB(pos.GetX(), pos.GetY(), color.Red, color.Green, color.Blue);
+			m_Image->SetAlpha(pos.GetX(), pos.GetY(), color.Alpha);
+		}
+	}
+	void BitmapImage::SetPixelRGB(const Point& pos, const PackedRGB<uint8_t>& color)
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			m_Image->SetRGB(pos.GetX(), pos.GetY(), color.Red, color.Green, color.Blue);
+		}
+	}
+	void BitmapImage::SetAreaRGBA(const Rect& rect, const PackedRGBA<uint8_t>& color)
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			m_Image->SetRGB(rect, color.Red, color.Green, color.Blue);
+
+			InitAlpha();
+			for (int y = rect.GetY(); y < m_Image->GetHeight(); y++)
+			{
+				for (int x = rect.GetX(); x < m_Image->GetWidth(); x++)
+				{
+					m_Image->SetAlpha(x, y, color.Alpha);
+				}
+			}
+		}
+	}
+	void BitmapImage::SetAreaRGB(const Rect& rect, const PackedRGB<uint8_t>& color)
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			m_Image->SetRGB(rect, color.Red, color.Green, color.Blue);
+		}
 	}
 
 	void BitmapImage::ReplaceRGB(const PackedRGB<uint8_t>& source, const PackedRGB<uint8_t>& target)
 	{
-		m_Image.Replace(source.Red, source.Green, source.Blue, target.Red, target.Green, target.Blue);
+		if (m_Image)
+		{
+			m_Image->Replace(source.Red, source.Green, source.Blue, target.Red, target.Green, target.Blue);
+		}
 	}
 	void BitmapImage::ReplaceRGBA(const PackedRGBA<uint8_t>& source, const PackedRGBA<uint8_t>& target)
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			if (!m_Image.HasAlpha())
+			if (!m_Image->HasAlpha())
 			{
-				m_Image.InitAlpha();
+				m_Image->InitAlpha();
 			}
 
-			auto rgb = m_Image.GetData();
-			auto alpha = m_Image.GetAlpha();
-			const size_t totalSize = GetImageBufferSize(m_Image);
+			auto rgb = m_Image->GetData();
+			auto alpha = m_Image->GetAlpha();
+			const size_t totalSize = GetImageBufferSize(*m_Image);
 			for (size_t i = 0; i < totalSize; i++)
 			{
 				auto pixel = rgb + (i * 3);
@@ -326,10 +495,10 @@ namespace kxf
 	// IBitmapImage: Transparency
 	bool BitmapImage::IsPartiallyTransparent() const
 	{
-		if (m_Image.HasAlpha())
+		if (m_Image && m_Image->HasAlpha())
 		{
-			const auto alpha = m_Image.GetAlpha();
-			const size_t count = GetImageBufferSize(m_Image);
+			const auto alpha = m_Image->GetAlpha();
+			const size_t count = GetImageBufferSize(*m_Image);
 			for (size_t i = 0; i < count; i++)
 			{
 				if (alpha[i] != g_OpaqueAlpha)
@@ -342,22 +511,55 @@ namespace kxf
 	}
 	bool BitmapImage::IsPixelTransparent(const Point& pos, uint8_t threshold) const
 	{
-		return m_Image.IsTransparent(pos.GetX(), pos.GetY(), threshold);
+		if (m_Image)
+		{
+			return m_Image->IsTransparent(pos.GetX(), pos.GetY(), threshold);
+		}
+		return {};
 	}
 
 	// BitmapImage
 	void BitmapImage::SetFormat(const UniversallyUniqueID& format)
 	{
-		m_Image.SetType(Drawing::Private::MapImageFormat(format));
+		if (m_Image)
+		{
+			m_Image->SetType(Drawing::Private::MapImageFormat(format));
+		}
+	}
+	bool BitmapImage::IsSameAs(const BitmapImage& other) const
+	{
+		return this == &other || m_Image == other.m_Image || (m_Image && other.m_Image && m_Image->IsSameAs(*other.m_Image));
+	}
+	BitmapImage BitmapImage::Clone() const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			return m_Image->Copy();
+		}
+		return {};
+	}
+
+	// BitmapImage: Conversion
+	const wxImage& BitmapImage::ToWxImage() const noexcept
+	{
+		return m_Image ? *m_Image : wxNullImage;
+	}
+	wxImage& BitmapImage::ToWxImage() noexcept
+	{
+		return m_Image ? *m_Image : wxNullImage;
 	}
 
 	GDICursor BitmapImage::ToGDICursor(const Point& hotSpot) const
 	{
-		wxCursor cursorWx(m_Image);
-		GDICursor cursor(std::move(cursorWx));
-		cursor.SetHotSpot(hotSpot);
+		if (m_Image)
+		{
+			wxCursor cursorWx(*m_Image);
+			GDICursor cursor(std::move(cursorWx));
+			cursor.SetHotSpot(hotSpot);
 
-		return cursor;
+			return cursor;
+		}
+		return {};
 	}
 	GDIIcon BitmapImage::ToGDIIcon() const
 	{
@@ -365,41 +567,168 @@ namespace kxf
 	}
 
 	// BitmapImage: Pixel data
+	const uint8_t* BitmapImage::GetRawData() const
+	{
+		return m_Image ? m_Image->GetData() : nullptr;
+	}
+	uint8_t* BitmapImage::GetRawData()
+	{
+		return m_Image ? m_Image->GetData() : nullptr;
+	}
+	void BitmapImage::ClearRawData(uint8_t value)
+	{
+		m_Image->Clear(value);
+	}
+
+	void BitmapImage::SetRawData(wxMemoryBuffer& alpha)
+	{
+		if (m_Image)
+		{
+			m_Image->SetData(static_cast<unsigned char*>(alpha.release()), false);
+		}
+	}
+	void BitmapImage::SetRawData(uint8_t* alpha)
+	{
+		if (m_Image)
+		{
+			m_Image->SetData(alpha, true);
+		}
+	}
+	void BitmapImage::SetRawData(const Size& size, wxMemoryBuffer& alpha)
+	{
+		if (m_Image)
+		{
+			m_Image->SetData(static_cast<unsigned char*>(alpha.release()), size.GetWidth(), size.GetHeight(), false);
+		}
+	}
+	void BitmapImage::SetRawData(const Size& size, uint8_t* alpha)
+	{
+		if (m_Image)
+		{
+			m_Image->SetData(alpha, size.GetWidth(), size.GetHeight(), true);
+		}
+	}
+
+	bool BitmapImage::HasAlpha() const
+	{
+		return m_Image ? m_Image->HasAlpha() : false;
+	}
+	bool BitmapImage::InitAlpha()
+	{
+		if (m_Image && !m_Image->HasAlpha())
+		{
+			m_Image->InitAlpha();
+			return true;
+		}
+		return false;
+	}
+	bool BitmapImage::ClearAlpha()
+	{
+		if (m_Image && m_Image->HasAlpha())
+		{
+			m_Image->ClearAlpha();
+			return true;
+		}
+		return false;
+	}
+
+	const uint8_t* BitmapImage::GetRawAlpha() const
+	{
+		return m_Image ? m_Image->GetAlpha() : nullptr;
+	}
+	uint8_t* BitmapImage::GetRawAlpha()
+	{
+		return m_Image ? m_Image->GetAlpha() : nullptr;
+	}
+
 	uint8_t BitmapImage::GetRed(const Point& pos) const
 	{
-		return m_Image.GetRed(pos.GetX(), pos.GetY());
+		if (m_Image)
+		{
+			return m_Image->GetRed(pos.GetX(), pos.GetY());
+		}
+		return 0;
 	}
 	uint8_t BitmapImage::GetGreen(const Point& pos) const
 	{
-		return m_Image.GetGreen(pos.GetX(), pos.GetY());
+		if (m_Image)
+		{
+			return m_Image->GetGreen(pos.GetX(), pos.GetY());
+		}
+		return 0;
 	}
 	uint8_t BitmapImage::GetBlue(const Point& pos) const
 	{
-		return m_Image.GetBlue(pos.GetX(), pos.GetY());
+		if (m_Image)
+		{
+			return m_Image->GetBlue(pos.GetX(), pos.GetY());
+		}
+		return 0;
 	}
 	uint8_t BitmapImage::GetAlpha(const Point& pos) const
 	{
-		return m_Image.HasAlpha() ? m_Image.GetAlpha(pos.GetX(), pos.GetY()) : g_OpaqueAlpha;
+		if (m_Image && m_Image->HasAlpha())
+		{
+			return m_Image->GetAlpha(pos.GetX(), pos.GetY());
+		}
+		return g_OpaqueAlpha;
 	}
 
 	// BitmapImage: Transformation
 	BitmapImage BitmapImage::GetSubImage(const Rect& rect) const
 	{
-		return m_Image.GetSubImage(rect);
+		if (m_Image)
+		{
+			return m_Image->GetSubImage(rect);
+		}
+		return {};
 	}
-	BitmapImage BitmapImage::Mirror(Orientation orientation) const
+
+	BitmapImage BitmapImage::Blur(int radius, Orientation orientation) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image)
 		{
 			switch (orientation)
 			{
 				case Orientation::Vertical:
 				{
-					return m_Image.Mirror(false);
+					return m_Image->BlurVertical(radius);
 				}
 				case Orientation::Horizontal:
 				{
-					return m_Image.Mirror(true);
+					return m_Image->BlurHorizontal(radius);
+				}
+				case Orientation::Both:
+				{
+					return m_Image->Blur(radius);
+				}
+			};
+		}
+		return {};
+	}
+	BitmapImage BitmapImage::Paste(const BitmapImage& image, const Point& pos, CompositionMode compositionMode)
+	{
+		if (m_Image && image)
+		{
+			wxImage copy = *m_Image;
+			copy.Paste(*image.m_Image, pos.GetX(), pos.GetY());
+			return copy;
+		}
+		return {};
+	}
+	BitmapImage BitmapImage::Mirror(Orientation orientation) const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			switch (orientation)
+			{
+				case Orientation::Vertical:
+				{
+					return m_Image->Mirror(false);
+				}
+				case Orientation::Horizontal:
+				{
+					return m_Image->Mirror(true);
 				}
 			};
 		}
@@ -407,25 +736,25 @@ namespace kxf
 	}
 	BitmapImage BitmapImage::Rotate(Angle angle, const Point& rotationCenter, InterpolationQuality interpolationQuality) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
 			const float deg = angle.ToDegrees();
 
 			if (deg == 90.0f)
 			{
-				return m_Image.Rotate90(true);
+				return m_Image->Rotate90(true);
 			}
 			else if (deg == -90.0f)
 			{
-				return m_Image.Rotate90(false);
+				return m_Image->Rotate90(false);
 			}
 			else if (deg == 180.0f)
 			{
-				return m_Image.Rotate180();
+				return m_Image->Rotate180();
 			}
 			else
 			{
-				return m_Image.Rotate(angle.ToRadians(), rotationCenter, interpolationQuality != InterpolationQuality::None);
+				return m_Image->Rotate(angle.ToRadians(), rotationCenter, interpolationQuality != InterpolationQuality::None);
 			}
 		}
 		return {};
@@ -433,19 +762,19 @@ namespace kxf
 
 	BitmapImage& BitmapImage::Resize(const Size& size, const Point& pos, const PackedRGB<uint8_t>& backgroundColor)
 	{
-		if (size != m_Image.GetSize())
+		if (m_Image && size != m_Image->GetSize())
 		{
-			m_Image.Resize(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
+			m_Image->Resize(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
 		}
 		return *this;
 	}
 	BitmapImage& BitmapImage::Rescale(const Size& size, InterpolationQuality interpolationQuality)
 	{
-		if (size != m_Image.GetSize())
+		if (m_Image && size != m_Image->GetSize())
 		{
 			auto DoScale = [&](wxImageResizeQuality quality)
 			{
-				m_Image.Rescale(size.GetWidth(), size.GetHeight(), quality);
+				m_Image->Rescale(size.GetWidth(), size.GetHeight(), quality);
 			};
 
 			switch (interpolationQuality)
@@ -489,26 +818,26 @@ namespace kxf
 	// BitmapImage: Conversion
 	BitmapImage BitmapImage::ConvertToDisabled(Angle brightness) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
 			uint8_t value = brightness.ToNormalized() * ColorTraits<uint8_t>::max();
-			return m_Image.ConvertToDisabled(value);
+			return m_Image->ConvertToDisabled(value);
 		}
 		return {};
 	}
 	BitmapImage BitmapImage::ConvertToMonochrome(const PackedRGB<uint8_t>& makeWhite) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			return m_Image.ConvertToMono(makeWhite.Red, makeWhite.Green, makeWhite.Blue);
+			return m_Image->ConvertToMono(makeWhite.Red, makeWhite.Green, makeWhite.Blue);
 		}
 		return {};
 	}
 	BitmapImage BitmapImage::ConvertToGrayscale(const PackedRGB<float>& weight) const
 	{
-		if (m_Image.IsOk())
+		if (m_Image && m_Image->IsOk())
 		{
-			return m_Image.ConvertToGreyscale(weight.Red, weight.Green, weight.Blue);
+			return m_Image->ConvertToGreyscale(weight.Red, weight.Green, weight.Blue);
 		}
 		return {};
 	}
@@ -516,16 +845,112 @@ namespace kxf
 	// BitmapImage: Misc
 	std::optional<PackedRGB<uint8_t>> BitmapImage::FindFirstUnusedColour(const PackedRGB<uint8_t>& startAt) const
 	{
-		PackedRGB<uint8_t> firstUnused;
-		if (m_Image.IsOk() && m_Image.FindFirstUnusedColour(&firstUnused.Red, &firstUnused.Green, &firstUnused.Blue, startAt.Red, startAt.Green, startAt.Blue))
+		if (m_Image)
 		{
-			return firstUnused;
+			PackedRGB<uint8_t> firstUnused;
+			if (m_Image->IsOk() && m_Image->FindFirstUnusedColour(&firstUnused.Red, &firstUnused.Green, &firstUnused.Blue, startAt.Red, startAt.Green, startAt.Blue))
+			{
+				return firstUnused;
+			}
 		}
 		return {};
 	}
 	BitmapImage& BitmapImage::RotateHue(Angle angle)
 	{
-		m_Image.RotateHue(angle.ToNormalized());
+		if (m_Image)
+		{
+			m_Image->RotateHue(angle.ToNormalized());
+		}
 		return *this;
+	}
+
+	// BitmapImage: Mask
+	bool BitmapImage::IsMaskEnabled() const
+	{
+		return m_Image ? m_Image->HasMask() : false;
+	}
+	void BitmapImage::EnableMask(bool enable)
+	{
+		if (m_Image)
+		{
+			m_Image->SetMask(enable);
+		}
+	}
+
+	PackedRGB<uint8_t> BitmapImage::GetMask() const
+	{
+		if (m_Image)
+		{
+			return {m_Image->GetMaskRed(), m_Image->GetMaskGreen(), m_Image->GetMaskBlue()};
+		}
+		return {};
+	}
+	void BitmapImage::SetMask(const PackedRGB<uint8_t>& color)
+	{
+		if (m_Image)
+		{
+			m_Image->SetMaskColour(color.Red, color.Green, color.Blue);
+		}
+	}
+	void BitmapImage::SetMask(const Color& color)
+	{
+		SetMask(color.GetFixed8().RemoveAlpha());
+	}
+	bool BitmapImage::SetMask(const BitmapImage& shape, const PackedRGB<uint8_t>& color)
+	{
+		if (m_Image && shape)
+		{
+			return m_Image->SetMaskFromImage(*shape.m_Image, color.Red, color.Green, color.Blue);
+		}
+		return false;
+	}
+	bool BitmapImage::SetMask(const BitmapImage& shape, const Color& color)
+	{
+		if (shape)
+		{
+			return SetMask(*shape.m_Image, color.GetFixed8().RemoveAlpha());
+		}
+		return false;
+	}
+
+	BitmapImage& BitmapImage::operator=(const BitmapImage& other)
+	{
+		if (other)
+		{
+			m_Image = std::make_unique<wxImage>(*other.m_Image);
+		}
+		else
+		{
+			m_Image = nullptr;
+		}
+		return *this;
+	}
+}
+
+namespace kxf
+{
+	uint64_t BinarySerializer<BitmapImage>::Serialize(IOutputStream& stream, const BitmapImage& value) const
+	{
+		auto pos = stream.TellO();
+		if (value.Save(stream, ImageFormat::Any))
+		{
+			return (stream.TellO() - pos).ToBytes();
+		}
+		else
+		{
+			throw BinarySerializerException("Couldn't serialize 'BitmapImage'");
+		}
+	}
+	uint64_t BinarySerializer<BitmapImage>::Deserialize(IInputStream& stream, BitmapImage& value) const
+	{
+		auto pos = stream.TellI();
+		if (value.Load(stream, ImageFormat::Any))
+		{
+			return (stream.TellI() - pos).ToBytes();
+		}
+		else
+		{
+			throw BinarySerializerException("Couldn't deserialize 'BitmapImage'");
+		}
 	}
 }
