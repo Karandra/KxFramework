@@ -1,10 +1,13 @@
 #pragma once
 #include "Common.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
 	class ColorDepth final
 	{
+		friend struct BinarySerializer<ColorDepth>;
+
 		private:
 			int m_Value = 0;
 
@@ -51,4 +54,20 @@ namespace kxf::ColorDepthDB
 	constexpr ColorDepth BPP24 = {24};
 	constexpr ColorDepth BPP32 = {32};
 	constexpr ColorDepth BPP48 = {48};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<ColorDepth> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const ColorDepth& value) const
+		{
+			return Serialization::WriteObject(stream, value.m_Value);
+		}
+		uint64_t Deserialize(IInputStream& stream, ColorDepth& value) const
+		{
+			return Serialization::ReadObject(stream, value.m_Value);
+		}
+	};
 }
