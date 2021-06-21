@@ -30,6 +30,40 @@ namespace
 		static_assert(sizeof(PackedRGB<uint8_t>) == 3 && alignof(PackedRGB<uint8_t>) == alignof(uint8_t), "Invalid layout of PackedRGB<uint8_t> structure");
 		static_assert(sizeof(PackedRGBA<uint8_t>) == 4 && alignof(PackedRGBA<uint8_t>) == alignof(uint8_t), "Invalid layout of PackedRGBA<uint8_t> structure");
 	}
+	constexpr wxImageResizeQuality MapInterpolarionQuality(kxf::InterpolationQuality interpolationQuality)
+	{
+		using namespace kxf;
+
+		switch (interpolationQuality)
+		{
+			case InterpolationQuality::Default:
+			case InterpolationQuality::FastestAvailable:
+			{
+				return wxIMAGE_QUALITY_NORMAL;
+			}
+			case InterpolationQuality::BestAvailable:
+			{
+				return wxIMAGE_QUALITY_HIGH;
+			}
+			case InterpolationQuality::NearestNeighbor:
+			{
+				return wxIMAGE_QUALITY_NEAREST;
+			}
+			case InterpolationQuality::Bilinear:
+			{
+				return wxIMAGE_QUALITY_BILINEAR;
+			}
+			case InterpolationQuality::Bicubic:
+			{
+				return wxIMAGE_QUALITY_BICUBIC;
+			}
+			case InterpolationQuality::BoxAverage:
+			{
+				return wxIMAGE_QUALITY_BOX_AVERAGE;
+			}
+		};
+		return wxIMAGE_QUALITY_NORMAL;
+	}
 }
 
 namespace kxf
@@ -756,45 +790,7 @@ namespace kxf
 	{
 		if (m_Image && size != m_Image->GetSize())
 		{
-			auto DoScale = [&](wxImageResizeQuality quality)
-			{
-				m_Image->Rescale(size.GetWidth(), size.GetHeight(), quality);
-			};
-
-			switch (interpolationQuality)
-			{
-				case InterpolationQuality::Default:
-				case InterpolationQuality::FastestAvailable:
-				{
-					DoScale(wxIMAGE_QUALITY_NORMAL);
-					break;
-				}
-				case InterpolationQuality::BestAvailable:
-				{
-					DoScale(wxIMAGE_QUALITY_HIGH);
-					break;
-				}
-				case InterpolationQuality::NearestNeighbor:
-				{
-					DoScale(wxIMAGE_QUALITY_NEAREST);
-					break;
-				}
-				case InterpolationQuality::Bilinear:
-				{
-					DoScale(wxIMAGE_QUALITY_BILINEAR);
-					break;
-				}
-				case InterpolationQuality::Bicubic:
-				{
-					DoScale(wxIMAGE_QUALITY_BICUBIC);
-					break;
-				}
-				case InterpolationQuality::BoxAverage:
-				{
-					DoScale(wxIMAGE_QUALITY_BOX_AVERAGE);
-					break;
-				}
-			};
+			m_Image->Rescale(size.GetWidth(), size.GetHeight(), MapInterpolarionQuality(interpolationQuality));
 		}
 		return *this;
 	}
@@ -810,9 +806,7 @@ namespace kxf
 			}
 			else
 			{
-				BitmapImage clone = *m_Image;
-				clone.Rescale(size, interpolationQuality);
-				return wxBitmap(clone.ToWxImage(), *ColorDepthDB::BPP32);
+				return wxBitmap(m_Image->Scale(size.GetWidth(), size.GetHeight(), MapInterpolarionQuality(interpolationQuality)), *ColorDepthDB::BPP32);
 			}
 		}
 		return {};
@@ -945,6 +939,7 @@ namespace kxf
 			{
 				written += Serialization::WriteObject(stream, value.GetPixelDataRGB());
 			}
+			return written;
 		}
 		else
 		{
@@ -960,19 +955,19 @@ namespace kxf
 
 		if (size.IsFullySpecified())
 		{
-			value.Create(size);
+			value = BitmapImage(size);
 
 			if (colorDepth == ColorDepthDB::BPP32)
 			{
 				std::vector<PackedRGBA<uint8_t>> rgba;
-				Serialization::ReadObject(stream, rgba);
+				read += Serialization::ReadObject(stream, rgba);
 
 				value.SetPixelDataRGBA(rgba.data());
 			}
 			else if (colorDepth == ColorDepthDB::BPP24)
 			{
 				std::vector<PackedRGB<uint8_t>> rgb;
-				Serialization::ReadObject(stream, rgb);
+				read += Serialization::ReadObject(stream, rgb);
 
 				value.SetPixelDataRGB(rgb.data());
 			}
@@ -985,5 +980,6 @@ namespace kxf
 		{
 			value = {};
 		}
+		return read;
 	}
 }
