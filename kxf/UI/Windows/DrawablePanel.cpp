@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "DrawablePanel.h"
-#include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
 #include <wx/bookctrl.h>

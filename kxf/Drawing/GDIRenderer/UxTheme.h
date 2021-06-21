@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "Color.h"
-#include "Geometry.h"
+#include "kxf/Drawing/Color.h"
+#include "kxf/Drawing/Geometry.h"
 class wxWindow;
 
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/uxctl-ref

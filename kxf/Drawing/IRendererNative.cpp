@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "IRendererNative.h"
-#include "GDIRenderer/GDIRendererNative.h"
 #include "GraphicsRenderer.h"
+#include "GDIRenderer/GDIRendererNative.h"
 
 namespace
 {

@@ -4,8 +4,6 @@
 #include "Column.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "wx/generic/private/markuptext.h"
 

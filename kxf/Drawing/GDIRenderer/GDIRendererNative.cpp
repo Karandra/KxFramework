@@ -1,10 +1,12 @@
 #include "KxfPCH.h"
 #include "GDIRendererNative.h"
 #include "GDIAction.h"
+#include "GDIFont.h"
+#include "GDIBitmap.h"
 #include "kxf/System/SystemInformation.h"
 #include "../GraphicsRenderer.h"
-#include "../UxTheme.h"
-#include "../Private/UxThemeDefines.h"
+#include "UxTheme.h"
+#include "Private/UxThemeDefines.h"
 
 namespace
 {
@@ -52,8 +54,8 @@ namespace
 		parameters.m_selectionColour = buttonInfo.SelectionColor;
 
 		parameters.m_labelText = buttonInfo.LabelText;
-		parameters.m_labelFont = buttonInfo.LabelFont.ToWxFont();
-		parameters.m_labelBitmap = buttonInfo.LabelBitmap.ToWxBitmap();
+		parameters.m_labelFont = buttonInfo.LabelFont.ToGDIFont().ToWxFont();
+		parameters.m_labelBitmap = buttonInfo.LabelBitmap.ToGDIBitmap().ToWxBitmap();
 		parameters.m_labelAlignment = buttonInfo.LabelAlignment.ToInt();
 
 		return parameters;

@@ -1,11 +1,12 @@
 #pragma once
 #include "Common.h"
-#include "GDIRenderer/GDIFont.h"
-#include "GDIRenderer/GDIBitmap.h"
 #include "kxf/General/Common.h"
 #include "kxf/General/String.h"
 #include "kxf/General/Version.h"
 #include "kxf/RTTI/RTTI.h"
+#include "BitmapImage.h"
+#include "Font.h"
+class wxWindow;
 
 namespace kxf
 {
@@ -64,8 +65,8 @@ namespace kxf
 		Color SelectionColor;
 		Color LabelColor;
 		String LabelText;
-		GDIFont LabelFont;
-		GDIBitmap LabelBitmap;
+		Font LabelFont;
+		BitmapImage LabelBitmap;
 		FlagSet<Alignment> LabelAlignment = Alignment::Left|Alignment::CenterVertical;
 	};
 

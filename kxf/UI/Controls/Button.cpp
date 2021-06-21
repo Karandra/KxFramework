@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "Button.h"
-#include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/ImageBundle.h"
+#include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
 #include "kxf/UI/Menus/Menu.h"

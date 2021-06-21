@@ -589,12 +589,6 @@
     <ClInclude Include="kxf\Drawing\WithImageList.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h">
-      <Filter>kxf\Drawing\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\UxTheme.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\Math.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
@@ -1634,9 +1628,6 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPath.h">
       <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\IRendererNative.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
@@ -1956,6 +1947,15 @@
     <ClInclude Include="kxf\wxWidgets\WithImageList.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\UxTheme.h">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\UxThemeDefines.h">
+      <Filter>kxf\Drawing\GDIRenderer\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\IRendererNative.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2127,9 +2127,6 @@
       <Filter>kxf\Network</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Common.cpp">
-      <Filter>kxf\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Drawing\UxTheme.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\Math.cpp">
@@ -2733,9 +2730,6 @@
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp">
       <Filter>kxf\Drawing\GraphicsRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
-      <Filter>kxf\Drawing</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClCompile>
@@ -2932,6 +2926,12 @@
       <Filter>kxf\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\FontMetrics.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\UxTheme.cpp">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>

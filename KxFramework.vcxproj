@@ -174,6 +174,8 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\IGDIObject.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\Private\GDI.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\UxThemeDefines.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\UxTheme.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\GradientStops.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer.h" />
@@ -202,8 +204,8 @@
     <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\ImageDefines.h" />
     <ClInclude Include="kxf\Drawing\IBitmapImage.h" />
-    <ClInclude Include="kxf\Drawing\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\IRendererNative.h" />
+    <ClInclude Include="kxf\Drawing\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\Private\Defines.h" />
     <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
@@ -543,8 +545,6 @@
     <ClInclude Include="kxf\Crypto\SecretValue.h" />
     <ClInclude Include="kxf\Drawing.hpp" />
     <ClInclude Include="kxf\Drawing\Common.h" />
-    <ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h" />
-    <ClInclude Include="kxf\Drawing\UxTheme.h" />
     <ClInclude Include="kxf\Drawing\WithImageList.h" />
     <ClInclude Include="kxf\EventSystem.hpp" />
     <ClInclude Include="kxf\EventSystem\EventBroadcastProcessor.h" />
@@ -723,14 +723,15 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\UxTheme.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\BitmapImage.cpp" />
     <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
-    <ClCompile Include="kxf\Drawing\Private\Common.cpp" />
     <ClCompile Include="kxf\Drawing\IRendererNative.cpp" />
+    <ClCompile Include="kxf\Drawing\Private\Common.cpp" />
     <ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\Drawing\SVGImage.cpp" />
@@ -944,7 +945,6 @@
     <ClCompile Include="kxf\Crypto\Crypto.cpp" />
     <ClCompile Include="kxf\Crypto\SecretValue.cpp" />
     <ClCompile Include="kxf\Drawing\Common.cpp" />
-    <ClCompile Include="kxf\Drawing\UxTheme.cpp" />
     <ClCompile Include="kxf\General\Any.cpp" />
     <ClCompile Include="kxf\General\Math.cpp" />
     <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />

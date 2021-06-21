@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "StdDialog.h"
-#include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/ArtProvider.h"
+#include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/System.h"
 

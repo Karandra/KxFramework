@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "Label.h"
-#include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace
