@@ -85,7 +85,6 @@ namespace kxf
 
 			// IImage2D: Conversion
 			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 		public:
 			// IVectorImage

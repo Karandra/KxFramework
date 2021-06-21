@@ -131,7 +131,6 @@ namespace kxf
 			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
 
 			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 			// GDIBitmap
 			const wxBitmap& ToWxBitmap() const noexcept
@@ -154,6 +153,7 @@ namespace kxf
 			{
 				return m_Bitmap.ConvertToDisabled(static_cast<uint8_t>(brightness.ToNormalized() * 255));
 			}
+			GDIBitmap GetScaled(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const;
 
 			void UpdateAlpha()
 			{

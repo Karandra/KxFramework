@@ -105,23 +105,6 @@ namespace kxf
 		}
 		return {};
 	}
-	GDIBitmap GDIBitmap::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
-	{
-		if (m_Bitmap.IsOk())
-		{
-			if (!size.IsFullySpecified() || m_Bitmap.GetSize() == size)
-			{
-				return m_Bitmap;
-			}
-			else
-			{
-				BitmapImage image = m_Bitmap.ConvertToImage();
-				image.Rescale(size, interpolationQuality);
-				return image.ToGDIBitmap();
-			}
-		}
-		return {};
-	}
 
 	// GDIBitmap
 	GDICursor GDIBitmap::ToGDICursor(const Point& hotSpot) const
@@ -137,5 +120,23 @@ namespace kxf
 		icon.CopyFromBitmap(m_Bitmap);
 
 		return icon;
+	}
+
+	GDIBitmap GDIBitmap::GetScaled(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Bitmap.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Bitmap.GetSize() == size)
+			{
+				return m_Bitmap;
+			}
+			else
+			{
+				BitmapImage image = m_Bitmap.ConvertToImage();
+				image.Rescale(size, interpolationQuality);
+				return image.ToGDIBitmap();
+			}
+		}
+		return {};
 	}
 }

@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "SVGImage.h"
 #include "BitmapImage.h"
-#include "GDIRenderer/GDIBitmap.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/General/DateTime.h"
@@ -173,10 +172,6 @@ namespace kxf
 			}
 		}
 		return {};
-	}
-	GDIBitmap SVGImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
-	{
-		return SVGImage::ToBitmapImage(size, interpolationQuality).ToGDIBitmap();
 	}
 
 	// IVectorImage

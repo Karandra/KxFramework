@@ -262,23 +262,6 @@ namespace kxf
 		}
 		return {};
 	}
-	GDIBitmap BitmapImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
-	{
-		if (m_Image && m_Image->IsOk())
-		{
-			if (!size.IsFullySpecified() || m_Image->GetSize() == size)
-			{
-				return wxBitmap(*m_Image, *ColorDepthDB::BPP32);
-			}
-			else
-			{
-				BitmapImage clone = *m_Image;
-				clone.Rescale(size, interpolationQuality);
-				return wxBitmap(clone.ToWxImage(), *ColorDepthDB::BPP32);
-			}
-		}
-		return {};
-	}
 
 	// IBitmapImage: Pixel data
 	std::vector<PackedRGBA<uint8_t>> BitmapImage::GetPixelDataRGBA() const
@@ -817,6 +800,23 @@ namespace kxf
 	}
 
 	// BitmapImage: Conversion
+	GDIBitmap BitmapImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Image && m_Image->IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Image->GetSize() == size)
+			{
+				return wxBitmap(*m_Image, *ColorDepthDB::BPP32);
+			}
+			else
+			{
+				BitmapImage clone = *m_Image;
+				clone.Rescale(size, interpolationQuality);
+				return wxBitmap(clone.ToWxImage(), *ColorDepthDB::BPP32);
+			}
+		}
+		return {};
+	}
 	BitmapImage BitmapImage::ConvertToDisabled(Angle brightness) const
 	{
 		if (m_Image && m_Image->IsOk())

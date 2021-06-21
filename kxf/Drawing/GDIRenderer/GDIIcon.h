@@ -107,7 +107,6 @@ namespace kxf
 			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
 
 			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 			// Icon
 			const wxIcon& ToWxIcon() const noexcept
@@ -119,6 +118,7 @@ namespace kxf
 				return m_Icon;
 			}
 			GDICursor ToGDICursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const;
 
 			GDIIcon ConvertToDisabled(Angle brightness = Angle::FromNormalized(1)) const;
 

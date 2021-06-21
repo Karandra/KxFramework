@@ -141,7 +141,7 @@ namespace kxf
 			}
 			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
 			{
-				m_Bitmap = m_Bitmap.ToGDIBitmap(size, interpolationQuality);
+				m_Bitmap = m_Bitmap.GetScaled(size, interpolationQuality);
 			}
 
 			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override
@@ -197,7 +197,7 @@ namespace kxf
 			{
 				if (!m_Bitmap || SizeF(m_Bitmap.GetSize()) != size)
 				{
-					m_Bitmap = m_VectorImage.ToGDIBitmap(size);
+					m_Bitmap = m_VectorImage.ToBitmapImage(size).ToGDIBitmap();
 				}
 			}
 			void Invalidate()

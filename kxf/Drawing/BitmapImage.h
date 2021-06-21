@@ -69,7 +69,6 @@ namespace kxf
 
 			// IImage2D: Conversion
 			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 		public:
 			// IBitmapImage: Pixel data
@@ -147,6 +146,7 @@ namespace kxf
 			BitmapImage& Rescale(const Size& size, InterpolationQuality interpolationQuality);
 
 			// BitmapImage: Conversion
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const;
 			BitmapImage ConvertToDisabled(Angle brightness = Angle::FromNormalized(1)) const;
 			BitmapImage ConvertToMonochrome(const PackedRGB<uint8_t>& makeWhite) const;
 			BitmapImage ConvertToGrayscale(const PackedRGB<float>& weight = ColorWeight::CCIR_601) const;

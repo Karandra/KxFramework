@@ -10,8 +10,6 @@ namespace kxf
 {
 	class IInputStream;
 	class IOutputStream;
-
-	class GDIBitmap;
 	class BitmapImage;
 }
 
@@ -58,7 +56,6 @@ namespace kxf
 
 			// Conversion
 			virtual BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const = 0;
-			virtual GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const = 0;
 
 		public:
 			explicit operator bool() const noexcept

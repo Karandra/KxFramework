@@ -139,7 +139,6 @@ namespace kxf
 			void SetOption(const String& name, int value) override;
 
 			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 			// GDICursor
 			const wxCursor& ToWxCursor() const noexcept
@@ -151,6 +150,7 @@ namespace kxf
 				return m_Cursor;
 			}
 			GDIIcon ToGDIIcon() const;
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const;
 
 			Point GetHotSpot() const
 			{

@@ -124,6 +124,12 @@ namespace kxf
 		}
 		return {};
 	}
+
+	// GDICursor
+	GDIIcon GDICursor::ToGDIIcon() const
+	{
+		return GDICursor::ToGDIBitmap();
+	}
 	GDIBitmap GDICursor::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
 	{
 		if (m_Cursor.IsOk())
@@ -140,12 +146,6 @@ namespace kxf
 			}
 		}
 		return {};
-	}
-
-	// GDICursor
-	GDIIcon GDICursor::ToGDIIcon() const
-	{
-		return GDICursor::ToGDIBitmap();
 	}
 }
 

@@ -76,6 +76,15 @@ namespace kxf
 	{
 		return GDIIcon::ToGDIBitmap(size, interpolationQuality).ToBitmapImage(Size::UnspecifiedSize(), InterpolationQuality::None);
 	}
+
+	// Icon
+	GDICursor GDIIcon::ToGDICursor(const Point& hotSpot) const
+	{
+		GDICursor cursor(ToGDIBitmap());
+		cursor.SetHotSpot(hotSpot);
+
+		return cursor;
+	}
 	GDIBitmap GDIIcon::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
 	{
 		if (m_Icon.IsOk())
@@ -91,15 +100,6 @@ namespace kxf
 			return image.ToGDIBitmap();
 		}
 		return {};
-	}
-
-	// Icon
-	GDICursor GDIIcon::ToGDICursor(const Point& hotSpot) const
-	{
-		GDICursor cursor(ToGDIBitmap());
-		cursor.SetHotSpot(hotSpot);
-
-		return cursor;
 	}
 
 	GDIIcon GDIIcon::ConvertToDisabled(Angle brightness) const
