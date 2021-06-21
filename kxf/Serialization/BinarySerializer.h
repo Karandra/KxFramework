@@ -93,7 +93,7 @@ namespace kxf::Private
 {
 	class BufferBinarySerializer
 	{
-		private:
+		protected:
 			uint64_t DoWriteBuffer(IOutputStream& stream, const void* buffer, size_t length) const;
 			uint64_t DoReadBuffer(IInputStream& stream, void* buffer, size_t length) const;
 	};
@@ -456,9 +456,9 @@ namespace kxf
 			}
 			else
 			{
-				for (size_t i = 0; i < length; i++)
+				for (auto& item: value)
 				{
-					read += Serialization::ReadObject(stream, value[i]);
+					read += Serialization::ReadObject(stream, item);
 				}
 			}
 			return read;
