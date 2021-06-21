@@ -183,34 +183,19 @@ namespace kxf
 
 		protected:
 			WxGraphicsRenderer* m_Renderer = nullptr;
-			wxGraphicsBitmap m_Graphics;
-
 			SVGImage m_VectorImage;
-			BitmapImage m_BitmapImage;
-			bool m_Initialized = false;
 
 		private:
-			void Initialize(const SizeF& size)
+			wxGraphicsBitmap Initialize(const SizeF& size, InterpolationQuality interpolationQuality) const
 			{
 				if (m_VectorImage)
 				{
-					if (!m_Initialized || !m_BitmapImage || SizeF(m_BitmapImage.GetSize()) != size)
-					{
-						m_BitmapImage = m_VectorImage.ToBitmapImage(size);
-						m_Graphics = m_Renderer->Get().CreateBitmapFromImage(m_BitmapImage.ToWxImage());
-
-						m_Initialized = true;
-					}
+					return m_Renderer->Get().CreateBitmapFromImage(m_VectorImage.ToBitmapImage(size, interpolationQuality).ToWxImage());
 				}
-				else
-				{
-					m_Graphics = {};
-				}
+				return {};
 			}
 			void Invalidate()
 			{
-				m_Initialized = false;
-				m_BitmapImage = {};
 			}
 
 		public:
@@ -253,7 +238,7 @@ namespace kxf
 			}
 			void* GetNativeHandle() const
 			{
-				return m_Graphics.GetGraphicsData();
+				return nullptr;
 			}
 
 			// IGraphicsTexture
@@ -310,15 +295,9 @@ namespace kxf
 			}
 
 			// WxGraphicsTexture
-			const wxGraphicsBitmap& Get(const SizeF& size) const
+			wxGraphicsBitmap Get(const SizeF& size, InterpolationQuality interpolationQuality) const
 			{
-				const_cast<WxGraphicsVectorTexture&>(*this).Initialize(size);
-				return m_Graphics;
-			}
-			wxGraphicsBitmap& Get(const SizeF& size)
-			{
-				Initialize(size);
-				return m_Graphics;
+				return Initialize(size, interpolationQuality);
 			}
 
 			const SVGImage& GetImage() const

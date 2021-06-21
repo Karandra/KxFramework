@@ -5,7 +5,6 @@
 #include "WxGraphicsPen.h"
 #include "WxGraphicsFont.h"
 #include "WxGraphicsPath.h"
-#include "../SVGImage.h"
 #include "../BitmapImage.h"
 #include "../GDIRenderer/GDIBitmap.h"
 #include <wx/msw/dc.h>
@@ -338,7 +337,7 @@ namespace kxf
 			}
 			if (auto textureVectorWx = texture.QueryInterface<WxGraphicsVectorTexture>())
 			{
-				m_Context->DrawBitmap(textureVectorWx->Get(rect.GetSize()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				m_Context->DrawBitmap(textureVectorWx->Get(rect.GetSize(), m_InterpolationQuality), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 				CalcBoundingBox(rect);
 			}
 			else
@@ -347,28 +346,25 @@ namespace kxf
 			}
 		}
 	}
-	void WxGraphicsContext::DrawTexture(const SVGImage& vectorImage, const RectF& rect)
+	void WxGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
 	{
-		if (vectorImage && !rect.IsEmpty())
+		if (m_Renderer->CanRescaleBitmapOnDraw() || SizeF(image.GetSize()) == rect.GetSize())
 		{
-			BitmapImage image = vectorImage.ToBitmapImage(rect.GetSize());
 			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
-			CalcBoundingBox(rect);
+		}
+		else
+		{
+			BitmapImage temp = image.ToBitmapImage(rect.GetSize(), m_InterpolationQuality);
+			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(temp.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 		}
 	}
-	void WxGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
+	void WxGraphicsContext::DrawTexture(const IImage2D& image, const RectF& rect)
 	{
 		if (image && !rect.IsEmpty())
 		{
-			if (m_Renderer->CanRescaleBitmapOnDraw() || SizeF(image.GetSize()) == rect.GetSize())
-			{
-				m_Context->DrawBitmap(image.ToGDIBitmap().ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
-			}
-			else
-			{
-				BitmapImage image = image.Rescale(rect.GetSize(), m_InterpolationQuality);
-				m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
-			}
+			BitmapImage temp = image.ToBitmapImage(rect.GetSize(), m_InterpolationQuality);
+			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(temp.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+
 			CalcBoundingBox(rect);
 		}
 	}

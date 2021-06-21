@@ -311,7 +311,7 @@ namespace kxf
 			}
 			else if (auto gdiVectorTexture = texture.QueryInterface<GDIGraphicsVectorTexture>())
 			{
-				m_DC.DrawBitmap(gdiVectorTexture->Get(rect.GetSize()), rect.GetPosition());
+				m_DC.DrawBitmap(gdiVectorTexture->Get(rect.GetSize(), m_InterpolationQuality), rect.GetPosition());
 			}
 			else
 			{
@@ -319,18 +319,19 @@ namespace kxf
 			}
 		}
 	}
-	void GDIGraphicsContext::DrawTexture(const SVGImage& vectorImage, const RectF& rect)
-	{
-		if (m_DC.CanDrawBitmap() && !rect.IsEmpty() && vectorImage)
-		{
-			m_DC.DrawBitmap(vectorImage.ToBitmapImage(rect.GetSize(), m_InterpolationQuality).ToGDIBitmap(), rect.GetPosition());
-		}
-	}
 	void GDIGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
 	{
 		if (m_DC.CanDrawBitmap() && !rect.IsEmpty() && image)
 		{
 			m_DC.DrawBitmap(image.ToGDIBitmap(rect.GetSize(), m_InterpolationQuality), rect.GetPosition());
+		}
+	}
+	void GDIGraphicsContext::DrawTexture(const IImage2D& image, const RectF& rect)
+	{
+		if (m_DC.CanDrawBitmap() && !rect.IsEmpty() && image)
+		{
+			GDIBitmap bitmap = image.ToBitmapImage(rect.GetSize(), m_InterpolationQuality).ToGDIBitmap();
+			m_DC.DrawBitmap(bitmap.ToWxBitmap(), rect.GetPosition());
 		}
 	}
 	void GDIGraphicsContext::DrawTexture(const GDIBitmap& bitmap, const RectF& rect)

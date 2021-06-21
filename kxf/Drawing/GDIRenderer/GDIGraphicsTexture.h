@@ -175,8 +175,6 @@ namespace kxf
 
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
-
-			GDIBitmap m_Bitmap;
 			SVGImage m_VectorImage;
 
 		private:
@@ -193,16 +191,16 @@ namespace kxf
 				return false;
 			}
 
-			void Initialize(const SizeF& size)
+			GDIBitmap Initialize(const SizeF& size, InterpolationQuality interpolationQuality) const
 			{
-				if (!m_Bitmap || SizeF(m_Bitmap.GetSize()) != size)
+				if (m_VectorImage)
 				{
-					m_Bitmap = m_VectorImage.ToBitmapImage(size).ToGDIBitmap();
+					return m_VectorImage.ToBitmapImage(size, interpolationQuality).ToGDIBitmap();
 				}
+				return {};
 			}
 			void Invalidate()
 			{
-				m_Bitmap = {};
 			}
 
 		public:
@@ -302,15 +300,9 @@ namespace kxf
 			}
 
 			// GDIGraphicsTexture
-			const GDIBitmap& Get(const SizeF& size) const
+			GDIBitmap Get(const SizeF& size, InterpolationQuality interpolationQuality) const
 			{
-				const_cast<GDIGraphicsVectorTexture&>(*this).Initialize(size);
-				return m_Bitmap;
-			}
-			GDIBitmap& Get(const SizeF& size)
-			{
-				Initialize(size);
-				return m_Bitmap;
+				return Initialize(size, interpolationQuality);
 			}
 	};
 }

@@ -14,10 +14,8 @@ class wxScrollHelper;
 namespace kxf
 {
 	class Font;
-	class SVGImage;
+	class IImage2D;
 	class BitmapImage;
-
-	class GDIBitmap;
 	class GDIContext;
 
 	class IGraphicsRenderer;
@@ -99,8 +97,8 @@ namespace kxf
 
 			// Texture functions
 			virtual void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) = 0;
-			virtual void DrawTexture(const SVGImage& vectorImage, const RectF& rect) = 0;
 			virtual void DrawTexture(const BitmapImage& image, const RectF& rect) = 0;
+			virtual void DrawTexture(const IImage2D& image, const RectF& rect) = 0;
 
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> GetFont() const = 0;
