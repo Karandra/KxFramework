@@ -4,6 +4,7 @@
 #include "GDIRenderer/GDICursor.h"
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
+#include "kxf/General/Format.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 #include <wx/image.h>
 
@@ -409,7 +410,7 @@ namespace kxf
 		}
 		return {};
 	}
-	kxf::PackedRGB<uint8_t> BitmapImage::GetPixelRGB(const Point& pos) const
+	PackedRGB<uint8_t> BitmapImage::GetPixelRGB(const Point& pos) const
 	{
 		if (m_Image && m_Image->IsOk())
 		{
@@ -931,26 +932,58 @@ namespace kxf
 {
 	uint64_t BinarySerializer<BitmapImage>::Serialize(IOutputStream& stream, const BitmapImage& value) const
 	{
-		auto pos = stream.TellO();
-		if (value.Save(stream, ImageFormat::Any))
+		if (value)
 		{
-			return (stream.TellO() - pos).ToBytes();
+			auto written = Serialization::WriteObject(stream, value.GetSize());
+			written += Serialization::WriteObject(stream, value.GetColorDepth());
+
+			if (value.HasAlpha())
+			{
+				written += Serialization::WriteObject(stream, value.GetPixelDataRGBA());
+			}
+			else
+			{
+				written += Serialization::WriteObject(stream, value.GetPixelDataRGB());
+			}
 		}
 		else
 		{
-			throw BinarySerializerException("Couldn't serialize 'BitmapImage'");
+			return Serialization::WriteObject(stream, Size::UnspecifiedSize()) + Serialization::WriteObject<ColorDepth>(stream, {});
 		}
 	}
 	uint64_t BinarySerializer<BitmapImage>::Deserialize(IInputStream& stream, BitmapImage& value) const
 	{
-		auto pos = stream.TellI();
-		if (value.Load(stream, ImageFormat::Any))
+		Size size;
+		ColorDepth colorDepth;
+		auto read = Serialization::ReadObject(stream, size);
+		read += Serialization::ReadObject(stream, colorDepth);
+
+		if (size.IsFullySpecified())
 		{
-			return (stream.TellI() - pos).ToBytes();
+			value.Create(size);
+
+			if (colorDepth == ColorDepthDB::BPP32)
+			{
+				std::vector<PackedRGBA<uint8_t>> rgba;
+				Serialization::ReadObject(stream, rgba);
+
+				value.SetPixelDataRGBA(rgba.data());
+			}
+			else if (colorDepth == ColorDepthDB::BPP24)
+			{
+				std::vector<PackedRGB<uint8_t>> rgb;
+				Serialization::ReadObject(stream, rgb);
+
+				value.SetPixelDataRGB(rgb.data());
+			}
+			else
+			{
+				throw BinarySerializerException(Format("Invalid color depth value: '{}'", colorDepth.GetValue()));
+			}
 		}
 		else
 		{
-			throw BinarySerializerException("Couldn't deserialize 'BitmapImage'");
+			value = {};
 		}
 	}
 }
