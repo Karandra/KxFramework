@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
-#include "kxf/Drawing/WithImageList.h"
+#include "kxf/wxWidgets/WithImageList.h"
 #include <wx/aui/auibook.h>
 #include <wx/aui/dockart.h>
 
@@ -39,7 +39,7 @@ namespace kxf
 
 namespace kxf::UI
 {
-	class KX_API AuiNotebook: public WithImageListWrapper<wxAuiNotebook>
+	class KX_API AuiNotebook: public wxWidgets::WithImageListWrapper<wxAuiNotebook>
 	{
 		public:
 			enum class RendererType: uint32_t

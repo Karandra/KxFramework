@@ -208,7 +208,6 @@ namespace kxf
 
 namespace kxf
 {
-
 	uint64_t BinarySerializer<SVGImage>::Serialize(IOutputStream& stream, const SVGImage& value) const
 	{
 		return value.m_Document ? Serialization::WriteObject(stream, value.m_Document->toString()) : Serialization::WriteObject(stream, std::string());

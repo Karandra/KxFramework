@@ -25,7 +25,7 @@ namespace kxf
 			{
 			}
 			GDIBrush(const Color& color)
-				:m_Brush(color.ToWxColor(), wxBRUSHSTYLE_SOLID)
+				:m_Brush(color, wxBRUSHSTYLE_SOLID)
 			{
 			}
 			GDIBrush(const GDIBitmap& stippleBitmap)
@@ -69,7 +69,7 @@ namespace kxf
 			}
 			void SetColor(const Color& color)
 			{
-				m_Brush.SetColour(color.ToWxColor());
+				m_Brush.SetColour(color);
 			}
 
 			bool IsTransparent() const

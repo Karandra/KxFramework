@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
-#include <wx/dc.h>
+struct wxFontMetrics;
 
 namespace kxf::Drawing
 {
@@ -22,11 +22,6 @@ namespace kxf::Drawing
 				:Height(size.GetHeight()), AverageWidth(size.GetWidth())
 			{
 			}
-			constexpr BasicFontMetrics(const wxFontMetrics& other) noexcept
-				:Height(other.height), Ascent(other.ascent), Descent(other.descent),
-				AverageWidth(other.averageWidth), InternalLeading(other.internalLeading), ExternalLeading(other.externalLeading)
-			{
-			}
 			constexpr BasicFontMetrics(TValue height, TValue ascent, TValue descent, TValue averageWidth, TValue internalLeading, TValue externalLeading) noexcept
 				:Height(height), Ascent(ascent), Descent(descent),
 				AverageWidth(averageWidth), InternalLeading(internalLeading), ExternalLeading(externalLeading)
@@ -40,20 +35,6 @@ namespace kxf::Drawing
 			{
 			}
 
-		public:
-			operator wxFontMetrics() const noexcept
-			{
-				wxFontMetrics fontMetrics;
-				fontMetrics.height = Height;
-				fontMetrics.ascent = Ascent;
-				fontMetrics.descent = Descent;
-				fontMetrics.averageWidth = AverageWidth;
-				fontMetrics.internalLeading = InternalLeading;
-				fontMetrics.externalLeading = ExternalLeading;
-
-				return fontMetrics;
-			}
-
 	};
 }
 
@@ -62,4 +43,10 @@ namespace kxf
 	using FontMetrics = Drawing::BasicFontMetrics<int>;
 	using FontMetricsF = Drawing::BasicFontMetrics<float>;
 	using FontMetricsD = Drawing::BasicFontMetrics<double>;
+
+	namespace Private
+	{
+		wxFontMetrics ToWxFontMetrics(const FontMetrics& metrics) noexcept;
+		FontMetrics FromWxFontMetrics(const wxFontMetrics& metricsWx) noexcept;
+	}
 }

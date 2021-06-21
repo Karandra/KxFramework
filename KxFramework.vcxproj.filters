@@ -1953,6 +1953,9 @@
     <ClInclude Include="kxf\EventSystem\TimerEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\WithImageList.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2927,6 +2930,9 @@
     </ClCompile>
     <ClCompile Include="kxf\EventSystem\GenericTimer.cpp">
       <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\FontMetrics.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

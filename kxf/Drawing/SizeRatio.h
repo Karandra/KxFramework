@@ -129,9 +129,5 @@ namespace kxf::Geometry
 			{
 				return Size(m_X, m_Y);
 			}
-			operator wxSize() const noexcept
-			{
-				return wxSize(m_X, m_Y);
-			}
 	};
 }

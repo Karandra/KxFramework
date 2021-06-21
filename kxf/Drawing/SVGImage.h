@@ -100,7 +100,7 @@ namespace kxf
 namespace kxf
 {
 	template<>
-	struct BinarySerializer<SVGImage> final
+	struct KX_API BinarySerializer<SVGImage> final
 	{
 		uint64_t Serialize(IOutputStream& stream, const SVGImage& value) const;
 		uint64_t Deserialize(IInputStream& stream, SVGImage& value) const;

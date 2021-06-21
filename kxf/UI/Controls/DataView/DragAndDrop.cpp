@@ -68,12 +68,12 @@ namespace kxf::UI::DataView
 	bool DropSource::GiveFeedback(wxDragResult effect)
 	{
 		Point mousePos = wxGetMousePosition();
-		if (m_DragImage == nullptr)
+		if (!m_DragImage)
 		{
 			Point linePos(0, m_MainWindow->GetRowStart(m_Row));
 
 			m_MainWindow->GetView()->CalcUnscrolledPosition(0, linePos.GetY(), nullptr, &linePos.Y());
-			m_MainWindow->ClientToScreen(&linePos.X(), &linePos.Y());
+			linePos = m_MainWindow->ClientToScreen(linePos);
 
 			int rowIndent = 0;
 			m_HintBitmap = m_MainWindow->CreateItemBitmap(m_Row, rowIndent);
@@ -82,7 +82,7 @@ namespace kxf::UI::DataView
 			m_Distance.Y() = mousePos.GetY() - linePos.GetY();
 			m_HintPosition = GetHintPosition(mousePos);
 
-			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap.ToWxBitmap(), {}, SplashWindowStyle::None|(WindowStyle::None|TopLevelWindowStyle::StayOnTop));
+			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap, {}, SplashWindowStyle::None|(WindowStyle::None|TopLevelWindowStyle::StayOnTop));
 			m_DragImage->SetTransparent(225);
 			m_DragImage->Update();
 			m_DragImage->Show();
@@ -97,7 +97,7 @@ namespace kxf::UI::DataView
 
 	Point DropSource::GetHintPosition(const Point& mousePos) const
 	{
-		return Point(mousePos.GetX() - m_Distance.GetX(), mousePos.GetY() + 5);
+		return {mousePos.GetX() - m_Distance.GetX(), mousePos.GetY() + 5};
 	}
 
 	DropSource::DropSource(MainWindow* mainWindow, Row row)

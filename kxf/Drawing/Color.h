@@ -3,10 +3,8 @@
 #include "ColorDefines.h"
 #include "Angle.h"
 #include "kxf/Serialization/BinarySerializer.h"
-#include <wx/colour.h>
-#include <wx/brush.h>
-#include <wx/pen.h>
 class wxWindow;
+class wxColour;
 
 namespace kxf
 {
@@ -137,13 +135,7 @@ namespace kxf
 			{
 			}
 
-			Color(const wxColour& other) noexcept
-			{
-				if (other.IsOk())
-				{
-					m_Value = ToNormalizedBBP(other.Red(), other.Green(), other.Blue(), other.Alpha());
-				}
-			}
+			Color(const wxColour& other) noexcept;
 
 		public:
 			// General
@@ -167,15 +159,6 @@ namespace kxf
 
 			// Conversion to other types
 			String ToString(C2SFormat format, C2SAlpha alpha = C2SAlpha::Auto, ColorSpace colorSpace = ColorSpace::RGB) const;
-			wxColour ToWxColor() const noexcept
-			{
-				if (IsValid())
-				{
-					auto temp = GetFixed8();
-					return wxColour(temp.Red, temp.Green, temp.Blue, temp.Alpha);
-				}
-				return {};
-			}
 			String GetColorName() const;
 
 			// Normalized
@@ -536,34 +519,15 @@ namespace kxf
 				return m_Value == other.m_Value;
 			}
 
-			std::strong_ordering operator<=>(const wxColour& other) const noexcept
-			{
-				return GetFixed8() <=> PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
-			}
-			bool operator==(const wxColour& other) const noexcept
-			{
-				if (IsValid() && other.IsOk())
-				{
-					return GetFixed8() == PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
-				}
-				return false;
-			}
+			std::strong_ordering operator<=>(const wxColour& other) const noexcept;
+			bool operator==(const wxColour& other) const noexcept;
 
 			constexpr Color& operator=(Color&&) noexcept = default;
 			constexpr Color& operator=(const Color&) noexcept = default;
 
-			operator wxColour() const noexcept
-			{
-				return ToWxColor();
-			}
-			operator wxBrush() const noexcept
-			{
-				return ToWxColor();
-			}
-			operator wxPen() const noexcept
-			{
-				return ToWxColor();
-			}
+			operator wxColour() const noexcept;
+			operator wxBrush() const noexcept;
+			operator wxPen() const noexcept;
 	};
 }
 

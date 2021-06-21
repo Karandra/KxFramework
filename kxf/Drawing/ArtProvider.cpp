@@ -82,9 +82,9 @@ namespace kxf::ArtProvider
 
 namespace kxf::ArtProvider
 {
-	GDIBitmap GetResource(const ResourceID& id, const String& clientID, const Size& size)
+	BitmapImage GetResource(const ResourceID& id, const String& clientID, const Size& size)
 	{
-		return wxArtProvider::GetBitmap(id.ToString(), clientID, size);
+		return GDIBitmap(wxArtProvider::GetBitmap(id.ToString(), clientID, size)).ToBitmapImage();
 	}
 	ImageBundle GetResourceBundle(const ResourceID& id, const String& clientID)
 	{
@@ -95,8 +95,8 @@ namespace kxf::ArtProvider
 	{
 		return String(wxArtProvider::GetMessageBoxIconId(UI::ToWxStdIcon(iconID)));
 	}
-	GDIIcon GetMessageBoxResource(StdIcon iconID)
+	BitmapImage GetMessageBoxResource(StdIcon iconID)
 	{
-		return wxArtProvider::GetMessageBoxIcon(UI::ToWxStdIcon(iconID));
+		return GDIIcon(wxArtProvider::GetMessageBoxIcon(UI::ToWxStdIcon(iconID))).ToBitmapImage();
 	}
 }

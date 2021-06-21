@@ -2,21 +2,14 @@
 #include "Common.h"
 #include "Color.h"
 #include "Geometry.h"
-#include "kxf/General/String.h"
-#include <wx/imaglist.h>
-#include <wx/window.h>
-#include <wx/gdicmn.h>
-#include <wx/dc.h>
-#include <wx/dcgraph.h>
-#include <wx/dcclient.h>
-#include <wx/dcbuffer.h>
-#include <wx/renderer.h>
+class wxWindow;
 
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/uxctl-ref
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses
 namespace kxf
 {
 	class GDIFont;
+	class GDIRegion;
 	class GDIContext;
 
 	enum class UxThemeFlag: uint32_t
@@ -90,14 +83,8 @@ namespace kxf
 
 		public:
 			UxTheme() noexcept = default;
-			UxTheme(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags = {}) noexcept
-			{
-				Open(window, classes, flags);
-			}
-			UxTheme(wxWindow& window, const String& classes, FlagSet<UxThemeFlag> flags = {}) noexcept
-			{
-				Open(window, classes.wc_str(), flags);
-			}
+			UxTheme(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags = {}) noexcept;
+			UxTheme(wxWindow& window, const String& classes, FlagSet<UxThemeFlag> flags = {}) noexcept;
 			UxTheme(wxWindow& window, UxThemeClass themeClass, FlagSet<UxThemeFlag> flags = {}) noexcept;
 			UxTheme(const UxTheme&) = delete;
 			UxTheme(UxTheme&& other) noexcept
@@ -124,7 +111,7 @@ namespace kxf
 			}
 
 			Size GetPartSize(const GDIContext& dc, int iPartId, int iStateId, std::optional<int> sizeVariant = {}) const noexcept;
-			wxRegion GetBackgroundRegion(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
+			GDIRegion GetBackgroundRegion(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 			std::optional<Rect> GetBackgroundContentRect(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 
 			Color GetColor(int iPartId, int iStateId, int iPropId) const noexcept;

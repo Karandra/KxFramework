@@ -132,7 +132,7 @@ namespace kxf
 						case BS_HATCHED:
 						case BS_SOLID:
 						{
-							refData->m_colour = Color::FromCOLORREF(penInfoEx.elpColor).ToWxColor();
+							refData->m_colour = Color::FromCOLORREF(penInfoEx.elpColor);
 							if (penInfoEx.elpBrushStyle == BS_HATCHED)
 							{
 								refData->m_style = static_cast<wxPenStyle>(Drawing::Private::MapNativeHatchStyle(static_cast<int>(penInfoEx.elpHatch)));
@@ -160,7 +160,7 @@ namespace kxf
 				{
 					refData->m_style = Drawing::Private::MapNativePenStyle(penInfo.lopnStyle);
 					refData->m_width = penInfo.lopnWidth.x;
-					refData->m_colour = Color::FromCOLORREF(penInfo.lopnColor).ToWxColor();
+					refData->m_colour = Color::FromCOLORREF(penInfo.lopnColor);
 				}
 			}
 

@@ -30,7 +30,7 @@ namespace kxf
 			{
 			}
 			GDIPen(const Color& color, int width = 1)
-				:m_Pen(color.ToWxColor(), width, wxPENSTYLE_SOLID)
+				:m_Pen(color, width, wxPENSTYLE_SOLID)
 			{
 				Initialize();
 			}
@@ -84,7 +84,7 @@ namespace kxf
 			}
 			void SetColor(const Color& color)
 			{
-				m_Pen.SetColour(color.ToWxColor());
+				m_Pen.SetColour(color);
 			}
 
 			bool IsSolid() const

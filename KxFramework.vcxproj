@@ -681,6 +681,7 @@
     <ClInclude Include="kxf\Utility\System.h" />
     <ClInclude Include="kxf\Utility\TypeTraits.h" />
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
+    <ClInclude Include="kxf\wxWidgets\WithImageList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\Application\ApplicationInitializer.cpp" />
@@ -705,6 +706,7 @@
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Font.cpp" />
+    <ClCompile Include="kxf\Drawing\FontMetrics.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBitmap.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBrush.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIAction.cpp" />

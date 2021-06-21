@@ -465,7 +465,7 @@ namespace kxf
 			}
 			FontMetrics GetFontMetrics() const
 			{
-				return m_DC->GetFontMetrics();
+				return Private::FromWxFontMetrics(m_DC->GetFontMetrics());
 			}
 
 			Size GetTextExtent(const String& text) const
@@ -489,7 +489,6 @@ namespace kxf
 				m_DC->GetMultiLineTextExtent(text, &size.x, &size.y, nullptr, &font.ToWxFont());
 				return size;
 			}
-
 			std::vector<int> GetPartialTextExtent(const String& text) const
 			{
 				wxArrayInt widths;

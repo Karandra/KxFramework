@@ -4,6 +4,9 @@
 #include "kxf/General/String.h"
 #include "kxf/General/Format.h"
 #include "wx/window.h"
+#include <wx/colour.h>
+#include <wx/brush.h>
+#include <wx/pen.h>
 
 namespace
 {
@@ -161,6 +164,14 @@ namespace kxf
 		return wxTheColourDatabase->Find(name);
 	}
 
+	Color::Color(const wxColour& other) noexcept
+	{
+		if (other.IsOk())
+		{
+			m_Value = ToNormalizedBBP(other.Red(), other.Green(), other.Blue(), other.Alpha());
+		}
+	}
+
 	String Color::ToString(C2SFormat format, C2SAlpha alpha, ColorSpace colorSpace) const
 	{
 		switch (format)
@@ -208,5 +219,36 @@ namespace kxf
 	{
 		auto [light, dark] = SelectLighterAndDarkerColor(window.GetBackgroundColour(), window.GetForegroundColour());
 		return GetContrastColor(light, dark);
+	}
+
+	std::strong_ordering Color::operator<=>(const wxColour& other) const noexcept
+	{
+		return GetFixed8() <=> PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
+	}
+	bool Color::operator==(const wxColour& other) const noexcept
+	{
+		if (IsValid() && other.IsOk())
+		{
+			return GetFixed8() == PackedRGBA<uint8_t>(other.Red(), other.Green(), other.Blue(), other.Alpha());
+		}
+		return false;
+	}
+
+	Color::operator wxColour() const noexcept
+	{
+		if (IsValid())
+		{
+			auto temp = GetFixed8();
+			return wxColour(temp.Red, temp.Green, temp.Blue, temp.Alpha);
+		}
+		return {};
+	}
+	Color::operator wxBrush() const noexcept
+	{
+		return static_cast<wxColour>(*this);
+	}
+	Color::operator wxPen() const noexcept
+	{
+		return static_cast<wxColour>(*this);
 	}
 }

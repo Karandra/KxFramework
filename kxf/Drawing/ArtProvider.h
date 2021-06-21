@@ -6,8 +6,6 @@
 
 namespace kxf
 {
-	class GDIBitmap;
-	class GDIIcon;
 	class BitmapImage;
 	class ImageBundle;
 }
@@ -32,9 +30,9 @@ namespace kxf::ArtProvider
 
 namespace kxf::ArtProvider
 {
-	KX_API GDIBitmap GetResource(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize());
+	KX_API BitmapImage GetResource(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize());
 	KX_API ImageBundle GetResourceBundle(const ResourceID& id, const String& clientID = {});
 
 	KX_API ResourceID GetMessageBoxResourceIDs(StdIcon iconID);
-	KX_API GDIIcon GetMessageBoxResource(StdIcon iconID);
+	KX_API BitmapImage GetMessageBoxResource(StdIcon iconID);
 }

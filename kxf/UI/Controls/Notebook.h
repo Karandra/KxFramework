@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
-#include "kxf/Drawing/WithImageList.h"
+#include "kxf/wxWidgets/WithImageList.h"
 #include <wx/notebook.h>
 
 namespace kxf::UI
@@ -26,7 +26,7 @@ namespace kxf
 
 namespace kxf::UI
 {
-	class KX_API Notebook: public kxf::WithImageListWrapper<wxNotebook>
+	class KX_API Notebook: public wxWidgets::WithImageListWrapper<wxNotebook>
 	{
 		public:
 			static constexpr FlagSet<NotebookStyle> DefaultStyle = NotebookStyle::Top;

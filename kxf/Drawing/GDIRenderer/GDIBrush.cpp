@@ -105,7 +105,7 @@ namespace kxf
 						case BS_HATCHED:
 						case BS_SOLID:
 						{
-							refData->m_colour = Color::FromCOLORREF(brushInfo.lbColor).ToWxColor();
+							refData->m_colour = Color::FromCOLORREF(brushInfo.lbColor);
 							if (brushInfo.lbStyle == BS_HATCHED)
 							{
 								refData->m_style = static_cast<wxBrushStyle>(Drawing::Private::MapNativeHatchStyle(static_cast<int>(brushInfo.lbHatch)));

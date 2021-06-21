@@ -2,13 +2,25 @@
 #include "UxTheme.h"
 #include "GDIRenderer/GDIContext.h"
 #include "GDIRenderer/GDIAction.h"
+#include "GDIRenderer/GDIRegion.h"
 #include "GDIRenderer/GDIBitmap.h"
 #include "GDIRenderer/GDIIcon.h"
-#include "kxf/Utility/Common.h"
-#include "kxf/Utility/Drawing.h"
+#include "kxf/General/String.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/SystemInformation.h"
+#include "kxf/Utility/Common.h"
+#include "kxf/Utility/Drawing.h"
+
 #include <wx/fontutil.h>
+#include <wx/imaglist.h>
+#include <wx/window.h>
+#include <wx/gdicmn.h>
+#include <wx/dc.h>
+#include <wx/dcgraph.h>
+#include <wx/dcclient.h>
+#include <wx/dcbuffer.h>
+#include <wx/renderer.h>
+
 #include <Uxtheme.h>
 #include "Private/UxThemeDefines.h"
 
@@ -229,6 +241,14 @@ namespace kxf
 		m_Window = nullptr;
 	}
 
+	UxTheme::UxTheme(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags) noexcept
+	{
+		Open(window, classes, flags);
+	}
+	UxTheme::UxTheme(wxWindow& window, const String& classes, FlagSet<UxThemeFlag> flags) noexcept
+	{
+		Open(window, classes.wc_str(), flags);
+	}
 	UxTheme::UxTheme(wxWindow& window, UxThemeClass KxUxThemeClass, FlagSet<UxThemeFlag> flags) noexcept
 	{
 		if (const wchar_t* name = MapKxUxThemeClassToName(KxUxThemeClass))
@@ -248,13 +268,13 @@ namespace kxf
 		}
 		return Size::UnspecifiedSize();
 	}
-	wxRegion UxTheme::GetBackgroundRegion(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept
+	GDIRegion UxTheme::GetBackgroundRegion(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept
 	{
 		HRGN region = nullptr;
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		if (::GetThemeBackgroundRegion(m_Handle, static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, &rectWin, &region) == S_OK)
 		{
-			return region;
+			return wxRegion(region);
 		}
 		return {};
 	}

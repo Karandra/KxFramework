@@ -3,6 +3,7 @@
 #include "Geometry.h"
 #include "kxf/General/String.h"
 #include "kxf/Serialization/BinarySerializer.h"
+class wxFont;
 
 namespace kxf
 {
@@ -80,7 +81,7 @@ namespace kxf
 			virtual ~Font() = default;
 
 		public:
-			bool IsNull() const
+			bool IsNull() const noexcept
 			{
 				return m_FaceName.IsEmpty() || m_PointSize <= 0 || !m_PixelSize.IsFullySpecified();
 			}
@@ -168,6 +169,8 @@ namespace kxf
 				return IsNull();
 			}
 
+			bool operator==(const Font&) const noexcept = default;
+
 			Font& operator=(const Font&) = default;
 			Font& operator=(Font&&) noexcept = default;
 	};
@@ -176,7 +179,7 @@ namespace kxf
 namespace kxf
 {
 	template<>
-	struct BinarySerializer<Font> final
+	struct KX_API BinarySerializer<Font> final
 	{
 		uint64_t Serialize(IOutputStream& stream, const Font& value) const;
 		uint64_t Deserialize(IInputStream& stream, Font& value) const;
