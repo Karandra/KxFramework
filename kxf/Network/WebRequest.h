@@ -10,3 +10,15 @@
 #include "WebRequest/IWebRequestAuthOptions.h"
 #include "WebRequest/IWebRequestProxyOptions.h"
 #include "WebRequest/IWebRequestSecurityOptions.h"
+
+#include "kxf/General/OptionalPtr.h"
+
+namespace kxf
+{
+	class IThreadPool;
+}
+
+namespace kxf::Network
+{
+	KX_API std::unique_ptr<IWebSession> CreateWebSession(const URI& uri, optional_ptr<IThreadPool> threadPool = nullptr);
+}

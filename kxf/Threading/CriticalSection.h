@@ -75,7 +75,7 @@ namespace kxf
 					lock->Leave();
 				}
 			}
-			CriticalSection* operator->() const noexcept
+			CriticalSection* get() const noexcept
 			{
 				return m_Lock;
 			}

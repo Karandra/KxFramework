@@ -1,19 +1,16 @@
 #pragma once
 #include "kxf/EventSystem/Event.h"
-
-namespace kxf::Threading::Private
-{
-	template<class T>
-	static void AssertThreadExitCode()
-	{
-		static_assert(std::is_pointer_v<T> || std::is_integral_v<T> || std::is_enum_v<T>);
-	}
-}
-
 namespace kxf
 {
 	class KX_API ThreadEvent: public BasicEvent
 	{
+		private:
+			template<class T>
+			constexpr static bool IsValidThreadExitCode() noexcept
+			{
+				return std::is_pointer_v<T> || std::is_integral_v<T> || std::is_enum_v<T>;
+			}
+
 		public:
 			KxEVENT_MEMBER(ThreadEvent, Execute);
 			KxEVENT_MEMBER(ThreadEvent, Started);
@@ -37,19 +34,15 @@ namespace kxf
 			}
 
 		public:
-			template<class T = void*>
+			template<class T = void*> requires(IsValidThreadExitCode<T>())
 			T GetExitCode() const
 			{
-				Threading::Private::AssertThreadExitCode<T>();
-
 				return static_cast<T>(m_ExitCode);
 			}
 			
-			template<class T>
+			template<class T> requires(IsValidThreadExitCode<T>())
 			void SetExitCode(T code)
 			{
-				Threading::Private::AssertThreadExitCode<T>();
-
 				m_ExitCode = static_cast<void*>(code);
 			}
 	};

@@ -340,9 +340,9 @@ namespace kxf
 			m_ShareMode = share;
 			m_Flags = flags;
 			m_Handle = ::ReOpenFile(m_Handle,
-									FileSystem::Private::MapFileAccessMode(m_AccessMode),
-									FileSystem::Private::MapFileShareMode(m_ShareMode),
-									FileSystem::Private::MapFileFlags(flags));
+									*FileSystem::Private::MapFileAccessMode(m_AccessMode),
+									*FileSystem::Private::MapFileShareMode(m_ShareMode),
+									*FileSystem::Private::MapFileFlags(flags));
 
 			if (DoIsOpened())
 			{
@@ -382,7 +382,7 @@ namespace kxf
 			FILE_BASIC_INFO basicInfo = {};
 			if (::GetFileInformationByHandleEx(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo)))
 			{
-				basicInfo.FileAttributes = FileSystem::Private::MapFileAttributes(attributes);
+				basicInfo.FileAttributes = *FileSystem::Private::MapFileAttributes(attributes);
 				return ::SetFileInformationByHandle(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo));
 			}
 		}
@@ -453,11 +453,11 @@ namespace kxf
 
 			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 			m_Handle = ::CreateFileW(pathString.wc_str(),
-									 FileSystem::Private::MapFileAccessMode(m_AccessMode),
-									 FileSystem::Private::MapFileShareMode(m_ShareMode),
+									 *FileSystem::Private::MapFileAccessMode(m_AccessMode),
+									 *FileSystem::Private::MapFileShareMode(m_ShareMode),
 									 nullptr,
 									 FileSystem::Private::MapFileDisposition(m_Disposition),
-									 FileSystem::Private::MapFileFlags(flags),
+									 *FileSystem::Private::MapFileFlags(flags),
 									 nullptr);
 			if (DoIsOpened())
 			{

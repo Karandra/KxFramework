@@ -263,6 +263,7 @@ namespace kxf
 		public:
 			constexpr operator bool() const noexcept
 			{
+				// This is made to disable implicit conversion to the underlaying type if the flag set is instantiated for integer type
 				static_assert(!std::is_integral_v<TEnum>, "cannot use 'operator bool' for flag sets instantiated for integers");
 
 				return !IsNull();

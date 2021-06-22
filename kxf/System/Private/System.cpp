@@ -44,7 +44,7 @@ namespace kxf::System::Private
 		return MAKEINTRESOURCEW(resID);
 	}
 
-	uint32_t MapSystemProcessAccess(FlagSet<SystemProcessAccess> access) noexcept
+	FlagSet<uint32_t> MapSystemProcessAccess(FlagSet<SystemProcessAccess> access) noexcept
 	{
 		if (access == SystemProcessAccess::Everything)
 		{
@@ -52,18 +52,18 @@ namespace kxf::System::Private
 		}
 		else
 		{
-			uint32_t nativeAccess = 0;
-			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_PROCESS, access & SystemProcessAccess::CreateProcess);
-			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_THREAD, access & SystemProcessAccess::CreateThread);
-			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_INFORMATION, access & SystemProcessAccess::QueryInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_LIMITED_INFORMATION, access & SystemProcessAccess::QueryLimitedInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_SET_INFORMATION, access & SystemProcessAccess::SetInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_SUSPEND_RESUME, access & SystemProcessAccess::SuspendResume);
-			Utility::AddFlagRef(nativeAccess, PROCESS_TERMINATE, access & SystemProcessAccess::Terminate);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_OPERATION, access & SystemProcessAccess::VMOperation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_READ, access & SystemProcessAccess::VMRead);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_WRITE, access & SystemProcessAccess::VMWrite);
-			Utility::AddFlagRef(nativeAccess, SYNCHRONIZE, access & SystemProcessAccess::Synchronize);
+			FlagSet<uint32_t> nativeAccess;
+			nativeAccess.Add(PROCESS_CREATE_PROCESS, access & SystemProcessAccess::CreateProcess);
+			nativeAccess.Add(PROCESS_CREATE_THREAD, access & SystemProcessAccess::CreateThread);
+			nativeAccess.Add(PROCESS_QUERY_INFORMATION, access & SystemProcessAccess::QueryInformation);
+			nativeAccess.Add(PROCESS_QUERY_LIMITED_INFORMATION, access & SystemProcessAccess::QueryLimitedInformation);
+			nativeAccess.Add(PROCESS_SET_INFORMATION, access & SystemProcessAccess::SetInformation);
+			nativeAccess.Add(PROCESS_SUSPEND_RESUME, access & SystemProcessAccess::SuspendResume);
+			nativeAccess.Add(PROCESS_TERMINATE, access & SystemProcessAccess::Terminate);
+			nativeAccess.Add(PROCESS_VM_OPERATION, access & SystemProcessAccess::VMOperation);
+			nativeAccess.Add(PROCESS_VM_READ, access & SystemProcessAccess::VMRead);
+			nativeAccess.Add(PROCESS_VM_WRITE, access & SystemProcessAccess::VMWrite);
+			nativeAccess.Add(SYNCHRONIZE, access & SystemProcessAccess::Synchronize);
 
 			return nativeAccess;
 		}

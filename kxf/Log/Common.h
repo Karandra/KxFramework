@@ -2,6 +2,7 @@
 #include "kxf/Common.hpp"
 #include "kxf/General/String.h"
 #include "kxf/General/Format.h"
+class wxLog;
 
 namespace kxf::Log
 {

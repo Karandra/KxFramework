@@ -7,7 +7,7 @@
 
 namespace kxf
 {
-	class KX_API ThreadPool final: public IThreadPool
+	class KX_API ThreadPool final: public RTTI::DynamicImplementation<ThreadPool, IThreadPool>
 	{
 		private:
 			std::vector<std::thread> m_ThreadPool;

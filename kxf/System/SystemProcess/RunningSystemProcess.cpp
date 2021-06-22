@@ -97,7 +97,7 @@ namespace kxf
 
 	void RunningSystemProcess::Open(uint32_t pid, SystemProcessAccess access)
 	{
-		m_Handle = ::OpenProcess(System::Private::MapSystemProcessAccess(access), FALSE, pid);
+		m_Handle = ::OpenProcess(*System::Private::MapSystemProcessAccess(access), FALSE, pid);
 	}
 	void RunningSystemProcess::Close()
 	{

@@ -129,15 +129,15 @@ namespace
 		return nullptr;
 	}
 
-	constexpr uint32_t MapMenuAlignment(FlagSet<Alignment> alignment) noexcept
+	constexpr FlagSet<uint32_t> MapMenuAlignment(FlagSet<Alignment> alignment) noexcept
 	{
-		uint32_t nativeAlignment = 0;
-		Utility::AddFlagRef(nativeAlignment, TPM_LEFTALIGN, alignment & Alignment::Left);
-		Utility::AddFlagRef(nativeAlignment, TPM_RIGHTALIGN, alignment & Alignment::Right);
-		Utility::AddFlagRef(nativeAlignment, TPM_CENTERALIGN, alignment & Alignment::CenterHorizontal);
-		Utility::AddFlagRef(nativeAlignment, TPM_TOPALIGN, alignment & Alignment::Top);
-		Utility::AddFlagRef(nativeAlignment, TPM_BOTTOMALIGN, alignment & Alignment::Bottom);
-		Utility::AddFlagRef(nativeAlignment, TPM_VCENTERALIGN, alignment & Alignment::CenterVertical);
+		FlagSet<uint32_t> nativeAlignment;
+		nativeAlignment.Add(TPM_LEFTALIGN, alignment & Alignment::Left);
+		nativeAlignment.Add(TPM_RIGHTALIGN, alignment & Alignment::Right);
+		nativeAlignment.Add(TPM_CENTERALIGN, alignment & Alignment::CenterHorizontal);
+		nativeAlignment.Add(TPM_TOPALIGN, alignment & Alignment::Top);
+		nativeAlignment.Add(TPM_BOTTOMALIGN, alignment & Alignment::Bottom);
+		nativeAlignment.Add(TPM_VCENTERALIGN, alignment & Alignment::CenterVertical);
 
 		return nativeAlignment;
 	}
@@ -241,7 +241,7 @@ namespace kxf::UI
 			g_CurrentMenu = this;
 		}
 
-		const int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|MapMenuAlignment(alignment), pos.GetX(), pos.GetY(), 0, hWnd, nullptr);
+		const int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|*MapMenuAlignment(alignment), pos.GetX(), pos.GetY(), 0, hWnd, nullptr);
 
 		if (!async)
 		{

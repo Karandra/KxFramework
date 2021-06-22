@@ -552,7 +552,7 @@ namespace kxf::SevenZip
 		{
 			if (id == std::numeric_limits<UniversallyUniqueID>::max())
 			{
-				return {[this, flags, index = 0_zu] (IEnumerator& enumerator) mutable -> std::optional<FileItem>
+				return {[this, flags, index = 0_uz] (IEnumerator& enumerator) mutable -> std::optional<FileItem>
 				{
 					const size_t fileIndex = index++;
 					const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(fileIndex));

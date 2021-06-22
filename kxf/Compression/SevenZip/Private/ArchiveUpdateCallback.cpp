@@ -114,8 +114,8 @@ namespace kxf::SevenZip::Private::Callback
 					}
 					case kpidAttrib:
 					{
-						// Attributes should be of 'uint32_t' type
-						return static_cast<uint32_t>(FileSystem::Private::MapFileAttributes(fileItem.GetAttributes()));
+						// Attributes must be of 'uint32_t' type
+						return static_cast<uint32_t>(*FileSystem::Private::MapFileAttributes(fileItem.GetAttributes()));
 					}
 					case kpidCTime:
 					{

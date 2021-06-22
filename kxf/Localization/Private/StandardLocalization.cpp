@@ -7,14 +7,14 @@ namespace
 {
 	constexpr kxf::XChar g_MnemonicSuffix[] = kxS("_MM");
 
-	std::optional<kxf::String> DoGetLocalizedString(kxf::String id, wxStockLabelQueryFlag flags)
+	std::optional<kxf::String> DoGetLocalizedString(kxf::String id, kxf::FlagSet<wxStockLabelQueryFlag> flags)
 	{
 		using namespace kxf;
 
 		if (auto app = ICoreApplication::GetInstance())
 		{
 			const ILocalizationPackage& localizationPackage = app->GetLocalizationPackage();
-			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
+			if (flags.Contains(wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC))
 			{
 				id += g_MnemonicSuffix;
 			}
@@ -36,12 +36,12 @@ namespace
 
 namespace kxf::Localization::Private
 {
-	String LocalizeLabelString(StdID id, wxStockLabelQueryFlag flags)
+	String LocalizeLabelString(StdID id, FlagSet<wxStockLabelQueryFlag> flags)
 	{
 		// Special case: the "Cancel" button shouldn't have a mnemonic under Windows
 		// for consistency with the native dialogs (which don't use any mnemonic for it
 		// because it is already bound to an 'Esc' key implicitly).
-		Utility::RemoveFlagRef(flags, wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC, id == StdID::Cancel);
+		flags.Remove(wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC, id == StdID::Cancel);
 
 		#define STOCKITEM(stockid, defaultLabel)																\
 		case StdID::##stockid:																					\
@@ -148,7 +148,7 @@ namespace kxf::Localization::Private
 			// Accelerators only make sense for the menu items which should have
 			// ellipsis too while wxSTOCK_WITHOUT_ELLIPSIS is mostly useful for
 			// buttons which shouldn't have accelerators in their labels.
-			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITHOUT_ELLIPSIS)
+			if (flags.Contains(wxStockLabelQueryFlag::wxSTOCK_WITHOUT_ELLIPSIS))
 			{
 				String baseLabel;
 				if (result.EndsWith("...", &baseLabel) && !baseLabel.IsEmpty())
@@ -158,7 +158,7 @@ namespace kxf::Localization::Private
 			}
 
 			#if wxUSE_ACCEL
-			if (!result.IsEmpty() && flags & wxStockLabelQueryFlag::wxSTOCK_WITH_ACCELERATOR)
+			if (!result.IsEmpty() && flags.Contains(wxStockLabelQueryFlag::wxSTOCK_WITH_ACCELERATOR))
 			{
 				wxAcceleratorEntry accelerator = wxGetStockAccelerator(ToInt(id));
 				if (accelerator.IsOk())

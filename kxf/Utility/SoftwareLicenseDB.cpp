@@ -2,6 +2,7 @@
 #include "SoftwareLicenseDB.h"
 #include "System.h"
 #include "kxf/General/Format.h"
+#include "kxf/General/IEncodingConverter.h"
 #include "kxf/System/DynamicLibrary.h"
 
 #if !defined(KXF_DYNAMIC_LIBRARY)
@@ -62,12 +63,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 }
 namespace
 {
-	kxf::String LoadLicense(const kxf::String& name)
+	kxf::String LoadLicense(const kxf::String& name, kxf::IEncodingConverter& encodingConverter = kxf::EncodingConverter_WhateverWorks)
 	{
-		auto buffer = kxf::Utility::LoadResource(kxf::DynamicLibrary::GetCurrentModule(), "GNU_GPLv3", "SOFTWARELICENSEDB");
-		if (buffer.length() != 0)
+		auto buffer = kxf::DynamicLibrary::GetCurrentModule().GetResource(kxS("SOFTWARELICENSEDB"), name);
+		if (!buffer.empty())
 		{
-			return {buffer.data(), buffer.length()};
+			return encodingConverter.ToWideChar(buffer);
 		}
 		return {};
 	}

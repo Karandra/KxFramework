@@ -157,7 +157,7 @@ namespace kxf
 	}
 	Enumerator<String> CommandLineParser::EnumParameters() const
 	{
-		return [this, index = 0_zu]() -> std::optional<String>
+		return [this, index = 0_uz]() -> std::optional<String>
 		{
 			if (index < m_Parser->GetParamCount())
 			{

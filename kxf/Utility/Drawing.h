@@ -1,6 +1,5 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include <wx/gdicmn.h>
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/System/UndefWindows.h"
 struct tagRECT;

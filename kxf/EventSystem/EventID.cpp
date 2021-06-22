@@ -4,7 +4,7 @@
 
 namespace
 {
-	const wxEventType g_LastWxEventID = ::wxNewEventType();
+	const int64_t g_LastWxEventID = ::wxNewEventType();
 	std::atomic<int64_t> g_SimpleEventID = 0;
 }
 

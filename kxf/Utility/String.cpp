@@ -35,11 +35,11 @@ namespace kxf::Utility
 {
 	std::optional<bool> ParseBool(const String& value)
 	{
-		if (value == "false" || value == "FALSE")
+		if (value == kxS("false") || value == kxS("FALSE"))
 		{
 			return false;
 		}
-		else if (value == "true" || value == "TRUE")
+		else if (value == kxS("true") || value == kxS("TRUE"))
 		{
 			return true;
 		}

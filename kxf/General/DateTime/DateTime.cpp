@@ -169,14 +169,14 @@ namespace kxf
 	{
 		if (m_Value.IsValid())
 		{
-			DWORD nativeFlags = DATE_AUTOLAYOUT;
-			Utility::AddFlagRef(nativeFlags, DATE_LONGDATE, flags & DateFormatFlag::Long);
-			Utility::AddFlagRef(nativeFlags, DATE_YEARMONTH, flags & DateFormatFlag::YearMonth);
-			Utility::AddFlagRef(nativeFlags, DATE_MONTHDAY, flags & DateFormatFlag::MonthDay);
+			FlagSet<DWORD> nativeFlags = DATE_AUTOLAYOUT;
+			nativeFlags.Add(DATE_LONGDATE, flags & DateFormatFlag::Long);
+			nativeFlags.Add(DATE_YEARMONTH, flags & DateFormatFlag::YearMonth);
+			nativeFlags.Add(DATE_MONTHDAY, flags & DateFormatFlag::MonthDay);
 
 			wchar_t formatted[1024] = {};
 			SYSTEMTIME localTime = GetSystemTime(tz);
-			if (::GetDateFormatEx(locale.m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted), nullptr) != 0)
+			if (::GetDateFormatEx(locale.m_LocaleName, *nativeFlags, &localTime, nullptr, formatted, std::size(formatted), nullptr) != 0)
 			{
 				return formatted;
 			}
@@ -187,15 +187,15 @@ namespace kxf
 	{
 		if (m_Value.IsValid())
 		{
-			DWORD nativeFlags = 0;
-			Utility::AddFlagRef(nativeFlags, TIME_NOSECONDS, flags & TimeFormatFlag::NoSeconds);
-			Utility::AddFlagRef(nativeFlags, TIME_NOTIMEMARKER, flags & TimeFormatFlag::NoTimeMarker);
-			Utility::AddFlagRef(nativeFlags, TIME_NOMINUTESORSECONDS, flags & TimeFormatFlag::NoMinutes);
-			Utility::AddFlagRef(nativeFlags, TIME_FORCE24HOURFORMAT, flags & TimeFormatFlag::Force24Hour);
+			FlagSet<DWORD> nativeFlags;
+			nativeFlags.Add(TIME_NOSECONDS, flags & TimeFormatFlag::NoSeconds);
+			nativeFlags.Add(TIME_NOTIMEMARKER, flags & TimeFormatFlag::NoTimeMarker);
+			nativeFlags.Add(TIME_NOMINUTESORSECONDS, flags & TimeFormatFlag::NoMinutes);
+			nativeFlags.Add(TIME_FORCE24HOURFORMAT, flags & TimeFormatFlag::Force24Hour);
 
 			wchar_t formatted[1024] = {};
 			SYSTEMTIME localTime = GetSystemTime(tz);
-			if (::GetTimeFormatEx(locale.m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted)) != 0)
+			if (::GetTimeFormatEx(locale.m_LocaleName, *nativeFlags, &localTime, nullptr, formatted, std::size(formatted)) != 0)
 			{
 				return formatted;
 			}

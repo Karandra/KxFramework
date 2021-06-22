@@ -247,7 +247,7 @@ namespace kxf
 			using TString = typename TDefinition::TString;
 
 		private:
-			TEnum m_Value = t_DefaultValue;
+			FlagSet<TEnum> m_Value = t_DefaultValue;
 
 		public:
 			constexpr IndexedEnumValue() noexcept = default;
@@ -280,7 +280,7 @@ namespace kxf
 			}
 			constexpr TString ToString() const
 			{
-				return TDefinition::ToString(m_Value);
+				return TDefinition::ToString(m_Value.GetValue());
 			}
 			
 			template<class T>
@@ -301,41 +301,37 @@ namespace kxf
 
 			constexpr IndexedEnumValue& AddFlag(TEnum value) noexcept
 			{
-				Utility::AddFlagRef(m_Value, value);
+				m_Value.Add(value);
 				return *this;
 			}
 			constexpr IndexedEnumValue& RemoveFlag(TEnum value) noexcept
 			{
-				Utility::RemoveFlagRef(m_Value, value);
+				m_Value.Remove(value);
 				return *this;
 			}
 			constexpr IndexedEnumValue& ModFlag(TEnum value, bool condition) noexcept
 			{
-				Utility::ModFlagRef(m_Value, value, condition);
+				m_Value.Mod(value, condition);
 				return *this;
 			}
 			constexpr bool HasFlag(TEnum value) const noexcept
 			{
-				return Utility::HasFlag(m_Value, value);
-			}
-			constexpr bool HasSpecifiedFlagOnly(TEnum value) const noexcept
-			{
-				return (static_cast<TInt>(m_Value) & static_cast<TInt>(value)) == static_cast<TInt>(value);
+				return m_Value.Contains(value);
 			}
 
 			constexpr TEnum GetValue() const noexcept
 			{
-				return m_Value;
+				return m_Value.GetValue();
 			}
 			constexpr IndexedEnumValue& SetValue(TEnum value) noexcept
 			{
-				m_Value = value;
+				m_Value.SetValue(value);
 				return *this;
 			}
 
 			constexpr TInt ToInt() const noexcept
 			{
-				return static_cast<TInt>(m_Value);
+				return m_Value.ToInt();
 			}
 			constexpr bool IsInRange(TInt min, TInt max) const noexcept
 			{
@@ -347,32 +343,18 @@ namespace kxf
 			{
 				return other.m_Value == m_Value;
 			}
-			constexpr bool operator!=(const IndexedEnumValue& other) const noexcept
-			{
-				return !(*this == other);
-			}
-
 			constexpr bool operator==(TEnum value) const noexcept
 			{
 				return m_Value == value;
 			}
-			constexpr bool operator!=(TEnum value) const noexcept
-			{
-				return m_Value != value;
-			}
-
 			constexpr bool operator==(TInt value) const noexcept
 			{
 				return ToInt() == value;
 			}
-			constexpr bool operator!=(TInt value) const noexcept
-			{
-				return ToInt() != value;
-			}
 
 			constexpr operator TEnum() const noexcept
 			{
-				return GetValue();
+				return m_Value.GetValue();
 			}
 	};
 }

@@ -5,6 +5,7 @@
 #include "LegacyVolume.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/Enumerator.h"
+class wxWindow;
 
 namespace kxf
 {

@@ -34,7 +34,7 @@ namespace kxf
 					lock->Unlock();
 				}
 			}
-			T* operator->() const noexcept
+			T* get() const noexcept
 			{
 				return m_Lock;
 			}
@@ -84,7 +84,7 @@ namespace kxf
 					lock->UnlockRead();
 				}
 			}
-			T* operator->() const noexcept
+			T* get() const noexcept
 			{
 				return m_Lock;
 			}
@@ -131,7 +131,7 @@ namespace kxf
 					lock->UnlockWrite();
 				}
 			}
-			T* operator->() const noexcept
+			T* get() const noexcept
 			{
 				return m_Lock;
 			}

@@ -169,11 +169,11 @@ namespace kxf
 	}
 	HResult ShellLink::SetHotKey(const wxKeyEvent& keyState) noexcept
 	{
-		BYTE modifiers = 0;
-		Utility::AddFlagRef(modifiers, HOTKEYF_CONTROL, keyState.ControlDown());
-		Utility::AddFlagRef(modifiers, HOTKEYF_ALT, keyState.AltDown());
-		Utility::AddFlagRef(modifiers, HOTKEYF_SHIFT, keyState.ShiftDown());
+		FlagSet<BYTE> modifiers;
+		modifiers.Add(HOTKEYF_CONTROL, keyState.ControlDown());
+		modifiers.Add(HOTKEYF_ALT, keyState.AltDown());
+		modifiers.Add(HOTKEYF_SHIFT, keyState.ShiftDown());
 
-		return m_ShellLink->SetHotkey(Utility::IntFromLowHigh<WORD>(modifiers, static_cast<BYTE>(keyState.GetKeyCode())));
+		return m_ShellLink->SetHotkey(Utility::IntFromLowHigh<WORD>(*modifiers, static_cast<BYTE>(keyState.GetKeyCode())));
 	}
 }

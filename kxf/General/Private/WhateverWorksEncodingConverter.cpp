@@ -4,6 +4,11 @@
 #include "kxf/General/String.h"
 #include <Windows.h>
 
+namespace
+{
+	constexpr int g_ISO8859_1 = 28591;
+}
+
 namespace kxf
 {
 	String WhateverWorksEncodingConverter::GetEncodingName() const
@@ -28,7 +33,7 @@ namespace kxf
 		}
 
 		// ISO 8859-1/Latin 1
-		result = NativeEncodingConverter(28591).ToMultiByte(source, destination);
+		result = NativeEncodingConverter(g_ISO8859_1).ToMultiByte(source, destination);
 		return result;
 	}
 	size_t WhateverWorksEncodingConverter::ToWideCharBuffer(std::span<const std::byte> source, std::span<wchar_t> destination)
@@ -48,7 +53,7 @@ namespace kxf
 		}
 
 		// ISO 8859-1/Latin 1
-		result = NativeEncodingConverter(28591).ToWideChar(source, destination);
+		result = NativeEncodingConverter(g_ISO8859_1).ToWideChar(source, destination);
 		return result;
 	}
 }

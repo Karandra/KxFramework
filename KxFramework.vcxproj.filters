@@ -263,6 +263,9 @@
     <Filter Include="kxf\IPC\Private">
       <UniqueIdentifier>{3df1126d-0165-4820-877a-4a8072cc6c5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Log\Private">
+      <UniqueIdentifier>{3cb0f35f-aa0a-4fd7-a98d-2a50367f82d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -420,12 +423,6 @@
     </ClInclude>
     <ClInclude Include="kxf\System\ShellFileTypeManager.h">
       <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Threading\JoinableThread.h">
-      <Filter>kxf\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Threading\AutoThread.h">
-      <Filter>kxf\Threading</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\FileOperations.h">
       <Filter>kxf\FileSystem</Filter>
@@ -1448,9 +1445,6 @@
     <ClInclude Include="kxf\Log\Common.h">
       <Filter>kxf\Log</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Log\OutputStreamTarget.h">
-      <Filter>kxf\Log</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\SizeRatio.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
@@ -1956,6 +1950,9 @@
     <ClInclude Include="kxf\Drawing\IRendererNative.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Log\Private\OutputStreamTarget.h">
+      <Filter>kxf\Log\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2038,9 +2035,6 @@
     </ClCompile>
     <ClCompile Include="kxf\System\ShellFileTypeManager.cpp">
       <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Threading\JoinableThread.cpp">
-      <Filter>kxf\Threading</Filter>
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\FileOperations.cpp">
       <Filter>kxf\FileSystem</Filter>
@@ -2652,9 +2646,6 @@
     <ClCompile Include="kxf\Log\Common.cpp">
       <Filter>kxf\Log</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Log\OutputStreamTarget.cpp">
-      <Filter>kxf\Log</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
@@ -2933,6 +2924,18 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
       <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Log\Private\OutputStreamTarget.cpp">
+      <Filter>kxf\Log\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\WebRequest.cpp">
+      <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\StdIcon.cpp">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\StdID.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

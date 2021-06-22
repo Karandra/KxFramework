@@ -180,22 +180,22 @@ namespace
 		}
 		return reinterpret_cast<LPCWSTR>(-1);
 	}
-	constexpr TASKDIALOG_FLAGS MapTaskDialogStyle(FlagSet<TaskDialogStyle> style) noexcept
+	constexpr FlagSet<TASKDIALOG_FLAGS> MapTaskDialogStyle(FlagSet<TaskDialogStyle> style) noexcept
 	{
 		using namespace kxf;
 		using namespace kxf::UI;
 
-		TASKDIALOG_FLAGS nativeFlags = 0;
-		Utility::AddFlagRef(nativeFlags, TDF_ENABLE_HYPERLINKS, style & TaskDialogStyle::Hyperlinks);
-		Utility::AddFlagRef(nativeFlags, TDF_USE_COMMAND_LINKS, style & TaskDialogStyle::CommandLinks);
-		Utility::AddFlagRef(nativeFlags, TDF_USE_COMMAND_LINKS_NO_ICON, style & TaskDialogStyle::CommandLinksNoIcon);
-		Utility::AddFlagRef(nativeFlags, TDF_EXPAND_FOOTER_AREA, style & TaskDialogStyle::ExMessageInFooter);
-		Utility::AddFlagRef(nativeFlags, TDF_EXPANDED_BY_DEFAULT, style & TaskDialogStyle::ExMessageExpanded);
-		Utility::AddFlagRef(nativeFlags, TDF_SHOW_PROGRESS_BAR, style & TaskDialogStyle::ProgressBar);
-		Utility::AddFlagRef(nativeFlags, TDF_SHOW_MARQUEE_PROGRESS_BAR, style & TaskDialogStyle::ProgressBarPulse);
-		Utility::AddFlagRef(nativeFlags, TDF_CALLBACK_TIMER, style & TaskDialogStyle::CallbackTimer);
-		Utility::AddFlagRef(nativeFlags, TDF_VERIFICATION_FLAG_CHECKED, style & TaskDialogStyle::CheckBoxChecked);
-		Utility::AddFlagRef(nativeFlags, TDF_SIZE_TO_CONTENT, style & TaskDialogStyle::SizeToContent);
+		FlagSet<TASKDIALOG_FLAGS> nativeFlags;
+		nativeFlags.Add(TDF_ENABLE_HYPERLINKS, style & TaskDialogStyle::Hyperlinks);
+		nativeFlags.Add(TDF_USE_COMMAND_LINKS, style & TaskDialogStyle::CommandLinks);
+		nativeFlags.Add(TDF_USE_COMMAND_LINKS_NO_ICON, style & TaskDialogStyle::CommandLinksNoIcon);
+		nativeFlags.Add(TDF_EXPAND_FOOTER_AREA, style & TaskDialogStyle::ExMessageInFooter);
+		nativeFlags.Add(TDF_EXPANDED_BY_DEFAULT, style & TaskDialogStyle::ExMessageExpanded);
+		nativeFlags.Add(TDF_SHOW_PROGRESS_BAR, style & TaskDialogStyle::ProgressBar);
+		nativeFlags.Add(TDF_SHOW_MARQUEE_PROGRESS_BAR, style & TaskDialogStyle::ProgressBarPulse);
+		nativeFlags.Add(TDF_CALLBACK_TIMER, style & TaskDialogStyle::CallbackTimer);
+		nativeFlags.Add(TDF_VERIFICATION_FLAG_CHECKED, style & TaskDialogStyle::CheckBoxChecked);
+		nativeFlags.Add(TDF_SIZE_TO_CONTENT, style & TaskDialogStyle::SizeToContent);
 
 		return nativeFlags;
 	}
@@ -234,7 +234,7 @@ namespace kxf::UI::Private
 
 	void TaskDialogNativeInfo::UpdateBase()
 	{
-		m_DialogConfig.dwFlags = MapTaskDialogStyle(m_TaskDialog.m_Style);
+		m_DialogConfig.dwFlags = *MapTaskDialogStyle(m_TaskDialog.m_Style);
 	}
 	void TaskDialogNativeInfo::UpdateText()
 	{
@@ -247,31 +247,35 @@ namespace kxf::UI::Private
 	}
 	void TaskDialogNativeInfo::UpdateIcons()
 	{
+		FlagSet<decltype(m_DialogConfig.dwFlags)> flags = m_DialogConfig.dwFlags;
+
 		if (m_TaskDialog.m_MainIcon)
 		{
 			m_DialogConfig.pszMainIcon = nullptr;
 			m_DialogConfig.hMainIcon = reinterpret_cast<HICON>(m_TaskDialog.m_MainIcon.GetHandle());
-			Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_MAIN);
+
+			flags.Add(TDF_USE_HICON_MAIN);
 		}
 		else
 		{
 			m_DialogConfig.hMainIcon = nullptr;
 			m_DialogConfig.pszMainIcon = MapIconID(m_TaskDialog.m_MainIconID);
-			Utility::RemoveFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_MAIN);
+			flags.Remove(TDF_USE_HICON_MAIN);
 		}
 
 		if (m_TaskDialog.m_FooterIcon)
 		{
 			m_DialogConfig.pszFooterIcon = nullptr;
 			m_DialogConfig.hFooterIcon = reinterpret_cast<HICON>(m_TaskDialog.m_FooterIcon.GetHandle());
-			Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_FOOTER);
+			flags.Add(TDF_USE_HICON_FOOTER);
 		}
 		else
 		{
 			m_DialogConfig.pszFooterIcon = MapIconID(m_TaskDialog.m_FooterIconID);
 			m_DialogConfig.hFooterIcon = nullptr;
-			Utility::RemoveFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_FOOTER);
+			flags.Remove(TDF_USE_HICON_FOOTER);
 		}
+		m_DialogConfig.dwFlags = *flags;
 	}
 	void TaskDialogNativeInfo::UpdateButtonSpecs()
 	{
@@ -298,7 +302,10 @@ namespace kxf::UI::Private
 
 		// Default radio button
 		m_DialogConfig.nDefaultRadioButton = m_TaskDialog.m_DefaultRadioButton;
-		Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_NO_DEFAULT_RADIO_BUTTON, m_TaskDialog.m_DefaultRadioButton == wxID_NONE);
+		if (m_TaskDialog.m_DefaultRadioButton == wxID_NONE)
+		{
+			m_DialogConfig.dwFlags |= TDF_NO_DEFAULT_RADIO_BUTTON;
+		}
 	}
 	void TaskDialogNativeInfo::UpdateStdButtons(FlagSet<StdButton> buttons)
 	{
@@ -419,8 +426,10 @@ namespace kxf::UI::Private
 			m_DialogConfig.hwndParent = nullptr;
 		}
 
-		Utility::ModFlagRef(m_DialogConfig.dwFlags, TDF_CAN_BE_MINIMIZED, !isModal);
-		Utility::ModFlagRef(m_DialogConfig.dwFlags, TDF_POSITION_RELATIVE_TO_WINDOW, parent != nullptr);
+		FlagSet<decltype(m_DialogConfig.dwFlags)> flags = m_DialogConfig.dwFlags;
+		flags.Mod(TDF_CAN_BE_MINIMIZED, !isModal);
+		flags.Mod(TDF_POSITION_RELATIVE_TO_WINDOW, parent != nullptr);
+		m_DialogConfig.dwFlags = *flags;
 
 		// Send show event
 		{

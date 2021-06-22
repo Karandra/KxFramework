@@ -56,29 +56,29 @@ namespace kxf
 			{
 				constexpr auto MapRegExFlag = [](FlagSet<RegExFlag> flags) noexcept
 				{
-					int nativeFlags = 0;
-					Utility::AddFlagRef(nativeFlags, wxRE_ICASE, flags & RegExFlag::IgnoreCase);
-					Utility::AddFlagRef(nativeFlags, wxRE_NOSUB, flags & RegExFlag::NoSubstitution);
-					Utility::AddFlagRef(nativeFlags, wxRE_NEWLINE, flags & RegExFlag::NewLine);
+					FlagSet<int> nativeFlags;
+					nativeFlags.Add(wxRE_ICASE, flags & RegExFlag::IgnoreCase);
+					nativeFlags.Add(wxRE_NOSUB, flags & RegExFlag::NoSubstitution);
+					nativeFlags.Add(wxRE_NEWLINE, flags & RegExFlag::NewLine);
 
 					return nativeFlags;
 				};
 
-				return m_RegEx.Compile(expression, wxRE_EXTENDED|wxRE_ADVANCED|MapRegExFlag(flags));
+				return m_RegEx.Compile(expression, wxRE_EXTENDED|wxRE_ADVANCED|*MapRegExFlag(flags));
 			}
 
 			bool Matches(const String& text, FlagSet<RegExCompileFlag> flags = {}) const
 			{
 				constexpr auto MapRegExCompileFlag = [](FlagSet<RegExCompileFlag> flags) noexcept
 				{
-					int nativeFlags = 0;
-					Utility::AddFlagRef(nativeFlags, wxRE_NOTBOL, flags & RegExCompileFlag::NotBegin);
-					Utility::AddFlagRef(nativeFlags, wxRE_NOTEOL, flags & RegExCompileFlag::NotEnd);
+					FlagSet<int> nativeFlags;
+					nativeFlags.Add(wxRE_NOTBOL, flags & RegExCompileFlag::NotBegin);
+					nativeFlags.Add(wxRE_NOTEOL, flags & RegExCompileFlag::NotEnd);
 
 					return nativeFlags;
 				};
 
-				return m_RegEx.Matches(text, MapRegExCompileFlag(flags));
+				return m_RegEx.Matches(text, *MapRegExCompileFlag(flags));
 			}
 			size_t GetMatchCount() const noexcept
 			{

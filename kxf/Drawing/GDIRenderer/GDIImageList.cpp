@@ -15,12 +15,12 @@ namespace
 
 	constexpr bool g_UseMask = false;
 
-	constexpr uint32_t MapDrawMode(FlagSet<ImageListFlag> drawMode) noexcept
+	constexpr FlagSet<uint32_t> MapDrawMode(FlagSet<ImageListFlag> drawMode) noexcept
 	{
-		uint32_t nativeDrawMode = ILD_IMAGE|ILD_NORMAL;
-		Utility::AddFlagRef(nativeDrawMode, ILD_TRANSPARENT, drawMode & ImageListFlag::Transparent);
-		Utility::AddFlagRef(nativeDrawMode, ILD_SELECTED, drawMode & ImageListFlag::Selected);
-		Utility::AddFlagRef(nativeDrawMode, ILD_FOCUS, drawMode & ImageListFlag::Focused);
+		FlagSet<uint32_t> nativeDrawMode = ILD_IMAGE|ILD_NORMAL;
+		nativeDrawMode.Add(ILD_TRANSPARENT, drawMode & ImageListFlag::Transparent);
+		nativeDrawMode.Add(ILD_SELECTED, drawMode & ImageListFlag::Selected);
+		nativeDrawMode.Add(ILD_FOCUS, drawMode & ImageListFlag::Focused);
 
 		return nativeDrawMode;
 	}
@@ -51,13 +51,10 @@ namespace kxf
 		Size size = rect.GetSize();
 		size.SetDefaults({0, 0});
 
-		uint32_t nativeDrawMode = MapDrawMode(flags);
-		if (overlayIndex > 0)
-		{
-			nativeDrawMode |= INDEXTOOVERLAYMASK(overlayIndex);
-		}
+		auto nativeDrawMode = MapDrawMode(flags);
+		nativeDrawMode.Add(INDEXTOOVERLAYMASK(overlayIndex), overlayIndex > 0);
 
-		return ::ImageList_DrawEx(ToHImageList(m_hImageList), index, static_cast<HDC>(dc.GetHandle()), rect.GetX(), rect.GetY(), size.GetWidth(), size.GetHeight(), CLR_NONE, CLR_NONE, nativeDrawMode);
+		return ::ImageList_DrawEx(ToHImageList(m_hImageList), index, static_cast<HDC>(dc.GetHandle()), rect.GetX(), rect.GetY(), size.GetWidth(), size.GetHeight(), CLR_NONE, CLR_NONE, *nativeDrawMode);
 	}
 
 	GDIImageList::GDIImageList() noexcept

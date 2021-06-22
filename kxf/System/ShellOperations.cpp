@@ -33,16 +33,16 @@ namespace
 {
 	using namespace kxf;
 
-	constexpr UINT MapSHGetFileIconFlag(FlagSet<SHGetFileIconFlag> flags) noexcept
+	constexpr FlagSet<UINT> MapSHGetFileIconFlag(FlagSet<SHGetFileIconFlag> flags) noexcept
 	{
-		UINT nativeFlags = SHGFI_ICON;
-		Utility::AddFlagRef(nativeFlags, SHGFI_SMALLICON, flags & SHGetFileIconFlag::Small);
-		Utility::AddFlagRef(nativeFlags, SHGFI_LARGEICON, flags & SHGetFileIconFlag::Large);
-		Utility::AddFlagRef(nativeFlags, SHGFI_SHELLICONSIZE, flags & SHGetFileIconFlag::ShellSized);
-		Utility::AddFlagRef(nativeFlags, SHGFI_SELECTED, flags & SHGetFileIconFlag::Selected);
-		Utility::AddFlagRef(nativeFlags, SHGFI_OPENICON, flags & SHGetFileIconFlag::Open);
-		Utility::AddFlagRef(nativeFlags, SHGFI_ADDOVERLAYS, flags & SHGetFileIconFlag::AddOverlays);
-		Utility::AddFlagRef(nativeFlags, SHGFI_LINKOVERLAY, flags & SHGetFileIconFlag::LinkOverlay);
+		FlagSet<UINT> nativeFlags = SHGFI_ICON;
+		nativeFlags.Add(SHGFI_SMALLICON, flags & SHGetFileIconFlag::Small);
+		nativeFlags.Add(SHGFI_LARGEICON, flags & SHGetFileIconFlag::Large);
+		nativeFlags.Add(SHGFI_SHELLICONSIZE, flags & SHGetFileIconFlag::ShellSized);
+		nativeFlags.Add(SHGFI_SELECTED, flags & SHGetFileIconFlag::Selected);
+		nativeFlags.Add(SHGFI_OPENICON, flags & SHGetFileIconFlag::Open);
+		nativeFlags.Add(SHGFI_ADDOVERLAYS, flags & SHGetFileIconFlag::AddOverlays);
+		nativeFlags.Add(SHGFI_LINKOVERLAY, flags & SHGetFileIconFlag::LinkOverlay);
 
 		return nativeFlags;
 	}
@@ -192,12 +192,14 @@ namespace kxf::Shell
 		operationInfo.hwnd = window ? window->GetHandle() : nullptr;
 
 		// Set flags
-		operationInfo.fFlags = FOF_NOCONFIRMMKDIR;
-		Utility::ModFlagRef(operationInfo.fFlags, FOF_NO_UI, !operationInfo.hwnd);
-		Utility::ModFlagRef(operationInfo.fFlags, FOF_FILESONLY|FOF_NORECURSION, flags & SHOperationFlags::LimitToFiles);
-		Utility::ModFlagRef(operationInfo.fFlags, FOF_ALLOWUNDO, flags & SHOperationFlags::AllowUndo);
-		Utility::ModFlagRef(operationInfo.fFlags, FOF_NOCONFIRMATION, flags & SHOperationFlags::NoConfirmation);
-		Utility::ModFlagRef(operationInfo.fFlags, FOF_NORECURSION, !(flags & SHOperationFlags::Recursive));
+		FlagSet<decltype(operationInfo.fFlags)> operationInfoFlags = FOF_NOCONFIRMMKDIR;
+		operationInfoFlags.Mod(FOF_NO_UI, !operationInfo.hwnd);
+		operationInfoFlags.Mod(FOF_FILESONLY|FOF_NORECURSION, flags & SHOperationFlags::LimitToFiles);
+		operationInfoFlags.Mod(FOF_ALLOWUNDO, flags & SHOperationFlags::AllowUndo);
+		operationInfoFlags.Mod(FOF_NOCONFIRMATION, flags & SHOperationFlags::NoConfirmation);
+		operationInfoFlags.Mod(FOF_NORECURSION, !(flags & SHOperationFlags::Recursive));
+
+		operationInfo.fFlags = *operationInfoFlags;
 
 		// Paths
 		auto CreateZZString = [](const String& s) -> std::wstring
@@ -305,10 +307,11 @@ namespace kxf::Shell
 		SHELLEXECUTEINFOW executeInfo = {};
 		executeInfo.cbSize = sizeof(executeInfo);
 
-		executeInfo.fMask = SEE_MASK_DEFAULT|SEE_MASK_INVOKEIDLIST|SEE_MASK_UNICODE;
-		Utility::AddFlagRef(executeInfo.fMask, SEE_MASK_FLAG_NO_UI, flags & SHExexuteFlag::HideUI);
-		Utility::AddFlagRef(executeInfo.fMask, SEE_MASK_NOASYNC, !(flags & SHExexuteFlag::Async));
-		Utility::AddFlagRef(executeInfo.fMask, SEE_MASK_NO_CONSOLE, flags & SHExexuteFlag::InheritConsole);
+		FlagSet<decltype(executeInfo.fMask)> executeInfoMask = SEE_MASK_DEFAULT|SEE_MASK_INVOKEIDLIST|SEE_MASK_UNICODE;
+		executeInfoMask.Add(SEE_MASK_FLAG_NO_UI, flags & SHExexuteFlag::HideUI);
+		executeInfoMask.Add(SEE_MASK_NOASYNC, !(flags & SHExexuteFlag::Async));
+		executeInfoMask.Add(SEE_MASK_NO_CONSOLE, flags & SHExexuteFlag::InheritConsole);
+		executeInfo.fMask = *executeInfoMask;
 
 		executeInfo.hwnd = reinterpret_cast<HWND>(UI::GetOwnerWindowHandle(window));
 		executeInfo.lpVerb = command.wc_str();
@@ -349,7 +352,7 @@ namespace kxf::Shell
 		SHFILEINFOW shellInfo = {};
 
 		const String pathString = path.GetFullPath();
-		if (::SHGetFileInfoW(pathString.wc_str(), 0, &shellInfo, sizeof(shellInfo), MapSHGetFileIconFlag(flags)) != 0)
+		if (::SHGetFileInfoW(pathString.wc_str(), 0, &shellInfo, sizeof(shellInfo), *MapSHGetFileIconFlag(flags)) != 0)
 		{
 			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
@@ -362,8 +365,8 @@ namespace kxf::Shell
 		SHFILEINFOW shellInfo = {};
 
 		const String pathString = item.GetName();
-		const uint32_t attributes = FileSystem::Private::MapFileAttributes(item.GetAttributes());
-		if (::SHGetFileInfoW(pathString.wc_str(), attributes, &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|MapSHGetFileIconFlag(flags)) != 0)
+		const auto attributes = FileSystem::Private::MapFileAttributes(item.GetAttributes());
+		if (::SHGetFileInfoW(pathString.wc_str(), *attributes, &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|*MapSHGetFileIconFlag(flags)) != 0)
 		{
 			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
@@ -504,12 +507,12 @@ namespace kxf::Shell
 			});
 			if (it != end && it->second != GUID_NULL)
 			{
-				DWORD nativeFlags = KF_FLAG_DONT_VERIFY;
-				Utility::AddFlagRef(nativeFlags, KF_FLAG_DEFAULT_PATH, flags & SHGetKnownDirectoryFlag::UseDefaultLocation);
-				Utility::AddFlagRef(nativeFlags, KF_FLAG_CREATE|KF_FLAG_INIT, flags & SHGetKnownDirectoryFlag::CreateIfDoesNotExist);
+				FlagSet<DWORD> nativeFlags = KF_FLAG_DONT_VERIFY;
+				nativeFlags.Add(KF_FLAG_DEFAULT_PATH, flags & SHGetKnownDirectoryFlag::UseDefaultLocation);
+				nativeFlags.Add(KF_FLAG_CREATE|KF_FLAG_INIT, flags & SHGetKnownDirectoryFlag::CreateIfDoesNotExist);
 
 				COMMemoryPtr<wchar_t> knownPath;
-				if (HResult(::SHGetKnownFolderPath(it->second, nativeFlags, nullptr, &knownPath)))
+				if (HResult(::SHGetKnownFolderPath(it->second, *nativeFlags, nullptr, &knownPath)))
 				{
 					result = knownPath.Get();
 				}

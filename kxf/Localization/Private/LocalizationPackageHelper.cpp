@@ -20,16 +20,16 @@ namespace kxf::Localization::Private
 	{
 		auto DoLoad = [&](const String& resType)
 		{
-			if (auto data = library.GetResource(resType, name.GetName()))
+			if (auto buffer = library.GetResource(resType, name.GetName()); !buffer.empty())
 			{
-				Locale usedLcoale = locale;
-				if (!usedLcoale)
+				Locale usedLocale = locale;
+				if (!usedLocale)
 				{
-					usedLcoale = Localization::Private::LocaleFromFileName(name);
+					usedLocale = Localization::Private::LocaleFromFileName(name);
 				}
-				if (DoLoadXML(String::FromUTF8(data), loadingScheme))
+				if (DoLoadXML(String::FromUTF8(reinterpret_cast<const char*>(buffer.data()), buffer.size_bytes()), loadingScheme))
 				{
-					DoSetLocale(usedLcoale);
+					DoSetLocale(usedLocale);
 					return true;
 				}
 			}

@@ -1,12 +1,12 @@
 #pragma once
-#include "Common.h"
+#include "../Common.h"
 #include "kxf/General/OptionalPtr.h"
 #include "kxf/IO/IStream.h"
 #include <wx/log.h>
 
 namespace kxf::Log
 {
-	class KX_API OutputStreamTarget: public wxLog
+	class KX_API OutputStreamTarget final: public wxLog
 	{
 		private:
 			optional_ptr<IOutputStream> m_Stream;

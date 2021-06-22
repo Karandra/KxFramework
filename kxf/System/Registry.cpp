@@ -65,7 +65,7 @@ namespace
 		};
 		return nullptr;
 	}
-	REGSAM MapAccessMode(FlagSet<RegistryAccess> access) noexcept
+	FlagSet<REGSAM> MapAccessMode(FlagSet<RegistryAccess> access) noexcept
 	{
 		using namespace kxf;
 
@@ -75,18 +75,18 @@ namespace
 		}
 		else
 		{
-			REGSAM nativeAccess = 0;
-			Utility::AddFlagRef(nativeAccess, KEY_READ, access & RegistryAccess::Read);
-			Utility::AddFlagRef(nativeAccess, KEY_WRITE, access & RegistryAccess::Write);
-			Utility::AddFlagRef(nativeAccess, DELETE, access & RegistryAccess::Delete);
-			Utility::AddFlagRef(nativeAccess, KEY_NOTIFY, access & RegistryAccess::Notify);
-			Utility::AddFlagRef(nativeAccess, KEY_CREATE_SUB_KEY, access & RegistryAccess::Create);
-			Utility::AddFlagRef(nativeAccess, KEY_ENUMERATE_SUB_KEYS, access & RegistryAccess::Enumerate);
+			FlagSet<REGSAM> nativeAccess;
+			nativeAccess.Add(KEY_READ, access & RegistryAccess::Read);
+			nativeAccess.Add(KEY_WRITE, access & RegistryAccess::Write);
+			nativeAccess.Add(DELETE, access & RegistryAccess::Delete);
+			nativeAccess.Add(KEY_NOTIFY, access & RegistryAccess::Notify);
+			nativeAccess.Add(KEY_CREATE_SUB_KEY, access & RegistryAccess::Create);
+			nativeAccess.Add(KEY_ENUMERATE_SUB_KEYS, access & RegistryAccess::Enumerate);
 
 			return nativeAccess;
 		}
 	}
-	REGSAM MapWOW64(RegistryWOW64 wow64) noexcept
+	FlagSet<REGSAM> MapWOW64(RegistryWOW64 wow64) noexcept
 	{
 		using namespace kxf;
 
@@ -275,7 +275,7 @@ namespace kxf
 		{
 			HKEY handle = nullptr;
 			const String subKeyPath = subKey.GetFullPath();
-			if (m_LastError = ::RegOpenKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, MapAccessMode(access)|MapWOW64(wow64), &handle))
+			if (m_LastError = ::RegOpenKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, (MapAccessMode(access)|MapWOW64(wow64)).ToInt(), &handle))
 			{
 				m_Handle = handle;
 				return true;
@@ -287,12 +287,12 @@ namespace kxf
 	{
 		if (rootKey)
 		{
-			DWORD nativeFlags = 0;
-			Utility::AddFlag(nativeFlags, REG_OPTION_VOLATILE, flags & RegistryKeyFlag::Volatile);
+			FlagSet<DWORD> nativeFlags;
+			nativeFlags.Add(REG_OPTION_VOLATILE, flags & RegistryKeyFlag::Volatile);
 
 			HKEY handle = nullptr;
 			String subKeyPath = subKey.GetFullPath();
-			if (m_LastError = ::RegCreateKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, nullptr, nativeFlags, MapAccessMode(access)|MapWOW64(wow64), nullptr, &handle, nullptr))
+			if (m_LastError = ::RegCreateKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, nullptr, *nativeFlags, (MapAccessMode(access)|MapWOW64(wow64)).ToInt(), nullptr, &handle, nullptr))
 			{
 				m_Handle = handle;
 				return true;

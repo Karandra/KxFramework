@@ -704,19 +704,19 @@ namespace kxf::System
 	}
 	bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept
 	{
-		UINT modeEWX = 0;
-		Utility::AddFlagRef(modeEWX, EWX_LOGOFF, command & ExitWorkstationCommand::LogOff);
-		Utility::AddFlagRef(modeEWX, EWX_POWEROFF, command & ExitWorkstationCommand::PowerOff);
-		Utility::AddFlagRef(modeEWX, EWX_SHUTDOWN, command & ExitWorkstationCommand::Shutdown);
-		Utility::AddFlagRef(modeEWX, EWX_REBOOT, command & ExitWorkstationCommand::Reboot);
-		Utility::AddFlagRef(modeEWX, EWX_QUICKRESOLVE, command & ExitWorkstationCommand::QuickResolve);
-		Utility::AddFlagRef(modeEWX, EWX_RESTARTAPPS, command & ExitWorkstationCommand::RestartApps);
-		Utility::AddFlagRef(modeEWX, EWX_HYBRID_SHUTDOWN, command & ExitWorkstationCommand::HybridShutdown);
-		Utility::AddFlagRef(modeEWX, EWX_BOOTOPTIONS, command & ExitWorkstationCommand::BootOptions);
-		Utility::AddFlagRef(modeEWX, EWX_FORCE, command & ExitWorkstationCommand::Force);
-		Utility::AddFlagRef(modeEWX, EWX_FORCEIFHUNG, command & ExitWorkstationCommand::ForceHung);
+		FlagSet<UINT> modeEWX;
+		modeEWX.Add(EWX_LOGOFF, command & ExitWorkstationCommand::LogOff);
+		modeEWX.Add(EWX_POWEROFF, command & ExitWorkstationCommand::PowerOff);
+		modeEWX.Add(EWX_SHUTDOWN, command & ExitWorkstationCommand::Shutdown);
+		modeEWX.Add(EWX_REBOOT, command & ExitWorkstationCommand::Reboot);
+		modeEWX.Add(EWX_QUICKRESOLVE, command & ExitWorkstationCommand::QuickResolve);
+		modeEWX.Add(EWX_RESTARTAPPS, command & ExitWorkstationCommand::RestartApps);
+		modeEWX.Add(EWX_HYBRID_SHUTDOWN, command & ExitWorkstationCommand::HybridShutdown);
+		modeEWX.Add(EWX_BOOTOPTIONS, command & ExitWorkstationCommand::BootOptions);
+		modeEWX.Add(EWX_FORCE, command & ExitWorkstationCommand::Force);
+		modeEWX.Add(EWX_FORCEIFHUNG, command & ExitWorkstationCommand::ForceHung);
 
-		return ::ExitWindowsEx(modeEWX, SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_OTHER|SHTDN_REASON_FLAG_PLANNED);
+		return ::ExitWindowsEx(*modeEWX, SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_OTHER|SHTDN_REASON_FLAG_PLANNED);
 	}
 
 	bool IsWindowsServer() noexcept

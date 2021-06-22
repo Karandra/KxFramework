@@ -5,16 +5,16 @@
 
 namespace
 {
-	int ConvertControlStyle(const kxf::UI::DataView::DateTimeValue& value)
+	kxf::FlagSet<int> ConvertControlStyle(const kxf::UI::DataView::DateTimeValue& value)
 	{
 		using namespace kxf;
 		using namespace kxf::UI::DataView;
 
-		int style = 0;
-		Utility::AddFlagRef(style, wxDP_SPIN, value.ContainsOption(DateEditorOption::Spin));
-		Utility::AddFlagRef(style, wxDP_DROPDOWN, value.ContainsOption(DateEditorOption::Dropdown));
-		Utility::AddFlagRef(style, wxDP_ALLOWNONE, value.ContainsOption(DateEditorOption::AllowNone));
-		Utility::AddFlagRef(style, wxDP_SHOWCENTURY, value.ContainsOption(DateEditorOption::ShowCentury));
+		FlagSet<int> style;
+		style.Add(wxDP_SPIN, value.ContainsOption(DateEditorOption::Spin));
+		style.Add(wxDP_DROPDOWN, value.ContainsOption(DateEditorOption::Dropdown));
+		style.Add(wxDP_ALLOWNONE, value.ContainsOption(DateEditorOption::AllowNone));
+		style.Add(wxDP_SHOWCENTURY, value.ContainsOption(DateEditorOption::ShowCentury));
 
 		return style;
 	}
@@ -59,14 +59,14 @@ namespace kxf::UI::DataView
 	wxWindow* DateEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
 		const DateTimeValue dateTimeValue = Renderer::FromAnyUsing<DateTimeValue>(value);
-		const int style = ConvertControlStyle(dateTimeValue);
+		const auto style = ConvertControlStyle(dateTimeValue);
 
 		wxDatePickerCtrl* editor = new wxDatePickerCtrl(&parent,
 														wxID_NONE,
 														dateTimeValue.GetDateTime(),
 														cellRect.GetPosition(),
 														cellRect.GetSize(),
-														style,
+														*style,
 														GetValidator()
 		);
 

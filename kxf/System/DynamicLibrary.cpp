@@ -55,16 +55,16 @@ namespace
 		return reinterpret_cast<ULONG_PTR>(handle) & static_cast<ULONG_PTR>(2);
 	}
 
-	constexpr uint32_t MapDynamicLibraryLoadFlags(FlagSet<DynamicLibraryFlag> flags) noexcept
+	constexpr FlagSet<uint32_t> MapDynamicLibraryLoadFlags(FlagSet<DynamicLibraryFlag> flags) noexcept
 	{
-		uint32_t nativeFlags = 0;
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE, flags & DynamicLibraryFlag::Resource);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE, flags & DynamicLibraryFlag::Resource && flags & DynamicLibraryFlag::Exclusive);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_IMAGE_RESOURCE, flags & DynamicLibraryFlag::ImageResource);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_USER_DIRS, flags & DynamicLibraryFlag::SearchUserDirectories);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_SYSTEM32, flags & DynamicLibraryFlag::SearchSystemDirectories);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, flags & DynamicLibraryFlag::SearchLibraryDirectory);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_APPLICATION_DIR, flags & DynamicLibraryFlag::SearchApplicationDirectory);
+		FlagSet<uint32_t> nativeFlags;
+		nativeFlags.Add(LOAD_LIBRARY_AS_DATAFILE, flags & DynamicLibraryFlag::Resource);
+		nativeFlags.Add(LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE, flags & DynamicLibraryFlag::Resource && flags & DynamicLibraryFlag::Exclusive);
+		nativeFlags.Add(LOAD_LIBRARY_AS_IMAGE_RESOURCE, flags & DynamicLibraryFlag::ImageResource);
+		nativeFlags.Add(LOAD_LIBRARY_SEARCH_USER_DIRS, flags & DynamicLibraryFlag::SearchUserDirectories);
+		nativeFlags.Add(LOAD_LIBRARY_SEARCH_SYSTEM32, flags & DynamicLibraryFlag::SearchSystemDirectories);
+		nativeFlags.Add(LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, flags & DynamicLibraryFlag::SearchLibraryDirectory);
+		nativeFlags.Add(LOAD_LIBRARY_SEARCH_APPLICATION_DIR, flags & DynamicLibraryFlag::SearchApplicationDirectory);
 
 		return nativeFlags;
 	}
@@ -113,7 +113,7 @@ namespace
 	{
 		return ::FindResourceExW(handle, GetNameOrID(type), GetNameOrID(name), GetLangID(locale));
 	}
-	wxScopedCharBuffer GetResourceData(HMODULE handle, HRSRC resHandle)
+	std::span<const std::byte> GetResourceData(HMODULE handle, HRSRC resHandle)
 	{
 		if (resHandle)
 		{
@@ -123,7 +123,7 @@ namespace
 				DWORD resSize = ::SizeofResource(handle, resHandle);
 				if (resData && resSize != 0)
 				{
-					return wxScopedCharBuffer::CreateNonOwned(reinterpret_cast<const char*>(resData), resSize);
+					return {reinterpret_cast<const std::byte*>(resData), resSize};
 				}
 			}
 		}
@@ -225,7 +225,7 @@ namespace kxf
 		if (path)
 		{
 			String pathString = path.IsAbsolute() ? path.GetFullPathWithNS(FSPathNamespace::Win32File) : path.GetFullPath();
-			m_Handle = reinterpret_cast<void*>(::LoadLibraryExW(pathString.wc_str(), nullptr, MapDynamicLibraryLoadFlags(flags)));
+			m_Handle = reinterpret_cast<void*>(::LoadLibraryExW(pathString.wc_str(), nullptr, *MapDynamicLibraryLoadFlags(flags)));
 			m_LoadFlags = flags;
 			m_ShouldUnload = true;
 
@@ -387,7 +387,7 @@ namespace kxf
 		}
 		return 0;
 	}
-	wxScopedCharBuffer DynamicLibrary::GetResource(const String& resType, const String& resName, const Locale& locale) const
+	std::span<const std::byte> DynamicLibrary::GetResource(const String& resType, const String& resName, const Locale& locale) const
 	{
 		if (m_Handle)
 		{
@@ -406,10 +406,10 @@ namespace kxf
 
 	size_t DynamicLibrary::GetIconResourceCount(const String& name, const Locale& locale) const
 	{
-		wxScopedCharBuffer groupBuffer = GetResource(System::Private::ResourceTypeToName(RT_GROUP_ICON), name, locale);
-		if (groupBuffer.length() != 0)
+		auto groupBuffer = GetResource(System::Private::ResourceTypeToName(RT_GROUP_ICON), name, locale);
+		if (!groupBuffer.empty())
 		{
-			const auto* iconGroup =  reinterpret_cast<System::Private::IconGroupDirectory*>(groupBuffer.data());
+			const auto* iconGroup =  reinterpret_cast<const System::Private::IconGroupDirectory*>(groupBuffer.data());
 			return iconGroup->idCount;
 		}
 		return 0;
@@ -424,10 +424,10 @@ namespace kxf
 		using System::Private::IconGroupDirectory;
 		using System::Private::IconGroupEntry;
 
-		wxScopedCharBuffer groupBuffer = GetResource(ResourceTypeToName(RT_GROUP_ICON), name, locale);
-		if (groupBuffer.length() != 0)
+		auto groupBuffer = GetResource(ResourceTypeToName(RT_GROUP_ICON), name, locale);
+		if (!groupBuffer.empty())
 		{
-			IconGroupDirectory* iconGroup = reinterpret_cast<IconGroupDirectory*>(groupBuffer.data());
+			const IconGroupDirectory* iconGroup = reinterpret_cast<const IconGroupDirectory*>(groupBuffer.data());
 
 			const size_t iconCount = iconGroup->idCount;
 			if (index >= iconCount)
@@ -435,18 +435,19 @@ namespace kxf
 				index = iconCount - 1;
 			}
 
-			IconGroupEntry* iconInfo = &iconGroup->idEntries[index];
+			const IconGroupEntry* iconInfo = &iconGroup->idEntries[index];
 			const size_t imageID = iconInfo->id;
 
 			auto iconBuffer = GetResourceData(AsHMODULE(*m_Handle), GetResourceHandle(AsHMODULE(*m_Handle), ResourceTypeToName(RT_ICON), ResourceTypeToName(imageID), locale));
-			if (iconBuffer.length() != 0)
+			if (!iconBuffer.empty())
 			{
 				int width = 0;
 				int height = 0;
 
 				// I don't remember what '0x00030000' is. WHY DIDN'T I ADD A LINK TO WHERE I FOUND THIS?!
 				constexpr DWORD dwVer = 0x00030000u;
-				if (HICON iconHandle = ::CreateIconFromResourceEx(reinterpret_cast<BYTE*>(iconBuffer.data()), iconBuffer.length(), TRUE, dwVer, width, height, LR_DEFAULTCOLOR))
+				auto iconBufferData = const_cast<BYTE*>(reinterpret_cast<const BYTE*>(iconBuffer.data()));
+				if (HICON iconHandle = ::CreateIconFromResourceEx(iconBufferData, iconBuffer.size_bytes(), TRUE, dwVer, width, height, LR_DEFAULTCOLOR))
 				{
 					GDIIcon icon;
 					icon.AttachHandle(iconHandle);
@@ -486,11 +487,11 @@ namespace kxf
 				// http://forum.sources.ru/index.php?showtopic=375357
 				if (auto stringID = name.ToInteger<size_t>())
 				{
-					wxScopedCharBuffer data = GetResource(System::Private::ResourceTypeToName(RT_STRING), System::Private::ResourceTypeToName(*stringID / 16 + 1), locale);
-					if (data.length() != 0)
+					auto data = GetResource(System::Private::ResourceTypeToName(RT_STRING), System::Private::ResourceTypeToName(*stringID / 16 + 1), locale);
+					if (!data.empty())
 					{
 						stringID = *stringID % 16;
-						const size_t tableSize = data.length() / sizeof(wchar_t);
+						const size_t tableSize = data.size_bytes() / sizeof(wchar_t);
 						size_t offset = 0;
 						size_t index = 0;
 

@@ -59,7 +59,7 @@ namespace kxf::COM
 	KX_API wchar_t* AllocateBSTR(const wchar_t* data) noexcept;
 	KX_API void FreeBSTR(wchar_t* data) noexcept;
 
-	KX_API::_GUID ToGUID(const NativeUUID& uuid) noexcept;
+	KX_API ::_GUID ToGUID(const NativeUUID& uuid) noexcept;
 	KX_API NativeUUID FromGUID(const ::_GUID& guid) noexcept;
 }
 

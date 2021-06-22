@@ -6,9 +6,8 @@
 
 namespace
 {
-	constexpr char g_InvalidDrive = std::numeric_limits<unsigned char>::max();
-	constexpr size_t g_FirstLegacyVolume = 'A';
-	constexpr size_t g_LastLegacyVolume = 'Z';
+	constexpr char g_FirstLegacyVolume = 'A';
+	constexpr char g_LastLegacyVolume = 'Z';
 	constexpr size_t g_LegacyVolumesCount = g_LastLegacyVolume - g_FirstLegacyVolume + 1;
 
 	constexpr bool IsDriveLetterValid(char c)
@@ -38,7 +37,7 @@ namespace kxf
 
 	void LegacyVolume::AssignFromChar(const UniChar& value)
 	{
-		m_Drive = g_InvalidDrive;
+		m_Drive = 0;
 		if (auto c = value.ToASCII())
 		{
 			c = std::toupper(*c);
@@ -50,7 +49,7 @@ namespace kxf
 	}
 	void LegacyVolume::AssignFromIndex(int index)
 	{
-		m_Drive = g_InvalidDrive;
+		m_Drive = 0;
 		if (index >= 0 && index <= g_LegacyVolumesCount)
 		{
 			AssignFromChar(index + g_FirstLegacyVolume);
@@ -61,7 +60,8 @@ namespace kxf
 		if (IsValid())
 		{
 			XChar disk[] = kxS("\0:\\");
-			disk[0] = UniChar(m_Drive).GetAs<XChar>();
+			disk[0] = m_Drive;
+
 			return disk;
 		}
 		return {};
@@ -93,12 +93,12 @@ namespace kxf
 		}
 		return -1;
 	}
-	UniChar LegacyVolume::GetChar() const
+	char LegacyVolume::GetChar() const
 	{
 		if (IsValid())
 		{
 			return m_Drive;
 		}
-		return g_InvalidDrive;
+		return 0;
 	}
 }

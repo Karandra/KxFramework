@@ -197,7 +197,7 @@ namespace kxf::Utility
 
 namespace kxf::Utility::Private
 {
-	template<class TValue, class TConvFunc = identity, class TExtractFunc = identity, class TBeginFunc, class TContainer>
+	template<class TValue, class TConvFunc = std::identity, class TExtractFunc = std::identity, class TBeginFunc, class TContainer>
 	Enumerator<TValue> EnumerateIterableContainer(TContainer&& container, TConvFunc&& conv, TExtractFunc&& extract, TBeginFunc&& beginFunc)
 	{
 		using TIterator = std::invoke_result_t<TBeginFunc, TContainer>;
@@ -228,17 +228,17 @@ namespace kxf::Utility::Private
 
 namespace kxf::Utility
 {
-	template<class TValue, class TConvFunc = identity, class TContainer>
+	template<class TValue, class TConvFunc = std::identity, class TContainer>
 	Enumerator<TValue> EnumerateIndexableContainer(TContainer&& container, TConvFunc&& conv = {})
 	{
 		size_t count = std::size(container);
-		return MakeEnumerator([container = std::forward_as_tuple(container), conv = std::forward<TConvFunc>(conv), index = 0_zu]() mutable -> TValue
+		return MakeEnumerator([container = std::forward_as_tuple(container), conv = std::forward<TConvFunc>(conv), index = 0_uz]() mutable -> TValue
 		{
 			return std::forward<TValue>(std::invoke(conv, std::get<0>(container)[index++]));
 		}, count);
 	}
 
-	template<class TValue, class TConvFunc = identity, class TExtractFunc = identity, class TContainer>
+	template<class TValue, class TConvFunc = std::identity, class TExtractFunc = std::identity, class TContainer>
 	Enumerator<TValue> EnumerateIterableContainer(TContainer&& container, TConvFunc&& conv = {}, TExtractFunc&& extract = {})
 	{
 		return Private::EnumerateIterableContainer<TValue>(std::forward<TContainer>(container),
@@ -250,7 +250,7 @@ namespace kxf::Utility
 		});
 	}
 
-	template<class TValue, class TConvFunc = identity, class TExtractFunc = identity, class TContainer>
+	template<class TValue, class TConvFunc = std::identity, class TExtractFunc = std::identity, class TContainer>
 	Enumerator<TValue> EnumerateIterableContainerReverse(TContainer&& container, TConvFunc&& conv = {}, TExtractFunc&& extract = {})
 	{
 		return Private::EnumerateIterableContainer<TValue>(std::forward<TContainer>(container),
@@ -262,7 +262,7 @@ namespace kxf::Utility
 		});
 	}
 
-	template<class TValue, class TConvFunc = identity, class TContainer>
+	template<class TValue, class TConvFunc = std::identity, class TContainer>
 	Enumerator<TValue> EnumerateStandardMap(TContainer&& container, TConvFunc&& conv = {})
 	{
 		return EnumerateIterableContainer<TValue>(std::forward<TContainer>(container), std::forward<TConvFunc>(conv), identity_tuple<1>());

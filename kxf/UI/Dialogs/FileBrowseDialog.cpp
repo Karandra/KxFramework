@@ -13,22 +13,22 @@ namespace
 	constexpr SIGDN g_ItemType = SIGDN_FILESYSPATH;
 	constexpr FILEOPENDIALOGOPTIONS g_RequiredOptions = FOS_NOCHANGEDIR|FOS_NOVALIDATE|FOS_NOTESTFILECREATE;
 
-	constexpr _FILEOPENDIALOGOPTIONS MapDialogStyle(FlagSet<FileBrowseDialogStyle> style) noexcept
+	constexpr FlagSet<_FILEOPENDIALOGOPTIONS> MapDialogStyle(FlagSet<FileBrowseDialogStyle> style) noexcept
 	{
-		_FILEOPENDIALOGOPTIONS nativeStyle = static_cast<_FILEOPENDIALOGOPTIONS>(0);
-		Utility::AddFlagRef(nativeStyle, FOS_CREATEPROMPT, style & FileBrowseDialogStyle::WarnCreate);
-		Utility::AddFlagRef(nativeStyle, FOS_OVERWRITEPROMPT, style & FileBrowseDialogStyle::WarnOverwrite);
-		Utility::AddFlagRef(nativeStyle, FOS_FORCEFILESYSTEM, style & FileBrowseDialogStyle::ForceFileSystem);
-		Utility::AddFlagRef(nativeStyle, FOS_FORCEPREVIEWPANEON, style & FileBrowseDialogStyle::ForcePreviewPane);
-		Utility::AddFlagRef(nativeStyle, FOS_ALLNONSTORAGEITEMS, !(style & FileBrowseDialogStyle::ForceFileSystem));
-		Utility::AddFlagRef(nativeStyle, FOS_FORCESHOWHIDDEN, style & FileBrowseDialogStyle::ForceShowHidden);
-		Utility::AddFlagRef(nativeStyle, FOS_DONTADDTORECENT, !(style & FileBrowseDialogStyle::AddToRecent));
-		Utility::AddFlagRef(nativeStyle, FOS_ALLOWMULTISELECT, style & FileBrowseDialogStyle::Multiselect);
-		Utility::AddFlagRef(nativeStyle, FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST, style & FileBrowseDialogStyle::ForceExistingItem);
-		Utility::AddFlagRef(nativeStyle, FOS_NOREADONLYRETURN, style & FileBrowseDialogStyle::SkipReadOnlyItems);
-		Utility::AddFlagRef(nativeStyle, FOS_HIDEPINNEDPLACES, style & FileBrowseDialogStyle::HidePinnedPlaces);
-		Utility::AddFlagRef(nativeStyle, FOS_NODEREFERENCELINKS, style & FileBrowseDialogStyle::NoDereferenceLinks);
-		Utility::AddFlagRef(nativeStyle, FOS_SUPPORTSTREAMABLEITEMS, style & FileBrowseDialogStyle::AllowStreamableItems);
+		FlagSet<_FILEOPENDIALOGOPTIONS> nativeStyle;
+		nativeStyle.Add(FOS_CREATEPROMPT, style & FileBrowseDialogStyle::WarnCreate);
+		nativeStyle.Add(FOS_OVERWRITEPROMPT, style & FileBrowseDialogStyle::WarnOverwrite);
+		nativeStyle.Add(FOS_FORCEFILESYSTEM, style & FileBrowseDialogStyle::ForceFileSystem);
+		nativeStyle.Add(FOS_FORCEPREVIEWPANEON, style & FileBrowseDialogStyle::ForcePreviewPane);
+		nativeStyle.Add(FOS_ALLNONSTORAGEITEMS, !(style & FileBrowseDialogStyle::ForceFileSystem));
+		nativeStyle.Add(FOS_FORCESHOWHIDDEN, style & FileBrowseDialogStyle::ForceShowHidden);
+		nativeStyle.Add(FOS_DONTADDTORECENT, !(style & FileBrowseDialogStyle::AddToRecent));
+		nativeStyle.Add(FOS_ALLOWMULTISELECT, style & FileBrowseDialogStyle::Multiselect);
+		nativeStyle.Add(static_cast<_FILEOPENDIALOGOPTIONS>(FOS_PATHMUSTEXIST|FOS_FILEMUSTEXIST), style & FileBrowseDialogStyle::ForceExistingItem);
+		nativeStyle.Add(FOS_NOREADONLYRETURN, style & FileBrowseDialogStyle::SkipReadOnlyItems);
+		nativeStyle.Add(FOS_HIDEPINNEDPLACES, style & FileBrowseDialogStyle::HidePinnedPlaces);
+		nativeStyle.Add(FOS_NODEREFERENCELINKS, style & FileBrowseDialogStyle::NoDereferenceLinks);
+		nativeStyle.Add(FOS_SUPPORTSTREAMABLEITEMS, style & FileBrowseDialogStyle::AllowStreamableItems);
 
 		return nativeStyle;
 	}
@@ -95,10 +95,10 @@ namespace kxf::UI
 			if (m_Instance && hr)
 			{
 				// Options
-				FILEOPENDIALOGOPTIONS options = g_RequiredOptions|MapDialogStyle(style);
-				Utility::AddFlagRef(options, _FILEOPENDIALOGOPTIONS::FOS_PICKFOLDERS, m_Mode == FileBrowseDialogMode::OpenDirectory);
+				FlagSet<FILEOPENDIALOGOPTIONS> options = g_RequiredOptions|*MapDialogStyle(style);
+				options.Add(_FILEOPENDIALOGOPTIONS::FOS_PICKFOLDERS, m_Mode == FileBrowseDialogMode::OpenDirectory);
 
-				if (hr = m_Instance->SetOptions(options))
+				if (hr = m_Instance->SetOptions(*options))
 				{
 					if (!caption.IsEmpty())
 					{

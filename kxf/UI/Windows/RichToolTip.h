@@ -123,7 +123,7 @@ namespace kxf::UI
 			{
 				m_Icon = wxNullIcon;
 				m_IconID = iconID;
-				m_ToolTip.SetIcon(kxf::UI::ToWxStdIcon(iconID));
+				m_ToolTip.SetIcon(*UI::ToWxStdIcon(iconID));
 			}
 
 			// Animation

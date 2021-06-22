@@ -59,10 +59,10 @@ namespace
 
 				HANDLE handle = ::OpenFileById(volumeStream.GetHandle(),
 											   &fileIDDescriptor,
-											   FileSystem::Private::MapFileAccessMode(access),
-											   FileSystem::Private::MapFileShareMode(share),
+											   *FileSystem::Private::MapFileAccessMode(access),
+											   *FileSystem::Private::MapFileShareMode(share),
 											   nullptr,
-											   FileSystem::Private::MapFileFlags(flags));
+											   *FileSystem::Private::MapFileFlags(flags));
 				if (handle && handle != INVALID_HANDLE_VALUE)
 				{
 					return file.AttachHandle(handle);
@@ -431,7 +431,7 @@ namespace kxf
 			if (attributes != FileAttribute::Invalid && path.IsAbsolute())
 			{
 				String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
-				return ::SetFileAttributesW(pathString.wc_str(), FileSystem::Private::MapFileAttributes(attributes));
+				return ::SetFileAttributesW(pathString.wc_str(), *FileSystem::Private::MapFileAttributes(attributes));
 			}
 			return false;
 		});
@@ -467,14 +467,14 @@ namespace kxf
 
 		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
-			BOOL cancel = FALSE;
-			DWORD copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
-			Utility::AddFlagRef(copyFlags, COPY_FILE_FAIL_IF_EXISTS, !(flags & FSActionFlag::ReplaceIfExist));
-			Utility::AddFlagRef(copyFlags, COPY_FILE_NO_BUFFERING, flags & FSActionFlag::NoBuffering);
+			FlagSet<DWORD> copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
+			copyFlags.Add(COPY_FILE_FAIL_IF_EXISTS, !(flags & FSActionFlag::ReplaceIfExist));
+			copyFlags.Add(COPY_FILE_NO_BUFFERING, flags & FSActionFlag::NoBuffering);
 
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 
+			BOOL canceled = FALSE;
 			if (func)
 			{
 				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(),
@@ -496,11 +496,11 @@ namespace kxf
 						return PROGRESS_CONTINUE;
 					}
 					return PROGRESS_CANCEL;
-				}, &func, &cancel, copyFlags);
+				}, &func, &canceled, *copyFlags);
 			}
 			else
 			{
-				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), nullptr, nullptr, &cancel, copyFlags);
+				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), nullptr, nullptr, &canceled, *copyFlags);
 			}
 		});
 	}
@@ -513,9 +513,9 @@ namespace kxf
 
 		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
-			DWORD moveFlags = MOVEFILE_COPY_ALLOWED;
-			Utility::AddFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSActionFlag::ReplaceIfExist);
-			Utility::AddFlagRef(moveFlags, MOVEFILE_WRITE_THROUGH, flags & FSActionFlag::NoBuffering);
+			FlagSet<DWORD> moveFlags = MOVEFILE_COPY_ALLOWED;
+			moveFlags.Add(MOVEFILE_REPLACE_EXISTING, flags & FSActionFlag::ReplaceIfExist);
+			moveFlags.Add(MOVEFILE_WRITE_THROUGH, flags & FSActionFlag::NoBuffering);
 
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -540,11 +540,11 @@ namespace kxf
 						return PROGRESS_CONTINUE;
 					}
 					return PROGRESS_CANCEL;
-				}, &func, moveFlags);
+				}, &func, *moveFlags);
 			}
 			else
 			{
-				return ::MoveFileExW(sourcePath.wc_str(), destinationPath.wc_str(), moveFlags);
+				return ::MoveFileExW(sourcePath.wc_str(), destinationPath.wc_str(), *moveFlags);
 			}
 		});
 	}

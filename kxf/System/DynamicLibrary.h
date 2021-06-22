@@ -4,9 +4,6 @@
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Localization/Locale.h"
-#include <wx/bitmap.h>
-#include <wx/icon.h>
-#include <wx/cursor.h>
 
 namespace kxf
 {
@@ -145,7 +142,7 @@ namespace kxf
 			size_t EnumResourceTypes(std::function<bool(String)> func, const Locale& locale = {}) const;
 			size_t EnumResourceNames(const String& resType, std::function<bool(String)> func, const Locale& locale = {}) const;
 			size_t EnumResourceLanguages(const String& resType, const String& resName, std::function<bool(Locale)> func) const;
-			wxScopedCharBuffer GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
+			std::span<const std::byte> GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
 
 			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
 			GDIIcon GetIconResource(const String& name, const Size& size = Size::UnspecifiedSize(), const Locale& locale = {}) const;

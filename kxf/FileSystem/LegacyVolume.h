@@ -57,7 +57,7 @@ namespace kxf
 
 			FSPath GetPath() const;
 			int GetIndex() const;
-			UniChar GetChar() const;
+			char GetChar() const;
 
 		public:
 			explicit operator bool() const noexcept

@@ -314,7 +314,7 @@
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\Log.hpp" />
     <ClInclude Include="kxf\Log\Common.h" />
-    <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
+    <ClInclude Include="kxf\Log\Private\OutputStreamTarget.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\LibCURL.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.h" />
@@ -657,9 +657,7 @@
     <ClInclude Include="kxf\System\UndefWindows.h" />
     <ClInclude Include="kxf\System\WOW64FSRedirection.h" />
     <ClInclude Include="kxf\Threading.hpp" />
-    <ClInclude Include="kxf\Threading\AutoThread.h" />
     <ClInclude Include="kxf\Threading\Common.h" />
-    <ClInclude Include="kxf\Threading\JoinableThread.h" />
     <ClInclude Include="kxf\UI.hpp" />
     <ClInclude Include="kxf\UI\Common.h" />
     <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h" />
@@ -767,6 +765,7 @@
     <ClCompile Include="kxf\General\RegEx.cpp" />
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
+    <ClCompile Include="kxf\General\StdID.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp" />
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
@@ -787,13 +786,14 @@
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
-    <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\Log\Private\OutputStreamTarget.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebResponse.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebRequest.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebSession.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\LibCURLUtility.cpp" />
     <ClCompile Include="kxf\Network\Private\BasicWebSession.cpp" />
+    <ClCompile Include="kxf\Network\WebRequest.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebRequestOptions.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebResponse.cpp" />
@@ -922,6 +922,7 @@
     <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp" />
+    <ClCompile Include="kxf\UI\StdIcon.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="kxf\UI\Windows\Frame.cpp" />
@@ -1011,7 +1012,6 @@
     <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp" />
     <ClCompile Include="kxf\System\ShellFileTypeManager.cpp" />
     <ClCompile Include="kxf\System\ShellOperations.cpp" />
-    <ClCompile Include="kxf\Threading\JoinableThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />

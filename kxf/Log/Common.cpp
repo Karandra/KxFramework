@@ -1,5 +1,7 @@
 #include "KxfPCH.h"
 #include "Common.h"
+#include "kxf/Application/ICoreApplication.h"
+#include <wx/log.h>
 
 namespace
 {
@@ -85,6 +87,10 @@ namespace kxf::Log
 			wxSetAssertHandler([](const wxString& file, int line, const wxString& func, const wxString& condition, const wxString& message)
 			{
 				Log::Debug("Assert failed: [File={}:{:04}], [Function={}], [Condition={}], [Message={}]", file, line, func, condition, message);
+				if (auto app = ICoreApplication::GetInstance())
+				{
+					app->OnAssertFailure(file, line, func, condition, message);
+				}
 			});
 		}
 		else
