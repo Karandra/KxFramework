@@ -221,7 +221,7 @@ namespace kxf
 		if (length != 0)
 		{
 			String result;
-			::GetCurrentDirectoryW(length, Utility::StringBuffer(result, length));
+			::GetCurrentDirectoryW(length, Utility::StringBuffer(result, length - 1));
 
 			return FSPath(std::move(result)).EnsureNamespaceSet(FSPathNamespace::Win32File);
 		}
