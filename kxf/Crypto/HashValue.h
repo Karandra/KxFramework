@@ -57,7 +57,7 @@ namespace kxf::Crypto
 			{
 				for (std::byte c: m_Hash)
 				{
-					if (c != 0)
+					if (c != std::byte{0})
 					{
 						return false;
 					}
