@@ -92,6 +92,12 @@ namespace kxf
 			}
 
 			template<class T> requires(IsValidMBType<T>())
+			std::wstring ToWideChar(const std::basic_string<T>& source)
+			{
+				return ToWideChar<T>(std::span(source));
+			}
+
+			template<class T> requires(IsValidMBType<T>())
 			std::wstring ToWideChar(const T* source, size_t length = npos)
 			{
 				if (source && length == npos)

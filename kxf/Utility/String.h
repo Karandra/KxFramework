@@ -4,6 +4,11 @@
 #include <unordered_map>
 #include <unordered_set>
 
+namespace kxf
+{
+	class IEncodingConverter;
+}
+
 namespace kxf::Utility
 {
 	struct StringEqualToNoCase final
@@ -64,6 +69,7 @@ namespace kxf::Utility
 			Type m_Type = Type::None;
 			std::string m_NarrowChars;
 			std::wstring m_WideChars;
+			IEncodingConverter* m_EncodingConveter = nullptr;
 
 		private:
 			char* PrepareNarrowChars();
@@ -73,6 +79,10 @@ namespace kxf::Utility
 		public:
 			StringBuffer(String& value, size_t length) noexcept
 				:m_Value(value), m_Length(length)
+			{
+			}
+			StringBuffer(String& value, size_t length, IEncodingConverter& encondigConverter) noexcept
+				:m_Value(value), m_Length(length), m_EncodingConveter(&encondigConverter)
 			{
 			}
 			~StringBuffer()

@@ -1,16 +1,21 @@
 #include "KxfPCH.h"
 #include "String.h"
+#include "kxf/General/IEncodingConverter.h"
 
 namespace kxf::Utility
 {
 	char* StringBuffer::PrepareNarrowChars()
 	{
 		m_NarrowChars.resize(m_Length);
+		m_Type = Type::NarrowChars;
+
 		return m_NarrowChars.data();
 	}
 	wchar_t* StringBuffer::PrepareWideChars()
 	{
 		m_WideChars.resize(m_Length);
+		m_Type = Type::WideChars;
+
 		return m_WideChars.data();
 	}
 	void StringBuffer::Finalize()
@@ -19,7 +24,9 @@ namespace kxf::Utility
 		{
 			case Type::NarrowChars:
 			{
-				m_Value = String::FromUTF8(m_NarrowChars);
+				IEncodingConverter& converter = m_EncodingConveter ? *m_EncodingConveter : EncodingConverter_WhateverWorks;
+				m_Value = converter.ToWideChar(m_NarrowChars);
+
 				break;
 			}
 			case Type::WideChars:
