@@ -11,7 +11,7 @@ namespace kxf::UI
 
 	void StdDialogButtonSizer::ConfigureButton(wxAnyButton* button)
 	{
-		Size size = button->GetBestSize();
+		Size size = Size(button->GetBestSize());
 		const int defaultWidth = button->FromDIP(Size(72, wxDefaultCoord).GetWidth());
 
 		if (size.GetWidth() < defaultWidth)

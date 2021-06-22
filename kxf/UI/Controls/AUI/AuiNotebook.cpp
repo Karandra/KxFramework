@@ -79,13 +79,13 @@ namespace kxf::UI
 		AuiDefaultDockArtBase::DrawBorder(dc, window, rect, pane);
 
 		// Top horizontal line
-		Rect topLine(rect.GetLeftTop(), rect.GetRightTop());
+		Rect topLine = Rect(wxRect(rect.GetLeftTop(), rect.GetRightTop()));
 		topLine.Width() += 1;
 		topLine.Height() = 1;
 		UxTheme::DrawParentBackground(*m_Notebook, context, topLine);
 
 		// Right vertical line
-		Rect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
+		Rect rightLine = Rect(wxRect(topLine.GetRightTop(), topLine.GetRightBottom()));
 		rightLine.X() += 1;
 		rightLine.Y() -= 2;
 		rightLine.Width() += 5;

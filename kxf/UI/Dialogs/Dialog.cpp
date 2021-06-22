@@ -86,7 +86,7 @@ namespace kxf::UI
 			{
 				window->SetLabel(Localization::GetStandardString(window->GetId()));
 
-				Size size = window->GetSize();
+				Size size = Size(window->GetSize());
 				size.Scale(0.85f, 1.0f);
 				size.SetHeight(23);
 				window->SetMaxSize(size);

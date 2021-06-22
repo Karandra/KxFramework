@@ -52,18 +52,18 @@ namespace
 		Point pos = showPos;
 		if (!pos.IsFullySpecified())
 		{
-			pos = wxGetMousePosition();
+			pos = Point(wxGetMousePosition());
 		}
 		else if (window)
 		{
-			pos = window->ClientToScreen(pos);
+			pos = Point(window->ClientToScreen(pos));
 		}
 		return pos;
 	}
 	Point TranslateCoordinatesAsPopup(wxWindow* window, int offset, uint32_t alignment)
 	{
 		offset = std::abs(offset);
-		Size size = window->GetSize();
+		Size size = Size(window->GetSize());
 		Point pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
 		if (alignment & TPM_RIGHTALIGN)
 		{

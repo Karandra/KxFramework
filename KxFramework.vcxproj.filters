@@ -2937,6 +2937,9 @@
     <ClCompile Include="kxf\General\StdID.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Drawing\Geometry.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

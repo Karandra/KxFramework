@@ -52,7 +52,7 @@ namespace
 				{
 					// Create a copy of the string with the ampersands removed to get the correct widths.
 					const String sourceCopy = wxControl::RemoveMnemonics(text);
-					m_CharOffsets = gc.GetPartialTextExtent(sourceCopy, font);
+					m_CharOffsets = gc.GetPartialTextExtents(sourceCopy, font);
 
 					// Iterate through the original string inserting a cumulative width value for each ampersand
 					// that is the same as the following character's cumulative width value. Except this is only done
@@ -86,7 +86,7 @@ namespace
 				}
 				else
 				{
-					m_CharOffsets = gc.GetPartialTextExtent(text, font);
+					m_CharOffsets = gc.GetPartialTextExtents(text, font);
 				}
 
 				// Either way, we should end up with the same number of offsets as characters in the original string.
@@ -127,7 +127,7 @@ namespace
 
 				// Width calculation using partial extents is just an inaccurate
 				// estimate: partial extents have sub-pixel precision and are rounded
-				// by 'GetPartialTextExtent'. Replacing part of the string with "..."
+				// by 'GetPartialTextExtents'. Replacing part of the string with "..."
 				// may change them too thanks to changes in ligatures, kerning etc.
 
 				// The correct algorithm would be to call 'GetTextExtent' in every step
@@ -442,7 +442,7 @@ namespace kxf
 	void IGraphicsContext::OffsetForScrollableArea(const wxScrollHelper& scrollableWidget)
 	{
 		const PointF scale(scrollableWidget.GetScaleX(), scrollableWidget.GetScaleY());
-		const PointF scrollPos = scrollableWidget.GetViewStart();
+		const PointF scrollPos = Point(scrollableWidget.GetViewStart());
 
 		Point scrollInc;
 		scrollableWidget.GetScrollPixelsPerUnit(&scrollInc.X(), &scrollInc.Y());

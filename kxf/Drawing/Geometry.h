@@ -1,13 +1,19 @@
 #pragma once
 #include "Common.h"
-#include <wx/gdicmn.h>
-#include <wx/geometry.h>
-#include <cmath>
 #include "Angle.h"
 #include "kxf/General/Common.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/Numeric.h>
+#include <cmath>
+class wxSize;
+class wxPoint;
+class wxRealPoint;
+class wxPoint2DInt;
+class wxPoint2DDouble;
+class wxRect;
+class wxRect2DInt;
+class wxRect2DDouble;
 
 namespace kxf::Geometry
 {
@@ -29,7 +35,7 @@ namespace kxf
 
 namespace kxf::Geometry
 {
-	template<class TDerived_, class TValue_>
+	template<class TDerived_, class TValue_> requires(std::is_arithmetic_v<TValue_>)
 	class OrderedPairTemplate
 	{
 		static_assert(std::is_arithmetic_v<TValue_>, "arithmetic type required");
@@ -133,22 +139,29 @@ namespace kxf::Geometry
 				return m_Y;
 			}
 
-			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
-			constexpr TOrderedPair ConvertRound() const
+			template<class TOrderedPair>
+			constexpr TOrderedPair ConvertCast() const noexcept
+			{
+				using T = typename TOrderedPair::TValue;
+				return {static_cast<T>(m_X), static_cast<T>(m_Y)};
+			}
+
+			template<class TOrderedPair> requires(std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>)
+			constexpr TOrderedPair ConvertRound() const noexcept
 			{
 				using T = typename TOrderedPair::TValue;
 				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y))};
 			}
 
-			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
-			constexpr TOrderedPair ConvertCeil() const
+			template<class TOrderedPair> requires(std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>)
+			constexpr TOrderedPair ConvertCeil() const noexcept
 			{
 				using T = typename TOrderedPair::TValue;
 				return {static_cast<T>(std::ceil(m_X)), static_cast<T>(std::ceil(m_Y))};
 			}
 
-			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
-			constexpr TOrderedPair ConvertFloor() const
+			template<class TOrderedPair> requires(std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>)
+			constexpr TOrderedPair ConvertFloor() const noexcept
 			{
 				using T = typename TOrderedPair::TValue;
 				return {static_cast<T>(std::floor(m_X)), static_cast<T>(std::floor(m_Y))};
@@ -386,28 +399,28 @@ namespace kxf::Geometry
 		return {left.GetX() / right.GetX(), left.GetY() / right.GetY()};
 	}
 
-	template<class TDerived, class TValue>
-	constexpr TDerived operator*(const OrderedPairTemplate<TDerived, TValue>& left, TValue right) noexcept
+	template<class TDerived, class TValue, class T> requires(std::is_arithmetic_v<T>)
+	constexpr TDerived operator*(const OrderedPairTemplate<TDerived, TValue>& left, T right) noexcept
 	{
-		return {left.GetX() * right, left.GetY() * right};
+		return {static_cast<TValue>(left.GetX() * right), static_cast<TValue>(left.GetY() * right)};
 	}
 
-	template<class TDerived, class TValue>
-	constexpr TDerived operator/(const OrderedPairTemplate<TDerived, TValue>& left, TValue right) noexcept
+	template<class TDerived, class TValue, class T> requires(std::is_arithmetic_v<T>)
+	constexpr TDerived operator/(const OrderedPairTemplate<TDerived, TValue>& left, T right) noexcept
 	{
-		return {left.GetX() / right, left.GetY() / right};
+		return {static_cast<TValue>(left.GetX() / right), static_cast<TValue>(left.GetY() / right)};
 	}
 
-	template<class TDerived, class TValue>
-	constexpr TDerived operator*(TValue left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
+	template<class TDerived, class TValue, class T> requires(std::is_arithmetic_v<T>)
+	constexpr TDerived operator*(T left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
-		return {left * right.GetX(), left * right.GetY()};
+		return {static_cast<TValue>(left * right.GetX()), static_cast<TValue>(left * right.GetY())};
 	}
 
-	template<class TDerived, class TValue>
-	constexpr TDerived operator/(TValue left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
+	template<class TDerived, class TValue, class T> requires(std::is_arithmetic_v<T>)
+	constexpr TDerived operator/(T left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
-		return {left / right.GetX(), left / right.GetY()};
+		return {static_cast<TValue>(left / right.GetX()), static_cast<TValue>(left / right.GetY())};
 	}
 }
 
@@ -542,22 +555,29 @@ namespace kxf::Geometry
 				return m_Height;
 			}
 
-			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
-			constexpr TRect ConvertRound() const
+			template<class TRect>
+			constexpr TRect ConvertCast() const noexcept
+			{
+				using T = typename TRect::TValue;
+				return {static_cast<T>(m_X), static_cast<T>(m_Y), static_cast<T>(m_Width), static_cast<T>(m_Height)};
+			}
+
+			template<class TRect> requires(std::is_floating_point_v<TValue>&& std::is_integral_v<typename TRect::TValue>)
+			constexpr TRect ConvertRound() const noexcept
 			{
 				using T = typename TRect::TValue;
 				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y)), static_cast<T>(std::round(m_Width)), static_cast<T>(std::round(m_Height))};
 			}
 
-			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
-			constexpr TRect ConvertCeil() const
+			template<class TRect> requires(std::is_floating_point_v<TValue>&& std::is_integral_v<typename TRect::TValue>)
+			constexpr TRect ConvertCeil() const noexcept
 			{
 				using T = typename TRect::TValue;
 				return {static_cast<T>(std::ceil(m_X)), static_cast<T>(std::ceil(m_Y)), static_cast<T>(std::ceil(m_Width)), static_cast<T>(std::ceil(m_Height))};
 			}
 
-			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
-			constexpr TRect ConvertFloor() const
+			template<class TRect> requires(std::is_floating_point_v<TValue>&& std::is_integral_v<typename TRect::TValue>)
+			constexpr TRect ConvertFloor() const noexcept
 			{
 				using T = typename TRect::TValue;
 				return {static_cast<T>(std::floor(m_X)), static_cast<T>(std::floor(m_Y)), static_cast<T>(std::floor(m_Width)), static_cast<T>(std::floor(m_Height))};
@@ -1084,22 +1104,11 @@ namespace kxf::Geometry
 
 		public:
 			using TBase::OrderedPairTemplate;
-			constexpr BasicPoint(const wxPoint& other) noexcept
-				:TBase(other.x, other.y)
-			{
-			}
-			constexpr BasicPoint(const wxRealPoint& other) noexcept
-				:TBase(other.x, other.y)
-			{
-			}
-			constexpr BasicPoint(const wxPoint2DInt& other) noexcept
-				:TBase(other.m_y, other.m_y)
-			{
-			}
-			constexpr BasicPoint(const wxPoint2DDouble& other) noexcept
-				:TBase(other.m_y, other.m_y)
-			{
-			}
+
+			explicit BasicPoint(const wxPoint& other) noexcept;
+			explicit BasicPoint(const wxRealPoint& other) noexcept;
+			explicit BasicPoint(const wxPoint2DInt& other) noexcept;
+			explicit BasicPoint(const wxPoint2DDouble& other) noexcept;
 
 			template<class T>
 			constexpr BasicPoint(const BasicPoint<T>& other) noexcept
@@ -1108,83 +1117,13 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr auto operator<=>(const BasicPoint& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
-			}
-			constexpr bool operator==(const BasicPoint& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
-			}
+			constexpr auto operator<=>(const BasicPoint& other) const noexcept = default;
+			constexpr bool operator==(const BasicPoint& other) const noexcept = default;
 
-			auto operator<=>(const wxPoint& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.x); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Y <=> static_cast<TValue>(other.y);
-			}
-			bool operator==(const wxPoint& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			auto operator<=>(const wxRealPoint& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.x); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Y <=> static_cast<TValue>(other.y);
-			}
-			bool operator==(const wxRealPoint& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			auto operator<=>(const wxPoint2DInt& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Y <=> static_cast<TValue>(other.m_y);
-			}
-			bool operator==(const wxPoint2DInt& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			auto operator<=>(const wxPoint2DDouble& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Y <=> static_cast<TValue>(other.m_y);
-			}
-			bool operator==(const wxPoint2DDouble& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			operator wxPoint() const noexcept
-			{
-				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y)};
-			}
-			operator wxRealPoint() const noexcept
-			{
-				return {static_cast<double>(this->m_X), static_cast<double>(this->m_Y)};
-			}
-			operator wxPoint2DInt() const noexcept
-			{
-				return {static_cast<wxInt32>(this->m_X), static_cast<wxInt32>(this->m_Y)};
-			}
-			operator wxPoint2DDouble() const noexcept
-			{
-				return {static_cast<wxDouble>(this->m_X), static_cast<wxDouble>(this->m_Y)};
-			}
+			operator wxPoint() const noexcept;
+			operator wxRealPoint() const noexcept;
+			operator wxPoint2DInt() const noexcept;
+			operator wxPoint2DDouble() const noexcept;
 	};
 
 	template<class TValue_>
@@ -1218,10 +1157,8 @@ namespace kxf::Geometry
 
 		public:
 			using TBase::OrderedPairTemplate;
-			constexpr BasicSize(const wxSize& other) noexcept
-				:TBase(other.GetWidth(), other.GetHeight())
-			{
-			}
+
+			explicit BasicSize(const wxSize& other) noexcept;
 
 			template<class T>
 			constexpr BasicSize(const BasicSize<T>& other) noexcept
@@ -1258,32 +1195,10 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr auto operator<=>(const BasicSize& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
-			}
-			constexpr bool operator==(const BasicSize& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
-			}
+			constexpr auto operator<=>(const BasicSize& other) const noexcept = default;
+			constexpr bool operator==(const BasicSize& other) const noexcept = default;
 
-			auto operator<=>(const wxSize& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.GetWidth()); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Y <=> static_cast<TValue>(other.GetHeight());
-			}
-			bool operator==(const wxSize& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			operator wxSize() const noexcept
-			{
-				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y)};
-			}
+			operator wxSize() const noexcept;
 	};
 
 	template<class TValue_>
@@ -1297,18 +1212,10 @@ namespace kxf::Geometry
 
 		public:
 			using TBase::RectTemplate;
-			constexpr BasicRect(const wxRect& other) noexcept
-				:TBase(other.GetX(), other.GetY(), other.GetWidth(), other.GetHeight())
-			{
-			}
-			constexpr BasicRect(const wxRect2DInt& other) noexcept
-				:TBase(other.m_x, other.m_y, other.m_width, other.m_height)
-			{
-			}
-			constexpr BasicRect(const wxRect2DDouble& other) noexcept
-				:TBase(other.m_x, other.m_y, other.m_width, other.m_height)
-			{
-			}
+
+			explicit BasicRect(const wxRect& other) noexcept;
+			explicit BasicRect(const wxRect2DInt& other) noexcept;
+			explicit BasicRect(const wxRect2DDouble& other) noexcept;
 
 			template<class T>
 			constexpr BasicRect(const BasicRect<T>& other) noexcept
@@ -1317,90 +1224,12 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr auto operator<=>(const BasicRect& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) <=> static_cast<const TBase&>(other);
-			}
-			constexpr bool operator==(const BasicRect& other) const noexcept
-			{
-				return static_cast<const TBase&>(*this) == static_cast<const TBase&>(other);
-			}
+			constexpr auto operator<=>(const BasicRect& other) const noexcept = default;
+			constexpr bool operator==(const BasicRect& other) const noexcept = default;
 
-			auto operator<=>(const wxRect& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.GetX()); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.GetY()); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.GetWidth()); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Height <=> static_cast<TValue>(other.GetHeight());
-			}
-			bool operator==(const wxRect& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			auto operator<=>(const wxRect2DInt& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.m_y); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.m_width); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Height <=> static_cast<TValue>(other.m_height);
-			}
-			bool operator==(const wxRect2DInt& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			auto operator<=>(const wxRect2DDouble& other) const noexcept
-			{
-				if (auto cmp = TBase::m_X <=> static_cast<TValue>(other.m_x); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Y <=> static_cast<TValue>(other.m_y); cmp != 0)
-				{
-					return cmp;
-				}
-				if (auto cmp = TBase::m_Width <=> static_cast<TValue>(other.m_width); cmp != 0)
-				{
-					return cmp;
-				}
-				return TBase::m_Height <=> static_cast<TValue>(other.m_height);
-			}
-			bool operator==(const wxRect2DDouble& other) const noexcept
-			{
-				return *this <=> other == 0;
-			}
-
-			operator wxRect() const noexcept
-			{
-				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y), static_cast<int>(this->m_Width), static_cast<int>(this->m_Height)};
-			}
-			operator wxRect2DInt() const noexcept
-			{
-				return {static_cast<wxInt32>(this->m_X), static_cast<wxInt32>(this->m_Y), static_cast<wxInt32>(this->m_Width), static_cast<wxInt32>(this->m_Height)};
-			}
-			operator wxRect2DDouble() const noexcept
-			{
-				return {static_cast<wxDouble>(this->m_X), static_cast<wxDouble>(this->m_Y), static_cast<wxDouble>(this->m_Width), static_cast<wxDouble>(this->m_Height)};
-			}
+			operator wxRect() const noexcept;
+			operator wxRect2DInt() const noexcept;
+			operator wxRect2DDouble() const noexcept;
 	};
 }
 
@@ -1417,6 +1246,37 @@ namespace kxf
 	using PointD = Geometry::BasicPoint<double>;
 	using SizeD = Geometry::BasicSize<double>;
 	using RectD = Geometry::BasicRect<double>;
+}
+
+namespace kxf
+{
+	std::strong_ordering operator<=>(const Point& left, const wxPoint& right) noexcept;
+	bool operator==(const Point& left, const wxPoint& right) noexcept;
+
+	std::strong_ordering operator<=>(const Point& left, const wxPoint2DInt& right) noexcept;
+	bool operator==(const Point& left, const wxPoint2DInt& right) noexcept;
+
+	std::partial_ordering operator<=>(const PointD& left, const wxRealPoint& right) noexcept;
+	bool operator==(const PointD& left, const wxRealPoint& right) noexcept;
+
+	std::partial_ordering operator<=>(const PointD& left, const wxPoint2DDouble& right) noexcept;
+	bool operator==(const PointD& left, const wxPoint2DDouble& right) noexcept;
+}
+namespace kxf
+{
+	std::strong_ordering operator<=>(const Size& left, const wxSize& right) noexcept;
+	bool operator==(const Size& left, const wxSize& right) noexcept;
+}
+namespace kxf
+{
+	std::strong_ordering operator<=>(const Rect& left, const wxRect& right) noexcept;
+	bool operator==(const Rect& left, const wxRect& right) noexcept;
+
+	std::strong_ordering operator<=>(const Rect& left, const wxRect2DInt& right) noexcept;
+	bool operator==(const Rect& left, const wxRect2DInt& right) noexcept;
+
+	std::partial_ordering operator<=>(const RectD& left, const wxRect2DDouble& right) noexcept;
+	bool operator==(const RectD& left, const wxRect2DDouble& right) noexcept;
 }
 
 namespace kxf

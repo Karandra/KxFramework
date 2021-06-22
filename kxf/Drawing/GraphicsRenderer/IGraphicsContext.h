@@ -110,7 +110,7 @@ namespace kxf
 
 			virtual SizeF GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
 			virtual FontMetricsF GetFontMetrics(const IGraphicsFont& font = NullGraphicsFont) const = 0;
-			virtual std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
+			virtual std::vector<float> GetPartialTextExtents(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
 
 			virtual void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;
 			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;

@@ -51,7 +51,7 @@ namespace kxf::UI::DataView
 			int rateX = 0;
 			int rateY = 0;
 			view->GetScrollPixelsPerUnit(&rateX, &rateY);
-			Point startPos = view->GetViewStart();
+			Point startPos = Point(view->GetViewStart());
 
 			wxCoord value = -event.GetWheelRotation();
 			if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
@@ -67,13 +67,13 @@ namespace kxf::UI::DataView
 	}
 	bool DropSource::GiveFeedback(wxDragResult effect)
 	{
-		Point mousePos = wxGetMousePosition();
+		Point mousePos = Point(wxGetMousePosition());
 		if (!m_DragImage)
 		{
 			Point linePos(0, m_MainWindow->GetRowStart(m_Row));
 
 			m_MainWindow->GetView()->CalcUnscrolledPosition(0, linePos.GetY(), nullptr, &linePos.Y());
-			linePos = m_MainWindow->ClientToScreen(linePos);
+			linePos = Point(m_MainWindow->ClientToScreen(linePos));
 
 			int rowIndent = 0;
 			m_HintBitmap = m_MainWindow->CreateItemBitmap(m_Row, rowIndent);

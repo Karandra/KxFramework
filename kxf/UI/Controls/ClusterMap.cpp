@@ -14,7 +14,7 @@ namespace kxf::UI
 		GDIPaintContext dc(*this);
 
 		const DrawInfo drawInfo = GetDrawInfo();
-		UxTheme::DrawParentBackground(*this, dc, Rect({0, 0}, (wxSize)drawInfo.ClientSize));
+		UxTheme::DrawParentBackground(*this, dc, Rect({0, 0}, drawInfo.ClientSize));
 
 		if (m_ItemCount != 0 && m_ItemSize > 0)
 		{
@@ -31,7 +31,7 @@ namespace kxf::UI
 				Rect blockRect(pos.GetX(), pos.GetY(), m_ItemSize, m_ItemSize);
 				if (m_UnderMouseIndex != -1 && i == m_UnderMouseIndex)
 				{
-					blockRect.Deflate(FromDIP(wxSize(1, 1)));
+					blockRect.Deflate(Size(FromDIP(wxSize(1, 1))));
 				}
 				dc.DrawRectangle(blockRect);
 				blocksDrawn++;
@@ -55,7 +55,7 @@ namespace kxf::UI
 	}
 	void ClusterMap::OnMouse(wxMouseEvent& event)
 	{
-		int index = HitTest(event.GetPosition());
+		int index = HitTest(Point(event.GetPosition()));
 		if (index != m_UnderMouseIndex)
 		{
 			m_UnderMouseIndex = index;
@@ -91,12 +91,19 @@ namespace kxf::UI
 	auto ClusterMap::GetDrawInfo() const -> DrawInfo
 	{
 		DrawInfo info;
-		info.ClientSize = GetClientSize();
+		info.ClientSize = Size();
 		info.Increment = m_ItemSize + m_Spacing;
-		info.ItemsY = info.ClientSize.GetWidth() / info.Increment;
-		info.ItemsX = std::ceil((float)m_ItemCount / info.ItemsY);
+		if (info.Increment != 0)
+		{
+			info.ItemsY = info.ClientSize.GetWidth() / info.Increment;
+			if (info.ItemsY != 0)
+			{
+				info.ItemsX = std::ceil(static_cast<float>(m_ItemCount) / info.ItemsY);
 
-		return info;
+				return info;
+			}
+		}
+		return {};
 	}
 
 	Point ClusterMap::CoordToXY(const DrawInfo& drawInfo, const Point& pos) const
@@ -125,7 +132,7 @@ namespace kxf::UI
 
 	Point ClusterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
 	{
-		if (index >= 0 && (size_t)index < m_ItemCount)
+		if (index >= 0 && static_cast<size_t>(index) < m_ItemCount && drawInfo.ItemsY > 0)
 		{
 			const int y = index / drawInfo.ItemsY;
 			const int x = index - (y * drawInfo.ItemsY) - 1;

@@ -48,7 +48,7 @@ namespace kxf::UI
 	}
 	Rect AuiToolBarItem::GetRect() const
 	{
-		return m_ToolBar->wxAuiToolBar::GetToolRect(GetID());
+		return Rect(m_ToolBar->wxAuiToolBar::GetToolRect(GetID()));
 	}
 	bool AuiToolBarItem::IsItemFits() const
 	{

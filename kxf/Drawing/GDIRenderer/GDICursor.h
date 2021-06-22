@@ -154,7 +154,7 @@ namespace kxf
 
 			Point GetHotSpot() const
 			{
-				return m_Cursor.GetHotSpot();
+				return Point(m_Cursor.GetHotSpot());
 			}
 			void SetHotSpot(Point hotSpot)
 			{

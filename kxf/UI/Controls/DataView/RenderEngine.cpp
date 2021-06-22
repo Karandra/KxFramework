@@ -32,7 +32,7 @@ namespace kxf::UI::DataView::Markup
 		public:
 			Size GetTextExtent(GDIContext& dc) const
 			{
-				return Measure(dc.ToWxDC());
+				return Size(Measure(dc.ToWxDC()));
 			}
 	};
 	class WithMnemonics final: public wxMarkupText
@@ -46,7 +46,7 @@ namespace kxf::UI::DataView::Markup
 		public:
 			Size GetTextExtent(GDIContext& dc) const
 			{
-				return Measure(dc.ToWxDC());
+				return Size(Measure(dc.ToWxDC()));
 			}
 	};
 }
@@ -68,7 +68,7 @@ namespace kxf::UI::DataView::Markup
 
 	Size GetTextExtent(const wxMarkupTextBase& markup, GDIContext& dc)
 	{
-		return markup.Measure(dc.ToWxDC());
+		return Size(markup.Measure(dc.ToWxDC()));
 	}
 	Size GetTextExtent(MarkupMode mode, GDIContext& dc, const String& string)
 	{
@@ -132,7 +132,7 @@ namespace kxf::UI::DataView
 	}
 	Size RenderEngine::FromDIP(const Size& size) const
 	{
-		return m_Renderer.GetView()->FromDIP(size);
+		return Size(m_Renderer.GetView()->FromDIP(size));
 	}
 
 	size_t RenderEngine::FindFirstLineBreak(const String& string) const
@@ -350,7 +350,7 @@ namespace kxf::UI::DataView
 
 	Size RenderEngine::GetToggleSize() const
 	{
-		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
+		return IRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
 	}
 	Size RenderEngine::DrawToggle(IGraphicsContext& gc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
 	{

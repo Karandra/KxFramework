@@ -13,7 +13,7 @@ namespace kxf::UI
 		using namespace kxf;
 
 		GDIPaintContext dc(*this);
-		UxTheme::DrawParentBackground(*this, dc, Rect(Point(0, 0), GetSize()));
+		UxTheme::DrawParentBackground(*this, dc, Rect(wxRect({0, 0}, GetSize())));
 		event.Skip();
 	}
 

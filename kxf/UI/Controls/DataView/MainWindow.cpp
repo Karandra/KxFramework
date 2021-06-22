@@ -462,7 +462,7 @@ namespace kxf::UI::DataView
 		{
 			const int x = event.GetX();
 			const int y = event.GetY();
-			Size size = m_View->GetClientSize();
+			Size size = Size(m_View->GetClientSize());
 
 			return x >= 0 && y >= 0 && x <= size.GetWidth() && y <= size.GetHeight();
 		};
@@ -598,10 +598,9 @@ namespace kxf::UI::DataView
 		{
 			if (m_DragCount == 0)
 			{
-				// We have to report the raw, physical coords as we want to be
-				// able to call HitTest(event.m_pointDrag) from the user code to
-				// get the item being dragged
-				m_DragStart = event.GetPosition();
+				// We have to report the raw, physical coords as we want to be able to
+				// call HitTest(event.m_pointDrag) from the user code to get the item being dragged.
+				m_DragStart = Point(event.GetPosition());
 			}
 
 			m_DragCount++;
@@ -1055,7 +1054,7 @@ namespace kxf::UI::DataView
 		gc->SetAntialiasMode(AntialiasMode::None);
 		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
 
-		const Size clientSize = GetClientSize();
+		const Size clientSize = Size(GetClientSize());
 		const auto transparentPen = m_GraphicsRenderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
 		const auto transparentBrush = m_GraphicsRenderer->CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
 		const auto backgroundBrush = m_GraphicsRenderer->CreateSolidBrush(m_View->GetBackgroundColour());
@@ -1097,7 +1096,7 @@ namespace kxf::UI::DataView
 			return;
 		}
 
-		Rect updateRect = GetUpdateRegion().GetBox();
+		Rect updateRect = Rect(GetUpdateRegion().GetBox());
 		m_View->CalcUnscrolledPosition(updateRect.GetX(), updateRect.GetY(), &updateRect.X(), &updateRect.Y());
 
 		// Compute which rows needs to be redrawn
@@ -1347,7 +1346,7 @@ namespace kxf::UI::DataView
 						}
 					}
 
-					return result.Deflate(FromDIP(wxSize(1, 1)));
+					return result.Deflate(Size(FromDIP(wxSize(1, 1))));
 				}();
 
 				// Adjust cell rectangle
@@ -1449,7 +1448,7 @@ namespace kxf::UI::DataView
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect(!fullRowSelectionEnabled);
-					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect.Deflate(FromDIP(wxSize(1, 1))), NativeWidgetFlag::Selected);
+					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect.Deflate(Size(FromDIP(wxSize(1, 1)))), NativeWidgetFlag::Selected);
 				}
 
 				// Move coordinates to next column
@@ -1681,7 +1680,7 @@ namespace kxf::UI::DataView
 			calculator.UpdateWithWidth(column.GetTitleWidth());
 		}
 
-		const Point origin = m_View->CalcUnscrolledPosition(Point(0, 0));
+		const Point origin = Point(m_View->CalcUnscrolledPosition(Point(0, 0)));
 		calculator.ComputeBestColumnWidth(rowCount, *GetRowAt(origin.GetY()), *GetRowAt(origin.GetY() + GetClientSize().GetY()));
 
 		int maxWidth = calculator.GetMaxWidth();
@@ -2016,7 +2015,7 @@ namespace kxf::UI::DataView
 		Rect rect = GetRowsRect(from, to);
 		m_View->CalcScrolledPosition(rect.GetX(), rect.GetY(), &rect.X(), &rect.Y());
 
-		Size clientSize = GetClientSize();
+		Size clientSize = Size(GetClientSize());
 		Rect clientRect(0, 0, clientSize.GetWidth(), clientSize.GetHeight());
 		Rect intersectRect = clientRect.Intersect(rect);
 		if (!intersectRect.IsEmpty())
@@ -2026,7 +2025,7 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::RefreshRowsAfter(Row firstRow)
 	{
-		Size clientSize = GetClientSize();
+		Size clientSize = Size(GetClientSize());
 		int start = GetRowStart(firstRow);
 		m_View->CalcScrolledPosition(start, 0, &start, nullptr);
 
@@ -2038,7 +2037,7 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::RefreshColumn(const Column& column)
 	{
-		Size size = GetClientSize();
+		Size clientSize = Size(GetClientSize());
 
 		// Find X coordinate of this column
 		int left = 0;
@@ -2055,7 +2054,7 @@ namespace kxf::UI::DataView
 			}
 		}
 
-		RefreshRect(Rect(left, 0, column.GetWidth(), size.GetHeight()));
+		RefreshRect(Rect(left, 0, column.GetWidth(), clientSize.GetHeight()));
 	}
 
 	// Item rect
@@ -2458,7 +2457,7 @@ namespace kxf::UI::DataView
 
 		if (column != INVALID_COLUMN)
 		{
-			Rect rect = GetClientRect();
+			Rect rect = Rect(GetClientRect());
 
 			Point unscrolledPos;
 			m_View->CalcUnscrolledPosition(rect.GetX(), rect.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
@@ -2699,7 +2698,7 @@ namespace kxf::UI::DataView
 	}
 	size_t MainWindow::GetCountPerPage() const
 	{
-		Size size = GetClientSize();
+		Size size = Size(GetClientSize());
 		return size.GetHeight() / m_UniformRowHeight;
 	}
 	Row MainWindow::GetFirstVisibleRow() const
@@ -2710,7 +2709,7 @@ namespace kxf::UI::DataView
 	}
 	Row MainWindow::GetLastVisibleRow() const
 	{
-		Size size = GetClientSize();
+		Size size = Size(GetClientSize());
 		m_View->CalcUnscrolledPosition(size.GetWidth(), size.GetHeight(), &size.Width(), &size.Height());
 
 		// We should deal with the pixel here.

@@ -722,6 +722,7 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\UxTheme.cpp" />
+    <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />

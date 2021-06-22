@@ -16,14 +16,14 @@ namespace kxf::UI
 		dc.SetBackgroundTransparent();
 		dc.SetTextForeground(GetForegroundColour());
 
-		const Size clientSize = GetClientSize();
+		const Size clientSize = Size(GetClientSize());
 		UxTheme::DrawParentBackground(*this, dc, clientSize);
 
 		// Draw the background
 		{
 			dc.SetBrush(GetBackgroundColour());
 
-			Rect backgroundRect(Point(0, 0), (wxSize)clientSize);
+			Rect backgroundRect({0, 0}, clientSize);
 			backgroundRect.Inflate(2);
 			dc.DrawRectangle(backgroundRect);
 
@@ -57,8 +57,8 @@ namespace kxf::UI
 		{
 			if (UxTheme theme(*this, UxThemeClass::Status); theme)
 			{
-				wxSize gripSize = theme.GetPartSize(dc, SP_GRIPPER, 0);
-				wxPoint gripPos(clientSize.GetWidth() - gripSize.GetWidth() - 1, GetMinHeight() - gripSize.GetHeight() - 1);
+				Size gripSize = theme.GetPartSize(dc, SP_GRIPPER, 0);
+				Point gripPos(clientSize.GetWidth() - gripSize.GetWidth() - 1, GetMinHeight() - gripSize.GetHeight() - 1);
 				theme.DrawBackground(dc, SP_GRIPPER, 0, Rect(gripPos, gripSize));
 			}
 			else
@@ -77,7 +77,7 @@ namespace kxf::UI
 		{
 			if (wxRect tempRect; GetFieldRect(i, tempRect))
 			{
-				rect = tempRect;
+				rect = Rect(tempRect);
 				rect.SetX(rect.GetX() + spacer);
 
 				String label;

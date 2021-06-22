@@ -246,7 +246,7 @@ namespace kxf::Sciter
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
 			event.SetKeyCode(static_cast<wxKeyCode>(parameters.key_code));
-			event.SetPosition(m_Host.GetWindow().ScreenToClient(wxGetMousePosition()));
+			event.SetPosition(Point(m_Host.GetWindow().ScreenToClient(wxGetMousePosition())));
 			AssignKeyboardState(event, parameters.alt_state);
 
 			return ProcessEvent(event, eventID);

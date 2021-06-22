@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IGDIObject.h"
+#include "Private/GDI.h"
 #include "../Private/Common.h"
 #include <wx/region.h>
 
@@ -44,7 +45,7 @@ namespace kxf
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
-					std::vector<wxPoint> pointsBuffer = {points, points + count};
+					auto pointsBuffer = Private::ConvertWxPoints(points, count);
 					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
 				}
 			}
@@ -54,9 +55,7 @@ namespace kxf
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
-					std::array<wxPoint, N> pointsBuffer;
-					std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+					auto pointsBuffer = Private::ConvertWxPoints(points);
 					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
 				}
 			}
@@ -66,9 +65,7 @@ namespace kxf
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
-					std::array<wxPoint, N> pointsBuffer;
-					std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+					auto pointsBuffer = Private::ConvertWxPoints(points);
 					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
 				}
 			}
@@ -118,7 +115,7 @@ namespace kxf
 			}
 			Rect GetBox() const
 			{
-				return m_Region.GetBox();
+				return Rect(m_Region.GetBox());
 			}
 			bool Offset(const Point& pos)
 			{

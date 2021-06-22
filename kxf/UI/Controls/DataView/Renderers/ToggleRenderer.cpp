@@ -58,7 +58,7 @@ namespace kxf::UI::DataView
 	bool ToggleRendererBase::DoOnActivateCell(const Rect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent) const
 	{
 		// Only react to clicks directly on the checkbox, not elsewhere in the same cell.
-		if (mouseEvent && !toggleRect.Contains(mouseEvent->GetPosition()))
+		if (mouseEvent && !toggleRect.Contains(Point(mouseEvent->GetPosition())))
 		{
 			return false;
 		}

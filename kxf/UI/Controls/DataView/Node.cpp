@@ -113,7 +113,7 @@ namespace kxf::UI::DataView
 	}
 	Point Node::DoGetCellDropdownPoint(const Column* column) const
 	{
-		return DoGetCellRect(column).GetLeftBottom() + GetMainWindow().FromDIP(Point(0, 1));
+		return DoGetCellRect(column).GetLeftBottom() + Point(GetMainWindow().FromDIP(Point(0, 1)));
 	}
 
 	void Node::CreateNode(Node& parent)

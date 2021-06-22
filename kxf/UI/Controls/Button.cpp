@@ -29,7 +29,7 @@ namespace
 	{
 		if (!size.IsFullySpecified())
 		{
-			size = button.GetSizeFromTextSize(button.GetTextExtent(button.GetLabelText()));
+			size = kxf::Size(button.GetSizeFromTextSize(button.GetTextExtent(button.GetLabelText())));
 		}
 
 		if (size.GetWidth() <= 0)
@@ -50,7 +50,7 @@ namespace kxf::UI
 
 	Size Button::GetDefaultSize()
 	{
-		return wxButton::GetDefaultSize();
+		return Size(wxButton::GetDefaultSize());
 	}
 
 	void Button::OnPaint(wxPaintEvent& event)
@@ -62,8 +62,8 @@ namespace kxf::UI
 		wxRendererNative& renderer = wxRendererNative::Get();
 
 		const bool isEnabled = IsThisEnabled();
-		const Size clientSize = GetSize();
-		const Rect contentRect = Rect(FromDIP(Point(2, 2)), (wxSize)clientSize - FromDIP(wxSize(4, 4)));
+		const Size clientSize = Size(GetSize());
+		const Rect contentRect = Rect(wxRect(FromDIP(Point(2, 2)), clientSize - FromDIP(wxSize(4, 4))));
 		int width = clientSize.GetWidth();
 		int widthMod = 2;
 		if (m_IsSliptterEnabled)
@@ -147,7 +147,7 @@ namespace kxf::UI
 		ScheduleRefresh();
 		m_ControlState = wxCONTROL_NONE;
 
-		const Point pos = event.GetPosition();
+		const Point pos = Point(event.GetPosition());
 		if (m_IsSliptterEnabled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
 		{
 			wxContextMenuEvent menuEvent(EvtMenu.ToWxTag(), this->GetId());
@@ -177,15 +177,15 @@ namespace kxf::UI
 
 	wxSize Button::DoGetBestSize() const
 	{
-		return CalcBestSize(*this, wxAnyButton::DoGetBestSize());
+		return CalcBestSize(*this, Size(wxAnyButton::DoGetBestSize()));
 	}
 	wxSize Button::DoGetBestClientSize() const
 	{
-		return CalcBestSize(*this, wxAnyButton::DoGetBestClientSize());
+		return CalcBestSize(*this, Size(wxAnyButton::DoGetBestClientSize()));
 	}
 	wxSize Button::DoGetSizeFromTextSize(int xlen, int ylen) const
 	{
-		Size size = ConvertDialogToPixels(wxSize(16, 0));
+		Size size = Size(ConvertDialogToPixels(wxSize(16, 0)));
 		if (xlen > 0)
 		{
 			size.Width() += xlen;
@@ -264,7 +264,7 @@ namespace kxf::UI
 				// 78 is the index of UAC shield icon
 				if (ImageBundle bundle = library.GetIconBundleResource("78"))
 				{
-					if (BitmapImage image = bundle.GetImage(GetSize(), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
+					if (BitmapImage image = bundle.GetImage(Size(GetSize()), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{
 						SetBitmap(image.ToGDIBitmap().ToWxBitmap());
 						return;

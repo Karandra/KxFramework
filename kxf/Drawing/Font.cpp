@@ -144,7 +144,7 @@ namespace kxf
 		if (other.IsOk())
 		{
 			m_FaceName = other.GetFaceName();
-			m_PixelSize = other.GetPixelSize();
+			m_PixelSize = Size(other.GetPixelSize());
 			m_PointSize = static_cast<float>(other.GetFractionalPointSize());
 			m_Weight = other.GetNumericWeight();
 			m_Family = Drawing::Private::MapFontFamily(other.GetFamily());
@@ -158,7 +158,7 @@ namespace kxf
 	void Font::CreateFrom(const wxNativeFontInfo& other)
 	{
 		m_FaceName = other.GetFaceName();
-		m_PixelSize = other.GetPixelSize();
+		m_PixelSize = Size(other.GetPixelSize());
 		m_PointSize = static_cast<float>(other.GetFractionalPointSize());
 		m_Weight = other.GetNumericWeight();
 		m_Family = Drawing::Private::MapFontFamily(other.GetFamily());

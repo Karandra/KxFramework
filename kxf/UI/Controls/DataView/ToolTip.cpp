@@ -39,7 +39,7 @@ namespace kxf::UI::DataView
 		const Size screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
 		const Size smallIcon = {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
 
-		Size textExtent = wxClientDC(&mainWindow).GetMultiLineTextExtent(m_Message);
+		Size textExtent = Size(wxClientDC(&mainWindow).GetMultiLineTextExtent(m_Message));
 		Size offset;
 
 		if (auto icon = GetIconBitmap())
@@ -58,7 +58,7 @@ namespace kxf::UI::DataView
 		}
 
 
-		Point adjustedPos = mainWindow.ClientToScreen(pos);
+		Point adjustedPos = Point(mainWindow.ClientToScreen(pos));
 		if (int right = adjustedPos.GetX() + textExtent.GetWidth(); right > screenSize.GetWidth())
 		{
 			adjustedPos.X() -= (right - screenSize.GetWidth()) + offset.GetWidth();
@@ -67,7 +67,7 @@ namespace kxf::UI::DataView
 		{
 			adjustedPos.Y() -= (bottom - screenSize.GetHeight()) + offset.GetHeight();
 		}
-		return mainWindow.ScreenToClient(adjustedPos);
+		return Point(mainWindow.ScreenToClient(adjustedPos));
 	}
 	String ToolTip::StripMarkupIfNeeded(const Node& node, const Column& column, const String& text) const
 	{

@@ -95,7 +95,7 @@ namespace kxf::UI
 
 		const bool isSelectionEvent = IsSelectionEvent(event);
 		const int itemsInRow = CalcItemsPerRow();
-		const Point pos = event.GetPosition();
+		const Point pos = Point(event.GetPosition());
 		const int row = VirtualHitTest(pos.GetY());
 
 		const size_t oldSelection = m_Selected;
@@ -155,7 +155,7 @@ namespace kxf::UI
 	}
 	Rect ThumbView::GetThumbRect(size_t row, size_t columnIndex, size_t beginRow)
 	{
-		return Rect(wxPoint(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight()), (wxSize)m_ThumbSize);
+		return Rect(Point(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight()), m_ThumbSize);
 	}
 	Rect ThumbView::GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow)
 	{
@@ -168,7 +168,7 @@ namespace kxf::UI
 		{
 			pos.Y() += m_Spacing.GetHeight() * (row - beginRow);
 		}
-		return Rect((wxPoint)pos, (wxSize)m_ThumbSize);
+		return Rect(pos, m_ThumbSize);
 	}
 	Size ThumbView::GetFinalThumbSize() const
 	{
@@ -232,7 +232,7 @@ namespace kxf::UI
 			EnableSystemTheme();
 			SetDoubleBuffered(true);
 
-			m_ThumbSize = FromDIP((wxSize)DefaultThumbSize);
+			m_ThumbSize = Size(FromDIP(DefaultThumbSize));
 			SetRowCount(0);
 
 			Bind(wxEVT_SIZE, &ThumbView::OnSize, this);
@@ -256,7 +256,7 @@ namespace kxf::UI
 		m_ThumbSize = size;
 		if (!m_ThumbSize.IsFullySpecified() || m_ThumbSize == Size(0, 0))
 		{
-			m_ThumbSize = FromDIP((wxSize)DefaultThumbSize);
+			m_ThumbSize = Size(FromDIP(DefaultThumbSize));
 		}
 
 		ScheduleRefresh();

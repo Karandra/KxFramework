@@ -38,7 +38,7 @@ namespace kxf::UI
 	}
 	Size Label::CalcBestSize(GDIContext* dc)
 	{
-		const Size padding = ConvertDialogToPixels(wxSize(3, 1));
+		const Size padding = Size(ConvertDialogToPixels(wxSize(3, 1)));
 
 		if (m_IsMultilne)
 		{
@@ -101,7 +101,7 @@ namespace kxf::UI
 			return;
 		}
 
-		const Rect rect(Point(0, 0), GetSize());
+		const Rect rect(Point(0, 0), Size(GetSize()));
 		const bool isSelected = m_State == wxCONTROL_FOCUSED || m_State == wxCONTROL_PRESSED;
 		const bool isEnabled = IsThisEnabled();
 		const Color color = GetStateColor();
@@ -239,7 +239,7 @@ namespace kxf::UI
 			m_Icon = image;
 			m_IconDisabled = image.ConvertToDisabled();
 
-			Size size = GetSize();
+			Size size = Size(GetSize());
 			if (size.GetHeight() <= image.GetHeight())
 			{
 				SetSize(size.GetWidth(), image.GetHeight()+4);

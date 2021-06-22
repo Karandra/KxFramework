@@ -236,7 +236,7 @@ namespace kxf::Sciter
 			}
 			Size GetBestSize() const
 			{
-				return TWindow::GetBestSize();
+				return Size(TWindow::GetBestSize());
 			}
 
 		public:

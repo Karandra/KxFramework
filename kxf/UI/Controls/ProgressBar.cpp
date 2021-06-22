@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "ProgressBar.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/General/Format.h"
 
 namespace kxf::UI
@@ -10,15 +11,15 @@ namespace kxf::UI
 	{
 		if (!m_InPulseMode && HasFlag(wxGA_TEXT))
 		{
-			wxPaintDC dc(this);
+			GDIPaintContext dc(*this);
 			wxGauge::OnPaint(event);
-			Rect rect(Point(0, 0), GetSize());
+			Rect rect(Point(0, 0), Size(GetSize()));
 
 			// Draw label
 			const String label = GetLabel();
 			if (!label.IsEmpty())
 			{
-				dc.DrawLabel(Format("{:.2f}", (static_cast<double>(DoGetValue()) / static_cast<double>(DoGetRange())) * 100.0), rect, ToInt(Alignment::Center));
+				dc.DrawLabel(Format("{:.2f}", (static_cast<double>(DoGetValue()) / static_cast<double>(DoGetRange())) * 100.0), rect, Alignment::Center);
 			}
 		}
 	}

@@ -57,7 +57,7 @@ namespace kxf::Sciter
 			return false;
 		}
 
-		const Size windowSize = m_SciterWindow.GetClientSize();
+		const Size windowSize = Size(m_SciterWindow.GetClientSize());
 
 		// D3D10_CREATE_DEVICE_BGRA_SUPPORT is required here
 		constexpr uint32_t createDeviceFlags = D3D10_CREATE_DEVICE_BGRA_SUPPORT;
@@ -219,7 +219,7 @@ namespace kxf::Sciter
 		if (m_SwapChain)
 		{
 			// Preserve the existing buffer count and format.
-			const Size size = m_SciterWindow.GetClientSize();
+			const Size size = Size(m_SciterWindow.GetClientSize());
 			m_SwapChain->ResizeBuffers(0, size.GetWidth(), size.GetHeight(), DXGI_FORMAT_UNKNOWN, 0);
 
 			// Get buffer and create a render-target-view

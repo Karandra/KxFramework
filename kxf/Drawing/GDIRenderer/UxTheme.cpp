@@ -415,7 +415,7 @@ namespace kxf
 	bool UxTheme::DrawProgressBar(GDIContext& dc, int iBarPartId, int iFillPartId, int iFillStateId, const Rect& rect, int position, int range, Color* averageBackgroundColor) noexcept
 	{
 		const bool isVertical = iBarPartId == PP_BARVERT && iFillPartId == PP_FILLVERT;
-		const Size padding = isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0));
+		const Size padding = Size(isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0)));
 
 		// Draw background part
 		bool result = true;
@@ -444,7 +444,7 @@ namespace kxf
 
 			if (iBarPartId > 0)
 			{
-				fillRect.Deflate(m_Window->FromDIP(Size(1, 1)) + padding);
+				fillRect.Deflate(Size(m_Window->FromDIP(wxSize(1, 1)) + padding));
 			}
 			result = DrawBackground(dc, iFillPartId, iFillStateId, fillRect);
 

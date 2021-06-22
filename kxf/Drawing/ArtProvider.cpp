@@ -25,7 +25,7 @@ namespace
 		public:
 			wxBitmap CreateBitmap(const wxString& id, const wxString& clientID, const wxSize& size) override
 			{
-				return m_Provider.GetImage(kxf::String(id), clientID.IsEmpty() ? wxART_OTHER : clientID, size).ToGDIBitmap().ToWxBitmap();
+				return m_Provider.GetImage(kxf::String(id), clientID.IsEmpty() ? wxART_OTHER : clientID, kxf::Size(size)).ToGDIBitmap().ToWxBitmap();
 			}
 			wxIconBundle CreateIconBundle(const wxString& id, const wxString& clientID) override
 			{

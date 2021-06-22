@@ -149,7 +149,7 @@ namespace kxf
 			else
 			{
 				// They should be of the same size
-				return GetRenderer().GetCheckBoxSize(const_cast<wxWindow*>(window), *MapWidgetFlags(widgetFlags));
+				return Size(GetRenderer().GetCheckBoxSize(const_cast<wxWindow*>(window), *MapWidgetFlags(widgetFlags)));
 			}
 		}
 		return {};
@@ -249,7 +249,7 @@ namespace kxf
 		if (window)
 		{
 			// Progress bar looks really ugly when it's smaller than 10x10 pixels, so don't draw it at all in this case.
-			const Size minSize = window->FromDIP(wxSize(10, 10));
+			const Size minSize = Size(window->FromDIP(wxSize(10, 10)));
 			if (rect.GetWidth() < minSize.GetWidth() || rect.GetHeight() < minSize.GetHeight())
 			{
 				return;

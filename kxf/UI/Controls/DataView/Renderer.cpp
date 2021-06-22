@@ -54,7 +54,7 @@ namespace kxf::UI::DataView
 		// Special backgrounds
 		if (cellBGOptions.ContainsOption(CellBGOption::Header))
 		{
-			Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
+			Size offsetSize = Size(GetView()->FromDIP(wxSize(0, 1)));
 
 			Rect buttonRect = cellRect;
 			buttonRect.Width() += offsetSize.GetWidth();

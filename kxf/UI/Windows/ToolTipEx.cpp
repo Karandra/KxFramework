@@ -246,7 +246,7 @@ namespace kxf::UI
 
 			if (HWND hwnd = GetHandle())
 			{
-				Point pos = (window ? window : GetParent())->ClientToScreen(position);
+				Point pos = Point((window ? window : GetParent())->ClientToScreen(position));
 				::SendMessageW(hwnd, TTM_TRACKPOSITION, 0, static_cast<LPARAM>(MAKELONG(pos.GetX(), pos.GetY())));
 
 				TTTOOLINFOW info = MakeToolInfo(*this, m_Message);

@@ -355,7 +355,7 @@ namespace kxf::UI
 					m_GripperWindow.SetSize(m_GripperWindowSize);
 					m_GripperWindow.Show();
 
-					Size size = GetSize();
+					Size size = Size(GetSize());
 					SetSize(size + Size(1, 1));
 					SetSize(size);
 					Refresh();

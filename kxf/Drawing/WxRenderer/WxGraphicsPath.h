@@ -68,7 +68,7 @@ namespace kxf
 			}
 			PointF GetCurrentPoint() const override
 			{
-				return m_Graphics.GetCurrentPoint();
+				return PointD(m_Graphics.GetCurrentPoint());
 			}
 			void MoveToPoint(const PointF& point) override
 			{
@@ -76,7 +76,7 @@ namespace kxf
 			}
 			RectF GetBoundingBox() const override
 			{
-				return m_Graphics.GetBox();
+				return RectD(m_Graphics.GetBox());
 			}
 
 			void AddArc(const PointF& point1, const PointF& point2, float radius) override

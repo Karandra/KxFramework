@@ -429,7 +429,7 @@ namespace kxf
 			return m_DC.GetFontMetrics();
 		}
 	}
-	std::vector<float> GDIGraphicsContext::GetPartialTextExtent(const String& text, const IGraphicsFont& font) const
+	std::vector<float> GDIGraphicsContext::GetPartialTextExtents(const String& text, const IGraphicsFont& font) const
 	{
 		if (!text.IsEmpty())
 		{
@@ -687,7 +687,7 @@ namespace kxf
 namespace kxf
 {
 	GDIGraphicsBufferedContext::GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, const SizeF& size, FlagSet<GDIBufferedContextFlag> flags)
-		:GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, size, flags.ToInt())
+		:GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, size.ConvertCast<Size>(), flags.ToInt())
 	{
 		SetupDC();
 	}

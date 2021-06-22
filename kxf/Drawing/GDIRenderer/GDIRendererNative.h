@@ -22,11 +22,11 @@ namespace kxf
 			// CheckBox and checkmark
 			Size GetCheckMarkSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override
 			{
-				return GetRenderer().GetCheckMarkSize(const_cast<wxWindow*>(window));
+				return Size(GetRenderer().GetCheckMarkSize(const_cast<wxWindow*>(window)));
 			}
-			Size GetCheckBoxSize(const wxWindow* window, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override
+			Size GetCheckBoxSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override
 			{
-				return GetRenderer().GetCheckBoxSize(const_cast<wxWindow*>(window), *MapWidgetFlags(widgetFlags));
+				return Size(GetRenderer().GetCheckBoxSize(const_cast<wxWindow*>(window), *MapWidgetFlags(widgetFlags)));
 			}
 			void DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
@@ -43,7 +43,7 @@ namespace kxf
 			Size GetCollapseButtonSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override
 			{
 				wxClientDC dc(const_cast<wxWindow*>(window));
-				return GetRenderer().GetCollapseButtonSize(const_cast<wxWindow*>(window), dc);
+				return Size(GetRenderer().GetCollapseButtonSize(const_cast<wxWindow*>(window), dc));
 			}
 			void DrawCollapseButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 

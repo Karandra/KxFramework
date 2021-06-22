@@ -215,7 +215,7 @@ namespace kxf::UI
 		if (m_BackgroundBitmap)
 		{
 			// Draw the background bitmap tiling it over the entire window area
-			const Size virtualSize = GetVirtualSize();
+			const Size virtualSize = Size(GetVirtualSize());
 			const Size bitmapSize = m_BackgroundBitmap.GetSize();
 			for (int x = 0; x < virtualSize.GetWidth(); x += bitmapSize.GetWidth())
 			{
@@ -237,10 +237,10 @@ namespace kxf::UI
 
 		int x, y;
 		GetViewStart(&x, &y);
-		const Rect rect = GetUpdateRegion().GetBox();
+		const Rect rect = Rect(GetUpdateRegion().GetBox());
 
 		// Don't bother drawing the empty window.
-		const Size clientSize = GetClientSize();
+		const Size clientSize = Size(GetClientSize());
 		if (clientSize.GetWidth() == 0 || clientSize.GetHeight() == 0)
 		{
 			return;

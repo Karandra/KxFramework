@@ -63,16 +63,16 @@ namespace kxf::UI::DataView
 		int rateX = 0;
 		int rateY = 0;
 		GetScrollPixelsPerUnit(&rateX, &rateY);
-		Point startPos = GetViewStart();
+		Point startPos = Point(GetViewStart());
 
 		wxCoord value = -event.GetWheelRotation();
 		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 		{
-			Scroll(wxDefaultCoord, startPos.GetY() + (float)value / (rateY != 0 ? rateY : 1));
+			Scroll(wxDefaultCoord, startPos.GetY() + static_cast<float>(value) / (rateY != 0 ? rateY : 1));
 		}
 		else
 		{
-			Scroll(startPos.GetX() + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
+			Scroll(startPos.GetX() + static_cast<float>(value) / (rateX != 0 ? rateX : 1), wxDefaultCoord);
 		}
 	}
 

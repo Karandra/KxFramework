@@ -470,7 +470,7 @@ namespace kxf
 		}
 		return FontMetricsF(height, 0, descent, width, 0, externalLeading);
 	}
-	std::vector<float> WxGraphicsContext::GetPartialTextExtent(const String& text, const IGraphicsFont& font) const
+	std::vector<float> WxGraphicsContext::GetPartialTextExtents(const String& text, const IGraphicsFont& font) const
 	{
 		if (!text.IsEmpty())
 		{
@@ -854,7 +854,7 @@ namespace kxf
 	{
 		m_DC = dc;
 
-		m_Image = &InitTextureBuffer(m_Renderer->CreateTexture(dc.GetSize(), Drawing::GetStockColor(StockColor::Transparent)));
+		m_Image = &InitTextureBuffer(m_Renderer->CreateTexture(Size(dc.GetSize()), Drawing::GetStockColor(StockColor::Transparent)));
 		WxGraphicsContext::Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image->ToWxImage())));
 	}
 

@@ -55,7 +55,7 @@ namespace kxf::UI::DataView
 		dc.SetDeviceOrigin(m_ScrollOffset, 0);
 
 		wxRendererNative& nativeRenderer = wxRendererNative::Get();
-		Size clientSize = GetClientSize();
+		Size clientSize = Size(GetClientSize());
 		const bool isEnabled = IsEnabled();
 
 		int offsetX = 0;
@@ -504,7 +504,7 @@ namespace kxf::UI::DataView
 	}
 	void HeaderCtrl2::OnWindowClick(wxMouseEvent& event)
 	{
-		Point pos = event.GetPosition();
+		Point pos = Point(event.GetPosition());
 		if (pos.GetX() > m_View->GetMainWindow()->GetRowWidth())
 		{
 			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? ItemEvent::EvtColumnHeaderClick : ItemEvent::EvtColumnHeaderRClick, nullptr);

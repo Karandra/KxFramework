@@ -34,7 +34,7 @@ namespace kxf::UI
 			}
 			case ImageViewBackground::Gradient:
 			{
-				dc.DrawGradientLinear(Rect({0, 0}, GetSize()), GetForegroundColour(), GetBackgroundColour(), m_GradientDirection);
+				dc.DrawGradientLinear(Rect({0, 0}, Size(GetSize())), GetForegroundColour(), GetBackgroundColour(), m_GradientDirection);
 				break;
 			}
 			case ImageViewBackground::TransparenryPattern:
@@ -49,7 +49,7 @@ namespace kxf::UI
 		wxPaintDC dc(this);
 		std::unique_ptr<wxGraphicsContext> context(m_Renderer->CreateContext(dc));
 
-		m_ScaledImageSize = DrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, Rect(Point(0, 0), GetClientSize()), m_ScaleMode, m_ScaleFactor);
+		m_ScaledImageSize = DrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, Rect({0, 0}, Size(GetClientSize())), m_ScaleMode, m_ScaleFactor);
 	}
 	void ImageView::OnSize(wxSizeEvent& event)
 	{

@@ -125,7 +125,7 @@ namespace kxf::UI
 
 			Size GetBitmapMargins() const
 			{
-				return const_cast<Button*>(this)->wxAnyButton::GetBitmapMargins();
+				return Size(const_cast<Button*>(this)->wxAnyButton::GetBitmapMargins());
 			}
 			void SetBitmapMargins(wxCoord x, wxCoord y)
 			{

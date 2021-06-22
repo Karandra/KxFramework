@@ -331,7 +331,7 @@ namespace kxf::UI
 		{
 			// Default interface
 			m_GripperWindow.Create(this, wxID_NONE, reinterpret_cast<wxNativeWindowHandle>(GetGripperWindow()));
-			m_GripperWindowSize = m_GripperWindow.GetSize();
+			m_GripperWindowSize = Size(m_GripperWindow.GetSize());
 			SetBackgroundColour(ms_WindowBackgroundColor);
 
 			m_ContentPanel = new UI::Panel(this, wxID_NONE);
@@ -431,7 +431,7 @@ namespace kxf::UI
 	}
 	void StdDialog::SetResizingBehavior()
 	{
-		Size size = GetMinSize();
+		Size size = Size(GetMinSize());
 		wxOrientation nSide = GetWindowResizeSide();
 		switch ((int)nSide)
 		{

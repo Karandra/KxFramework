@@ -100,7 +100,7 @@ namespace kxf
 		public:
 			// CheckBox and checkmark
 			virtual Size GetCheckMarkSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const = 0;
-			virtual Size GetCheckBoxSize(const wxWindow* window, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) const = 0;
+			virtual Size GetCheckBoxSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const = 0;
 			virtual void DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) = 0;
 			virtual void DrawCheckBox(wxWindow* window, IGraphicsContext& gc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {});
 

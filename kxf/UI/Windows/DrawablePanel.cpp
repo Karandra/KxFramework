@@ -128,7 +128,7 @@ namespace kxf::UI
 			{
 				window = GetParent();
 			}
-			UxTheme::DrawParentBackground(*window, dc, Rect({0, 0}, GetSize()));
+			UxTheme::DrawParentBackground(*window, dc, Rect({0, 0}, Size(GetSize())));
 		}
 
 		if (mode & DrawablePanelMode::BGImage)
@@ -143,7 +143,7 @@ namespace kxf::UI
 		if (m_BackgroundMode & DrawablePanelMode::FGImage)
 		{
 			wxGCDC gcdc(dc.ToWxDC());
-			m_ScaledImageSize = DrawScaledBitmap(gcdc.GetGraphicsContext(), m_Bitmap, Rect({0, 0}, GetClientSize()), m_ImageScaleMode, m_ScaleFactor);
+			m_ScaledImageSize = DrawScaledBitmap(gcdc.GetGraphicsContext(), m_Bitmap, Rect({0, 0}, Size(GetClientSize())), m_ImageScaleMode, m_ScaleFactor);
 		}
 		else
 		{

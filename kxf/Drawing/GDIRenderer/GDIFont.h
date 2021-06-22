@@ -134,7 +134,7 @@ namespace kxf
 
 			Size GetPixelSize() const
 			{
-				return m_Font.GetPixelSize();
+				return Size(m_Font.GetPixelSize());
 			}
 			void SetPixelSize(const Size& pixelSize)
 			{

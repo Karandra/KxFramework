@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "GDIPen.h"
 #include "GDIBrush.h"
+#include "Private/GDI.h"
 #include "kxf/UI/Common.h"
 #include "../AffineMatrix.h"
 #include "../Private/Common.h"
@@ -109,7 +110,7 @@ namespace kxf
 			}
 			Size GetSize() const
 			{
-				return m_DC->GetSize();
+				return Size(m_DC->GetSize());
 			}
 			int GetWidth() const
 			{
@@ -122,11 +123,11 @@ namespace kxf
 
 			Size GetSizeMM() const
 			{
-				return m_DC->GetSizeMM();
+				return Size(m_DC->GetSizeMM());
 			}
 			Size GetDPI() const
 			{
-				return m_DC->GetPPI();
+				return Size(m_DC->GetPPI());
 			}
 
 			SizeD GetUserScale() const
@@ -134,7 +135,8 @@ namespace kxf
 				double x = 0;
 				double y = 0;
 				m_DC->GetUserScale(&x, &y);
-				return {};
+
+				return {x, y};
 			}
 			void SetUserScale(const SizeD& userScale)
 			{
@@ -155,7 +157,7 @@ namespace kxf
 
 			Point GetLogicalOrigin() const
 			{
-				return m_DC->GetLogicalOrigin();
+				return Point(m_DC->GetLogicalOrigin());
 			}
 			void SetLogicalOrigin(const Point& point)
 			{
@@ -164,7 +166,7 @@ namespace kxf
 
 			Point GetDeviceOrigin() const
 			{
-				return m_DC->GetDeviceOrigin();
+				return Point(m_DC->GetDeviceOrigin());
 			}
 			void SetDeviceOrigin(const Point& point)
 			{
@@ -278,49 +280,41 @@ namespace kxf
 
 			void DrawPolyLine(const Point* points, size_t count, const Point& offset = {0, 0})
 			{
-				std::vector<wxPoint> pointsBuffer = {points, points + count};
+				auto pointsBuffer = Private::ConvertWxPoints(points, count);
 				m_DC->DrawLines(static_cast<int>(pointsBuffer.size()), pointsBuffer.data(), offset.GetX(), offset.GetY());
 			}
 
 			template<size_t N>
 			void DrawPolyLine(const Point(&points)[N], const Point& offset = {0, 0})
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+				auto pointsBuffer = Private::ConvertWxPoints(points);
 				m_DC->DrawLines(static_cast<int>(pointsBuffer.size()), offset.GetX(), offset.GetY());
 			}
 
 			template<size_t N>
 			void DrawPolyLine(const std::array<Point, N>& points, const Point& offset = {0, 0})
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+				auto pointsBuffer = Private::ConvertWxPoints(points);
 				m_DC->DrawLines(static_cast<int>(pointsBuffer.size()), offset.GetX(), offset.GetY());
 			}
 
 			void DrawSpline(const Point* points, size_t count)
 			{
-				std::vector<wxPoint> pointsBuffer = {points, points + count};
+				auto pointsBuffer = Private::ConvertWxPoints(points, count);
 				m_DC->DrawSpline(static_cast<int>(pointsBuffer.size()), pointsBuffer.data());
 			}
 
 			template<size_t N>
 			void DrawSpline(const Point(&points)[N])
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+				auto pointsBuffer = Private::ConvertWxPoints(points);
 				m_DC->DrawSpline(static_cast<int>(pointsBuffer.size()), pointsBuffer.data());
 			}
 
 			template<size_t N>
 			void DrawSpline(const std::array<Point, N>& points)
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
-
+				auto pointsBuffer = Private::ConvertWxPoints(points);
 				m_DC->DrawSpline(static_cast<int>(pointsBuffer.size()), pointsBuffer.data());
 			}
 
@@ -392,13 +386,15 @@ namespace kxf
 			{
 				wxRect boundingBox;
 				m_DC->DrawLabel(text, bitmap.ToWxBitmap(), rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
-				return boundingBox;
+
+				return Rect(boundingBox);
 			}
 			Rect DrawLabel(const String& text, const Rect& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
 				m_DC->DrawLabel(text, wxNullBitmap, rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
-				return boundingBox;
+
+				return Rect(boundingBox);
 			}
 
 			bool CanDrawBitmap() const
@@ -440,7 +436,7 @@ namespace kxf
 				wxRect rect;
 				if (m_DC->GetClippingBox(rect))
 				{
-					return rect;
+					return Rect(rect);
 				}
 				return {};
 			}
@@ -470,26 +466,27 @@ namespace kxf
 
 			Size GetTextExtent(const String& text) const
 			{
-				return m_DC->GetTextExtent(text);
+				return Size(m_DC->GetTextExtent(text));
 			}
 			Size GetTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
 				m_DC->GetTextExtent(text, &size.x, &size.y, nullptr, nullptr, &font.ToWxFont());
 
-				return size;
+				return Size(size);
 			}
 			Size GetMultiLineTextExtent(const String& text) const
 			{
-				return m_DC->GetMultiLineTextExtent(text);
+				return Size(m_DC->GetMultiLineTextExtent(text));
 			}
 			Size GetMultiLineTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
 				m_DC->GetMultiLineTextExtent(text, &size.x, &size.y, nullptr, &font.ToWxFont());
-				return size;
+
+				return Size(size);
 			}
-			std::vector<int> GetPartialTextExtent(const String& text) const
+			std::vector<int> GetPartialTextExtents(const String& text) const
 			{
 				wxArrayInt widths;
 				if (m_DC->GetPartialTextExtents(text, widths))

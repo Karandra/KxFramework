@@ -184,7 +184,7 @@ namespace kxf::UI::DataView
 	}
 	void EditorControlHandler::DoOnMouse(wxMouseEvent& event)
 	{
-		const Point originalPos = event.GetPosition();
+		const Point originalPos = Point(event.GetPosition());
 		event.SetPosition(m_EditorCtrl->GetPosition());
 		GetEditor()->GetMainWindow()->ProcessWindowEvent(event);
 		event.SetPosition(originalPos);

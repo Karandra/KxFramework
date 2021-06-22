@@ -155,7 +155,7 @@ namespace kxf::UI::DataView
 	}
 	void HeaderCtrl::OnWindowClick(wxMouseEvent& event)
 	{
-		Point pos = event.GetPosition();
+		Point pos = Point(event.GetPosition());
 		if (pos.GetX() > m_View->GetMainWindow()->GetRowWidth())
 		{
 			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? ItemEvent::EvtColumnHeaderClick : ItemEvent::EvtColumnHeaderRClick, nullptr);
@@ -308,7 +308,7 @@ namespace kxf::UI::DataView
 		{
 			if (hitTest)
 			{
-				return GetMainWindow()->HitTestColumn(m_View->ScreenToClient(::wxGetMousePosition()));
+				return GetMainWindow()->HitTestColumn(Point(m_View->ScreenToClient(::wxGetMousePosition())));
 			}
 			else
 			{

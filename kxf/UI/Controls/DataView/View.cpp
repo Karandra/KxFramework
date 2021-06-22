@@ -176,14 +176,14 @@ namespace kxf::UI::DataView
 		{
 			brush = renderer.CreateSolidBrush(m_ClientArea->m_PenRuleH->GetColor());
 
-			RectF rect = m_HeaderAreaSpacerSI->GetRect();
+			RectF rect = Rect(m_HeaderAreaSpacerSI->GetRect());
 			rect.SetWidth(GetClientSize().GetWidth());
 			gc->DrawRectangle(rect, *brush, *m_ClientArea->m_PenRuleH);
 		}
 	}
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)
 	{
-		Size newSize = size;
+		Size newSize = Size(size);
 		if (m_HeaderArea)
 		{
 			newSize.Height() -= m_HeaderArea->GetSize().GetHeight();

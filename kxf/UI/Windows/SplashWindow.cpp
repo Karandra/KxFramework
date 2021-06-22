@@ -38,7 +38,7 @@ namespace kxf::UI
 			}
 
 			// Scale the image for window size
-			if (Size size = GetSize(); size != image.GetSize())
+			if (Size size = Size(GetSize()); size != image.GetSize())
 			{
 				image.Rescale(size, InterpolationQuality::BestAvailable);
 			}

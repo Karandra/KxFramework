@@ -287,7 +287,7 @@ namespace kxf::Sciter
 		const int width = GetSciterAPI()->SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
 		const int height = GetSciterAPI()->SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
 
-		return m_SciterWindow.FromDIP(Size(width, height));
+		return Size(m_SciterWindow.FromDIP(Size(width, height)));
 	}
 	Size Host::GetDPI() const
 	{
