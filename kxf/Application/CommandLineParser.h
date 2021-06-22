@@ -142,6 +142,7 @@ namespace kxf
 
 			bool IsLongNamesEnabled() const;
 			void SetLongNamesEnabled(bool enable = true);
+			void SetSwitchCharacters(const String& switchCharacters);
 
 			void SetCommandLine(int argc, char** argv);
 			void SetCommandLine(int argc, wchar_t** argv);

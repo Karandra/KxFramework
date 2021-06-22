@@ -67,10 +67,14 @@ namespace kxf
 	{
 		m_Parser->EnableLongOptions(enable);
 	}
+	void CommandLineParser::SetSwitchCharacters(const String& switchCharacters)
+	{
+		m_Parser->SetSwitchChars(switchCharacters);
+	}
 
 	void CommandLineParser::SetCommandLine(int argc, char** argv)
 	{
-		if (m_Parser)
+		if (!m_Parser)
 		{
 			m_Parser = std::make_unique<wxCmdLineParser>(argc, argv);
 		}
@@ -81,7 +85,7 @@ namespace kxf
 	}
 	void CommandLineParser::SetCommandLine(int argc, wchar_t** argv)
 	{
-		if (m_Parser)
+		if (!m_Parser)
 		{
 			m_Parser = std::make_unique<wxCmdLineParser>(argc, argv);
 		}
@@ -92,7 +96,7 @@ namespace kxf
 	}
 	void CommandLineParser::SetCommandLine(const String& commandLine)
 	{
-		if (m_Parser)
+		if (!m_Parser)
 		{
 			m_Parser = std::make_unique<wxCmdLineParser>(commandLine);
 		}
