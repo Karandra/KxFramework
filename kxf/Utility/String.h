@@ -69,7 +69,7 @@ namespace kxf::Utility
 			Type m_Type = Type::None;
 			std::string m_NarrowChars;
 			std::wstring m_WideChars;
-			IEncodingConverter* m_EncodingConveter = nullptr;
+			IEncodingConverter* m_EncodingConverter = nullptr;
 
 		private:
 			char* PrepareNarrowChars();
@@ -82,7 +82,7 @@ namespace kxf::Utility
 			{
 			}
 			StringBuffer(String& value, size_t length, IEncodingConverter& encondigConverter) noexcept
-				:m_Value(value), m_Length(length), m_EncodingConveter(&encondigConverter)
+				:m_Value(value), m_Length(length), m_EncodingConverter(&encondigConverter)
 			{
 			}
 			~StringBuffer()

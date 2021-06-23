@@ -24,7 +24,7 @@ namespace kxf::Utility
 		{
 			case Type::NarrowChars:
 			{
-				IEncodingConverter& converter = m_EncodingConveter ? *m_EncodingConveter : EncodingConverter_WhateverWorks;
+				IEncodingConverter& converter = m_EncodingConverter ? *m_EncodingConverter : EncodingConverter_WhateverWorks;
 				m_Value = converter.ToWideChar(m_NarrowChars);
 
 				break;
