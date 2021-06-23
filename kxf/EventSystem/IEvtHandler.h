@@ -418,21 +418,33 @@ namespace kxf
 
 			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, IEvent& event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				return DoProcessEvent(event, eventID, uuid, flags);
+				if (uuid)
+				{
+					return DoProcessEvent(event, eventID, uuid, flags);
+				}
+				return false;
 			}
 
 			template<class TEvent, class... Args>
 			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				TEvent event(std::forward<Args>(arg)...);
-				return DoProcessEvent(event, eventTag, uuid);
+				if (uuid)
+				{
+					TEvent event(std::forward<Args>(arg)...);
+					return DoProcessEvent(event, eventTag, uuid);
+				}
+				return false;
 			}
 
 			template<class TEvent, class... Args>
 			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				TEvent event(std::forward<Args>(arg)...);
-				return DoProcessEvent(event, eventTag, uuid, flags);
+				if (uuid)
+				{
+					TEvent event(std::forward<Args>(arg)...);
+					return DoProcessEvent(event, eventTag, uuid, flags);
+				}
+				return false;
 			}
 
 			// Construct and send the event using the event builder
@@ -463,19 +475,31 @@ namespace kxf
 
 			std::unique_ptr<IEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				return DoQueueEvent(std::move(event), eventID, uuid, flags);
+				if (uuid)
+				{
+					return DoQueueEvent(std::move(event), eventID, uuid, flags);
+				}
+				return nullptr;
 			}
 
 			template<class TEvent, class... Args>
 			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid));
+				if (uuid)
+				{
+					return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid));
+				}
+				return nullptr;
 			}
 
 			template<class TEvent, class... Args>
 			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags));
+				if (uuid)
+				{
+					return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags));
+				}
+				return nullptr;
 			}
 
 			// Construct and queue event using the event builder
