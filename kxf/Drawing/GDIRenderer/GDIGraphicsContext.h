@@ -24,6 +24,7 @@ namespace kxf
 			std::shared_ptr<IGraphicsBrush> m_SavedBrush;
 
 			AntialiasMode m_AntialiasMode = AntialiasMode::None;
+			AntialiasMode m_TextAntialiasMode = AntialiasMode::Default;
 			CompositionMode m_CompositionMode = CompositionMode::Over;
 			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 
@@ -208,6 +209,16 @@ namespace kxf
 			bool SetAntialiasMode(AntialiasMode mode) override
 			{
 				m_AntialiasMode = mode;
+				return false;
+			}
+
+			AntialiasMode GetTextAntialiasMode() const override
+			{
+				return m_TextAntialiasMode;
+			}
+			bool SetTextAntialiasMode(AntialiasMode mode) override
+			{
+				m_TextAntialiasMode = mode;
 				return false;
 			}
 

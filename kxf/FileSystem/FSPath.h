@@ -250,11 +250,6 @@ namespace kxf
 
 			FSPath& operator=(FSPath&&) = default;
 			FSPath& operator=(const FSPath&) = default;
-			FSPath& operator=(const String& path)
-			{
-				AssignFromPath(path);
-				return *this;
-			}
 	};
 
 	template<class T>

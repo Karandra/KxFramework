@@ -18,9 +18,32 @@ namespace kxf
 				private:
 					wxGraphicsContext& m_Context;
 					wxGraphicsFont m_OldFont;
+					std::optional<wxAntialiasMode> m_OldAntialiasMode;
+					std::optional<wxInterpolationQuality> m_OldInterpolationQuality;
 
 				public:
 					ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush);
+					ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush, wxAntialiasMode antialiasMode)
+						:ChangeTextParameters(gc, font, brush)
+					{
+						m_OldAntialiasMode = m_Context.GetAntialiasMode();
+						m_Context.SetAntialiasMode(antialiasMode);
+					}
+					ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush, wxInterpolationQuality interpolationQuality)
+						:ChangeTextParameters(gc, font, brush)
+					{
+						m_OldInterpolationQuality = m_Context.GetInterpolationQuality();
+						m_Context.SetInterpolationQuality(interpolationQuality);
+					}
+					ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush, wxAntialiasMode antialiasMode, wxInterpolationQuality interpolationQuality)
+						:ChangeTextParameters(gc, font, brush)
+					{
+						m_OldAntialiasMode = m_Context.GetAntialiasMode();
+						m_OldInterpolationQuality = m_Context.GetInterpolationQuality();
+
+						m_Context.SetAntialiasMode(antialiasMode);
+						m_Context.SetInterpolationQuality(interpolationQuality);
+					}
 					~ChangeTextParameters();
 			};
 			class ChangeDrawParameters final
@@ -60,6 +83,7 @@ namespace kxf
 			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 			CompositionMode m_CompositionMode = CompositionMode::Over;
 			AntialiasMode m_AntialiasMode = AntialiasMode::Default;
+			wxAntialiasMode m_TextAntialiasMode = wxAntialiasMode::wxANTIALIAS_DEFAULT;
 
 		private:
 			void CommonInit();
@@ -198,6 +222,9 @@ namespace kxf
 
 			AntialiasMode GetAntialiasMode() const override;
 			bool SetAntialiasMode(AntialiasMode mode) override;
+
+			AntialiasMode GetTextAntialiasMode() const override;
+			bool SetTextAntialiasMode(AntialiasMode mode) override;
 
 			CompositionMode GetCompositionMode() const override;
 			bool SetCompositionMode(CompositionMode mode) override;

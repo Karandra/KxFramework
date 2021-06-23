@@ -199,6 +199,9 @@ namespace kxf
 			virtual AntialiasMode GetAntialiasMode() const = 0;
 			virtual bool SetAntialiasMode(AntialiasMode mode) = 0;
 
+			virtual AntialiasMode GetTextAntialiasMode() const = 0;
+			virtual bool SetTextAntialiasMode(AntialiasMode mode) = 0;
+
 			virtual CompositionMode GetCompositionMode() const = 0;
 			virtual bool SetCompositionMode(CompositionMode mode) = 0;
 

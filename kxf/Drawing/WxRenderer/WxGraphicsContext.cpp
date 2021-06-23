@@ -11,7 +11,8 @@
 
 namespace kxf
 {
-	WxGraphicsContext::ChangeTextParameters::ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush):m_Context(*gc.m_Context)
+	WxGraphicsContext::ChangeTextParameters::ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush)
+		:m_Context(*gc.m_Context)
 	{
 		if (font || brush)
 		{
@@ -28,6 +29,14 @@ namespace kxf
 		if (!m_OldFont.IsNull())
 		{
 			m_Context.SetFont(m_OldFont);
+		}
+		if (m_OldAntialiasMode)
+		{
+			m_Context.SetAntialiasMode(*m_OldAntialiasMode);
+		}
+		if (m_OldInterpolationQuality)
+		{
+			m_Context.SetInterpolationQuality(*m_OldInterpolationQuality);
 		}
 	}
 
@@ -445,8 +454,6 @@ namespace kxf
 	}
 	FontMetricsF WxGraphicsContext::GetFontMetrics(const IGraphicsFont& font) const
 	{
-		FontMetricsF metrics;
-
 		wxGraphicsFont oldFont;
 		if (font)
 		{
@@ -505,7 +512,7 @@ namespace kxf
 	{
 		if (!text.IsEmpty())
 		{
-			ChangeTextParameters textParametrs(*this, font, brush);
+			ChangeTextParameters textParametrs(*this, font, brush, m_TextAntialiasMode);
 
 			m_Context->DrawText(text, point.GetX(), point.GetY());
 			CalcBoundingBox(point);
@@ -515,7 +522,7 @@ namespace kxf
 	{
 		if (!text.IsEmpty())
 		{
-			ChangeTextParameters textParametrs(*this, font, brush);
+			ChangeTextParameters textParametrs(*this, font, brush, m_TextAntialiasMode);
 
 			m_Context->DrawText(text, point.GetX(), point.GetY(), angle.ToRadians());
 			CalcBoundingBox(point);
@@ -525,7 +532,7 @@ namespace kxf
 	{
 		if (!rect.IsEmpty() && (!text.IsEmpty() || icon))
 		{
-			ChangeTextParameters textParametrs(*this, font, brush);
+			ChangeTextParameters textParametrs(*this, font, brush, m_TextAntialiasMode);
 
 			Rect boundingBox;
 			if (icon)
@@ -677,10 +684,6 @@ namespace kxf
 	{
 		switch (m_Context->GetAntialiasMode())
 		{
-			case wxANTIALIAS_NONE:
-			{
-				return AntialiasMode::None;
-			}
 			case wxANTIALIAS_DEFAULT:
 			{
 				return AntialiasMode::Default;
@@ -690,16 +693,49 @@ namespace kxf
 	}
 	bool WxGraphicsContext::SetAntialiasMode(AntialiasMode mode)
 	{
-		if (mode == AntialiasMode::None)
+		switch (mode)
 		{
-			m_AntialiasMode = AntialiasMode::None;
-			return m_Context->SetAntialiasMode(wxANTIALIAS_NONE);
-		}
-		else
+			case AntialiasMode::Default:
+			case AntialiasMode::BestAvailable:
+			{
+				m_AntialiasMode = AntialiasMode::Default;
+				return m_Context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
+			}
+			default:
+			{
+				m_AntialiasMode = AntialiasMode::None;
+				return m_Context->SetAntialiasMode(wxANTIALIAS_NONE);
+			}
+		};
+	}
+
+	AntialiasMode WxGraphicsContext::GetTextAntialiasMode() const
+	{
+		switch (m_TextAntialiasMode)
 		{
-			m_AntialiasMode = AntialiasMode::Default;
-			return m_Context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
-		}
+			case wxANTIALIAS_DEFAULT:
+			{
+				return AntialiasMode::Default;
+			}
+		};
+		return AntialiasMode::None;
+	}
+	bool WxGraphicsContext::SetTextAntialiasMode(AntialiasMode mode)
+	{
+		switch (mode)
+		{
+			case AntialiasMode::Default:
+			case AntialiasMode::BestAvailable:
+			{
+				m_TextAntialiasMode = wxAntialiasMode::wxANTIALIAS_DEFAULT;
+				return true;
+			}
+			default:
+			{
+				m_TextAntialiasMode = wxAntialiasMode::wxANTIALIAS_NONE;
+				return true;
+			}
+		};
 	}
 
 	CompositionMode WxGraphicsContext::GetCompositionMode() const
