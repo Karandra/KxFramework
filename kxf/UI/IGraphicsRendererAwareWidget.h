@@ -6,7 +6,7 @@ namespace kxf
 	class IGraphicsRenderer;
 }
 
-namespace kxf::UI
+namespace kxf
 {
 	class KX_API IGraphicsRendererAwareWidget: public RTTI::Interface<IGraphicsRendererAwareWidget>
 	{
