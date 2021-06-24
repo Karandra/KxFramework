@@ -489,6 +489,7 @@
     <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\Menus\Menu.h" />
     <ClInclude Include="kxf\UI\Menus\MenuEvent.h" />
     <ClInclude Include="kxf\UI\Menus\MenuItem.h" />

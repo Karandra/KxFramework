@@ -1667,9 +1667,6 @@
     <ClInclude Include="kxf\UI\Controls\DataView\SortMode.h">
       <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\IImageHandler.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
@@ -1952,6 +1949,12 @@
     </ClInclude>
     <ClInclude Include="kxf\Log\Private\OutputStreamTarget.h">
       <Filter>kxf\Log\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IWidget.h">
+      <Filter>kxf\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
