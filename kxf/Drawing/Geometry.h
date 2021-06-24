@@ -493,6 +493,10 @@ namespace kxf::Geometry
 			{
 				return m_Width <= 0 || m_Height <= 0;
 			}
+			constexpr bool IsFullySpecified() const noexcept
+			{
+				return m_X != DefaultCoord && m_Y != DefaultCoord && m_Width != DefaultCoord && m_Height != DefaultCoord;
+			}
 			constexpr TDerived Clone() const noexcept
 			{
 				return Self();
@@ -1206,6 +1210,12 @@ namespace kxf::Geometry
 	{
 		public:
 			using TValue = TValue_;
+
+		public:
+			static constexpr BasicRect UnspecifiedRect() noexcept
+			{
+				return BasicRect(Geometry::DefaultCoord, Geometry::DefaultCoord, Geometry::DefaultCoord, Geometry::DefaultCoord);
+			}
 
 		private:
 			using TBase = RectTemplate<BasicRect<TValue_>, TValue_, BasicPoint<TValue_>, BasicSize<TValue_>>;
