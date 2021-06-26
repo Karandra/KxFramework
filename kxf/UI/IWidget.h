@@ -1,12 +1,21 @@
 #pragma once
 #include "Common.h"
+#include "kxf/EventSystem/IEvtHandler.h"
+#include "kxf/EventSystem/IEvent.h"
 class wxWindow;
 
 namespace kxf
 {
 	enum class WidgetStyle: uint64_t
 	{
-		None = 0
+		None = 0,
+
+		Invisible = FlagSetValue<WidgetStyle>(0),
+		AllKeyEvents = FlagSetValue<WidgetStyle>(1),
+
+		ScrollVertical = FlagSetValue<WidgetStyle>(2),
+		ScrollHorizontal = FlagSetValue<WidgetStyle>(3),
+		ScrollShowAlways = FlagSetValue<WidgetStyle>(4)
 	};
 	KxFlagSet_Declare(WidgetStyle);
 
@@ -18,7 +27,12 @@ namespace kxf
 
 	enum class WidgetBorder: uint64_t
 	{
-		None = 0
+		None = 0,
+
+		Default,
+		Simple,
+		Static,
+		Theme
 	};
 	KxFlagSet_Declare(WidgetBorder);
 
@@ -34,12 +48,11 @@ namespace kxf
 		Client = FlagSetValue<WidgetSizeFlag>(4),
 		ClientMin = FlagSetValue<WidgetSizeFlag>(5),
 		ClientMax = FlagSetValue<WidgetSizeFlag>(6),
-		ClientBest = FlagSetValue<WidgetSizeFlag>(7),
 
-		Virtual = FlagSetValue<WidgetSizeFlag>(8),
-		VirtualBest = FlagSetValue<WidgetSizeFlag>(9),
+		Virtual = FlagSetValue<WidgetSizeFlag>(7),
+		VirtualBest = FlagSetValue<WidgetSizeFlag>(8),
 
-		Border = FlagSetValue<WidgetSizeFlag>(10)
+		Border = FlagSetValue<WidgetSizeFlag>(9)
 	};
 	KxFlagSet_Declare(WidgetSizeFlag);
 
@@ -68,6 +81,17 @@ namespace kxf
 	{
 		KxRTTI_DeclareIID(IWidget, {0xd5a7bb64, 0x7a68, 0x4906, {0x91, 0x3d, 0x7d, 0x3e, 0x3f, 0x84, 0xdf, 0xa0}});
 
+		template<std::derived_from<IWidget> TWidget>
+		friend std::shared_ptr<TWidget> NewWidget();
+
+		public:
+			static void AssociateWithWindow(wxWindow& window, IWidget& widget) noexcept;
+			static void DissociateWithWindow(wxWindow& window) noexcept;
+			static std::shared_ptr<IWidget> FindByWindow(const wxWindow& window) noexcept;
+
+		private:
+			virtual void SaveReference(std::weak_ptr<IWidget> ref) = 0;
+
 		public:
 			virtual ~IWidget() = default;
 
@@ -80,9 +104,9 @@ namespace kxf
 
 			// Lifetime management
 			virtual std::shared_ptr<IWidget> LockReference() const = 0;
-
-			virtual bool Close(bool force = false) = 0;
-			virtual void Destroy() = 0;
+			virtual bool CreateWidget(IWidget* parent, const String& text, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) = 0;
+			virtual bool CloseWidget(bool force = false) = 0;
+			virtual bool DestroyWidget() = 0;
 
 			// Event handling
 			virtual IEvtHandler& GetEventHandler() = 0;
@@ -148,7 +172,7 @@ namespace kxf
 
 			// Positioning functions
 			virtual Point GetPosition() const = 0;
-			virtual void SetPosition(const Point& pos) = 0;;
+			virtual void SetPosition(const Point& pos) = 0;
 
 			virtual void Center(FlagSet<Orientation> orientation = Orientation::Both) = 0;
 			virtual void CenterOnParent(FlagSet<Orientation> orientation = Orientation::Both) = 0;
@@ -159,22 +183,22 @@ namespace kxf
 			virtual void SetSize(const Size& size, FlagSet<WidgetSizeFlag> flags = WidgetSizeFlag::Widget) = 0;
 
 			// Coordinate conversion functions
-			virtual void SceenToClient(int& x, int& y) const = 0;
-			Size SceenToClient(Size size) const
+			virtual void ScreenToClient(int& x, int& y) const = 0;
+			Size ScreenToClient(Size size) const
 			{
-				SceenToClient(size.Width(), size.Height());
+				ScreenToClient(size.Width(), size.Height());
 				return size;
 			}
-			Point SceenToClient(Point point) const
+			Point ScreenToClient(Point point) const
 			{
-				SceenToClient(point.X(), point.Y());
+				ScreenToClient(point.X(), point.Y());
 				return point;
 			}
 
 			template<std::constructible_from<int, int> T>
-			T SceenToClient(int x, int y) const
+			T ScreenToClient(int x, int y) const
 			{
-				SceenToClient(x, y);
+				ScreenToClient(x, y);
 				return {x, y};
 			}
 
@@ -238,10 +262,10 @@ namespace kxf
 			// Focus
 			virtual bool IsFocusable() const = 0;
 			virtual bool HasFocus() const = 0;
-			virtual bool SetFocus() = 0;
+			virtual void SetFocus() = 0;
 
 			virtual bool IsFocusVisible() const = 0;
-			virtual void SetFocusVisible(bool enable) = 0;
+			virtual void SetFocusVisible(bool enable = true) = 0;
 
 			// Layout
 			virtual LayoutDirection GetLayoutDirection() const = 0;
@@ -252,11 +276,12 @@ namespace kxf
 			virtual bool Layout() = 0;
 
 			// Child management functions
-			virtual void AddChildWidget(std::shared_ptr<IWidget> widget) = 0;
+			virtual void AddChildWidget(IWidget& widget) = 0;
 			virtual void RemoveChildWidget(const IWidget& widget) = 0;
 			virtual void DestroyChildWidgets() = 0;
 
-			virtual std::shared_ptr<IWidget> FindChildWidget(const String& widgetName) const = 0;
+			virtual std::shared_ptr<IWidget> FindChildWidgetByID(int id) const = 0;
+			virtual std::shared_ptr<IWidget> FindChildWidgetByName(const String& widgetName) const = 0;
 			virtual Enumerator<std::shared_ptr<IWidget>> EnumChildWidgets() const = 0;
 
 			// Sibling and parent management functions
@@ -281,7 +306,7 @@ namespace kxf
 			virtual void SetColor(const Color& color, FlagSet<WidgetColorFlag> flags) = 0;
 
 			virtual float GetTransparency() const = 0;
-			virtual void SetTransparency(float value) = 0;
+			virtual bool SetTransparency(float value) = 0;
 
 			// Widget state and visibility functions
 			virtual bool IsEnabled() const = 0;
@@ -298,7 +323,7 @@ namespace kxf
 
 			virtual bool IsVisible() const = 0;
 			virtual bool IsDisplayed() const = 0;
-			virtual void SetVisible(bool enabled) = 0;
+			virtual void SetVisible(bool visible) = 0;
 			void Show()
 			{
 				SetVisible(true);
@@ -315,6 +340,9 @@ namespace kxf
 			virtual FlagSet<WidgetExStyle> GetWidgetExStyle() const = 0;
 			virtual void SetWidgetExStyle(FlagSet<WidgetExStyle> style) = 0;
 
+			virtual WidgetBorder GetWidgetBorder() const = 0;
+			virtual void SetWidgetBorder(WidgetBorder border) = 0;
+
 			// Widget properties
 			virtual int GetWidgetID() const = 0;
 			virtual void SetWidgetID(int id) = 0;
@@ -325,4 +353,25 @@ namespace kxf
 			virtual String GetWidgetText() const = 0;
 			virtual void SetWidgetText(const String& widgetText) = 0;
 	};
+}
+
+namespace kxf
+{
+	template<std::derived_from<IWidget> TWidget>
+	std::shared_ptr<TWidget> NewWidget()
+	{
+		auto widget = std::make_shared<TWidget>();
+		static_cast<IWidget&>(*widget).SaveReference(widget);
+
+		return widget;
+	}
+
+	template<std::derived_from<IWidget> TWidget, class... Args>
+	std::shared_ptr<TWidget> NewWidget(IWidget* parent, const String& text, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize(), Args&&... arg)
+	{
+		auto widget = NewWidget<TWidget>();
+		widget->TWidget::CreateWidget(parent, text, pos, size, std::forward<Args>(arg)...);
+
+		return widget;
+	}
 }

@@ -266,6 +266,18 @@
     <Filter Include="kxf\Log\Private">
       <UniqueIdentifier>{3cb0f35f-aa0a-4fd7-a98d-2a50367f82d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\UI\Private">
+      <UniqueIdentifier>{033972eb-2a62-4706-a4e8-26049721ba7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\UI\Widgets">
+      <UniqueIdentifier>{9885b6ce-bc89-43ff-9df4-e9cae60f59e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\UI\TopLevelWidgets">
+      <UniqueIdentifier>{eab5dd30-179b-4551-a34c-23e716095026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\UI\TopLevelWidgets\WXUI">
+      <UniqueIdentifier>{21c585d2-d563-4e99-b3ce-86d0391d8255}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1956,6 +1968,27 @@
     <ClInclude Include="kxf\UI\IWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Private\BasicWidget.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\Common.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\ITopLevelWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h">
+      <Filter>kxf\UI\TopLevelWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\Common.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h">
+      <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\TLFrameWidget.h">
+      <Filter>kxf\UI\TopLevelWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2942,6 +2975,18 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Geometry.cpp">
       <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Common.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\IWidget.cpp">
+      <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp">
+      <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\TopLevelWidgets\TLFrameWidget.cpp">
+      <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

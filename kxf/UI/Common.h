@@ -1,20 +1,20 @@
 #pragma once
 #include "kxf/Common.hpp"
+#include "StdIcon.h"
+#include "StdButton.h"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/StdID.h"
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Drawing/Color.h"
 #include "kxf/Drawing/Angle.h"
-#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/Drawing/Font.h"
+#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/EventSystem/Common.h"
 #include "kxf/EventSystem/Event.h"
-#include "kxf/UI/StdIcon.h"
-#include "kxf/UI/StdButton.h"
 #include <wx/window.h>
 #include "kxf/System/UndefWindows.h"
 

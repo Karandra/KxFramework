@@ -3,6 +3,7 @@
 #include "kxf/General/FlagSet.h"
 #include <wx/defs.h>
 #include <wx/gdicmn.h>
+enum wxOrientation;
 
 namespace kxf
 {
@@ -136,14 +137,8 @@ namespace kxf
 	};
 }
 
-namespace kxf
+namespace kxf::Private
 {
-	constexpr wxOrientation MapOrientation(Orientation value) noexcept
-	{
-		return static_cast<wxOrientation>(value);
-	}
-	constexpr Orientation MapOrientation(wxOrientation value) noexcept
-	{
-		return static_cast<Orientation>(value);
-	}
+	FlagSet<wxOrientation> MapOrientation(FlagSet<Orientation> value) noexcept;
+	FlagSet<Orientation> MapOrientation(FlagSet<wxOrientation> wx) noexcept;
 }
