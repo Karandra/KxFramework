@@ -87,7 +87,9 @@ namespace kxf
 		public:
 			static void AssociateWithWindow(wxWindow& window, IWidget& widget) noexcept;
 			static void DissociateWithWindow(wxWindow& window) noexcept;
+
 			static std::shared_ptr<IWidget> FindByWindow(const wxWindow& window) noexcept;
+			static std::shared_ptr<IWidget> FindFocus() noexcept;
 
 		private:
 			virtual void SaveReference(std::weak_ptr<IWidget> ref) = 0;

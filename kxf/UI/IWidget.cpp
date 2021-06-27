@@ -11,8 +11,17 @@ namespace kxf
 	{
 		window.SetClientData(nullptr);
 	}
+
 	std::shared_ptr<IWidget> IWidget::FindByWindow(const wxWindow& window) noexcept
 	{
 		return reinterpret_cast<IWidget*>(window.GetClientData())->LockReference();
+	}
+	std::shared_ptr<IWidget> IWidget::FindFocus() noexcept
+	{
+		if (auto window = wxWindow::FindFocus())
+		{
+			return FindByWindow(*window);
+		}
+		return nullptr;
 	}
 }
