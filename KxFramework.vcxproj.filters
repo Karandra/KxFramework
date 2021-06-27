@@ -1989,7 +1989,7 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\TopLevelWindow.h">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Private\BasicTLWindowWidgetBase.h">
+    <ClInclude Include="kxf\UI\Private\BasicTLWindowWidget.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\INativeWidget.h">
@@ -1997,6 +1997,12 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\IScrollableWidget.h">
       <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IDalogWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\BasicDialogWidget.h">
+      <Filter>kxf\UI\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3000,11 +3006,14 @@
     <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp">
       <Filter>kxf\UI\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Private\BasicTLWindowWidgetBase.cpp">
+    <ClCompile Include="kxf\UI\Private\BasicTLWindowWidget.cpp">
       <Filter>kxf\UI\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp">
       <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\BasicDialogWidget.cpp">
+      <Filter>kxf\UI\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

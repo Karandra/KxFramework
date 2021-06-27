@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "BasicWindowWidget.h"
 #include "../ITopLevelWidget.h"
+class wxTopLevelWindow;
 
 namespace kxf::Private
 {

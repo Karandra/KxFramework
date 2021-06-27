@@ -9,7 +9,7 @@ namespace kxf::WXUI
 					   const Size& size
 	)
 	{
-		if (wxFrame::Create(parent, wxID_NONE, title, pos, size, wxDEFAULT_FRAME_STYLE))
+		if (wxFrame::Create(parent, wxID_NONE, title, pos, size, wxDEFAULT_FRAME_STYLE|wxFRAME_SHAPED))
 		{
 			SetStatusBarPane(-1);
 			Center(wxBOTH);

@@ -1,5 +1,5 @@
 #include "KxfPCH.h"
-#include "BasicTLWindowWidgetBase.h"
+#include "BasicTLWindowWidget.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include <wx/window.h>
 #include <wx/toplevel.h>
