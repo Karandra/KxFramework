@@ -490,6 +490,7 @@
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
     <ClInclude Include="kxf\UI\INativeWidget.h" />
+    <ClInclude Include="kxf\UI\IScrollableWidget.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\Menus\Menu.h" />
@@ -930,6 +931,7 @@
     <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp" />
+    <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />
     <ClCompile Include="kxf\UI\Menus\Menu.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp" />

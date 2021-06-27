@@ -1995,6 +1995,9 @@
     <ClInclude Include="kxf\UI\INativeWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IScrollableWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2999,6 +3002,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\BasicTLWindowWidgetBase.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\IScrollableWidget.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
