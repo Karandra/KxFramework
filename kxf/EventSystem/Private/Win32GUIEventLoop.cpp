@@ -1,6 +1,8 @@
 #include "KxfPCH.h"
 #include "Win32GUIEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
+
+Kx_MakeWinUnicodeCallWrapper(SendMessage);
 #include "wx/msw/private.h"
 #include "wx/evtloop.h"
 #include <Windows.h>

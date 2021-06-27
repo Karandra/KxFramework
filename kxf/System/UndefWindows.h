@@ -76,6 +76,12 @@
 #undef SetCurrentDirectory
 #undef SetPort
 #undef CreateFont
+#undef SendMessage
+#undef SendMessageTimeout
+#undef SendMessageCallback
+#undef SendNotifyMessage
+#undef PostMessage
+#undef PostThreadMessage
 
 #ifdef ZeroMemory
 #undef ZeroMemory

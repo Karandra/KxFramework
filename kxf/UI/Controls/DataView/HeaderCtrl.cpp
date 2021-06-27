@@ -8,6 +8,8 @@
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/Utility/System.h"
 #include "kxf/Utility/Drawing.h"
+
+Kx_MakeWinUnicodeCallWrapper(SendMessage);
 #include <wx/headerctrl.h>
 #include <CommCtrl.h>
 
