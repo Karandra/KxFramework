@@ -1,19 +1,20 @@
 #pragma once
 #include "kxf/UI/Common.h"
-#include "kxf/UI/ITopLevelWidget.h"
-#include <wx/frame.h>
+#include "kxf/UI/IDalogWidget.h"
+#include <wx/dialog.h>
 
 namespace kxf::WXUI
 {
-	class KX_API Frame: public wxFrame
+	class KX_API Dialog: public wxDialog
 	{
 		private:
-			ITopLevelWidget& m_Widget;
+			IDalogWidget& m_Widget;
 
 		public:
-			Frame(ITopLevelWidget& widget)
+			Dialog(IDalogWidget& widget)
 				:m_Widget(widget)
 			{
+				m_Widget.SetPreventApplicationExit(false);
 			}
 
 		public:

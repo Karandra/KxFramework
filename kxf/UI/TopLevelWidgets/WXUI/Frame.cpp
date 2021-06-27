@@ -11,9 +11,20 @@ namespace kxf::WXUI
 	{
 		if (wxFrame::Create(parent, wxID_NONE, title, pos, size, wxDEFAULT_FRAME_STYLE|wxFRAME_SHAPED))
 		{
+			SetInitialSize(size);
 			SetStatusBarPane(-1);
-			Center(wxBOTH);
 
+			if (!pos.IsFullySpecified())
+			{
+				if (parent)
+				{
+					CenterOnParent(wxBOTH);
+				}
+				else
+				{
+					CenterOnScreen(wxBOTH);
+				}
+			}
 			return true;
 		}
 		return false;

@@ -4,10 +4,10 @@
 
 namespace kxf::Private
 {
-	// BasicWindowWidgetBase
+	// BasicWxWidgetBase
 	wxDialog* BasicDialogWidgetBase::GetWxWindow() const noexcept
 	{
-		return static_cast<wxDialog*>(BasicTLWindowWidgetBase::GetWxWindow());
+		return static_cast<wxDialog*>(BasicWindowWidgetBase::GetWxWindow());
 	}
 
 	// BasicDialogWidgetBase

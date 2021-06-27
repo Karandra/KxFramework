@@ -734,9 +734,6 @@
     <ClInclude Include="kxf\UI\Windows\SplitterWindow.h">
       <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h">
-      <Filter>kxf\UI\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h">
       <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
@@ -1968,7 +1965,7 @@
     <ClInclude Include="kxf\UI\IWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h">
+    <ClInclude Include="kxf\UI\Private\BasicWxWidget.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Private\Common.h">
@@ -1986,10 +1983,10 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h">
       <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\TopLevelWidgets\TopLevelWindow.h">
+    <ClInclude Include="kxf\UI\TopLevelWidgets\Window.h">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Private\BasicTLWindowWidget.h">
+    <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\INativeWidget.h">
@@ -2003,6 +2000,15 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\Private\BasicDialogWidget.h">
       <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.h">
+      <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h">
+      <Filter>kxf\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\Dialog.h">
+      <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2233,9 +2239,6 @@
       <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Windows\SplitterWindow.cpp">
-      <Filter>kxf\UI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp">
       <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Windows\ToolTipEx.cpp">
@@ -3000,13 +3003,13 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp">
       <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\TopLevelWidgets\TopLevelWindow.cpp">
+    <ClCompile Include="kxf\UI\TopLevelWidgets\Window.cpp">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp">
+    <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp">
       <Filter>kxf\UI\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Private\BasicTLWindowWidget.cpp">
+    <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp">
       <Filter>kxf\UI\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp">
@@ -3014,6 +3017,15 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\BasicDialogWidget.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.cpp">
+      <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp">
+      <Filter>kxf\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\TopLevelWidgets\Dialog.cpp">
+      <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

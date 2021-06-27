@@ -1,22 +1,22 @@
 #pragma once
 #include "Common.h"
-#include "BasicTLWindowWidget.h"
+#include "BasicWindowWidget.h"
 #include "../IDalogWidget.h"
 class wxDialog;
 
 namespace kxf::Private
 {
-	class KX_API BasicDialogWidgetBase: public BasicTLWindowWidgetBase
+	class KX_API BasicDialogWidgetBase: public BasicWindowWidgetBase
 	{
 		public:
 			BasicDialogWidgetBase(IWidget& widget) noexcept
-				:BasicTLWindowWidgetBase(widget)
+				:BasicWindowWidgetBase(widget)
 			{
 			}
 			~BasicDialogWidgetBase() = default;
 
 		public:
-			// BasicWindowWidgetBase
+			// BasicWxWidgetBase
 			wxDialog* GetWxWindow() const noexcept;
 
 		public:
@@ -37,10 +37,10 @@ namespace kxf::Private
 namespace kxf::Private
 {
 	template<class TDerived, class TWindow, class TInterface, class TWindowImpl = BasicDialogWidgetBase>
-	class BasicDialogWidget: public BasicTLWindowWidget<TDerived, TWindow, TInterface, TWindowImpl>
+	class BasicDialogWidget: public BasicWindowWidget<TDerived, TWindow, TInterface, TWindowImpl>
 	{
 		protected:
-			using BasicTLWindowWidget<TDerived, TWindow, TInterface, TWindowImpl>::GetImpl;
+			using BasicWindowWidget<TDerived, TWindow, TInterface, TWindowImpl>::GetImpl;
 
 		public:
 			bool IsModal() const override

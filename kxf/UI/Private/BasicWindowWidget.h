@@ -1,744 +1,178 @@
 #pragma once
 #include "Common.h"
-#include "../IWidget.h"
-#include "../INativeWidget.h"
-#include "kxf/General/Enumerator.h"
-#include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/EventSystem/EvtHandlerAccessor.h"
-#include "kxf/EventSystem/EventHandlerStack.h"
-class wxWindow;
-class wxWindowCreateEvent;
-class wxWindowDestroyEvent;
+#include "BasicWxWidget.h"
+#include "../ITopLevelWidget.h"
+class wxTopLevelWindow;
 
 namespace kxf::Private
 {
-	class KX_API BasicWindowWidgetBase
+	class KX_API BasicWindowWidgetBase: public BasicWxWidgetBase
 	{
 		private:
-			IWidget& m_Widget;
-			wxWindow* m_Window = nullptr;
-			bool m_ShouldDelete = false;
-
-			float m_Transparency = 0.0f;
-			bool m_VisibleFocusEnabled = true;
-
-		private:
-			void OnWindowCreate(wxWindowCreateEvent& event);
-			void OnWindowDestroy(wxWindowDestroyEvent& event);
+			bool m_PreventApplicationExit = true;
 
 		public:
 			BasicWindowWidgetBase(IWidget& widget) noexcept
-				:m_Widget(widget)
+				:BasicWxWidgetBase(widget)
 			{
 			}
-			~BasicWindowWidgetBase()
-			{
-				Uninitialize();
-			}
+			~BasicWindowWidgetBase() = default;
 
 		public:
-			void Initialize(std::unique_ptr<wxWindow> window);
-			void Uninitialize();
+			// BasicWxWidgetBase
+			wxTopLevelWindow* GetWxWindow() const noexcept;
 
 		public:
-			// Native interface
-			void* GetHandle() const noexcept;
-			wxWindow* GetWxWindow() const noexcept
-			{
-				return m_Window;
-			}
+			// BasicTopLevelWindowWidgetBase
+			BitmapImage GetIcon() const;
+			void SetIcon(const BitmapImage& icon);
 
-			// Lifetime management
-			bool IsWidgetAlive() const noexcept;
-			bool CloseWidget(bool force);
-			bool DestroyWidget();
+			ImageBundle GetIconPack() const;
+			void SetIconPack(const ImageBundle& icon);
 
-			// HiDPI support
-			float GetContentScaleFactor() const;
-			void FromDIP(int& x, int& y) const;
-			void ToDIP(int& x, int& y) const;
+			String GetTitle() const;
+			void SetTitle(const String& title);
 
-			// Positioning functions
-			Point GetPosition() const;
-			void SetPosition(const Point& pos);
+			// State
+			bool IsMinimized() const;
+			void Minimize();
 
-			void Center(FlagSet<Orientation> orientation);
-			void CenterOnParent(FlagSet<Orientation> orientation);
+			bool IsMaximized() const;
+			void Maximize();
+			void Restore();
 
-			// Size functions
-			Rect GetRect(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const;
-			Size GetSize(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const;
-			void SetSize(const Size& size, FlagSet<WidgetSizeFlag> flags = WidgetSizeFlag::Widget);
+			bool EnableCloseButton(bool enable);
+			bool EnableMinimizeButton(bool enable);
+			bool EnableMaximizeButton(bool enable);
 
-			// Coordinate conversion functions
-			void ScreenToClient(int& x, int& y) const;
-			void ClientToScreen(int& x, int& y) const;
+			bool IsFullScreen() const;
+			bool ShowFullScreen(bool show);
+			void ShowWithoutActivation();
 
-			void DialogUnitsToPixels(int& x, int& y) const;
-			void PixelsToDialogUnits(int& x, int& y) const;
+			// Misc
+			std::shared_ptr<IWidget> GetDefaultWidget() const;
+			void SetDefaultWidget(const IWidget& widget);
 
-			// Focus
-			bool IsFocusable() const;
-			bool HasFocus() const;
-			void SetFocus();
+			std::shared_ptr<IPopupMenu> GetSystemMenu() const;
+			void RequestUserAttention(FlagSet<StdIcon> icon);
 
-			bool IsFocusVisible() const;
-			void SetFocusVisible(bool visible);
-
-			// Layout
-			LayoutDirection GetLayoutDirection() const;
-			void SetLayoutDirection(LayoutDirection direction);
-
-			void Fit();
-			void FitInterior();
-			bool Layout();
-
-			// Child management functions
-			void AddChildWidget(IWidget& widget);
-			void RemoveChildWidget(const IWidget& widget);
-			void DestroyChildWidgets();
-
-			std::shared_ptr<IWidget> FindChildWidgetByID(int id) const;
-			std::shared_ptr<IWidget> FindChildWidgetByName(const String& widgetName) const;
-			Enumerator<std::shared_ptr<IWidget>> EnumChildWidgets() const;
-
-			// Sibling and parent management functions
-			std::shared_ptr<IWidget> GetParentWidget() const;
-			void SetParentWidget(IWidget& widget);
-
-			std::shared_ptr<IWidget> GetPrevSiblingWidget() const;
-			std::shared_ptr<IWidget> GetNextSiblingWidget() const;
-
-			// Drawing-related functions
-			bool IsFrozen() const;
-			void Freeze();
-			void Thaw();
-
-			Rect GetRefreshRect() const;
-			void Refresh(const Rect& rect);
-
-			Font GetFont() const;
-			void SetFont(const Font& font);
-
-			Color GetColor(WidgetColorFlag colorType) const;
-			void SetColor(const Color& color, FlagSet<WidgetColorFlag> flags);
-
-			float GetTransparency() const;
-			bool SetTransparency(float value);
-
-			// Widget state and visibility functions
-			bool IsEnabled() const;
-			bool IsIntrinsicallyEnabled() const;
-			void SetEnabled(bool enabled);
-
-			bool IsVisible() const;
-			bool IsDisplayed() const;
-			void SetVisible(bool visible);
-
-			// Widget style functions
-			FlagSet<WidgetStyle> GetWidgetStyle() const;
-			void SetWidgetStyle(FlagSet<WidgetStyle> style);
-
-			FlagSet<WidgetExStyle> GetWidgetExStyle() const;
-			void SetWidgetExStyle(FlagSet<WidgetExStyle> style);
-
-			WidgetBorder GetWidgetBorder() const;
-			void SetWidgetBorder(WidgetBorder border);
-
-			// Widget properties
-			int GetWidgetID() const;
-			void SetWidgetID(int id);
-
-			String GetWidgetName() const;
-			void SetWidgetName(const String& widgetName);
-
-			String GetWidgetText() const;
-			void SetWidgetText(const String& widgetText);
-
-		public:
-			// INativeWidget
-			void* GetNativeHandle() const;
-			String GetIntrinsicText() const;
-
-			intptr_t GetWindowProperty(NativeWidgetProperty index) const;
-			intptr_t SetWindowProperty(NativeWidgetProperty index, intptr_t value);
-
-			bool PostMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam);
-			bool NotifyMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam);
-			bool SendMessageSignal(uint32_t messageID, intptr_t wParam, intptr_t lParam);
-			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout);
-
-			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs );
+			bool ShouldPreventApplicationExit() const;
+			void SetPreventApplicationExit(bool enable);
 	};
 }
 
 namespace kxf::Private
 {
 	template<class TDerived, class TWindow, class TInterface, class TWindowImpl = BasicWindowWidgetBase>
-	class BasicWindowWidget: public RTTI::PrivateStub<BasicWindowWidget<TDerived, TWindow, TInterface, TWindowImpl>, TInterface, INativeWidget>
+	class BasicWindowWidget: public BasicWxWidget<TDerived, TWindow, TInterface, TWindowImpl>
 	{
-		private:
-			TWindowImpl m_Window;
-			std::weak_ptr<IWidget> m_WidgetReference;
-
-			EvtHandler m_EvtHandler;
-			EvtHandlerStack m_EventHandlerStack;
-
-		private:
-			TDerived& Self() noexcept
-			{
-				return static_cast<TDerived&>(*this);
-			}
-			const TDerived& Self() const noexcept
-			{
-				return static_cast<const TDerived&>(*this);
-			}
-
-		private:
-			auto AccessThisEvtHandler() noexcept
-			{
-				return EventSystem::EvtHandlerAccessor(GetThisEvtHandler());
-			}
-			auto AccessTopEvtHandler() noexcept
-			{
-				return EventSystem::EvtHandlerAccessor(GetTopEvtHandler());
-			}
-
-			// IWidget
-			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
-			{
-				m_WidgetReference = std::move(ref);
-			}
-
 		protected:
-			IEvtHandler& GetThisEvtHandler() noexcept
-			{
-				return m_EvtHandler;
-			}
-			IEvtHandler& GetTopEvtHandler() noexcept
-			{
-				return *m_EventHandlerStack.GetTop();
-			}
-
-			TWindow* Get() noexcept
-			{
-				return static_cast<TWindow*>(m_Window.GetWxWindow());
-			}
-			const TWindow* Get() const noexcept
-			{
-				return static_cast<const TWindow*>(m_Window.GetWxWindow());
-			}
-
-			TWindowImpl& GetImpl() noexcept
-			{
-				return m_Window;
-			}
-			const TWindowImpl& GetImpl() const noexcept
-			{
-				return m_Window;
-			}
-
-			template<class... Args> requires(std::is_constructible_v<TWindow, TDerived&, Args...>)
-			void InitializeWithWindow(Args&&... arg)
-			{
-				m_Window.Initialize(std::make_unique<TWindow>(Self(), std::forward<Args>(arg)...));
-			}
-
-		protected:
-			// IEvtHandler
-			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override
-			{
-				return AccessThisEvtHandler().DoBind(eventID, std::move(executor), flags);
-			}
-			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override
-			{
-				return AccessThisEvtHandler().DoUnbind(eventID, executor);
-			}
-			bool DoUnbind(const LocallyUniqueID& bindSlot) override
-			{
-				return AccessThisEvtHandler().DoUnbind(bindSlot);
-			}
-
-			bool OnDynamicBind(EventSystem::EventItem& eventItem) override
-			{
-				return AccessThisEvtHandler().OnDynamicBind(eventItem);
-			}
-			bool OnDynamicUnbind(EventSystem::EventItem& eventItem) override
-			{
-				return AccessThisEvtHandler().OnDynamicUnbind(eventItem);
-			}
-
-			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
-			{
-				return AccessTopEvtHandler().DoQueueEvent(std::move(event), eventID, uuid, flags);
-			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
-			{
-				return AccessTopEvtHandler().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
-			}
-
-			bool TryBefore(IEvent& event) override
-			{
-				return AccessThisEvtHandler().TryBefore(event);
-			}
-			bool TryAfter(IEvent& event) override
-			{
-				return AccessThisEvtHandler().TryAfter(event);
-			}
+			using BasicWxWidget<TDerived, TWindow, TInterface, TWindowImpl>::GetImpl;
 
 		public:
-			BasicWindowWidget(const BasicWindowWidget&) = delete;
-
-		protected:
-			BasicWindowWidget()
-				:m_EventHandlerStack(m_EvtHandler), m_Window(static_cast<IWidget&>(*this))
+			// Icon and title
+			BitmapImage GetIcon() const override
 			{
+				return GetImpl().GetIcon();
 			}
-			~BasicWindowWidget() = default;
-
-		public:
-			// IEvtHandler
-			bool ProcessPendingEvents() override
+			void SetIcon(const BitmapImage& icon) override
 			{
-				return m_EvtHandler.ProcessPendingEvents();
-			}
-			size_t DiscardPendingEvents() override
-			{
-				return m_EvtHandler.DiscardPendingEvents();
+				GetImpl().SetIcon(icon);
 			}
 
-			IEvtHandler* GetPrevHandler() const override
+			ImageBundle GetIconPack() const override
 			{
-				return m_EvtHandler.GetPrevHandler();
+				return GetImpl().GetIconPack();
 			}
-			IEvtHandler* GetNextHandler() const override
+			void SetIconPack(const ImageBundle& iconPack) override
 			{
-				return m_EvtHandler.GetNextHandler();
-			}
-			void SetPrevHandler(IEvtHandler* evtHandler) override
-			{
-				// Can't chain widgets
-			}
-			void SetNextHandler(IEvtHandler* evtHandler) override
-			{
-				// Can't chain widgets
+				GetImpl().SetIconPack(iconPack);
 			}
 
-			void Unlink() override
+			String GetTitle() const override
 			{
-				m_EvtHandler.Unlink();
+				return GetImpl().GetTitle();
 			}
-			bool IsUnlinked() const override
+			void SetTitle(const String& title) override
 			{
-				return m_EvtHandler.IsUnlinked();
-			}
-
-			bool IsEventProcessingEnabled() const override
-			{
-				return m_EvtHandler.IsEventProcessingEnabled();
-			}
-			void EnableEventProcessing(bool enable = true) override
-			{
-				m_EvtHandler.EnableEventProcessing(enable);
+				GetImpl().SetTitle(title);
 			}
 
-			// --- IWidget ---
-		public:
-			// Native interface
-			void* GetHandle() const override
+			// State
+			bool IsMinimized() const override
 			{
-				return m_Window.GetHandle();
+				return GetImpl().IsMinimized();
 			}
-			wxWindow* GetWxWindow() const override
+			void Minimize() override
 			{
-				return static_cast<const BasicWindowWidgetBase&>(m_Window).GetWxWindow();
+				GetImpl().Minimize();
 			}
 
-			// Lifetime management
-			std::shared_ptr<IWidget> LockReference() const override
+			bool IsMaximized() const override
 			{
-				return m_WidgetReference.lock();
+				return GetImpl().IsMaximized();
+			}
+			void Maximize() override
+			{
+				GetImpl().Maximize();
+			}
+			void Restore() override
+			{
+				GetImpl().Restore();
 			}
 
-			bool IsWidgetAlive() const override
+			bool EnableCloseButton(bool enable = true) override
 			{
-				return m_Window.IsWidgetAlive();
+				return GetImpl().EnableCloseButton(enable);
 			}
-			bool CloseWidget(bool force = false) override
+			bool EnableMinimizeButton(bool enable = true) override
 			{
-				return m_Window.CloseWidget(force);
+				return GetImpl().EnableMinimizeButton(enable);
 			}
-			bool DestroyWidget() override
+			bool EnableMaximizeButton(bool enable = true) override
 			{
-				return m_Window.DestroyWidget();
-			}
-
-			// Event handling
-			IEvtHandler& GetEventHandler() override
-			{
-				return GetTopEvtHandler();
+				return GetImpl().EnableMaximizeButton(enable);
 			}
 
-			void PushEventHandler(IEvtHandler& evtHandler) override
+			bool IsFullScreen() const override
 			{
-				m_EventHandlerStack.Push(evtHandler);
+				return GetImpl().IsFullScreen();
 			}
-			IEvtHandler* PopEventHandler() override
+			bool ShowFullScreen(bool show = true) override
 			{
-				return m_EventHandlerStack.Pop();
+				return GetImpl().ShowFullScreen(show);
 			}
-			bool RemoveEventHandler(IEvtHandler& evtHandler) override
+			void ShowWithoutActivation() override
 			{
-				if (&evtHandler != &m_EvtHandler)
-				{
-					return m_EventHandlerStack.Remove(evtHandler);
-				}
-				return false;
+				GetImpl().ShowWithoutActivation();
 			}
 
-			// HiDPI support
-			float GetContentScaleFactor() const override
+			// Misc
+			std::shared_ptr<IWidget> GetDefaultWidget() const override
 			{
-				return m_Window.GetContentScaleFactor();
+				return GetImpl().GetDefaultWidget();
 			}
-			void FromDIP(int& x, int& y) const override
+			void SetDefaultWidget(const IWidget& widget) override
 			{
-				m_Window.FromDIP(x, y);
-			}
-			void ToDIP(int& x, int& y) const override
-			{
-				m_Window.ToDIP(x, y);
+				GetImpl().SetDefaultWidget(widget);
 			}
 
-			using IWidget::FromDIP;
-			using IWidget::ToDIP;
-
-			// Positioning functions
-			Point GetPosition() const override
+			std::shared_ptr<IPopupMenu> GetSystemMenu() const override
 			{
-				return m_Window.GetPosition();
+				return GetImpl().GetSystemMenu();
 			}
-			void SetPosition(const Point& pos) override
+			void RequestUserAttention(FlagSet<StdIcon> icon = StdIcon::Information) override
 			{
-				m_Window.SetPosition(pos);
+				GetImpl().RequestUserAttention(icon);
 			}
 
-			void Center(FlagSet<Orientation> orientation = Orientation::Both) override
+			bool ShouldPreventApplicationExit() const override
 			{
-				m_Window.Center(orientation);
+				return GetImpl().ShouldPreventApplicationExit();
 			}
-			void CenterOnParent(FlagSet<Orientation> orientation = Orientation::Both) override
+			void SetPreventApplicationExit(bool enable = true) override
 			{
-				m_Window.CenterOnParent(orientation);
+				GetImpl().SetPreventApplicationExit(enable);
 			}
-
-			// Size functions
-			Rect GetRect(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const override
-			{
-				return m_Window.GetRect(sizeType);
-			}
-			Size GetSize(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const override
-			{
-				return m_Window.GetSize(sizeType);
-			}
-			void SetSize(const Size& size, FlagSet<WidgetSizeFlag> flags = WidgetSizeFlag::Widget) override
-			{
-				m_Window.SetSize(size, flags);
-			}
-
-			// Coordinate conversion functions
-			void ScreenToClient(int& x, int& y) const override
-			{
-				m_Window.ScreenToClient(x, y);
-			}
-			void ClientToScreen(int& x, int& y) const override
-			{
-				m_Window.ClientToScreen(x, y);
-			}
-
-			using IWidget::ScreenToClient;
-			using IWidget::ClientToScreen;
-
-			void DialogUnitsToPixels(int& x, int& y) const override
-			{
-				m_Window.DialogUnitsToPixels(x, y);
-			}
-			void PixelsToDialogUnits(int& x, int& y) const override
-			{
-				m_Window.PixelsToDialogUnits(x, y);
-			}
-
-			using IWidget::DialogUnitsToPixels;
-			using IWidget::PixelsToDialogUnits;
-
-			// Focus
-			bool IsFocusable() const override
-			{
-				return m_Window.IsFocusable();
-			}
-			bool HasFocus() const override
-			{
-				return m_Window.HasFocus();
-			}
-			void SetFocus() override
-			{
-				m_Window.SetFocus();
-			}
-
-			bool IsFocusVisible() const override
-			{
-				return m_Window.IsFocusVisible();
-			}
-			void SetFocusVisible(bool visible = true) override
-			{
-				m_Window.SetFocusVisible(visible);
-			}
-
-			// Layout
-			LayoutDirection GetLayoutDirection() const override
-			{
-				return m_Window.GetLayoutDirection();
-			}
-			void SetLayoutDirection(LayoutDirection direction) override
-			{
-				m_Window.SetLayoutDirection(direction);
-			}
-
-			void Fit() override
-			{
-				m_Window.Fit();
-			}
-			void FitInterior() override
-			{
-				m_Window.FitInterior();
-			}
-			bool Layout() override
-			{
-				return m_Window.Layout();
-			}
-
-			// Child management functions
-			void AddChildWidget(IWidget& widget) override
-			{
-				m_Window.AddChildWidget(widget);
-			}
-			void RemoveChildWidget(const IWidget& widget) override
-			{
-				m_Window.RemoveChildWidget(widget);
-			}
-			void DestroyChildWidgets() override
-			{
-				m_Window.DestroyChildWidgets();
-			}
-
-			std::shared_ptr<IWidget> FindChildWidgetByID(int id) const override
-			{
-				return m_Window.FindChildWidgetByID(id);
-			}
-			std::shared_ptr<IWidget> FindChildWidgetByName(const String& widgetName) const override
-			{
-				return m_Window.FindChildWidgetByName(widgetName);
-			}
-			Enumerator<std::shared_ptr<IWidget>> EnumChildWidgets() const override
-			{
-				return m_Window.EnumChildWidgets();
-			}
-
-			// Sibling and parent management functions
-			std::shared_ptr<IWidget> GetParentWidget() const override
-			{
-				return m_Window.GetParentWidget();
-			}
-			void SetParentWidget(IWidget& widget) override
-			{
-				m_Window.SetParentWidget(widget);
-			}
-
-			std::shared_ptr<IWidget> GetPrevSiblingWidget() const override
-			{
-				return m_Window.GetPrevSiblingWidget();
-			}
-			std::shared_ptr<IWidget> GetNextSiblingWidget() const override
-			{
-				return m_Window.GetNextSiblingWidget();
-			}
-
-			// Drawing-related functions
-			bool IsFrozen() const override
-			{
-				return m_Window.IsFrozen();
-			}
-			void Freeze() override
-			{
-				m_Window.Freeze();
-			}
-			void Thaw() override
-			{
-				m_Window.Thaw();
-			}
-
-			Rect GetRefreshRect() const override
-			{
-				return m_Window.GetRefreshRect();
-			}
-			void Refresh(const Rect& rect = Rect::UnspecifiedRect()) override
-			{
-				m_Window.Refresh(rect);
-			}
-
-			Font GetFont() const override
-			{
-				return m_Window.GetFont();
-			}
-			void SetFont(const Font& font) override
-			{
-				m_Window.SetFont(font);
-			}
-
-			Color GetColor(WidgetColorFlag colorType) const override
-			{
-				return m_Window.GetColor(colorType);
-			}
-			void SetColor(const Color& color, FlagSet<WidgetColorFlag> flags) override
-			{
-				m_Window.SetColor(color, flags);
-			}
-
-			float GetTransparency() const override
-			{
-				return m_Window.GetTransparency();
-			}
-			bool SetTransparency(float value) override
-			{
-				return m_Window.SetTransparency(value);
-			}
-
-			// Widget state and visibility functions
-			bool IsEnabled() const override
-			{
-				return m_Window.IsEnabled();
-			}
-			bool IsIntrinsicallyEnabled() const override
-			{
-				return m_Window.IsIntrinsicallyEnabled();
-			}
-			void SetEnabled(bool enabled) override
-			{
-				m_Window.SetEnabled(enabled);
-			}
-
-			bool IsVisible() const override
-			{
-				return m_Window.IsVisible();
-			}
-			bool IsDisplayed() const override
-			{
-				return m_Window.IsDisplayed();
-			}
-			void SetVisible(bool visible) override
-			{
-				m_Window.SetVisible(visible);
-			}
-
-			// Widget styles functions
-			FlagSet<WidgetStyle> GetWidgetStyle() const override
-			{
-				return m_Window.GetWidgetStyle();
-			}
-			void SetWidgetStyle(FlagSet<WidgetStyle> style) override
-			{
-				m_Window.SetWidgetStyle(style);
-			}
-
-			FlagSet<WidgetExStyle> GetWidgetExStyle() const override
-			{
-				return m_Window.GetWidgetExStyle();
-			}
-			void SetWidgetExStyle(FlagSet<WidgetExStyle> style) override
-			{
-				m_Window.SetWidgetExStyle(style);
-			}
-
-			WidgetBorder GetWidgetBorder() const override
-			{
-				return m_Window.GetWidgetBorder();
-			}
-			void SetWidgetBorder(WidgetBorder border) override
-			{
-				m_Window.SetWidgetBorder(border);
-			}
-
-			// Widget properties
-			int GetWidgetID() const override
-			{
-				return m_Window.GetWidgetID();
-			}
-			void SetWidgetID(int id) override
-			{
-				m_Window.SetWidgetID(id);
-			}
-
-			String GetWidgetName() const override
-			{
-				return m_Window.GetWidgetName();
-			}
-			void SetWidgetName(const String& widgetName) override
-			{
-				m_Window.SetWidgetName(widgetName);
-			}
-
-			String GetWidgetText() const override
-			{
-				return m_Window.GetWidgetText();
-			}
-			void SetWidgetText(const String& widgetText) override
-			{
-				m_Window.SetWidgetText(widgetText);
-			}
-
-		public:
-			// INativeWidget
-			void* GetNativeHandle() const override
-			{
-				return m_Window.GetNativeHandle();
-			}
-			String GetIntrinsicText() const override
-			{
-				return m_Window.GetIntrinsicText();
-			}
-
-			intptr_t GetWindowProperty(NativeWidgetProperty index) const override
-			{
-				return m_Window.GetWindowProperty(index);
-			}
-			intptr_t SetWindowProperty(NativeWidgetProperty index, intptr_t value) override
-			{
-				return m_Window.SetWindowProperty(index, value);
-			}
-
-			bool PostMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
-			{
-				return m_Window.PostMessage(messageID, wParam, lParam);
-			}
-			bool NotifyMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
-			{
-				return m_Window.NotifyMessage(messageID, wParam, lParam);
-			}
-			bool SendMessageSignal(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
-			{
-				return m_Window.SendMessageSignal(messageID, wParam, lParam);
-			}
-			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout = {}) override
-			{
-				return m_Window.SendMessage(messageID, wParam, lParam, timeout);
-			}
-
-			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs = {}) override
-			{
-				return m_Window.SetWindowTheme(applicationName, subIDs);
-			}
-
-		public:
-			BasicWindowWidget& operator=(const BasicWindowWidget&) = delete;
 	};
 }
