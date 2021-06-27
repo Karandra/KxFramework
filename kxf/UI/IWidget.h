@@ -98,15 +98,14 @@ namespace kxf
 		public:
 			// Native interface
 			virtual void* GetHandle() const = 0;
-
-			virtual wxWindow* GetWxWindow() = 0;
-			virtual const wxWindow* GetWxWindow() const = 0;
+			virtual wxWindow* GetWxWindow() const = 0;
 
 			// Lifetime management
 			virtual std::shared_ptr<IWidget> LockReference() const = 0;
 			virtual bool CreateWidget(IWidget* parent, const String& text, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) = 0;
 			virtual bool CloseWidget(bool force = false) = 0;
 			virtual bool DestroyWidget() = 0;
+			virtual bool IsWidgetAlive() const = 0;
 
 			// Event handling
 			virtual IEvtHandler& GetEventHandler() = 0;
@@ -265,7 +264,7 @@ namespace kxf
 			virtual void SetFocus() = 0;
 
 			virtual bool IsFocusVisible() const = 0;
-			virtual void SetFocusVisible(bool enable = true) = 0;
+			virtual void SetFocusVisible(bool visible = true) = 0;
 
 			// Layout
 			virtual LayoutDirection GetLayoutDirection() const = 0;
@@ -288,8 +287,8 @@ namespace kxf
 			virtual std::shared_ptr<IWidget> GetParentWidget() const = 0;
 			virtual void SetParentWidget(IWidget& widget) = 0;
 
-			virtual std::shared_ptr<IWidget> GetNextSiblingWidget() const = 0;
 			virtual std::shared_ptr<IWidget> GetPrevSiblingWidget() const = 0;
+			virtual std::shared_ptr<IWidget> GetNextSiblingWidget() const = 0;
 
 			// Drawing-related functions
 			virtual bool IsFrozen() const = 0;
@@ -333,7 +332,7 @@ namespace kxf
 				SetVisible(false);
 			}
 
-			// Widget styles functions
+			// Widget style functions
 			virtual FlagSet<WidgetStyle> GetWidgetStyle() const = 0;
 			virtual void SetWidgetStyle(FlagSet<WidgetStyle> style) = 0;
 

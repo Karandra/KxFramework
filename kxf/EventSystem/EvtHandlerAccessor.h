@@ -10,7 +10,7 @@ namespace kxf::EventSystem
 			IEvtHandler& m_EvtHandler;
 
 		public:
-			EvtHandlerAccessor(IEvtHandler& evtHandler)
+			EvtHandlerAccessor(IEvtHandler& evtHandler) noexcept
 				:m_EvtHandler(evtHandler)
 			{
 			}

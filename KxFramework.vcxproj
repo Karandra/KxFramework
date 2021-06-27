@@ -489,6 +489,7 @@
     <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="kxf\UI\INativeWidget.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\Menus\Menu.h" />
@@ -496,10 +497,11 @@
     <ClInclude Include="kxf\UI\Menus\MenuItem.h" />
     <ClInclude Include="kxf\UI\Menus\ShellMenu.h" />
     <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h" />
-    <ClInclude Include="kxf\UI\Private\BasicWidget.h" />
+    <ClInclude Include="kxf\UI\Private\BasicTLWindowWidgetBase.h" />
+    <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h" />
     <ClInclude Include="kxf\UI\Private\Common.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
-    <ClInclude Include="kxf\UI\TopLevelWidgets\TLFrameWidget.h" />
+    <ClInclude Include="kxf\UI\TopLevelWidgets\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h" />
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
@@ -933,8 +935,10 @@
     <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp" />
+    <ClCompile Include="kxf\UI\Private\BasicTLWindowWidgetBase.cpp" />
+    <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp" />
     <ClCompile Include="kxf\UI\StdIcon.cpp" />
-    <ClCompile Include="kxf\UI\TopLevelWidgets\TLFrameWidget.cpp" />
+    <ClCompile Include="kxf\UI\TopLevelWidgets\TopLevelWindow.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />

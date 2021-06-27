@@ -10,6 +10,7 @@
 #include "kxf/Drawing/Angle.h"
 #include "kxf/Drawing/Font.h"
 #include "kxf/Drawing/BitmapImage.h"
+#include "kxf/Drawing/ImageBundle.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"

@@ -23,7 +23,7 @@ namespace kxf
 			virtual void SetIcon(const BitmapImage& icon) = 0;
 
 			virtual ImageBundle GetIconPack() const = 0;
-			virtual void SetIconPack(const ImageBundle& icon) = 0;
+			virtual void SetIconPack(const ImageBundle& iconPack) = 0;
 
 			virtual String GetTitle() const = 0;
 			virtual void SetTitle(const String& title) = 0;
@@ -40,7 +40,9 @@ namespace kxf
 			virtual bool EnableMinimizeButton(bool enable = true) = 0;
 			virtual bool EnableMaximizeButton(bool enable = true) = 0;
 
-			virtual bool ShowFullScreen() = 0;
+			virtual bool IsFullScreen() const = 0;
+			virtual bool ShowFullScreen(bool show = true) = 0;
+			virtual void ShowWithoutActivation() = 0;
 
 			// Misc
 			virtual std::shared_ptr<IWidget> GetDefaultWidget() const = 0;

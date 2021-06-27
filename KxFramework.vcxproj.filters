@@ -1968,7 +1968,7 @@
     <ClInclude Include="kxf\UI\IWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Private\BasicWidget.h">
+    <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Private\Common.h">
@@ -1986,8 +1986,14 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h">
       <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\TopLevelWidgets\TLFrameWidget.h">
+    <ClInclude Include="kxf\UI\TopLevelWidgets\TopLevelWindow.h">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\BasicTLWindowWidgetBase.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\INativeWidget.h">
+      <Filter>kxf\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2985,8 +2991,14 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp">
       <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\TopLevelWidgets\TLFrameWidget.cpp">
+    <ClCompile Include="kxf\UI\TopLevelWidgets\TopLevelWindow.cpp">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp">
+      <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\BasicTLWindowWidgetBase.cpp">
+      <Filter>kxf\UI\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
