@@ -98,7 +98,7 @@ namespace kxf::Private
 			void RemoveChildWidget(const IWidget& widget);
 			void DestroyChildWidgets();
 
-			std::shared_ptr<IWidget> FindChildWidgetByID(int id) const;
+			std::shared_ptr<IWidget> FindChildWidgetByID(WidgetID id) const;
 			std::shared_ptr<IWidget> FindChildWidgetByName(const String& widgetName) const;
 			Enumerator<std::shared_ptr<IWidget>> EnumChildWidgets() const;
 
@@ -146,14 +146,14 @@ namespace kxf::Private
 			void SetWidgetBorder(WidgetBorder border);
 
 			// Widget properties
-			int GetWidgetID() const;
-			void SetWidgetID(int id);
+			WidgetID GetWidgetID() const;
+			void SetWidgetID(WidgetID id);
 
 			String GetWidgetName() const;
 			void SetWidgetName(const String& widgetName);
 
-			String GetWidgetText() const;
-			void SetWidgetText(const String& widgetText);
+			String GetWidgetText(FlagSet<WidgetTextFlag> flags) const;
+			void SetWidgetText(const String& widgetText, FlagSet<WidgetTextFlag> flags);
 
 		public:
 			// INativeWidget
@@ -531,7 +531,7 @@ namespace kxf::Private
 				m_Window.DestroyChildWidgets();
 			}
 
-			std::shared_ptr<IWidget> FindChildWidgetByID(int id) const override
+			std::shared_ptr<IWidget> FindChildWidgetByID(WidgetID id) const override
 			{
 				return m_Window.FindChildWidgetByID(id);
 			}
@@ -669,11 +669,11 @@ namespace kxf::Private
 			}
 
 			// Widget properties
-			int GetWidgetID() const override
+			WidgetID GetWidgetID() const override
 			{
 				return m_Window.GetWidgetID();
 			}
-			void SetWidgetID(int id) override
+			void SetWidgetID(WidgetID id) override
 			{
 				m_Window.SetWidgetID(id);
 			}
@@ -687,13 +687,13 @@ namespace kxf::Private
 				m_Window.SetWidgetName(widgetName);
 			}
 
-			String GetWidgetText() const override
+			String GetWidgetText(FlagSet<WidgetTextFlag> flags = {}) const override
 			{
-				return m_Window.GetWidgetText();
+				return m_Window.GetWidgetText(flags);
 			}
-			void SetWidgetText(const String& widgetText) override
+			void SetWidgetText(const String& widgetText, FlagSet<WidgetTextFlag> flags = {}) override
 			{
-				m_Window.SetWidgetText(widgetText);
+				m_Window.SetWidgetText(widgetText, flags);
 			}
 
 		public:

@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class IPopupMenu;
+	class IMenuWidget;
 }
 
 namespace kxf
@@ -48,7 +48,7 @@ namespace kxf
 			virtual std::shared_ptr<IWidget> GetDefaultWidget() const = 0;
 			virtual void SetDefaultWidget(const IWidget& widget) = 0;
 
-			virtual std::shared_ptr<IPopupMenu> GetSystemMenu() const = 0;
+			virtual std::shared_ptr<IMenuWidget> GetSystemMenu() const = 0;
 			virtual void RequestUserAttention(FlagSet<StdIcon> icon = StdIcon::Information) = 0;
 
 			virtual bool ShouldPreventApplicationExit() const = 0;

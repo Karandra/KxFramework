@@ -6,77 +6,6 @@ class wxWindow;
 
 namespace kxf
 {
-	enum class WidgetStyle: uint64_t
-	{
-		None = 0,
-
-		Invisible = FlagSetValue<WidgetStyle>(0),
-		AllKeyEvents = FlagSetValue<WidgetStyle>(1),
-
-		ScrollVertical = FlagSetValue<WidgetStyle>(2),
-		ScrollHorizontal = FlagSetValue<WidgetStyle>(3),
-		ScrollShowAlways = FlagSetValue<WidgetStyle>(4)
-	};
-	KxFlagSet_Declare(WidgetStyle);
-
-	enum class WidgetExStyle: uint64_t
-	{
-		None = 0
-	};
-	KxFlagSet_Declare(WidgetExStyle);
-
-	enum class WidgetBorder: uint64_t
-	{
-		None = 0,
-
-		Default,
-		Simple,
-		Static,
-		Theme
-	};
-	KxFlagSet_Declare(WidgetBorder);
-
-	enum class WidgetSizeFlag: uint32_t
-	{
-		None = 0,
-
-		Widget = FlagSetValue<WidgetSizeFlag>(0),
-		WidgetMin = FlagSetValue<WidgetSizeFlag>(1),
-		WidgetMax = FlagSetValue<WidgetSizeFlag>(2),
-		WidgetBest = FlagSetValue<WidgetSizeFlag>(3),
-
-		Client = FlagSetValue<WidgetSizeFlag>(4),
-		ClientMin = FlagSetValue<WidgetSizeFlag>(5),
-		ClientMax = FlagSetValue<WidgetSizeFlag>(6),
-
-		Virtual = FlagSetValue<WidgetSizeFlag>(7),
-		VirtualBest = FlagSetValue<WidgetSizeFlag>(8),
-
-		Border = FlagSetValue<WidgetSizeFlag>(9)
-	};
-	KxFlagSet_Declare(WidgetSizeFlag);
-
-	enum class WidgetColorFlag: uint32_t
-	{
-		None = 0,
-
-		Background = FlagSetValue<WidgetColorFlag>(0),
-		Foreground = FlagSetValue<WidgetColorFlag>(1),
-		Border = FlagSetValue<WidgetColorFlag>(2),
-		Text = FlagSetValue<WidgetColorFlag>(3)
-	};
-	KxFlagSet_Declare(WidgetColorFlag);
-
-	enum class LayoutDirection
-	{
-		Default = -1,
-		LeftToRight,
-		RightToLeft
-	};
-}
-
-namespace kxf
-{
 	class KX_API IWidget: public RTTI::ExtendInterface<IWidget, IEvtHandler>
 	{
 		KxRTTI_DeclareIID(IWidget, {0xd5a7bb64, 0x7a68, 0x4906, {0x91, 0x3d, 0x7d, 0x3e, 0x3f, 0x84, 0xdf, 0xa0}});
@@ -281,7 +210,7 @@ namespace kxf
 			virtual void RemoveChildWidget(const IWidget& widget) = 0;
 			virtual void DestroyChildWidgets() = 0;
 
-			virtual std::shared_ptr<IWidget> FindChildWidgetByID(int id) const = 0;
+			virtual std::shared_ptr<IWidget> FindChildWidgetByID(WidgetID id) const = 0;
 			virtual std::shared_ptr<IWidget> FindChildWidgetByName(const String& widgetName) const = 0;
 			virtual Enumerator<std::shared_ptr<IWidget>> EnumChildWidgets() const = 0;
 
@@ -345,14 +274,14 @@ namespace kxf
 			virtual void SetWidgetBorder(WidgetBorder border) = 0;
 
 			// Widget properties
-			virtual int GetWidgetID() const = 0;
-			virtual void SetWidgetID(int id) = 0;
+			virtual WidgetID GetWidgetID() const = 0;
+			virtual void SetWidgetID(WidgetID id) = 0;
 
 			virtual String GetWidgetName() const = 0;
 			virtual void SetWidgetName(const String& widgetName) = 0;
 
-			virtual String GetWidgetText() const = 0;
-			virtual void SetWidgetText(const String& widgetText) = 0;
+			virtual String GetWidgetText(FlagSet<WidgetTextFlag> flags = {}) const = 0;
+			virtual void SetWidgetText(const String& widgetText, FlagSet<WidgetTextFlag> flags = {}) = 0;
 	};
 }
 

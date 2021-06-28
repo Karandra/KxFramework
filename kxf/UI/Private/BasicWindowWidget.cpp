@@ -103,7 +103,7 @@ namespace kxf::Private
 		GetWxWindow()->SetDefaultItem(widget.GetWxWindow());
 	}
 
-	std::shared_ptr<IPopupMenu> BasicWindowWidgetBase::GetSystemMenu() const
+	std::shared_ptr<IMenuWidget> BasicWindowWidgetBase::GetSystemMenu() const
 	{
 		return nullptr;
 	}

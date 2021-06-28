@@ -2,6 +2,7 @@
 #include "kxf/Common.hpp"
 #include "StdIcon.h"
 #include "StdButton.h"
+#include "WidgetID.h"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/StdID.h"
@@ -18,6 +19,85 @@
 #include "kxf/EventSystem/Event.h"
 #include <wx/window.h>
 #include "kxf/System/UndefWindows.h"
+
+namespace kxf
+{
+	enum class WidgetStyle: uint64_t
+	{
+		None = 0,
+
+		Invisible = FlagSetValue<WidgetStyle>(0),
+		AllKeyEvents = FlagSetValue<WidgetStyle>(1),
+
+		ScrollVertical = FlagSetValue<WidgetStyle>(2),
+		ScrollHorizontal = FlagSetValue<WidgetStyle>(3),
+		ScrollShowAlways = FlagSetValue<WidgetStyle>(4)
+	};
+	KxFlagSet_Declare(WidgetStyle);
+
+	enum class WidgetExStyle: uint64_t
+	{
+		None = 0
+	};
+	KxFlagSet_Declare(WidgetExStyle);
+
+	enum class WidgetBorder: uint64_t
+	{
+		None = 0,
+
+		Default,
+		Simple,
+		Static,
+		Theme
+	};
+	KxFlagSet_Declare(WidgetBorder);
+
+	enum class WidgetSizeFlag: uint32_t
+	{
+		None = 0,
+
+		Widget = FlagSetValue<WidgetSizeFlag>(0),
+		WidgetMin = FlagSetValue<WidgetSizeFlag>(1),
+		WidgetMax = FlagSetValue<WidgetSizeFlag>(2),
+		WidgetBest = FlagSetValue<WidgetSizeFlag>(3),
+
+		Client = FlagSetValue<WidgetSizeFlag>(4),
+		ClientMin = FlagSetValue<WidgetSizeFlag>(5),
+		ClientMax = FlagSetValue<WidgetSizeFlag>(6),
+
+		Virtual = FlagSetValue<WidgetSizeFlag>(7),
+		VirtualBest = FlagSetValue<WidgetSizeFlag>(8),
+
+		Border = FlagSetValue<WidgetSizeFlag>(9)
+	};
+	KxFlagSet_Declare(WidgetSizeFlag);
+
+	enum class WidgetColorFlag: uint32_t
+	{
+		None = 0,
+
+		Background = FlagSetValue<WidgetColorFlag>(0),
+		Foreground = FlagSetValue<WidgetColorFlag>(1),
+		Border = FlagSetValue<WidgetColorFlag>(2),
+		Text = FlagSetValue<WidgetColorFlag>(3)
+	};
+	KxFlagSet_Declare(WidgetColorFlag);
+
+	enum class WidgetTextFlag: uint32_t
+	{
+		None = 0,
+
+		WithMnemonics = FlagSetValue<WidgetTextFlag>(0)
+	};
+	KxFlagSet_Declare(WidgetTextFlag);
+
+	enum class LayoutDirection
+	{
+		Default = -1,
+		LeftToRight,
+		RightToLeft
+	};
+}
 
 namespace kxf::UI
 {

@@ -63,13 +63,7 @@ namespace kxf
 			}
 
 		public:
-			constexpr bool operator==(const WidgetID& other) const noexcept
-			{
-				return m_ID == other.m_ID;
-			}
-			constexpr bool operator!=(const WidgetID& other) const noexcept
-			{
-				return m_ID != other.m_ID;
-			}
+			constexpr auto operator<=>(const WidgetID&) const noexcept = default;
+			constexpr bool operator==(const WidgetID&) const noexcept = default;
 	};
 }

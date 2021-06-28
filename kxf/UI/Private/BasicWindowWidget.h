@@ -53,7 +53,7 @@ namespace kxf::Private
 			std::shared_ptr<IWidget> GetDefaultWidget() const;
 			void SetDefaultWidget(const IWidget& widget);
 
-			std::shared_ptr<IPopupMenu> GetSystemMenu() const;
+			std::shared_ptr<IMenuWidget> GetSystemMenu() const;
 			void RequestUserAttention(FlagSet<StdIcon> icon);
 
 			bool ShouldPreventApplicationExit() const;
@@ -157,7 +157,7 @@ namespace kxf::Private
 				GetImpl().SetDefaultWidget(widget);
 			}
 
-			std::shared_ptr<IPopupMenu> GetSystemMenu() const override
+			std::shared_ptr<IMenuWidget> GetSystemMenu() const override
 			{
 				return GetImpl().GetSystemMenu();
 			}

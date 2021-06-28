@@ -15,34 +15,34 @@ namespace kxf::Private
 	{
 		return GetWxWindow()->IsModal();
 	}
-	void BasicDialogWidgetBase::EndModal(int retCode)
+	void BasicDialogWidgetBase::EndModal(WidgetID retCode)
 	{
-		GetWxWindow()->EndModal(retCode);
+		GetWxWindow()->EndModal(*retCode);
 	}
-	int BasicDialogWidgetBase::ShowModal()
+	WidgetID BasicDialogWidgetBase::ShowModal()
 	{
 		return GetWxWindow()->ShowModal();
 	}
-	int BasicDialogWidgetBase::GetReturnCode() const
+	WidgetID BasicDialogWidgetBase::GetReturnCode() const
 	{
 		return GetWxWindow()->GetReturnCode();
 	}
 
-	int BasicDialogWidgetBase::GetAffirmativeID() const
+	WidgetID BasicDialogWidgetBase::GetAffirmativeID() const
 	{
 		return GetWxWindow()->GetAffirmativeId();
 	}
-	void BasicDialogWidgetBase::SetAffirmativeID(int id)
+	void BasicDialogWidgetBase::SetAffirmativeID(WidgetID id)
 	{
 		GetWxWindow()->SetAffirmativeId(id);
 	}
 
-	int BasicDialogWidgetBase::GetEscapeID() const
+	WidgetID BasicDialogWidgetBase::GetEscapeID() const
 	{
 		return GetWxWindow()->GetEscapeId();
 	}
-	void BasicDialogWidgetBase::SetEscapeID(int id)
+	void BasicDialogWidgetBase::SetEscapeID(WidgetID id)
 	{
-		GetWxWindow()->SetEscapeId(id);
+		GetWxWindow()->SetEscapeId(*id);
 	}
 }

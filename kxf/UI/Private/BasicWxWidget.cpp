@@ -435,9 +435,9 @@ namespace kxf::Private
 		m_Window->DestroyChildren();
 	}
 
-	std::shared_ptr<IWidget> BasicWxWidgetBase::FindChildWidgetByID(int id) const
+	std::shared_ptr<IWidget> BasicWxWidgetBase::FindChildWidgetByID(WidgetID id) const
 	{
-		if (auto window = m_Window->FindWindow(id))
+		if (auto window = m_Window->FindWindow(*id))
 		{
 			return IWidget::FindByWindow(*window);
 		}
@@ -675,13 +675,13 @@ namespace kxf::Private
 	}
 
 	// Widget properties
-	int BasicWxWidgetBase::GetWidgetID() const
+	WidgetID BasicWxWidgetBase::GetWidgetID() const
 	{
 		return m_Window->GetId();
 	}
-	void BasicWxWidgetBase::SetWidgetID(int id)
+	void BasicWxWidgetBase::SetWidgetID(WidgetID id)
 	{
-		m_Window->SetId(id);
+		m_Window->SetId(*id);
 	}
 
 	String BasicWxWidgetBase::GetWidgetName() const
@@ -692,11 +692,11 @@ namespace kxf::Private
 	{
 		m_Window->SetName(widgetName);
 	}
-	String BasicWxWidgetBase::GetWidgetText() const
+	String BasicWxWidgetBase::GetWidgetText(FlagSet<WidgetTextFlag> flags) const
 	{
 		return m_Window->GetLabel();
 	}
-	void BasicWxWidgetBase::SetWidgetText(const String& widgetText)
+	void BasicWxWidgetBase::SetWidgetText(const String& widgetText, FlagSet<WidgetTextFlag> flags)
 	{
 		m_Window->SetLabel(widgetText);
 	}

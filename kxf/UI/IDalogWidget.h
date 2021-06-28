@@ -13,14 +13,14 @@ namespace kxf
 
 		public:
 			virtual bool IsModal() const = 0;
-			virtual void EndModal(int retCode) = 0;
-			virtual int ShowModal() = 0;
-			virtual int GetReturnCode() const = 0;
+			virtual void EndModal(WidgetID retCode) = 0;
+			virtual WidgetID ShowModal() = 0;
+			virtual WidgetID GetReturnCode() const = 0;
 
-			virtual int GetAffirmativeID() const = 0;
-			virtual void SetAffirmativeID(int id) = 0;
+			virtual WidgetID GetAffirmativeID() const = 0;
+			virtual void SetAffirmativeID(WidgetID id) = 0;
 
-			virtual int GetEscapeID() const = 0;
-			virtual void SetEscapeID(int id) = 0;
+			virtual WidgetID GetEscapeID() const = 0;
+			virtual void SetEscapeID(WidgetID id) = 0;
 	};
 }

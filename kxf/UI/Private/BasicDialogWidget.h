@@ -22,15 +22,15 @@ namespace kxf::Private
 		public:
 			// BasicDialogWidgetBase
 			bool IsModal() const;
-			void EndModal(int retCode);
-			int ShowModal();
-			int GetReturnCode() const;
+			void EndModal(WidgetID retCode);
+			WidgetID ShowModal();
+			WidgetID GetReturnCode() const;
 
-			int GetAffirmativeID() const;
-			void SetAffirmativeID(int id);
+			WidgetID GetAffirmativeID() const;
+			void SetAffirmativeID(WidgetID id);
 
-			int GetEscapeID() const;
-			void SetEscapeID(int id);
+			WidgetID GetEscapeID() const;
+			void SetEscapeID(WidgetID id);
 	};
 }
 
@@ -47,33 +47,33 @@ namespace kxf::Private
 			{
 				return GetImpl().IsModal();
 			}
-			void EndModal(int retCode) override
+			void EndModal(WidgetID retCode) override
 			{
 				GetImpl().EndModal(retCode);
 			}
-			int ShowModal() override
+			WidgetID ShowModal() override
 			{
 				return GetImpl().ShowModal();
 			}
-			int GetReturnCode() const override
+			WidgetID GetReturnCode() const override
 			{
 				return GetImpl().GetReturnCode();
 			}
 
-			int GetAffirmativeID() const override
+			WidgetID GetAffirmativeID() const override
 			{
 				return GetImpl().GetAffirmativeID();
 			}
-			void SetAffirmativeID(int id) override
+			void SetAffirmativeID(WidgetID id) override
 			{
 				GetImpl().SetAffirmativeID(id);
 			}
 
-			int GetEscapeID() const override
+			WidgetID GetEscapeID() const override
 			{
 				return GetImpl().GetEscapeID();
 			}
-			void SetEscapeID(int id) override
+			void SetEscapeID(WidgetID id) override
 			{
 				GetImpl().SetEscapeID(id);
 			}
