@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "IWidget.h"
+#include <wx/control.h>
 
 namespace kxf
 {
@@ -23,5 +24,25 @@ namespace kxf
 			return FindByWindow(*window);
 		}
 		return nullptr;
+	}
+}
+
+namespace kxf::Widgets
+{
+	String RemoveMnemonics(const String& text)
+	{
+		if (text.Contains('&'))
+		{
+			return wxControl::RemoveMnemonics(text);
+		}
+		return text;
+	}
+	String EscapeMnemonics(const String& text)
+	{
+		if (text.Contains('&'))
+		{
+			return wxControl::EscapeMnemonics(text);
+		}
+		return text;
 	}
 }

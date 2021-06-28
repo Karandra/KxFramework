@@ -20,7 +20,7 @@ namespace kxf
 			static std::shared_ptr<IWidget> FindByWindow(const wxWindow& window) noexcept;
 			static std::shared_ptr<IWidget> FindFocus() noexcept;
 
-		private:
+		protected:
 			virtual void SaveReference(std::weak_ptr<IWidget> ref) = 0;
 
 		public:
@@ -304,4 +304,10 @@ namespace kxf
 
 		return widget;
 	}
+}
+
+namespace kxf::Widgets
+{
+	String RemoveMnemonics(const String& text);
+	String EscapeMnemonics(const String& text);
 }
