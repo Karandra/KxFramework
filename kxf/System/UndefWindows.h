@@ -82,6 +82,7 @@
 #undef SendNotifyMessage
 #undef PostMessage
 #undef PostThreadMessage
+#undef InsertMenu
 
 #ifdef ZeroMemory
 #undef ZeroMemory
