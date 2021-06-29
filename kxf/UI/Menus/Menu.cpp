@@ -11,29 +11,7 @@ namespace
 
 	Menu* g_CurrentMenu = nullptr;
 
-	void wxYieldForCommandsOnly()
-	{
-		// This right from wxWindowMSW::DoPopupMenu
-
-		// peek all WM_COMMANDs (it will always return WM_QUIT too but we don't
-		// want to process it here)
-		MSG msg;
-		while (::PeekMessageW(&msg, nullptr, WM_COMMAND, WM_COMMAND, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)
-			{
-				// if we retrieved a WM_QUIT, insert back into the message queue.
-				::PostQuitMessage(0);
-				break;
-			}
-
-			// luckily (as we don't have access to wxEventLoopImpl method from here
-			// anyhow...) we don't need to pre-process WM_COMMANDs so dispatch it
-			// immediately
-			::TranslateMessage(&msg);
-			::DispatchMessageW(&msg);
-		}
-	}
+	
 	wxWindowID TranslateItemID(wxWindowID id)
 	{
 		// See KxMenuItem::GetEffectiveID

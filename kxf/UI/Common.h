@@ -19,9 +19,14 @@
 #include "kxf/EventSystem/Event.h"
 #include <wx/window.h>
 #include "kxf/System/UndefWindows.h"
+class wxObject;
+class wxWindow;
+class wxEvtHandler;
 
 namespace kxf
 {
+	class IWidget;
+
 	enum class WidgetStyle: uint64_t
 	{
 		None = 0,
@@ -97,6 +102,15 @@ namespace kxf
 		LeftToRight,
 		RightToLeft
 	};
+}
+
+namespace kxf::Widgets
+{
+	String RemoveMnemonics(const String& text);
+	String EscapeMnemonics(const String& text);
+
+	Point GetMouseCoordinates() noexcept;
+	Point GetMouseCoordinates(const IWidget& widget) noexcept;
 }
 
 namespace kxf::UI

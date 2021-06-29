@@ -94,7 +94,7 @@ namespace kxf::Private
 	{
 		if (auto window = GetWxWindow()->GetDefaultItem())
 		{
-			return IWidget::FindByWindow(*window);
+			return IWidget::FindByWXObject(*window);
 		}
 		return nullptr;
 	}

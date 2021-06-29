@@ -278,6 +278,9 @@
     <Filter Include="kxf\UI\TopLevelWidgets\WXUI">
       <UniqueIdentifier>{21c585d2-d563-4e99-b3ce-86d0391d8255}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\UI\Events">
+      <UniqueIdentifier>{8e507d6e-0d9b-4f09-b274-a6878a4d71c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -800,9 +803,6 @@
     <ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h">
       <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Menus\MenuEvent.h">
-      <Filter>kxf\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Menus\MenuItem.h">
       <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
@@ -977,13 +977,7 @@
     <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\StdButton.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\StdDialogButtonSizer.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\StdIcon.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Validator.h">
@@ -1208,9 +1202,6 @@
     <ClInclude Include="kxf\EventSystem\EventID.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\WidgetID.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Threading\ReadWriteLock.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
@@ -1300,9 +1291,6 @@
     </ClInclude>
     <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h">
       <Filter>kxf\wxWidgets</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\WidgetEvent.h">
-      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\BasicEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
@@ -2010,6 +1998,45 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\Dialog.h">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\WidgetID.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\StdButton.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\StdIcon.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\Common.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IMenuWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IMenuWidgetItem.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\MenuWidget.h">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\Common.h">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\AnonymousNativeWindow.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IWidgetEvent.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2306,9 +2333,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
       <Filter>kxf\UI\Dialogs\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp">
-      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Menus\MenuItem.cpp">
       <Filter>kxf\UI\Menus</Filter>
@@ -2985,9 +3009,6 @@
     <ClCompile Include="kxf\Network\WebRequest.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\StdIcon.cpp">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\General\StdID.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
@@ -3026,6 +3047,24 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\TopLevelWidgets\Dialog.cpp">
       <Filter>kxf\UI\TopLevelWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\StdIcon.cpp">
+      <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\MenuWidgetEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\MenuWidget.cpp">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\Common.cpp">
+      <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\AnonymousNativeWindow.cpp">
+      <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

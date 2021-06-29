@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "EventBroadcastProcessor.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf::EventSystem
 {
@@ -32,6 +33,15 @@ namespace kxf
 	bool EventBroadcastProcessor::RemoveReceiver(EventBroadcastReceiver& reciever)
 	{
 		return m_Stack.Remove(reciever.GetEvtHandler());
+	}
+
+	Enumerator<IEvtHandler&> EventBroadcastProcessor::EnumReceiveres(Order order) const
+	{
+		return m_Stack.EnumItems(order, true);
+	}
+	Enumerator<IEvtHandler&> EventBroadcastProcessor::EnumReceiveres() const
+	{
+		return m_Stack.EnumItems(m_Order, true);
 	}
 
 	bool EventBroadcastReceiver::PreProcessEvent(IEvent& event)

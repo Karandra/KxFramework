@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "TopLevelWindow.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/Drawing/BitmapImage.h"
 #include "kxf/Utility/System.h"
@@ -145,57 +144,6 @@ namespace kxf::UI::Private
 				m_Window->HandleWindowEvent(event);
 
 				result = 0;
-				return true;
-			}
-			case WM_MENUSELECT:
-			{
-				int nItemID = LOWORD(wParam);
-				int flags = HIWORD(wParam);
-
-				Menu* menu = Menu::GetCurrentMenu();
-				if (menu && flags & MF_MOUSESELECT)
-				{
-					MenuItem* item = nullptr;
-					if (flags & MF_POPUP)
-					{
-						item = menu->FindItemByPosition(nItemID);
-					}
-
-					if (item)
-					{
-						nItemID = item->GetId();
-
-						// If this is popup menu container send sub-menu open event
-						Menu* subMenu = item->GetSubMenu();
-						if (flags & MF_POPUP && subMenu)
-						{
-							MenuEvent eventOpen(MenuEvent::EvtOpen, subMenu, item);
-							eventOpen.SetId(nItemID);
-							eventOpen.SetEventObject(subMenu);
-							subMenu->ProcessEvent(eventOpen);
-						}
-						else
-						{
-							MenuEvent event(MenuEvent::EvtHover, menu, item);
-							event.SetId(nItemID);
-							event.SetEventObject(item->GetEventHandler());
-							if (!item->ProcessEvent(event))
-							{
-								// If item didn't processed this event send it to menu
-								menu->ProcessEvent(event);
-							}
-						}
-					}
-					else
-					{
-						// KxMenu will dispatch this as needed
-						wxMenuEvent event(wxEVT_MENU_HIGHLIGHT, nItemID, menu);
-						event.SetId(nItemID);
-						event.SetEventObject(menu);
-						menu->ProcessEvent(event);
-					}
-				}
-				result = 1;
 				return true;
 			}
 		};

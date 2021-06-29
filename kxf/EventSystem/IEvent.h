@@ -74,44 +74,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IWidgetEvent: public RTTI::Interface<IWidgetEvent>
-	{
-		KxRTTI_DeclareIID(IWidgetEvent, {0x4552fa23, 0xb7da, 0x44c5, {0x86, 0x93, 0x30, 0x40, 0x87, 0x31, 0x33, 0x72}});
-
-		public:
-			struct PropagationLevel final
-			{
-				// Don't propagate it at all
-				static constexpr size_t None = 0;
-
-				// Propagate it until it is processed
-				static constexpr size_t Max = std::numeric_limits<uint32_t>::max();
-
-				PropagationLevel() noexcept = delete;
-			};
-
-		public:
-			virtual ~IWidgetEvent() = default;
-
-		public:
-			virtual WidgetID GetWidgetID() const = 0;
-			virtual void SetWidgetID(WidgetID id) = 0;
-
-			virtual size_t StopPropagation() = 0;
-			virtual void ResumePropagation(size_t level) = 0;
-			virtual bool ShouldPropagate() const = 0;
-
-			virtual String GetString() const = 0;
-			virtual void SetString(const String& value) = 0;
-
-			virtual int64_t GetInt() const = 0;
-			virtual void SetInt(int64_t value) = 0;
-
-			virtual int64_t GetExtraInt() const = 0;
-			virtual void SetExtraInt(int64_t value) = 0;
-	};
-
-	class IIndirectInvocationEvent: public RTTI::Interface<IIndirectInvocationEvent>
+	class KX_API IIndirectInvocationEvent: public RTTI::Interface<IIndirectInvocationEvent>
 	{
 		KxRTTI_DeclareIID(IIndirectInvocationEvent, {0xb0046b41, 0xecd9, 0x4b46, {0xb1, 0xb5, 0xd6, 0x7d, 0xa, 0x77, 0x5c, 0xbe}});
 
@@ -125,7 +88,7 @@ namespace kxf
 			virtual void Execute() = 0;
 	};
 
-	class ISignalInvocationEvent: public RTTI::Interface<ISignalInvocationEvent>
+	class KX_API ISignalInvocationEvent: public RTTI::Interface<ISignalInvocationEvent>
 	{
 		KxRTTI_DeclareIID(ISignalInvocationEvent, {0xb3ad1ef2, 0x96ee, 0x4ebf, {0x93, 0xac, 0x6, 0xf8, 0x5b, 0x2e, 0xe5, 0xc5}});
 

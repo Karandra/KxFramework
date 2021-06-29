@@ -1,6 +1,38 @@
 #include "KxfPCH.h"
 #include "Common.h"
+#include <wx/event.h>
+#include <wx/object.h>
 #include <wx/window.h>
+#include <wx/control.h>
+
+namespace kxf::Widgets
+{
+	String RemoveMnemonics(const String& text)
+	{
+		if (text.Contains('&'))
+		{
+			return wxControl::RemoveMnemonics(text);
+		}
+		return text;
+	}
+	String EscapeMnemonics(const String& text)
+	{
+		if (text.Contains('&'))
+		{
+			return wxControl::EscapeMnemonics(text);
+		}
+		return text;
+	}
+
+	Point GetMouseCoordinates() noexcept
+	{
+		return Point(::wxGetMousePosition());
+	}
+	Point GetMouseCoordinates(const IWidget& widget) noexcept
+	{
+		return widget.ScreenToClient(GetMouseCoordinates());
+	}
+}
 
 namespace kxf::UI
 {

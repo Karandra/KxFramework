@@ -54,7 +54,7 @@ namespace kxf::UI
 			{
 				return this;
 			}
-		
+			
 			bool HasEffectiveID() const
 			{
 				return m_EffectiveID >= 0;
@@ -63,7 +63,7 @@ namespace kxf::UI
 			{
 				return HasEffectiveID() ? m_EffectiveID : wxMenuItem::GetId();
 			}
-		
+			
 			wxWindow* GetWindow() const;
 			wxMenu* GetMenuWx() const
 			{

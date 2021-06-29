@@ -5,7 +5,6 @@
 #include "kxf/Utility/String.h"
 #include <wx/window.h>
 #include <wx/colour.h>
-
 #include <Windows.h>
 #include <UxTheme.h>
 
@@ -67,7 +66,7 @@ namespace kxf::Private
 	}
 	void BasicWxWidgetBase::OnWindowDestroy(wxWindowDestroyEvent& event)
 	{
-		IWidget::DissociateWithWindow(*m_Window);
+		DissociateWXObject(*m_Window);
 		m_Window = nullptr;
 		m_ShouldDelete = false;
 
@@ -81,7 +80,7 @@ namespace kxf::Private
 			m_Window = window.release();
 			m_ShouldDelete = true;
 
-			IWidget::AssociateWithWindow(*m_Window, m_Widget);
+			AssociateWXObject(*m_Window, m_Widget);
 			m_Window->Bind(wxEVT_CREATE, &BasicWxWidgetBase::OnWindowCreate, this);
 			m_Window->Bind(wxEVT_DESTROY, &BasicWxWidgetBase::OnWindowDestroy, this);
 		}
@@ -92,7 +91,7 @@ namespace kxf::Private
 		{
 			m_Window->Unbind(wxEVT_CREATE, &BasicWxWidgetBase::OnWindowCreate, this);
 			m_Window->Unbind(wxEVT_DESTROY, &BasicWxWidgetBase::OnWindowDestroy, this);
-			IWidget::DissociateWithWindow(*m_Window);
+			DissociateWXObject(*m_Window);
 
 			if (m_ShouldDelete)
 			{
@@ -439,7 +438,7 @@ namespace kxf::Private
 	{
 		if (auto window = m_Window->FindWindow(*id))
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		}
 		return nullptr;
 	}
@@ -447,7 +446,7 @@ namespace kxf::Private
 	{
 		if (auto window = m_Window->FindWindow(widgetName))
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		}
 		return nullptr;
 	}
@@ -455,7 +454,7 @@ namespace kxf::Private
 	{
 		return Utility::EnumerateIterableContainer<std::shared_ptr<IWidget>>(m_Window->GetChildren(), [](wxWindow* window)
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		});
 	}
 
@@ -464,7 +463,7 @@ namespace kxf::Private
 	{
 		if (auto window = m_Window->GetParent())
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		}
 		return nullptr;
 	}
@@ -477,7 +476,7 @@ namespace kxf::Private
 	{
 		if (auto window = m_Window->GetPrevSibling())
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		}
 		return nullptr;
 	}
@@ -485,7 +484,7 @@ namespace kxf::Private
 	{
 		if (auto window = m_Window->GetNextSibling())
 		{
-			return IWidget::FindByWindow(*window);
+			return FindByWXObject(*window);
 		}
 		return nullptr;
 	}
@@ -788,5 +787,9 @@ namespace kxf::Private
 		{
 			return ::SetWindowTheme(m_Window->GetHandle(), applicationName.wc_str(), nullptr);
 		}
+	}
+	bool BasicWxWidgetBase::SetForegroundWindow()
+	{
+		return ::SetForegroundWindow(m_Window->GetHandle());
 	}
 }

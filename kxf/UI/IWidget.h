@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/IEvent.h"
-class wxWindow;
 
 namespace kxf
 {
@@ -14,10 +13,6 @@ namespace kxf
 		friend std::shared_ptr<TWidget> NewWidget();
 
 		public:
-			static void AssociateWithWindow(wxWindow& window, IWidget& widget) noexcept;
-			static void DissociateWithWindow(wxWindow& window) noexcept;
-
-			static std::shared_ptr<IWidget> FindByWindow(const wxWindow& window) noexcept;
 			static std::shared_ptr<IWidget> FindFocus() noexcept;
 
 		protected:
@@ -304,10 +299,4 @@ namespace kxf
 
 		return widget;
 	}
-}
-
-namespace kxf::Widgets
-{
-	String RemoveMnemonics(const String& text);
-	String EscapeMnemonics(const String& text);
 }

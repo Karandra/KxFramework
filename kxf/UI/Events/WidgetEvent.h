@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "Event.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
@@ -8,6 +7,7 @@ namespace kxf
 	class KX_API WidgetEvent: public RTTI::Implementation<WidgetEvent, BasicEvent, IWidgetEvent>
 	{
 		private:
+			std::shared_ptr<IWidget> m_Widget;
 			WidgetID m_WidgetID;
 			size_t m_PropagationLevel = PropagationLevel::Max;
 
@@ -16,7 +16,8 @@ namespace kxf
 			int64_t m_ExtraInt = 0;
 
 		public:
-			WidgetEvent() = default;
+			WidgetEvent() noexcept = default;
+			WidgetEvent(IWidget& widget) noexcept;
 			WidgetEvent(const WidgetEvent&) = default;
 			WidgetEvent(WidgetEvent&& other) noexcept
 			{
@@ -31,16 +32,20 @@ namespace kxf
 			}
 			FlagSet<EventCategory> GetEventCategory() const override
 			{
-				// This function is used to selectively process events in 'IEventLoop::YieldFor'
-				// It returns 'EventCategory::UI' because 'WidgetEvent' is an UI event.
 				return EventCategory::UI;
 			}
 
 			// IWidgetEvent
-			WidgetID GetWidgetID() const override
+			std::shared_ptr<IWidget> GetWidget() const override
 			{
-				return m_WidgetID;
+				return m_Widget;
 			}
+			void SetWidget(std::shared_ptr<IWidget> widget) override
+			{
+				m_Widget = std::move(widget);
+			}
+
+			WidgetID GetWidgetID() const override;
 			void SetWidgetID(WidgetID id) override
 			{
 				m_WidgetID = id;
@@ -94,7 +99,7 @@ namespace kxf
 			WidgetEvent& operator=(const WidgetEvent&) = default;
 			WidgetEvent& operator=(WidgetEvent&& other) noexcept
 			{
-				m_WidgetID = Utility::ExchangeResetAndReturn(other.m_WidgetID, wxID_NONE);
+				m_WidgetID = Utility::ExchangeResetAndReturn(other.m_WidgetID, StdID::None);
 				m_PropagationLevel = Utility::ExchangeResetAndReturn(other.m_PropagationLevel, PropagationLevel::Max);
 				m_String = std::move(other.m_String);
 

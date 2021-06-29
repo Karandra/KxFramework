@@ -79,14 +79,8 @@ namespace kxf
 				return m_Stack.GetCount();
 			}
 
-			Enumerator<IEvtHandler&> EnumReceiveres(Order order) const
-			{
-				return m_Stack.EnumItems(order, true);
-			}
-			Enumerator<IEvtHandler&> EnumReceiveres() const
-			{
-				return m_Stack.EnumItems(m_Order, true);
-			}
+			Enumerator<IEvtHandler&> EnumReceiveres(Order order) const;
+			Enumerator<IEvtHandler&> EnumReceiveres() const;
 
 			Order GetReceiversOrder() const
 			{

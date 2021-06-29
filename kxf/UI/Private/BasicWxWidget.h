@@ -168,7 +168,8 @@ namespace kxf::Private
 			bool SendMessageSignal(uint32_t messageID, intptr_t wParam, intptr_t lParam);
 			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout);
 
-			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs );
+			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs);
+			bool SetForegroundWindow();
 	};
 }
 
@@ -204,13 +205,14 @@ namespace kxf::Private
 				return EventSystem::EvtHandlerAccessor(GetTopEvtHandler());
 			}
 
+		protected:
 			// IWidget
 			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
 			{
 				m_WidgetReference = std::move(ref);
 			}
 
-		protected:
+			// BasicWxWidget
 			IEvtHandler& GetThisEvtHandler() noexcept
 			{
 				return m_EvtHandler;
@@ -287,13 +289,11 @@ namespace kxf::Private
 			}
 
 		public:
-			BasicWxWidget(const BasicWxWidget&) = delete;
-
-		protected:
 			BasicWxWidget()
 				:m_EventHandlerStack(m_EvtHandler), m_Window(static_cast<IWidget&>(*this))
 			{
 			}
+			BasicWxWidget(const BasicWxWidget&) = delete;
 			~BasicWxWidget() = default;
 
 		public:
@@ -401,16 +401,17 @@ namespace kxf::Private
 			{
 				return m_Window.GetContentScaleFactor();
 			}
+
 			void FromDIP(int& x, int& y) const override
 			{
 				m_Window.FromDIP(x, y);
 			}
+			using IWidget::FromDIP;
+
 			void ToDIP(int& x, int& y) const override
 			{
 				m_Window.ToDIP(x, y);
 			}
-
-			using IWidget::FromDIP;
 			using IWidget::ToDIP;
 
 			// Positioning functions
@@ -451,25 +452,25 @@ namespace kxf::Private
 			{
 				m_Window.ScreenToClient(x, y);
 			}
+			using IWidget::ScreenToClient;
+
+			using IWidget::ClientToScreen;
 			void ClientToScreen(int& x, int& y) const override
 			{
 				m_Window.ClientToScreen(x, y);
 			}
 
-			using IWidget::ScreenToClient;
-			using IWidget::ClientToScreen;
-
 			void DialogUnitsToPixels(int& x, int& y) const override
 			{
 				m_Window.DialogUnitsToPixels(x, y);
 			}
+			using IWidget::DialogUnitsToPixels;
+
+			using IWidget::PixelsToDialogUnits;
 			void PixelsToDialogUnits(int& x, int& y) const override
 			{
 				m_Window.PixelsToDialogUnits(x, y);
 			}
-
-			using IWidget::DialogUnitsToPixels;
-			using IWidget::PixelsToDialogUnits;
 
 			// Focus
 			bool IsFocusable() const override
@@ -716,19 +717,19 @@ namespace kxf::Private
 				return m_Window.SetWindowProperty(index, value);
 			}
 
-			bool PostMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
+			bool PostMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) override
 			{
 				return m_Window.PostMessage(messageID, wParam, lParam);
 			}
-			bool NotifyMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
+			bool NotifyMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) override
 			{
 				return m_Window.NotifyMessage(messageID, wParam, lParam);
 			}
-			bool SendMessageSignal(uint32_t messageID, intptr_t wParam, intptr_t lParam) override
+			bool SendMessageSignal(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) override
 			{
 				return m_Window.SendMessageSignal(messageID, wParam, lParam);
 			}
-			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout = {}) override
+			intptr_t SendMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0, TimeSpan timeout = {}) override
 			{
 				return m_Window.SendMessage(messageID, wParam, lParam, timeout);
 			}
@@ -736,6 +737,10 @@ namespace kxf::Private
 			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs = {}) override
 			{
 				return m_Window.SetWindowTheme(applicationName, subIDs);
+			}
+			bool SetForegroundWindow() override
+			{
+				return m_Window.SetForegroundWindow();
 			}
 
 		public:

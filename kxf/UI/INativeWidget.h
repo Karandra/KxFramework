@@ -40,11 +40,12 @@ namespace kxf
 			virtual intptr_t GetWindowProperty(NativeWidgetProperty index) const = 0;
 			virtual intptr_t SetWindowProperty(NativeWidgetProperty index, intptr_t value) = 0;
 
-			virtual bool PostMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) = 0;
-			virtual bool NotifyMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam) = 0;
-			virtual bool SendMessageSignal(uint32_t messageID, intptr_t wParam, intptr_t lParam) = 0;
-			virtual intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout = {}) = 0;
+			virtual bool PostMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) = 0;
+			virtual bool NotifyMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) = 0;
+			virtual bool SendMessageSignal(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0) = 0;
+			virtual intptr_t SendMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0, TimeSpan timeout = {}) = 0;
 
 			virtual HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs = {}) = 0;
+			virtual bool SetForegroundWindow() = 0;
 	};
 }
