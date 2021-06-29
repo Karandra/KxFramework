@@ -9,24 +9,26 @@
 #include "kxf/EventSystem/EventHandlerStack.h"
 class wxMenu;
 class wxMenuItem;
-class wxMenuEvent;
 
-namespace kxf::Widgets
-{
-	class MenuWidgetItem;
-}
 namespace kxf::Private
 {
 	class MenuWidgetGuard;
 }
+namespace kxf::WXUI
+{
+	class Menu;
+}
 
 namespace kxf::Widgets
 {
-	class MenuWidget: public RTTI::Implementation<MenuWidget, BasicEvtHandler<MenuWidget, IMenuWidget>, IGraphicsRendererAwareWidget>
+	class MenuWidget: public RTTI::DynamicImplementation<MenuWidget, BasicEvtHandler<MenuWidget, IMenuWidget>, IGraphicsRendererAwareWidget>
 	{
+		KxRTTI_DeclareIID(MenuWidget, {0x3ed24a86, 0xd924, 0x4c39, {0xae, 0x70, 0x40, 0x7b, 0x45, 0x47, 0xea, 0x16}});
+
+		friend class MenuWidgetItem;
 		friend class BasicEvtHandler<MenuWidget, IMenuWidget>;
 		friend class Private::MenuWidgetGuard;
-		friend class MenuWidgetItem;
+		friend class WXUI::Menu;
 
 		private:
 			static void AssociateWXMenuItem(wxMenuItem& wx, IMenuWidgetItem& item) noexcept;
@@ -37,10 +39,11 @@ namespace kxf::Widgets
 			EvtHandler m_EvtHandler;
 			EvtHandlerStack m_EventHandlerStack;
 
-			std::unique_ptr<wxMenu> m_Menu;
+			std::unique_ptr<WXUI::Menu> m_Menu;
 			std::shared_ptr<IWidget> m_ParentWidget;
-			std::weak_ptr<IWidget> m_WidgetReference;
+			std::weak_ptr<IMenuWidget> m_WidgetReference;
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
+			bool m_Attached = false;
 
 			// Invoking environment data
 			Private::AnonymousNativeWindow m_NativeWindow;
@@ -94,11 +97,14 @@ namespace kxf::Widgets
 			bool HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam);
 			bool DoShow(Point screenPos, FlagSet<Alignment> alignment, std::shared_ptr<IWidget> invokingWidget);
 
+			bool DoDestroyWidget(bool releaseWX = false);
+			void OnWXMenuDestroyed();
+
 		protected:
 			// IWidget
 			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
 			{
-				m_WidgetReference = std::move(ref);
+				m_WidgetReference = std::static_pointer_cast<IMenuWidget>(ref.lock());
 			}
 
 		public:
@@ -505,9 +511,12 @@ namespace kxf::Widgets
 				m_Description = description;
 			}
 
+			using IMenuWidget::InsertItem;
 			std::shared_ptr<IMenuWidgetItem> InsertItem(IMenuWidgetItem& item, size_t index = npos) override;
 			std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, size_t index = npos) override;
-			std::shared_ptr<IMenuWidgetItem> InsertSeparator(size_t index = npos) override;
+
+			std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, MenuWidgetItemType type = MenuWidgetItemType::Regular, WidgetID id = {}) override;
+			std::shared_ptr<IMenuWidgetItem> GetDefaultItem() const override;
 			Enumerator<std::shared_ptr<IMenuWidgetItem>> EnumMenuItems() const override;
 
 			void Show(Point pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = {}) override;

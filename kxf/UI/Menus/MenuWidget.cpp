@@ -1,5 +1,8 @@
 #include "KxfPCH.h"
 #include "MenuWidget.h"
+#include "MenuWidgetItem.h"
+#include "WXUI/Menu.h"
+#include "WXUI/MenuItem.h"
 #include "../INativeWidget.h"
 #include "../Events/MenuWidgetEvent.h"
 #include "kxf/Threading/Common.h"
@@ -28,23 +31,6 @@ namespace
 		nativeAlignment.Add(TPM_VCENTERALIGN, alignment & Alignment::CenterVertical);
 
 		return nativeAlignment;
-	}
-
-	constexpr uint16_t WxIDToWin(int menuWxID) noexcept
-	{
-		return static_cast<uint32_t>(menuWxID);
-	}
-	constexpr kxf::WidgetID WinIDToWx(uint16_t menuWinID) noexcept
-	{
-		return static_cast<int16_t>(menuWinID);
-	}
-	constexpr kxf::WidgetID WinMenuRetToWx(int id) noexcept
-	{
-		if (id != 0)
-		{
-			return WinIDToWx(static_cast<uint16_t>(id));
-		}
-		return {};
 	}
 }
 
@@ -160,7 +146,7 @@ namespace kxf::Widgets
 				const auto handle = reinterpret_cast<HMENU>(lParam);
 
 				wxMenu* menuWX = m_Menu.get();
-				wxMenuItem* itemWX = flags.Contains(MF_POPUP) ? m_Menu->FindItemByPosition(indexOrID) : m_Menu->FindItem(*WinIDToWx(indexOrID), &menuWX);
+				wxMenuItem* itemWX = flags.Contains(MF_POPUP) ? m_Menu->FindItemByPosition(indexOrID) : m_Menu->FindItem(*WXUI::Menu::WinIDToWx(indexOrID), &menuWX);
 
 				if (itemWX && (flags.Contains(MF_HILITE) || flags.Contains(MF_MOUSESELECT)))
 				{
@@ -238,13 +224,40 @@ namespace kxf::Widgets
 		return ::TrackPopupMenuEx(m_Menu->GetHMenu(), *flags, screenPos.GetX(), screenPos.GetY(), static_cast<HWND>(m_NativeWindow.GetHandle()), nullptr);
 	}
 
-	MenuWidget::MenuWidget()
-		:m_EventHandlerStack(m_EvtHandler), m_Menu(std::make_unique<wxMenu>())
+	bool MenuWidget::DoDestroyWidget(bool releaseWX)
 	{
+		if (m_Menu)
+		{
+			// Move the object here to prevent calling this function again
+			// upon destructing the wxMenu object.
+			auto menu = std::move(m_Menu);
+
+			m_NativeWindow.Destroy();
+			Private::DissociateWXObject(*menu);
+
+			if (releaseWX)
+			{
+				static_cast<void>(menu.release());
+			}
+			return true;
+		}
+		return false;
+	}
+	void MenuWidget::OnWXMenuDestroyed()
+	{
+		// Underlying wxMenu is being destroyed, that means we need
+		// to release the pointer to it so we don't double delete it.
+		DoDestroyWidget(true);
+	}
+
+	MenuWidget::MenuWidget()
+		:m_EventHandlerStack(m_EvtHandler), m_Menu(std::make_unique<WXUI::Menu>(*this))
+	{
+		Private::AssociateWXObject(*m_Menu, *this);
 	}
 	MenuWidget::~MenuWidget()
 	{
-		MenuWidget::DestroyWidget();
+		DoDestroyWidget();
 	}
 
 	// Native interface
@@ -262,7 +275,7 @@ namespace kxf::Widgets
 	{
 		if (!m_Menu)
 		{
-			m_Menu = std::make_unique<wxMenu>();
+			m_Menu = std::make_unique<WXUI::Menu>(*this);
 			m_Menu->SetTitle(text);
 
 			m_Label = text;
@@ -288,26 +301,46 @@ namespace kxf::Widgets
 	}
 	bool MenuWidget::DestroyWidget()
 	{
-		if (m_Menu)
-		{
-			m_NativeWindow.Destroy();
-			Private::DissociateWXObject(*m_Menu);
-			m_Menu = nullptr;
-
-			return true;
-		}
-		return false;
+		return DoDestroyWidget();
 	}
 
 	// Child management functions
 	void MenuWidget::AddChildWidget(IWidget& widget)
 	{
+		object_ptr<IMenuWidget> menuWidget;
+		if (m_Menu && widget.QueryInterface(menuWidget))
+		{
+			MenuWidget::InsertMenu(*menuWidget);
+		}
 	}
 	void MenuWidget::RemoveChildWidget(const IWidget& widget)
 	{
+		if (m_Menu && widget.QueryInterface<IMenuWidget>())
+		{
+			void* handle = widget.GetHandle();
+			for (auto& item: m_Menu->GetMenuItems())
+			{
+				wxMenu* menu = item->GetSubMenu();
+				if (menu && menu->GetHMenu() == handle)
+				{
+					m_Menu->Destroy(item);
+				}
+			}
+		}
 	}
 	void MenuWidget::DestroyChildWidgets()
 	{
+		if (m_Menu)
+		{
+			for (auto& item: m_Menu->GetMenuItems())
+			{
+				// Destroy only the sub-menus (as they're widgets unlike items)
+				if (item->GetSubMenu())
+				{
+					m_Menu->Destroy(item);
+				}
+			}
+		}
 	}
 
 	std::shared_ptr<IWidget> MenuWidget::FindChildWidgetByID(WidgetID id) const
@@ -343,14 +376,90 @@ namespace kxf::Widgets
 	// IMenuWidget
 	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertItem(IMenuWidgetItem& item, size_t index)
 	{
+		if (m_Menu)
+		{
+			if (auto menuItem = item.QueryInterface<MenuWidgetItem>())
+			{
+				menuItem->m_OwningMenu = m_WidgetReference;
+				m_Menu->Insert(index, menuItem->m_MenuItem.get());
+
+				return menuItem->LockReference();
+			}
+		}
 		return nullptr;
 	}
 	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertMenu(IMenuWidget& subMenu, size_t index)
 	{
+		object_ptr<MenuWidget> menuWidget;
+		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_Attached)
+		{
+			menuWidget->m_Attached = true;
+
+			auto item = std::make_shared<MenuWidgetItem>();
+			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, *menuWidget->m_Menu);
+			item->m_OwningMenu = m_WidgetReference;
+			item->SaveReference(item);
+			item->DoCreateWidget();
+
+			item->SetLabel(menuWidget->GetLabel(), WidgetTextFlag::WithMnemonics);
+			item->SetDescription(menuWidget->GetDescription());
+
+			return item;
+		}
 		return nullptr;
 	}
-	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertSeparator(size_t index)
+
+	std::shared_ptr<IMenuWidgetItem> MenuWidget::CreateItem(const String& label, MenuWidgetItemType type, WidgetID id)
 	{
+		if (m_Menu && type != MenuWidgetItemType::None)
+		{
+			auto item = std::make_shared<MenuWidgetItem>();
+			switch (type)
+			{
+				case MenuWidgetItemType::Separator:
+				{
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_SEPARATOR);
+					break;
+				}
+				case MenuWidgetItemType::CheckItem:
+				{
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_CHECK);
+					break;
+				}
+				case MenuWidgetItemType::RadioItem:
+				{
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_RADIO);
+					break;
+				}
+				default:
+				{
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_NORMAL);
+					break;
+				}
+			};
+
+			item->SaveReference(item);
+			item->DoCreateWidget();
+			item->SetLabel(label);
+			item->SetItemID(id);
+
+			return item;
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IMenuWidgetItem> MenuWidget::GetDefaultItem() const
+	{
+		if (m_Menu)
+		{
+			auto id = ::GetMenuDefaultItem(m_Menu->GetHMenu(), FALSE, GMDI_GOINTOPOPUPS|GMDI_USEDISABLED);
+			if (id != std::numeric_limits<decltype(id)>::max())
+			{
+				if (auto item = m_Menu->FindItem(*WXUI::Menu::WinIDToWx(id)))
+				{
+					return FindByWXMenuItem(*item);
+				}
+			}
+		}
 		return nullptr;
 	}
 	Enumerator<std::shared_ptr<IMenuWidgetItem>> MenuWidget::EnumMenuItems() const

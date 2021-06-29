@@ -503,8 +503,11 @@
     <ClInclude Include="kxf\UI\Menus\Menu.h" />
     <ClInclude Include="kxf\UI\Menus\MenuItem.h" />
     <ClInclude Include="kxf\UI\Menus\MenuWidget.h" />
+    <ClInclude Include="kxf\UI\Menus\MenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\Menus\ShellMenu.h" />
     <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h" />
+    <ClInclude Include="kxf\UI\Menus\WXUI\Menu.h" />
+    <ClInclude Include="kxf\UI\Menus\WXUI\MenuItem.h" />
     <ClInclude Include="kxf\UI\Private\AnonymousNativeWindow.h" />
     <ClInclude Include="kxf\UI\Private\BasicDialogWidget.h" />
     <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h" />
@@ -950,7 +953,10 @@
     <ClCompile Include="kxf\UI\Menus\Menu.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuWidget.cpp" />
+    <ClCompile Include="kxf\UI\Menus\MenuWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp" />
+    <ClCompile Include="kxf\UI\Menus\WXUI\Menu.cpp" />
+    <ClCompile Include="kxf\UI\Menus\WXUI\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Private\AnonymousNativeWindow.cpp" />
     <ClCompile Include="kxf\UI\Private\BasicDialogWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp" />

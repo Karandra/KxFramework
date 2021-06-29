@@ -281,6 +281,9 @@
     <Filter Include="kxf\UI\Events">
       <UniqueIdentifier>{8e507d6e-0d9b-4f09-b274-a6878a4d71c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\UI\Menus\WXUI">
+      <UniqueIdentifier>{0aa287b3-3ebc-4774-b17c-e1e3202db0bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -2037,6 +2040,15 @@
     <ClInclude Include="kxf\UI\IWidgetEvent.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\MenuWidgetItem.h">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\WXUI\Menu.h">
+      <Filter>kxf\UI\Menus\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\WXUI\MenuItem.h">
+      <Filter>kxf\UI\Menus\WXUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3065,6 +3077,15 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp">
       <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\MenuWidgetItem.cpp">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\WXUI\Menu.cpp">
+      <Filter>kxf\UI\Menus\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\WXUI\MenuItem.cpp">
+      <Filter>kxf\UI\Menus\WXUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
