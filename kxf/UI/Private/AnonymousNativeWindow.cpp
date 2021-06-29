@@ -33,8 +33,6 @@ namespace kxf::Private
 				{
 					app->StoreCurrentException();
 					app->OnUnhandledException();
-
-					std::terminate();
 				}
 				else
 				{
@@ -72,9 +70,12 @@ namespace kxf::Private
 
 			if (m_WindowClass != 0)
 			{
+				constexpr FlagSet<DWORD> style = WS_MINIMIZE|WS_DISABLED;
+				constexpr FlagSet<DWORD> exStyle = WS_EX_TRANSPARENT;
 				const wchar_t* windowTitle = !title.IsEmpty() ? title.wc_str() : windowClass.lpszClassName;
-				if (m_Handle = ::CreateWindowExW(0, windowClass.lpszClassName, windowTitle, 0, -1, -1, 0, 0, nullptr, nullptr, windowClass.hInstance, nullptr))
+				if (m_Handle = ::CreateWindowExW(*exStyle, windowClass.lpszClassName, windowTitle, *style, -1, -1, 0, 0, nullptr, nullptr, windowClass.hInstance, nullptr))
 				{
+					::SendMessageW(reinterpret_cast<HWND>(m_Handle), WM_SETREDRAW, FALSE, 0);
 					::SetWindowLongPtrW(reinterpret_cast<HWND>(m_Handle), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 					return true;
 				}
