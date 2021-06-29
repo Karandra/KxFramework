@@ -1,11 +1,10 @@
 #pragma once
 #include "IEvtHandler.h"
-#include "kxf/General/Enumerator.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
 {
-	class KX_API EvtHandlerStack
+	class KX_API EvtHandlerStack final
 	{
 		public:
 			enum class Order
@@ -19,7 +18,7 @@ namespace kxf
 			IEvtHandler* m_Top = nullptr;
 
 		public:
-			EvtHandlerStack(IEvtHandler& first)
+			EvtHandlerStack(IEvtHandler& first) noexcept
 				:m_Base(&first), m_Top(&first)
 			{
 			}
@@ -28,51 +27,28 @@ namespace kxf
 				*this = std::move(other);
 			}
 			EvtHandlerStack(const EvtHandlerStack&) = delete;
-			virtual ~EvtHandlerStack() = default;
+			~EvtHandlerStack() = default;
 
 		public:
-			bool Push(IEvtHandler& evtHandler);
-			bool Remove(IEvtHandler& evtHandler);
-			IEvtHandler* Pop();
+			bool Push(IEvtHandler& evtHandler) noexcept;
+			bool Remove(IEvtHandler& evtHandler) noexcept;
+			IEvtHandler* Pop() noexcept;
 
-			IEvtHandler* GetBase() const
+			IEvtHandler* GetBase() const noexcept
 			{
 				return m_Base;
 			}
-			IEvtHandler* GetTop() const
+			IEvtHandler* GetTop() const noexcept
 			{
 				return m_Top;
 			}
-			bool HasChainedItems() const
+			bool HasChainedItems() const noexcept
 			{
 				return m_Base != m_Top;
 			}
 
-			size_t GetCount() const
-			{
-				return EnumItems(Order::LastToFirst).CalcTotalCount();
-			}
-			Enumerator<IEvtHandler&> EnumItems(Order order, bool chainedItemsOnly = false) const
-			{
-				return [item = order == Order::FirstToLast ? m_Base : m_Top, this, order, chainedItemsOnly]() mutable -> optional_ref<IEvtHandler>
-				{
-					if (item && (!chainedItemsOnly || item != m_Base))
-					{
-						auto result = item;
-						if (order == Order::FirstToLast)
-						{
-							item = item->GetPrevHandler();
-						}
-						else
-						{
-							item = item->GetNextHandler();
-						}
-
-						return *result;
-					}
-					return {};
-				};
-			}
+			size_t GetCount() const noexcept;
+			Enumerator<IEvtHandler&> EnumItems(Order order, bool chainedItemsOnly = false) const noexcept;
 
 		public:
 			EvtHandlerStack& operator=(EvtHandlerStack&& other) noexcept

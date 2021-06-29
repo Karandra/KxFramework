@@ -1,9 +1,10 @@
 #include "KxfPCH.h"
 #include "EventHandlerStack.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf
 {
-	bool EvtHandlerStack::Push(IEvtHandler& evtHandler)
+	bool EvtHandlerStack::Push(IEvtHandler& evtHandler) noexcept
 	{
 		// New handler can't be part of another chain
 		if (evtHandler.IsUnlinked())
@@ -16,7 +17,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandlerStack::Remove(IEvtHandler& evtHandler)
+	bool EvtHandlerStack::Remove(IEvtHandler& evtHandler) noexcept
 	{
 		// Short circuit for the last handler
 		if (&evtHandler == m_Top)
@@ -40,7 +41,7 @@ namespace kxf
 		}
 		return false;
 	}
-	IEvtHandler* EvtHandlerStack::Pop()
+	IEvtHandler* EvtHandlerStack::Pop() noexcept
 	{
 		// We need to pop the stack, i.e. we need to remove the latest added handler
 		IEvtHandler* topHandler = m_Top;
@@ -62,5 +63,31 @@ namespace kxf
 			}
 		}
 		return nullptr;
+	}
+
+	size_t EvtHandlerStack::GetCount() const noexcept
+	{
+		return EnumItems(Order::LastToFirst).CalcTotalCount();
+	}
+	Enumerator<IEvtHandler&> EvtHandlerStack::EnumItems(Order order, bool chainedItemsOnly) const noexcept
+	{
+		return [item = order == Order::FirstToLast ? m_Base : m_Top, this, order, chainedItemsOnly]() mutable -> optional_ref<IEvtHandler>
+		{
+			if (item && (!chainedItemsOnly || item != m_Base))
+			{
+				auto result = item;
+				if (order == Order::FirstToLast)
+				{
+					item = item->GetPrevHandler();
+				}
+				else
+				{
+					item = item->GetNextHandler();
+				}
+
+				return *result;
+			}
+			return {};
+		};
 	}
 }
