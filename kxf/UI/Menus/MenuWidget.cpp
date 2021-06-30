@@ -163,9 +163,20 @@ namespace kxf::Widgets
 							widget->QueryInterface(menuWidget);
 						}
 
-						MenuWidgetEvent event(*menuWidget, *item, m_InvokingWidget);
-						event.SetPopupPosition(m_InvokingPosition);
-						item->ProcessEvent(event, MenuWidgetEvent::EvtHover, ProcessEventFlag::HandleExceptions);
+						auto MakeEvent = [&]()
+						{
+							MenuWidgetEvent event(*menuWidget, *item, m_InvokingWidget);
+							event.SetPopupPosition(m_InvokingPosition);
+
+							return event;
+						};
+
+						auto event = MakeEvent();
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtHover, ProcessEventFlag::HandleExceptions))
+						{
+							event = MakeEvent();
+							ProcessEvent(event, MenuWidgetEvent::EvtHover, ProcessEventFlag::HandleExceptions);
+						}
 					}
 
 					result = TRUE;
@@ -173,18 +184,43 @@ namespace kxf::Widgets
 				}
 				break;
 			}
+			case WM_COMMAND:
 			case WM_MENUCOMMAND:
 			{
-				const auto index = static_cast<uint32_t>(wParam);
-				const auto handle = reinterpret_cast<HMENU>(lParam);
+				wxMenuItem* itemWX = nullptr;
+				if (msg == WM_COMMAND)
+				{
+					const auto id = LOWORD(wParam);
+					const auto cmd = HIWORD(wParam);
 
-				if (wxMenuItem* itemWX = m_Menu->FindItemByPosition(index))
+					itemWX = m_Menu->FindItem(*WXUI::Menu::WinIDToWx(id));
+				}
+				else
+				{
+					const auto index = static_cast<uint32_t>(wParam);
+					const auto handle = reinterpret_cast<HMENU>(lParam);
+
+					itemWX = m_Menu->FindItemByPosition(index);
+				}
+
+				if (itemWX)
 				{
 					if (auto item = FindByWXMenuItem(*itemWX))
 					{
-						MenuWidgetEvent event(*this, *item, m_InvokingWidget);
-						event.SetPopupPosition(m_InvokingPosition);
-						item->ProcessEvent(event, MenuWidgetEvent::EvtSelect, ProcessEventFlag::HandleExceptions);
+						auto MakeEvent = [&]()
+						{
+							MenuWidgetEvent event(*this, *item, m_InvokingWidget);
+							event.SetPopupPosition(m_InvokingPosition);
+
+							return event;
+						};
+
+						auto event = MakeEvent();
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtSelect, ProcessEventFlag::HandleExceptions))
+						{
+							event = MakeEvent();
+							ProcessEvent(event, MenuWidgetEvent::EvtSelect, ProcessEventFlag::HandleExceptions);
+						}
 					}
 
 					result = TRUE;
