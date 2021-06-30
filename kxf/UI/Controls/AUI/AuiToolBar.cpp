@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "AuiToolBar.h"
-#include "kxf/UI/Menus/Menu.h"
 #include <wx/wupdlock.h>
 #include <wx/dc.h>
 
@@ -27,12 +26,12 @@ namespace kxf::UI
 				if (type == wxEVT_AUITOOLBAR_RIGHT_CLICK)
 				{
 					type = AuiToolBarEvent::EvtItemRightClick;
-					canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnRightClick);
+					//canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnRightClick);
 				}
 				else if (type == wxEVT_AUITOOLBAR_MIDDLE_CLICK)
 				{
 					type = AuiToolBarEvent::EvtItemMiddleClick;
-					canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnMiddleClick);
+					//canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnMiddleClick);
 				}
 				else if (type == wxEVT_AUITOOLBAR_TOOL_DROPDOWN)
 				{
@@ -81,11 +80,10 @@ namespace kxf::UI
 				newEvent.SetToolId(item->GetID());
 				newEvent.SetInt(item->IsToggled());
 				newEvent.SetItem(item);
-
-				bool bProcessed = item->ProcessEvent(newEvent);
+				bool wasProcessed = item->ProcessEvent(newEvent);
 
 				// Handle dropdown menu
-				if (item->ContainsOption(AuiToolBarItemOption::MenuOnLeftClick) && item->HasDropdownMenu() && (!bProcessed || newEvent.GetSkipped()))
+				if (item->ContainsOption(AuiToolBarItemOption::MenuOnLeftClick) /*&& item->HasDropdownMenu()*/ && (!wasProcessed || newEvent.GetSkipped()))
 				{
 					item->ShowDropdownMenu();
 					item->Refresh();

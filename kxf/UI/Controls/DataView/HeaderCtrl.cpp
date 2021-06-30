@@ -5,7 +5,6 @@
 #include "Column.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/IRendererNative.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/Utility/System.h"
 #include "kxf/Utility/Drawing.h"
 
@@ -148,10 +147,12 @@ namespace kxf::UI::DataView
 			// Event wasn't processed somewhere, use default behavior
 			if (!SendCtrlEvent(ItemEvent::EvtColumnHeaderRClick, column).Processed && m_View)
 			{
+				/*
 				if (Menu menu; m_View->CreateColumnSelectionMenu(menu))
 				{
 					m_View->OnColumnSelectionMenu(menu);
 				}
+				*/
 			}
 		}
 	}

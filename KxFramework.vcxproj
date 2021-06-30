@@ -500,11 +500,14 @@
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\IWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Menus\Common.h" />
-    <ClInclude Include="kxf\UI\Menus\Menu.h" />
-    <ClInclude Include="kxf\UI\Menus\MenuItem.h" />
     <ClInclude Include="kxf\UI\Menus\MenuWidget.h" />
     <ClInclude Include="kxf\UI\Menus\MenuWidgetItem.h" />
-    <ClInclude Include="kxf\UI\Menus\ShellMenu.h" />
+    <ClInclude Include="kxf\UI\Menus\ShellMenu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h" />
     <ClInclude Include="kxf\UI\Menus\WXUI\Menu.h" />
     <ClInclude Include="kxf\UI\Menus\WXUI\MenuItem.h" />
@@ -693,7 +696,6 @@
     <ClInclude Include="kxf\UI\Validator.h" />
     <ClInclude Include="kxf\UI\WindowRefreshScheduler.h" />
     <ClInclude Include="kxf\UI\WindowUpdateLocker.h" />
-    <ClInclude Include="kxf\UI\WithDropdownMenu.h" />
     <ClInclude Include="kxf\Utility.hpp" />
     <ClInclude Include="kxf\Utility\ScopeGuard.h" />
     <ClInclude Include="kxf\Utility\Common.h" />
@@ -950,11 +952,14 @@
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />
-    <ClCompile Include="kxf\UI\Menus\Menu.cpp" />
-    <ClCompile Include="kxf\UI\Menus\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuWidget.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuWidgetItem.cpp" />
-    <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp" />
+    <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="kxf\UI\Menus\WXUI\Menu.cpp" />
     <ClCompile Include="kxf\UI\Menus\WXUI\MenuItem.cpp" />
     <ClCompile Include="kxf\UI\Private\AnonymousNativeWindow.cpp" />

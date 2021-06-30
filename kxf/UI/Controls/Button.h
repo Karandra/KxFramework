@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
-#include "kxf/UI/WithDropdownMenu.h"
 #include "kxf/wxWidgets/EventTagRef.h"
 #include <wx/renderer.h>
 #include <wx/anybutton.h>
@@ -28,7 +27,7 @@ namespace kxf
 
 namespace kxf::UI
 {
-	class KX_API Button: public WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>, public WithDropdownMenu
+	class KX_API Button: public WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>//, public WithDropdownMenu
 	{
 		public:
 			static constexpr FlagSet<ButtonStyle> DefaultStyle = ButtonStyle::None;

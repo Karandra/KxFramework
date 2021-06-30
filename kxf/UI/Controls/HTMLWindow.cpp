@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "HTMLWindow.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Localization/Common.h"
 #include <wx/clipbrd.h>
@@ -67,6 +66,7 @@ namespace kxf::UI
 	}
 	void HTMLWindow::CreateContextMenu(Menu& menu, const wxHtmlLinkInfo* link)
 	{
+		/*
 		auto MakeItem = [&menu](int id)
 		{
 			return menu.AddItem(id, Localization::GetStandardString(id));
@@ -107,9 +107,11 @@ namespace kxf::UI
 			MenuItem* item = MakeItem(wxID_SELECTALL);
 			item->Enable(!IsEmpty());
 		}
+		*/
 	}
 	void HTMLWindow::ExecuteContextMenu(Menu& menu, const wxHtmlLinkInfo* link)
 	{
+		/*
 		switch (menu.Show(this))
 		{
 			case wxID_COPY:
@@ -128,14 +130,16 @@ namespace kxf::UI
 				break;
 			}
 		};
+		*/
 	}
 
 	void HTMLWindow::OnContextMenu(wxContextMenuEvent& event)
 	{
+		/*
 		Menu menu;
 		CreateContextMenu(menu);
 		ExecuteContextMenu(menu);
-
+		*/
 		event.Skip();
 	}
 	void HTMLWindow::OnKey(wxKeyEvent& event)
@@ -168,9 +172,11 @@ namespace kxf::UI
 		const wxMouseEvent* event = link.GetEvent();
 		if (event && event->RightUp())
 		{
+			/*
 			Menu menu;
 			CreateContextMenu(menu, &link);
 			ExecuteContextMenu(menu, &link);
+			*/
 		}
 		else
 		{

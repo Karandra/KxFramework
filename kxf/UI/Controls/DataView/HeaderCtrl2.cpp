@@ -3,7 +3,6 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "Column.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/Utility/Common.h"
 #include <CommCtrl.h>
 
@@ -495,10 +494,12 @@ namespace kxf::UI::DataView
 			// Event wasn't processed somewhere, use default behavior
 			if (!SendCtrlEvent(ItemEvent::EvtColumnHeaderRClick, column).Processed && m_View)
 			{
+				/*
 				if (Menu menu; m_View->CreateColumnSelectionMenu(menu))
 				{
 					m_View->OnColumnSelectionMenu(menu);
 				}
+				*/
 			}
 		}
 	}

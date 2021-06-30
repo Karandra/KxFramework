@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/General/WithOptions.h"
-#include "kxf/UI/WithDropdownMenu.h"
 #include <wx/aui/auibar.h>
 
 namespace kxf::UI
@@ -26,7 +25,7 @@ namespace kxf
 
 namespace kxf::UI
 {
-	class KX_API AuiToolBarItem: public wxEvtHandler, public WithDropdownMenu, public WithOptions<AuiToolBarItemOption>
+	class KX_API AuiToolBarItem: public wxEvtHandler, public WithOptions<AuiToolBarItemOption>//, public WithDropdownMenu
 	{
 		friend class AuiToolBar;
 

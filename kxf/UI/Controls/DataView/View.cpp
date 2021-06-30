@@ -6,7 +6,6 @@
 #include "Column.h"
 #include "Renderer.h"
 #include "kxf/General/Format.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace
@@ -774,6 +773,7 @@ namespace kxf::UI::DataView
 	// Window
 	bool View::CreateColumnSelectionMenu(Menu& menu)
 	{
+		/*
 		size_t count = GetColumnCount();
 		for (size_t i = 0; i < count; i++)
 		{
@@ -790,9 +790,12 @@ namespace kxf::UI::DataView
 			menuItem->SetClientData(column);
 		}
 		return menu.GetMenuItemCount() != 0;
+		*/
+		return false;
 	}
 	Column* View::OnColumnSelectionMenu(Menu& menu)
 	{
+		/*
 		wxWindowID retID = menu.Show(this);
 		if (retID != wxID_NONE)
 		{
@@ -812,6 +815,8 @@ namespace kxf::UI::DataView
 			OnColumnChange(*column);
 			return column;
 		}
+		return nullptr;
+		*/
 		return nullptr;
 	}
 

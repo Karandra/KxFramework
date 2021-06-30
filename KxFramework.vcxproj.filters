@@ -806,12 +806,6 @@
     <ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h">
       <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Menus\MenuItem.h">
-      <Filter>kxf\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Menus\Menu.h">
-      <Filter>kxf\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Menus\ShellMenu.h">
       <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
@@ -990,9 +984,6 @@
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\WindowUpdateLocker.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\WithDropdownMenu.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h">
@@ -2345,12 +2336,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
       <Filter>kxf\UI\Dialogs\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Menus\MenuItem.cpp">
-      <Filter>kxf\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Menus\Menu.cpp">
-      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp">
       <Filter>kxf\UI\Menus</Filter>

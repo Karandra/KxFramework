@@ -2,7 +2,6 @@
 #include "AuiToolBarItem.h"
 #include "AuiToolBar.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/UI/Menus/Menu.h"
 
 namespace kxf::UI
 {
@@ -26,9 +25,10 @@ namespace kxf::UI
 	}
 	wxWindowID AuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
 	{
-		FlagSet<Alignment> alignment = Menu::DefaultAlignment;
+		FlagSet<Alignment> alignment;
 		Point pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
-		wxWindowID ret = GetDropdownMenu()->Show(m_ToolBar, pos, alignment);
+		//wxWindowID ret = GetDropdownMenu()->Show(m_ToolBar, pos, alignment);
+		wxWindowID ret = wxID_NONE;
 
 		// To make parent window respond to mouse events without clicking to window manually
 		m_ToolBar->GenerateMouseLeave();

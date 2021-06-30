@@ -4,7 +4,6 @@
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
-#include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/Private/System.h"
 #include <wx/toplevel.h>
@@ -150,6 +149,7 @@ namespace kxf::UI
 		const Point pos = Point(event.GetPosition());
 		if (m_IsSliptterEnabled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
 		{
+			/*
 			wxContextMenuEvent menuEvent(EvtMenu.ToWxTag(), this->GetId());
 			menuEvent.SetPosition(pos);
 			menuEvent.SetEventObject(this);
@@ -157,6 +157,7 @@ namespace kxf::UI
 			{
 				GetDropdownMenu()->ShowAsPopup(this, 1);
 			}
+			*/
 		}
 		else
 		{
