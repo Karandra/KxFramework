@@ -228,14 +228,13 @@ namespace kxf::Widgets
 	{
 		if (m_Menu)
 		{
-			// Move the object here to prevent calling this function again
-			// upon destructing the wxMenu object.
+			// Move the object here to prevent calling this function again upon destructing the wxMenu object.
 			auto menu = std::move(m_Menu);
 
 			m_NativeWindow.Destroy();
 			Private::DissociateWXObject(*menu);
 
-			if (releaseWX)
+			if (releaseWX || m_IsAttached)
 			{
 				static_cast<void>(menu.release());
 			}
@@ -381,29 +380,33 @@ namespace kxf::Widgets
 			if (auto menuItem = item.QueryInterface<MenuWidgetItem>())
 			{
 				menuItem->m_OwningMenu = m_WidgetReference;
-				m_Menu->Insert(index, menuItem->m_MenuItem.get());
+				m_Menu->Insert(std::clamp(index, 0_uz, m_Menu->GetMenuItemCount()), menuItem->m_MenuItem.get());
 
 				return menuItem->LockReference();
 			}
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertMenu(IMenuWidget& subMenu, size_t index)
+	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertMenu(IMenuWidget& subMenu, const String& label, WidgetID id, size_t index)
 	{
 		object_ptr<MenuWidget> menuWidget;
-		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_Attached)
+		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
-			menuWidget->m_Attached = true;
+			menuWidget->m_IsAttached = true;
 
+			// Create item
 			auto item = std::make_shared<MenuWidgetItem>();
-			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, *menuWidget->m_Menu);
+			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, menuWidget->LockMenuReference(), *menuWidget->m_Menu);
 			item->m_OwningMenu = m_WidgetReference;
 			item->SaveReference(item);
 			item->DoCreateWidget();
 
-			item->SetLabel(menuWidget->GetLabel(), WidgetTextFlag::WithMnemonics);
+			item->SetLabel(!label.IsEmpty() ? label : menuWidget->GetLabel(), WidgetTextFlag::WithMnemonics);
+			item->SetItemID(!id.IsNone() ? id : menuWidget->GetWidgetID());
 			item->SetDescription(menuWidget->GetDescription());
 
+			// Insert the menu
+			m_Menu->Insert(std::clamp(index, 0_uz, m_Menu->GetMenuItemCount()), item->m_MenuItem.get());
 			return item;
 		}
 		return nullptr;
@@ -418,22 +421,22 @@ namespace kxf::Widgets
 			{
 				case MenuWidgetItemType::Separator:
 				{
-					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_SEPARATOR);
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_SEPARATOR);
 					break;
 				}
 				case MenuWidgetItemType::CheckItem:
 				{
-					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_CHECK);
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_CHECK);
 					break;
 				}
 				case MenuWidgetItemType::RadioItem:
 				{
-					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_RADIO);
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_RADIO);
 					break;
 				}
 				default:
 				{
-					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(*item, wxITEM_NORMAL);
+					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_NORMAL);
 					break;
 				}
 			};

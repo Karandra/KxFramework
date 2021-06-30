@@ -48,6 +48,26 @@ namespace kxf
 
 			// Properties
 			virtual MenuWidgetItemType GetItemType() const = 0;
+			bool IsRegularItem() const
+			{
+				return GetItemType() == MenuWidgetItemType::Separator;
+			}
+			bool IsSeparatorItem() const
+			{
+				return GetItemType() == MenuWidgetItemType::Separator;
+			}
+			bool IsCheckItem() const
+			{
+				return GetItemType() == MenuWidgetItemType::CheckItem;
+			}
+			bool IsRadioItem() const
+			{
+				return GetItemType() == MenuWidgetItemType::RadioItem;
+			}
+			bool IsSubMenuItem() const
+			{
+				return GetItemType() == MenuWidgetItemType::SubMenu;
+			}
 
 			virtual String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const = 0;
 			virtual void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) = 0;

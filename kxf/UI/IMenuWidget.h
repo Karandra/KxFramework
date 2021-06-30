@@ -34,7 +34,7 @@ namespace kxf
 			virtual void SetDescription(const String& description) = 0;
 
 			virtual std::shared_ptr<IMenuWidgetItem> InsertItem(IMenuWidgetItem& item, size_t index = npos) = 0;
-			virtual std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, size_t index = npos) = 0;
+			virtual std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, const String& label = {}, WidgetID id = {}, size_t index = npos) = 0;
 
 			virtual std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, MenuWidgetItemType type = MenuWidgetItemType::Regular, WidgetID id = {}) = 0;
 			virtual std::shared_ptr<IMenuWidgetItem> GetDefaultItem() const = 0;
@@ -62,9 +62,9 @@ namespace kxf
 			{
 				return CreateAndInsert(MenuWidgetItemType::RadioItem, label, id, index);
 			}
-			std::shared_ptr<IMenuWidgetItem> InsertSeparator(const String& label, size_t index = npos)
+			std::shared_ptr<IMenuWidgetItem> InsertSeparator(size_t index = npos)
 			{
-				return CreateAndInsert(MenuWidgetItemType::Separator, label, {}, index);
+				return CreateAndInsert(MenuWidgetItemType::Separator, {}, {}, index);
 			}
 	};
 }

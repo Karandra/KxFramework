@@ -65,7 +65,7 @@ namespace kxf::Widgets
 	void MenuWidgetItem::SetSubMenu(IMenuWidget& subMenu)
 	{
 		object_ptr<MenuWidget> menuWidget;
-		if (m_MenuItem && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_Attached)
+		if (m_MenuItem && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
 			m_MenuItem->SetSubMenu(menuWidget->m_Menu.get());
 		}
@@ -128,7 +128,7 @@ namespace kxf::Widgets
 
 	String MenuWidgetItem::GetLabel(FlagSet<WidgetTextFlag> flags) const
 	{
-		if (m_MenuItem)
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
 		{
 			if (flags.Contains(WidgetTextFlag::WithMnemonics))
 			{
@@ -143,7 +143,7 @@ namespace kxf::Widgets
 	}
 	void MenuWidgetItem::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
 	{
-		if (m_MenuItem)
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
 		{
 			m_MenuItem->SetItemLabel(label);
 		}
@@ -151,7 +151,7 @@ namespace kxf::Widgets
 
 	String MenuWidgetItem::GetDescription() const
 	{
-		if (m_MenuItem)
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
 		{
 			return m_MenuItem->GetHelp();
 		}
@@ -159,7 +159,7 @@ namespace kxf::Widgets
 	}
 	void MenuWidgetItem::SetDescription(const String& description)
 	{
-		if (m_MenuItem)
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
 		{
 			m_MenuItem->SetHelp(description);
 		}
@@ -182,7 +182,10 @@ namespace kxf::Widgets
 	}
 	void MenuWidgetItem::SetItemID(WidgetID id)
 	{
-		m_ItemID = id;
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		{
+			m_ItemID = id;
+		}
 	}
 
 	BitmapImage MenuWidgetItem::GetItemIcon() const

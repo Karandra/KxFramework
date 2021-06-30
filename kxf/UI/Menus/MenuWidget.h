@@ -43,7 +43,7 @@ namespace kxf::Widgets
 			std::shared_ptr<IWidget> m_ParentWidget;
 			std::weak_ptr<IMenuWidget> m_WidgetReference;
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
-			bool m_Attached = false;
+			bool m_IsAttached = false;
 
 			// Invoking environment data
 			Private::AnonymousNativeWindow m_NativeWindow;
@@ -513,7 +513,7 @@ namespace kxf::Widgets
 
 			using IMenuWidget::InsertItem;
 			std::shared_ptr<IMenuWidgetItem> InsertItem(IMenuWidgetItem& item, size_t index = npos) override;
-			std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, size_t index = npos) override;
+			std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, const String& label = {}, WidgetID id = {}, size_t index = npos) override;
 
 			std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, MenuWidgetItemType type = MenuWidgetItemType::Regular, WidgetID id = {}) override;
 			std::shared_ptr<IMenuWidgetItem> GetDefaultItem() const override;
