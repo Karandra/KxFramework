@@ -5,6 +5,7 @@
 #include "kxf/System/Win32Error.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/IO/MemoryStream.h"
+#include <wx/nativewin.h>
 #include <Windows.h>
 
 namespace
@@ -21,6 +22,12 @@ namespace kxf::Private
 {
 	bool AnonymousNativeWindow::HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam) noexcept
 	{
+		if (msg == WM_DESTROY)
+		{
+			m_NativeWindow = nullptr;
+			m_Handle = nullptr;
+		}
+
 		if (m_HandleMessage)
 		{
 			try
@@ -42,6 +49,21 @@ namespace kxf::Private
 			}
 		}
 		return false;
+	}
+
+	AnonymousNativeWindow::AnonymousNativeWindow() noexcept = default;
+	AnonymousNativeWindow::~AnonymousNativeWindow() noexcept
+	{
+		Destroy();
+	}
+
+	wxWindow* AnonymousNativeWindow::GetWxWindow()
+	{
+		if (!m_NativeWindow && m_Handle)
+		{
+			m_NativeWindow = std::make_unique<wxNativeWindow>(nullptr, wxID_NONE, static_cast<HWND>(m_Handle));
+		}
+		return m_NativeWindow.get();
 	}
 
 	bool AnonymousNativeWindow::Create(decltype(m_HandleMessage) messageHandler, const String& title)
@@ -85,6 +107,8 @@ namespace kxf::Private
 	}
 	bool AnonymousNativeWindow::Destroy() noexcept
 	{
+		m_NativeWindow = nullptr;
+
 		bool destroyed = false;
 		if (m_Handle)
 		{
