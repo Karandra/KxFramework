@@ -10,6 +10,7 @@
 #include "kxf/Utility/Enumerator.h"
 #include <wx/menu.h>
 #include <wx/colour.h>
+#include <wx/msw/dc.h>
 #include <Windows.h>
 
 namespace
@@ -41,6 +42,7 @@ namespace kxf::Private
 		private:
 			Widgets::MenuWidget& m_Menu;
 			object_ptr<INativeWidget> m_NativeInvokingWidget;
+			wxWindow* m_InvokingWindowWX = nullptr;
 			Point m_InvokingPosition;
 
 		private:
@@ -67,7 +69,7 @@ namespace kxf::Private
 			}
 
 		public:
-			MenuWidgetGuard(Widgets::MenuWidget& menu, std::shared_ptr<IWidget> invokingWidget, Point invokingPosition)
+			MenuWidgetGuard(Widgets::MenuWidget& menu, std::shared_ptr<IWidget> invokingWidget, wxWindow* m_InvokingWindowWX, Point invokingPosition)
 				:m_Menu(menu), m_InvokingPosition(invokingPosition)
 			{
 				// Save invocation data
@@ -78,6 +80,7 @@ namespace kxf::Private
 				m_Menu.m_InvokingWidget = invokingWidget;
 				m_Menu.m_InvokingThread = Threading::GetCurrentThreadID();
 				m_Menu.m_InvokingPosition = invokingPosition;
+				m_Menu.m_Menu->SetInvokingWindow(m_InvokingWindowWX);
 
 				// Send open event
 				MenuWidgetEvent event(m_Menu, std::move(invokingWidget));
@@ -105,6 +108,7 @@ namespace kxf::Private
 				m_Menu.m_InvokingThread = 0;
 				m_Menu.m_InvokingWidget = nullptr;
 				m_Menu.m_InvokingPosition = Point::UnspecifiedPosition();
+				m_Menu.m_Menu->SetInvokingWindow(nullptr);
 
 				if (Threading::IsMainThread())
 				{
@@ -188,6 +192,47 @@ namespace kxf::Widgets
 				}
 				break;
 			}
+			case WM_MEASUREITEM:
+			{
+				auto id = static_cast<int>(wParam);
+				auto measureItem = reinterpret_cast<MEASUREITEMSTRUCT*>(lParam);
+				if (id == 0 && measureItem->CtlType == ODT_MENU)
+				{
+					if (auto menuItem = reinterpret_cast<wxMenuItem*>(measureItem->itemData))
+					{
+						Geometry::BasicSize<size_t> size;
+						bool handled = menuItem->OnMeasureItem(&size.Width(), &size.Height());
+
+						measureItem->itemWidth = static_cast<uint32_t>(size.GetWidth());
+						measureItem->itemHeight = static_cast<uint32_t>(size.GetHeight());
+
+						result = TRUE;
+						return handled;
+					}
+				}
+				break;
+			}
+			case WM_DRAWITEM:
+			{
+				auto id = static_cast<int>(wParam);
+				auto drawItem = reinterpret_cast<DRAWITEMSTRUCT*>(lParam);
+				if (id == 0 && drawItem->CtlType == ODT_MENU)
+				{
+					if (auto menuItem = reinterpret_cast<wxMenuItem*>(drawItem->itemData))
+					{
+						// Using 'wxDCTemp' to prevent the DC from being released
+						wxDCTemp dc(static_cast<HDC>(drawItem->hDC));
+						wxRect rect(drawItem->rcItem.left, drawItem->rcItem.top, drawItem->rcItem.right - drawItem->rcItem.left, drawItem->rcItem.bottom - drawItem->rcItem.top);
+
+						if (menuItem->OnDrawItem(dc, rect, static_cast<wxOwnerDrawn::wxODAction>(drawItem->itemAction), static_cast<wxOwnerDrawn::wxODStatus>(drawItem->itemState)))
+						{
+							result = TRUE;
+							return true;
+						}
+					}
+				}
+				break;
+			}
 			case WM_NEXTMENU:
 			case WM_MENUCHAR:
 			case WM_MENUDRAG:
@@ -210,7 +255,7 @@ namespace kxf::Widgets
 			{
 				return HandleMessage(result, msg, wParam, lParam);
 			});
-			if (m_NativeWindow.IsNull())
+			if (!m_NativeWindow)
 			{
 				return false;
 			}
@@ -220,7 +265,7 @@ namespace kxf::Widgets
 		flags.Add(TPM_LEFTBUTTON);
 		flags.Add(TPM_RECURSE);
 
-		Private::MenuWidgetGuard guard(*this, std::move(invokingWidget), screenPos);
+		Private::MenuWidgetGuard guard(*this, std::move(invokingWidget), m_NativeWindow.GetWxWindow(), screenPos);
 		return ::TrackPopupMenuEx(m_Menu->GetHMenu(), *flags, screenPos.GetX(), screenPos.GetY(), static_cast<HWND>(m_NativeWindow.GetHandle()), nullptr);
 	}
 

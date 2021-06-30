@@ -15,6 +15,7 @@ namespace kxf::Widgets
 	void MenuWidgetItem::DoCreateWidget()
 	{
 		MenuWidget::AssociateWXMenuItem(*m_MenuItem, *this);
+		//m_MenuItem->SetOwnerDrawn();
 	}
 	bool MenuWidgetItem::DoDestroyWidget(bool releaseWX)
 	{
