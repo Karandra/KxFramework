@@ -150,12 +150,6 @@ namespace kxf::UI
 		Static = wxBORDER_STATIC,
 		Theme = wxBORDER_THEME,
 	};
-	enum class LayoutDirection
-	{
-		Default = wxLayoutDirection::wxLayout_Default,
-		LeftToRight = wxLayoutDirection::wxLayout_LeftToRight,
-		RightToLeft = wxLayoutDirection::wxLayout_RightToLeft,
-	};
 }
 namespace kxf
 {

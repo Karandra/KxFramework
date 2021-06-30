@@ -17,7 +17,7 @@ namespace kxf
 
 		private:
 			wxWindow* m_TopWindow = nullptr;
-			UI::LayoutDirection m_LayoutDirection = UI::LayoutDirection::Default;
+			LayoutDirection m_LayoutDirection = LayoutDirection::Default;
 			ExitOnLastFrameDelete m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Later;
 			bool m_IsActive = true;
 
@@ -52,8 +52,8 @@ namespace kxf
 			bool IsActive() const override;
 			void SetActive(bool active = true, wxWindow* window = nullptr) override;
 
-			UI::LayoutDirection GetLayoutDirection() const override;
-			void SetLayoutDirection(UI::LayoutDirection direction) override;
+			LayoutDirection GetLayoutDirection() const override;
+			void SetLayoutDirection(LayoutDirection direction) override;
 
 			String GetNativeTheme() const override;
 			bool SetNativeTheme(const String& themeName) override;

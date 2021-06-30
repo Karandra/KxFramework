@@ -19,7 +19,7 @@ namespace
 
 namespace kxf::Private
 {
-	bool AnonymousNativeWindow::HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam)
+	bool AnonymousNativeWindow::HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam) noexcept
 	{
 		if (m_HandleMessage)
 		{
@@ -37,7 +37,7 @@ namespace kxf::Private
 				else
 				{
 					Log::FatalError(__FUNCTION__ ": Unhandled exception occurred");
-					throw;
+					std::terminate();
 				}
 			}
 		}

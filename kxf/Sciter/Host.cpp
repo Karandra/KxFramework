@@ -482,7 +482,7 @@ namespace kxf::Sciter
 		return GetRootElement().SetStyleAttribute("color", color);
 	}
 
-	UI::LayoutDirection Host::GetLayoutDirection() const
+	LayoutDirection Host::GetLayoutDirection() const
 	{
 		using namespace UI;
 
@@ -497,7 +497,7 @@ namespace kxf::Sciter
 		}
 		return LayoutDirection::Default;
 	}
-	void Host::SetLayoutDirection(UI::LayoutDirection value)
+	void Host::SetLayoutDirection(LayoutDirection value)
 	{
 		using namespace UI;
 

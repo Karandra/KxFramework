@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "IWidget.h"
+#include "Private/Common.h"
 
 namespace kxf
 {
@@ -7,7 +8,7 @@ namespace kxf
 	{
 		if (auto window = wxWindow::FindFocus())
 		{
-			return FindByWXObject(*window);
+			return Private::FindByWXObject(*window);
 		}
 		return nullptr;
 	}

@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "Common.h"
+#include "IWidget.h"
 #include <wx/event.h>
 #include <wx/object.h>
 #include <wx/window.h>

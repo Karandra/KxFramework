@@ -36,8 +36,8 @@ namespace kxf
 			virtual bool IsActive() const = 0;
 			virtual void SetActive(bool active = true, wxWindow* window = nullptr) = 0;
 
-			virtual UI::LayoutDirection GetLayoutDirection() const = 0;
-			virtual void SetLayoutDirection(UI::LayoutDirection direction) = 0;
+			virtual LayoutDirection GetLayoutDirection() const = 0;
+			virtual void SetLayoutDirection(LayoutDirection direction) = 0;
 
 			virtual String GetNativeTheme() const = 0;
 			virtual bool SetNativeTheme(const String& themeName) = 0;

@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "EventBroadcastProcessor.h"
 #include "kxf/General/Enumerator.h"
+#include "kxf/UI/IWidgetEvent.h"
 
 namespace kxf::EventSystem
 {
@@ -57,5 +58,14 @@ namespace kxf
 	{
 		event.Skip();
 		StopPropagation(event);
+	}
+
+	void EventBroadcastReceiver::StopPropagation(IEvent& event)
+	{
+		object_ptr<IWidgetEvent> commandEvent;
+		if (event.QueryInterface(commandEvent))
+		{
+			commandEvent->StopPropagation();
+		}
 	}
 }

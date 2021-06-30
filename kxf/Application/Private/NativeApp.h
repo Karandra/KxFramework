@@ -154,11 +154,11 @@ namespace kxf::Application::Private
 				{
 					switch (m_GUIApp->GetLayoutDirection())
 					{
-						case UI::LayoutDirection::LeftToRight:
+						case LayoutDirection::LeftToRight:
 						{
 							return wxLayoutDirection::wxLayout_LeftToRight;
 						}
-						case UI::LayoutDirection::RightToLeft:
+						case LayoutDirection::RightToLeft:
 						{
 							return wxLayoutDirection::wxLayout_RightToLeft;
 						}

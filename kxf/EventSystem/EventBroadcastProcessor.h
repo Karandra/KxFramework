@@ -108,14 +108,7 @@ namespace kxf
 			void PostProcessEvent(IEvent& event);
 			void FinalPostProcessEvent(IEvent& event);
 
-			void StopPropagation(IEvent& event)
-			{
-				object_ptr<IWidgetEvent> commandEvent;
-				if (event.QueryInterface(commandEvent))
-				{
-					commandEvent->StopPropagation();
-				}
-			}
+			void StopPropagation(IEvent& event);
 
 		protected:
 			IEvtHandler& GetEvtHandler()

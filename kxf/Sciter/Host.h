@@ -135,8 +135,8 @@ namespace kxf::Sciter
 			bool SetBackgroundColor(const Color& color);
 			bool SetForegroundColor(const Color& color);
 
-			UI::LayoutDirection GetLayoutDirection() const;
-			void SetLayoutDirection(UI::LayoutDirection value);
+			LayoutDirection GetLayoutDirection() const;
+			void SetLayoutDirection(LayoutDirection value);
 
 		public:
 			bool LoadHTML(const String& html, const FSPath& basePath = {});

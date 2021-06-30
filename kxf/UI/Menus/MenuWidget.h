@@ -142,10 +142,6 @@ namespace kxf::Widgets
 			{
 				m_EventHandlerStack.Push(evtHandler);
 			}
-			IEvtHandler* PopEventHandler() override
-			{
-				return m_EventHandlerStack.Pop();
-			}
 			bool RemoveEventHandler(IEvtHandler& evtHandler) override
 			{
 				if (&evtHandler != &m_EvtHandler)
@@ -153,6 +149,10 @@ namespace kxf::Widgets
 					return m_EventHandlerStack.Remove(evtHandler);
 				}
 				return false;
+			}
+			IEvtHandler* PopEventHandler() override
+			{
+				return m_EventHandlerStack.Pop();
 			}
 
 			// HiDPI support

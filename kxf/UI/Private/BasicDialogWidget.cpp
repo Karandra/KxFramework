@@ -34,7 +34,7 @@ namespace kxf::Private
 	}
 	void BasicDialogWidgetBase::SetAffirmativeID(WidgetID id)
 	{
-		GetWxWindow()->SetAffirmativeId(id);
+		GetWxWindow()->SetAffirmativeId(*id);
 	}
 
 	WidgetID BasicDialogWidgetBase::GetEscapeID() const

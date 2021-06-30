@@ -506,10 +506,8 @@ namespace kxf
 				m_DC->SetBackgroundMode(isTransparent ? wxBRUSHSTYLE_TRANSPARENT : wxBRUSHSTYLE_SOLID);
 			}
 
-			UI::LayoutDirection GetLayoutDirection() const
+			LayoutDirection GetLayoutDirection() const
 			{
-				using UI::LayoutDirection;
-
 				switch (m_DC->GetLayoutDirection())
 				{
 					case wxLayout_LeftToRight:
@@ -523,10 +521,8 @@ namespace kxf
 				};
 				return LayoutDirection::Default;
 			}
-			void SetLayoutDirection(UI::LayoutDirection layoutDirection)
+			void SetLayoutDirection(LayoutDirection layoutDirection)
 			{
-				using UI::LayoutDirection;
-
 				switch (layoutDirection)
 				{
 					case LayoutDirection::LeftToRight:

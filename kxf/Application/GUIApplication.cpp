@@ -169,10 +169,8 @@ namespace kxf
 		}
 	}
 
-	UI::LayoutDirection GUIApplication::GetLayoutDirection() const
+	LayoutDirection GUIApplication::GetLayoutDirection() const
 	{
-		using namespace UI;
-
 		if (m_LayoutDirection != LayoutDirection::Default)
 		{
 			return m_LayoutDirection;
@@ -204,12 +202,10 @@ namespace kxf
 		// We don't know
 		return LayoutDirection::Default;
 	}
-	void GUIApplication::SetLayoutDirection(UI::LayoutDirection direction)
+	void GUIApplication::SetLayoutDirection(LayoutDirection direction)
 	{
-		using namespace UI;
-
 		m_LayoutDirection = direction;
-		::SetProcessDefaultLayout(direction ==LayoutDirection::RightToLeft ? LAYOUT_RTL : 0);
+		::SetProcessDefaultLayout(direction == LayoutDirection::RightToLeft ? LAYOUT_RTL : 0);
 	}
 
 	String GUIApplication::GetNativeTheme() const
