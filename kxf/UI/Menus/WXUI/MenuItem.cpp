@@ -2,32 +2,50 @@
 #include "MenuItem.h"
 #include "../MenuWidget.h"
 #include "../MenuWidgetItem.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
+#include "kxf/System/SystemInformation.h"
+#include "kxf/Utility/Common.h"
 
 namespace kxf::WXUI
 {
 	bool MenuItem::OnMeasureItem(size_t* width, size_t* height)
 	{
-		const bool result = wxMenuItem::OnMeasureItem(width, height);
-		return result;
+		Geometry::BasicSize<size_t> defaultSize;
+		wxMenuItem::OnMeasureItem(&defaultSize.Width(), &defaultSize.Height());
+		Utility::SetIfNotNull(width, defaultSize.GetWidth());
+		Utility::SetIfNotNull(height, defaultSize.GetHeight());
 
-		if (const wxWindow* window = GetWindow())
+		auto size = m_Item->OnMeasureItem(defaultSize);
+		if (size.GetWidth() != Geometry::DefaultCoord)
 		{
-			if (!IsSeparator())
-			{
-				if (height)
-				{
-					const wxBitmap& bitmap = GetBitmap(IsChecked());
-					const int margin = window->FromDIP(Size(wxDefaultCoord, 6)).GetHeight();
-
-					*height = std::max({(int)*height, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y) + margin, bitmap.GetHeight() + margin});
-				}
-			}
+			Utility::SetIfNotNull(width, size.GetWidth());
 		}
-		return result;
+		if (size.GetHeight() != Geometry::DefaultCoord)
+		{
+			Utility::SetIfNotNull(height, size.GetHeight());
+		}
+		return true;
 	}
 	bool MenuItem::OnDrawItem(wxDC& dc, const wxRect& rect, wxODAction action, wxODStatus status)
 	{
-		return wxMenuItem::OnDrawItem(dc, rect, action, status);
+		//return wxMenuItem::OnDrawItem(dc, rect, action, status);
+
+		FlagSet<NativeWidgetFlag> flags;
+		flags.Add(NativeWidgetFlag::Selected, status & wxODStatus::wxODSelected);
+		flags.Add(NativeWidgetFlag::Disabled, status & wxODStatus::wxODGrayed);
+		flags.Add(NativeWidgetFlag::Disabled, status & wxODStatus::wxODDisabled);
+		flags.Add(NativeWidgetFlag::Checked, status & wxODStatus::wxODChecked);
+		flags.Add(NativeWidgetFlag::Focused, status & wxODStatus::wxODHasFocus);
+		flags.Add(NativeWidgetFlag::DefaultItem, status & wxODStatus::wxODDefault);
+
+		auto renderer = m_Item->m_OwningMenu.lock()->m_Renderer;
+
+		auto texture = renderer->CreateTexture(Size(rect.GetSize()), Drawing::GetStockColor(StockColor::Transparent));
+		auto gc = renderer->CreateContext(texture, GetWindow());
+		m_Item->OnDrawItem(std::move(gc), Rect(rect.GetSize()), flags);
+
+		dc.DrawBitmap(texture->ToBitmapImage().ToGDIBitmap().ToWxBitmap(), rect.GetPosition());
+		return true;
 	}
 
 	MenuItem::MenuItem(std::shared_ptr<Widgets::MenuWidgetItem> item, std::shared_ptr<IMenuWidget> subMenuRef, wxMenu& subMenu) noexcept

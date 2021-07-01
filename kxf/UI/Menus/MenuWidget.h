@@ -17,6 +17,7 @@ namespace kxf::Private
 namespace kxf::WXUI
 {
 	class Menu;
+	class MenuItem;
 }
 
 namespace kxf::Widgets
@@ -29,6 +30,7 @@ namespace kxf::Widgets
 		friend class BasicEvtHandler<MenuWidget, IMenuWidget>;
 		friend class Private::MenuWidgetGuard;
 		friend class WXUI::Menu;
+		friend class WXUI::MenuItem;
 
 		private:
 			static void AssociateWXMenuItem(wxMenuItem& wx, IMenuWidgetItem& item) noexcept;
@@ -41,7 +43,7 @@ namespace kxf::Widgets
 
 			std::unique_ptr<WXUI::Menu> m_Menu;
 			std::shared_ptr<IWidget> m_ParentWidget;
-			std::weak_ptr<IMenuWidget> m_WidgetReference;
+			std::weak_ptr<MenuWidget> m_WidgetReference;
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
 			bool m_IsAttached = false;
 
@@ -104,7 +106,7 @@ namespace kxf::Widgets
 			// IWidget
 			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
 			{
-				m_WidgetReference = std::static_pointer_cast<IMenuWidget>(ref.lock());
+				m_WidgetReference = std::static_pointer_cast<MenuWidget>(ref.lock());
 			}
 
 		public:

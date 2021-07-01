@@ -3,14 +3,23 @@
 #include "../IMenuWidget.h"
 #include "../IMenuWidgetItem.h"
 #include "kxf/General/Enumerator.h"
+#include "kxf/Drawing/IRendererNative.h"
 #include "kxf/EventSystem/BasicEvtHandler.h"
 #include "kxf/EventSystem/EventHandlerStack.h"
 class wxMenu;
 class wxMenuItem;
 
+namespace kxf
+{
+	class IGraphicsContext;
+}
 namespace kxf::WXUI
 {
 	class MenuItem;
+}
+namespace kxf::Widgets
+{
+	class MenuWidget;
 }
 
 namespace kxf::Widgets
@@ -26,11 +35,12 @@ namespace kxf::Widgets
 		private:
 			EvtHandler m_EvtHandler;
 			std::unique_ptr<WXUI::MenuItem> m_MenuItem;
-			std::weak_ptr<IMenuWidget> m_OwningMenu;
+			std::weak_ptr<MenuWidget> m_OwningMenu;
 			std::weak_ptr<IMenuWidgetItem> m_WidgetReference;
 
 			// Options
 			WidgetID m_ItemID;
+			BitmapImage m_Icon;
 
 		private:
 			EvtHandler& GetThisEvtHandler() noexcept
@@ -55,6 +65,13 @@ namespace kxf::Widgets
 			bool DoDestroyWidget(bool releaseWX = false);
 			void OnWXMenuDestroyed();
 
+			bool IsFirstItem() const;
+			bool IsLastItem() const;
+
+		private:
+			Size OnMeasureItem(Size size) const;
+			void OnDrawItem(std::shared_ptr<IGraphicsContext> gc, RectF rect, FlagSet<NativeWidgetFlag> flags);
+
 		protected:
 			// IMenuWidgetItem
 			void SaveReference(std::weak_ptr<IMenuWidgetItem> ref) noexcept override
@@ -76,10 +93,7 @@ namespace kxf::Widgets
 			}
 
 			// General
-			std::shared_ptr<IMenuWidget> GetOwningMenu() const override
-			{
-				return m_OwningMenu.lock();
-			}
+			std::shared_ptr<IMenuWidget> GetOwningMenu() const override;
 
 			std::shared_ptr<IMenuWidget> GetSubMenu() const override;
 			void SetSubMenu(IMenuWidget& subMenu) override;

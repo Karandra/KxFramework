@@ -334,6 +334,7 @@ namespace kxf::Widgets
 		:m_EventHandlerStack(m_EvtHandler), m_Menu(std::make_unique<WXUI::Menu>(*this))
 	{
 		Private::AssociateWXObject(*m_Menu, *this);
+		m_Renderer = Drawing::GetDefaultRenderer();
 	}
 	MenuWidget::~MenuWidget()
 	{
