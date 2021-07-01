@@ -100,7 +100,7 @@ namespace kxf::Geometry
 				}
 				if (m_Y == DefaultCoord)
 				{
-					m_X = other.m_X;
+					m_Y = other.m_Y;
 				}
 				return Self();
 			}
