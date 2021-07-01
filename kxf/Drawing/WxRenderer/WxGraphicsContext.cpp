@@ -40,7 +40,8 @@ namespace kxf
 		}
 	}
 
-	WxGraphicsContext::ChangeDrawParameters::ChangeDrawParameters(WxGraphicsContext& gc, const IGraphicsBrush& brush, const IGraphicsPen& pen):m_Context(*gc.m_Context)
+	WxGraphicsContext::ChangeDrawParameters::ChangeDrawParameters(WxGraphicsContext& gc, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+		:m_Context(*gc.m_Context)
 	{
 		const bool canUseNullPen = gc.GetRenderer().CanUseNullPen();
 
@@ -61,8 +62,8 @@ namespace kxf
 
 			if (!pen && !canUseNullPen)
 			{
-				const GDIBrush& brushGDI = gc.m_CurrentBrush->QueryInterface<WxGraphicsBrush>()->GetBrush();
-				m_Context.SetPen(m_Context.CreatePen(brushGDI.GetColor()));
+				auto color = brush.QueryInterface<IGraphicsSolidBrush>()->GetColor();
+				m_Context.SetPen(m_Context.CreatePen(color));
 			}
 			else
 			{
