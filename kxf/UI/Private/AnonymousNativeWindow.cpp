@@ -7,6 +7,7 @@
 #include "kxf/IO/MemoryStream.h"
 #include <wx/nativewin.h>
 #include <Windows.h>
+#include <UxTheme.h>
 
 namespace
 {
@@ -61,7 +62,7 @@ namespace kxf::Private
 	{
 		if (!m_NativeWindow && m_Handle)
 		{
-			m_NativeWindow = std::make_unique<wxNativeWindow>(nullptr, wxID_NONE, static_cast<HWND>(m_Handle));
+			m_NativeWindow = std::make_unique<wxNativeContainerWindow>(static_cast<HWND>(m_Handle));
 		}
 		return m_NativeWindow.get();
 	}
@@ -76,6 +77,7 @@ namespace kxf::Private
 			windowClass.cbSize = sizeof(windowClass);
 			windowClass.lpszClassName = g_WindowClassName;
 			windowClass.hInstance = GetCurrentModule();
+			windowClass.hbrBackground = static_cast<HBRUSH>(::GetStockObject(GRAY_BRUSH));
 			windowClass.lpfnWndProc = [](HWND handle, UINT msg, WPARAM wParam, LPARAM lParam) -> LRESULT
 			{
 				if (auto window = reinterpret_cast<AnonymousNativeWindow*>(::GetWindowLongPtrW(handle, GWLP_USERDATA)))
@@ -95,10 +97,12 @@ namespace kxf::Private
 				constexpr FlagSet<DWORD> style = WS_MINIMIZE|WS_DISABLED;
 				constexpr FlagSet<DWORD> exStyle = WS_EX_TRANSPARENT;
 				const wchar_t* windowTitle = !title.IsEmpty() ? title.wc_str() : windowClass.lpszClassName;
-				if (m_Handle = ::CreateWindowExW(*exStyle, windowClass.lpszClassName, windowTitle, *style, -1, -1, 0, 0, nullptr, nullptr, windowClass.hInstance, nullptr))
+				if (m_Handle = ::CreateWindowExW(*exStyle, windowClass.lpszClassName, windowTitle, *style, 100, 100, 512, 256, nullptr, nullptr, windowClass.hInstance, nullptr))
 				{
 					::SendMessageW(reinterpret_cast<HWND>(m_Handle), WM_SETREDRAW, FALSE, 0);
+					::SetWindowTheme(reinterpret_cast<HWND>(m_Handle), L"Explorer", nullptr);
 					::SetWindowLongPtrW(reinterpret_cast<HWND>(m_Handle), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+
 					return true;
 				}
 			}
