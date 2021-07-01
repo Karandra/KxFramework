@@ -66,11 +66,11 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateGDIContext(wxDC& dc)
+	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
 	{
 		if (dc.IsOk())
 		{
-			return std::make_unique<WxGraphicsGDIContext>(*this, dc);
+			return std::make_unique<WxGraphicsGDIContext>(*this, dc, size);
 		}
 		return nullptr;
 	}

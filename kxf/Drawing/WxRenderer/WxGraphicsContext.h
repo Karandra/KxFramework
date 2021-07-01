@@ -332,16 +332,16 @@ namespace kxf
 			BitmapImage* m_Image = nullptr;
 
 		protected:
-			void Initialize(WxGraphicsRenderer& rendrer, wxDC& dc);
+			void Initialize(WxGraphicsRenderer& rendrer, wxDC& dc, const Size& size);
 
 			bool FlushContent();
 			void ResetContext();
 
 		public:
 			WxGraphicsGDIContext() noexcept = default;
-			WxGraphicsGDIContext(WxGraphicsRenderer& rendrer, wxDC& dc)
+			WxGraphicsGDIContext(WxGraphicsRenderer& rendrer, wxDC& dc, const Size& size)
 			{
-				Initialize(rendrer, dc);
+				Initialize(rendrer, dc, size);
 			}
 			~WxGraphicsGDIContext()
 			{
@@ -501,7 +501,7 @@ namespace kxf
 				WxGraphicsBasicGDIContext_ImageBuffered(WxGraphicsRenderer& rendrer, wxWindow& window)
 					:m_DC(&window)
 				{
-					Initialize(rendrer, m_DC);
+					Initialize(rendrer, m_DC, window.GetClientRect());
 
 					WxGraphicsContext::CopyAttributesFromDC(m_DC);
 					WxGraphicsContext::SetupGC();

@@ -35,7 +35,7 @@ namespace kxf
 			Version GetVersion() const override;
 
 			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override;
-			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) override;
+			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override;
 			std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) override;
 			std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) override;
 			std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) override;

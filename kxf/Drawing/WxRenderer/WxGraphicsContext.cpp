@@ -886,11 +886,16 @@ namespace kxf
 
 namespace kxf
 {
-	void WxGraphicsGDIContext::Initialize(WxGraphicsRenderer& rendrer, wxDC& dc)
+	void WxGraphicsGDIContext::Initialize(WxGraphicsRenderer& rendrer, wxDC& dc, const Size& size)
 	{
 		m_DC = dc;
 
-		m_Image = &InitTextureBuffer(m_Renderer->CreateTexture(Size(dc.GetSize()), Drawing::GetStockColor(StockColor::Transparent)));
+		Size dcSize = Size(dc.GetSize());
+		dcSize.SetDefaults(size);
+
+		auto texture = rendrer.CreateTexture(dcSize, Drawing::GetStockColor(StockColor::Transparent));
+		m_Image = &InitTextureBuffer(std::move(texture));
+
 		WxGraphicsContext::Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image->ToWxImage())));
 	}
 

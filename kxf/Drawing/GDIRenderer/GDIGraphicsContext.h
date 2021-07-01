@@ -48,7 +48,7 @@ namespace kxf
 			}
 
 		protected:
-			void SetupDC(wxWindow* window = nullptr);
+			void SetupDC(wxWindow* window = nullptr, const Size& size = Size::UnspecifiedSize());
 
 		public:
 			GDIGraphicsContext() noexcept = default;
@@ -328,10 +328,10 @@ namespace kxf
 	{
 		public:
 			GDIGraphicsAnyContext() noexcept = default;
-			GDIGraphicsAnyContext(GDIGraphicsRenderer& rendrer, wxDC& dc)
+			GDIGraphicsAnyContext(GDIGraphicsRenderer& rendrer, wxDC& dc, const Size& size)
 				:GDIGraphicsContext(rendrer, dc)
 			{
-				SetupDC();
+				SetupDC(nullptr, size);
 			}
 
 		public:

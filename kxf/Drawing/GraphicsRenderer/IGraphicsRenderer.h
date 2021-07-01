@@ -37,7 +37,7 @@ namespace kxf
 			virtual Version GetVersion() const = 0;
 
 			virtual std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) = 0;
+			virtual std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) = 0;

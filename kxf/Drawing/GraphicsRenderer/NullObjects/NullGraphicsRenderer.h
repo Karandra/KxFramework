@@ -27,7 +27,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) override
+			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override
 			{
 				return nullptr;
 			}

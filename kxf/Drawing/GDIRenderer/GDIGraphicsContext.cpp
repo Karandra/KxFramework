@@ -129,7 +129,7 @@ namespace
 
 namespace kxf
 {
-	void GDIGraphicsContext::SetupDC(wxWindow* window)
+	void GDIGraphicsContext::SetupDC(wxWindow* window, const Size& size)
 	{
 		if (m_DC)
 		{
