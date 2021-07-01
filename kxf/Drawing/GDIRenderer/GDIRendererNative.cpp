@@ -109,7 +109,15 @@ namespace kxf
 	void GDIRendererNative::DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
 	{
 		CalcBoundingBox calcBoudingBox(dc, rect);
-		return GetRenderer().DrawCheckBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+
+		if (widgetFlags.Contains(NativeWidgetFlag::Radio))
+		{
+			return GetRenderer().DrawRadioBitmap(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+		}
+		else
+		{
+			return GetRenderer().DrawCheckBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+		}
 	}
 
 	// Drop arrow for ComboBox
