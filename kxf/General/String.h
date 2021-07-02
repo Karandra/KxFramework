@@ -294,10 +294,7 @@ namespace kxf
 			String(wxString&& other) noexcept;
 
 			// Char/wchar_t pointers
-			String(const char* data, size_t length = npos)
-				:String(FromUTF8(data, CalcStringLength(data, length)))
-			{
-			}
+			String(const char* data, size_t length = npos);
 			String(const char8_t* data, size_t length = npos)
 				:String(FromUTF8(data, CalcStringLength(data, length)))
 			{
@@ -308,10 +305,7 @@ namespace kxf
 			}
 			
 			// std::[w]string[_view]
-			String(const std::string& other)
-				:String(FromUTF8(other))
-			{
-			}
+			String(const std::string& other);
 			String(const std::wstring& other)
 				:m_String(other)
 			{
@@ -321,11 +315,8 @@ namespace kxf
 			{
 			}
 
-			String(std::string_view other)
-				:String(FromUTF8(other))
-			{
-			}
-			String(std::basic_string_view<XChar> other)
+			String(std::string_view other);
+			String(std::wstring_view other)
 				:m_String(other.data(), other.length())
 			{
 			}
@@ -427,13 +418,7 @@ namespace kxf
 
 			// Concatenation
 		private:
-			String& DoAppend(std::string_view other)
-			{
-				auto converted = FromUTF8(other);
-				m_String.append(converted.wc_view());
-
-				return *this;
-			}
+			String& DoAppend(std::string_view other);
 			String& DoAppend(std::wstring_view other)
 			{
 				m_String.append(other);
@@ -465,13 +450,7 @@ namespace kxf
 			}
 
 		private:
-			String& DoPrepend(std::string_view other)
-			{
-				auto converted = FromUTF8(other);
-				m_String.insert(0, converted.wc_view());
-
-				return *this;
-			}
+			String& DoPrepend(std::string_view other);
 			String& DoPrepend(std::wstring_view other)
 			{
 				m_String.insert(0, other.data(), other.length());
@@ -497,13 +476,7 @@ namespace kxf
 			}
 
 		private:
-			String& DoInsert(size_t pos, std::string_view other)
-			{
-				auto converted = FromUTF8(other);
-				m_String.insert(pos, converted.wc_view());
-
-				return *this;
-			}
+			String& DoInsert(size_t pos, std::string_view other);
 			String& DoInsert(size_t pos, std::wstring_view other)
 			{
 				m_String.insert(pos, other);
@@ -737,16 +710,8 @@ namespace kxf
 
 		private:
 			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
-			size_t DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {})
-			{
-				auto patternConverted = FromUTF8(pattern);
-				return DoReplace(patternConverted.wc_view(), replacement, offset, flags);
-			}
-			size_t DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {})
-			{
-				auto replacementConverted = FromUTF8(replacement);
-				return DoReplace(pattern, replacementConverted.wc_view(), offset, flags);
-			}
+			size_t DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
+			size_t DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
 			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
 			size_t DoReplace(UniChar c, UniChar replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept;
 			size_t DoReplace(UniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
@@ -787,13 +752,7 @@ namespace kxf
 				m_String.replace(offset, length, replacement.wc_view());
 				return *this;
 			}
-			String& ReplaceRange(size_t offset, size_t length, std::string_view replacement)
-			{
-				auto converted = FromUTF8(replacement);
-				m_String.replace(offset, length, converted.wc_view());
-
-				return *this;
-			}
+			String& ReplaceRange(size_t offset, size_t length, std::string_view replacement);
 			String& ReplaceRange(size_t offset, size_t length, std::wstring_view replacement)
 			{
 				m_String.replace(offset, length, replacement);
@@ -805,13 +764,7 @@ namespace kxf
 				m_String.replace(first, last, replacement.wc_view());
 				return *this;
 			}
-			String& ReplaceRange(iterator first, iterator last, std::string_view replacement)
-			{
-				auto converted = FromUTF8(replacement);
-				m_String.replace(first, last, converted.wc_view());
-
-				return *this;
-			}
+			String& ReplaceRange(iterator first, iterator last, std::string_view replacement);
 			String& ReplaceRange(iterator first, iterator last, std::wstring_view replacement)
 			{
 				m_String.replace(first, last, replacement);

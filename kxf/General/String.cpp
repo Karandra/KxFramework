@@ -305,6 +305,11 @@ namespace
 		}
 		return false;
 	}
+
+	kxf::String FromUnknownEncoding(std::string_view source)
+	{
+		return kxf::EncodingConverter_WhateverWorks.ToWideChar(source);
+	}
 }
 
 namespace kxf
@@ -315,7 +320,6 @@ namespace kxf
 	{
 		return {string.xc_str(), string.length()};
 	}
-
 	std::basic_string_view<XChar> StringViewOf(const wxString& string) noexcept
 	{
 		return {string.wx_str(), string.length()};
@@ -435,7 +439,7 @@ namespace kxf
 	// Comparison
 	bool String::DoStartsWith(std::string_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromUTF8(pattern);
+		String patternCopy = FromUnknownEncoding(pattern);
 		return StartsWith(patternCopy, rest, flags);
 	}
 	bool String::DoStartsWith(std::wstring_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
@@ -460,7 +464,7 @@ namespace kxf
 	
 	bool String::DoEndsWith(std::string_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromUTF8(pattern);
+		String patternCopy = FromUnknownEncoding(pattern);
 		return EndsWith(patternCopy, rest, flags);
 	}
 	bool String::DoEndsWith(std::wstring_view pattern, String* rest, FlagSet<StringActionFlag> flags) const
@@ -492,6 +496,19 @@ namespace kxf
 		Private::MoveWxString(m_String, std::move(other));
 	}
 
+	String::String(const char* data, size_t length)
+		:String(EncodingConverter_WhateverWorks.ToWideChar(data, length))
+	{
+	}
+	String::String(const std::string& other)
+		:String(EncodingConverter_WhateverWorks.ToWideChar(other))
+	{
+	}
+	String::String(std::string_view other)
+		:String(EncodingConverter_WhateverWorks.ToWideChar(other))
+	{
+	}
+
 	// Conversions
 	std::string String::ToASCII(char replaceWith) const
 	{
@@ -503,6 +520,29 @@ namespace kxf
 			ascii += c.ToASCII().value_or(replaceWith);
 		}
 		return ascii;
+	}
+
+	// Concatenation
+	String& String::DoAppend(std::string_view other)
+	{
+		auto converted = FromUnknownEncoding(other);
+		m_String.append(converted.wc_view());
+
+		return *this;
+	}
+	String& String::DoPrepend(std::string_view other)
+	{
+		auto converted = FromUnknownEncoding(other);
+		m_String.insert(0, converted.wc_view());
+
+		return *this;
+	}
+	String& String::DoInsert(size_t pos, std::string_view other)
+	{
+		auto converted = FromUnknownEncoding(other);
+		m_String.insert(pos, converted.wc_view());
+
+		return *this;
 	}
 
 	// Substring extraction
@@ -595,7 +635,7 @@ namespace kxf
 	// Searching and replacing
 	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
 	{
-		String patternCopy = FromUTF8(pattern);
+		String patternCopy = FromUnknownEncoding(pattern);
 		return DoFind(StringViewOf(patternCopy), offset, flags);
 	}
 	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
@@ -662,9 +702,19 @@ namespace kxf
 
 	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
 	{
-		String patternCopy = FromUTF8(pattern);
-		String replacementCopy = FromUTF8(replacement);
+		String patternCopy = FromUnknownEncoding(pattern);
+		String replacementCopy = FromUnknownEncoding(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
+	}
+	size_t String::DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	{
+		auto patternConverted = FromUnknownEncoding(pattern);
+		return DoReplace(patternConverted.wc_view(), replacement, offset, flags);
+	}
+	size_t String::DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	{
+		auto replacementConverted = FromUnknownEncoding(replacement);
+		return DoReplace(pattern, replacementConverted.wc_view(), offset, flags);
 	}
 	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
 	{
@@ -783,6 +833,21 @@ namespace kxf
 			}
 		}
 		return replacementCount;
+	}
+
+	String& String::ReplaceRange(size_t offset, size_t length, std::string_view replacement)
+	{
+		auto converted = FromUnknownEncoding(replacement);
+		m_String.replace(offset, length, converted.wc_view());
+
+		return *this;
+	}
+	String& String::ReplaceRange(iterator first, iterator last, std::string_view replacement)
+	{
+		auto converted = FromUnknownEncoding(replacement);
+		m_String.replace(first, last, converted.wc_view());
+
+		return *this;
 	}
 
 	bool String::DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringActionFlag> flags) const noexcept
