@@ -58,14 +58,13 @@ namespace kxf::Widgets
 		return false;
 	}
 
-	Size MenuWidgetItem::OnMeasureItem(Size size) const
+	SizeF MenuWidgetItem::OnMeasureItem(SizeF size) const
 	{
 		if (const wxWindow* window = m_MenuItem->GetWindow())
 		{
 			if (m_MenuItem->IsSeparator())
 			{
 				size.SetHeight(window->FromDIP(5));
-				return size;
 			}
 			else
 			{
@@ -77,8 +76,18 @@ namespace kxf::Widgets
 				{
 					size.Height() += window->FromDIP(4);
 				}
-				return size;
 			}
+
+			// Restrict max width
+			if (auto menu = m_OwningMenu.lock())
+			{
+				int maxWidth = menu->m_MaxSize.GetWidth();
+				if (maxWidth != Geometry::DefaultCoord && size.GetWidth() > maxWidth)
+				{
+					size.SetWidth(maxWidth);
+				}
+			}
+			return size;
 		}
 		return Size::UnspecifiedSize();
 	}
@@ -86,11 +95,12 @@ namespace kxf::Widgets
 	{
 		if (wxWindow* window = m_MenuItem->GetWindow())
 		{
+			auto owningMenu = m_OwningMenu.lock();
 			gc->SetAntialiasMode(AntialiasMode::None);
 			gc->SetTextAntialiasMode(AntialiasMode::BestAvailable);
 			gc->SetInterpolationQuality(InterpolationQuality::BestAvailable);
 
-			auto backgroundBrush = gc->GetRenderer().CreateSolidBrush(System::GetColor(SystemColor::Menu));
+			auto backgroundBrush = gc->GetRenderer().CreateSolidBrush(owningMenu->m_ColorBackground ? owningMenu->m_ColorBackground : System::GetColor(SystemColor::Menu));
 			gc->Clear(*backgroundBrush);
 
 			if (m_MenuItem->IsSeparator())
@@ -113,9 +123,7 @@ namespace kxf::Widgets
 				// Get parameters
 				const int iconMargin = window->FromDIP(16);
 				const auto systemIconSize = System::GetMetric(SystemSizeMetric::IconSmall);
-				const String labelWithMnemonics = m_MenuItem->GetItemLabel();
 				const String label = m_MenuItem->GetItemLabelText();
-				const size_t acceleratorIndex = labelWithMnemonics.Find('&');
 				const bool isFirstItem = IsFirstItem();
 				const bool isLastItem = IsLastItem();
 
@@ -142,21 +150,37 @@ namespace kxf::Widgets
 				labelRect.Width() -= systemIconSize.GetWidth() * 2 + iconMargin;
 
 				// Setup fonts and colors
-				if (flags.Contains(NativeWidgetFlag::DefaultItem))
+				if (flags.Contains(NativeWidgetFlag::DefaultItem) || owningMenu->m_Font)
 				{
-					Font font = gc->GetFont()->ToFont();
-					font.SetWeight(FontWeight::Bold);
+					Font font = owningMenu->m_Font ? owningMenu->m_Font : gc->GetFont()->ToFont();
+					if (flags.Contains(NativeWidgetFlag::DefaultItem))
+					{
+						font.SetWeight(FontWeight::Bold);
+					}
 
 					gc->SetFont(gc->GetRenderer().CreateFont(font));
 				}
-				if (flags.Contains(NativeWidgetFlag::Disabled))
+				if (flags.Contains(NativeWidgetFlag::Disabled) || owningMenu->m_ColorText)
 				{
-					auto brush = gc->GetFontBrush();
-					if (object_ptr<IGraphicsSolidBrush> solidBrush; brush->QueryInterface(solidBrush))
+					std::shared_ptr<IGraphicsBrush> brush;
+					if (flags.Contains(NativeWidgetFlag::Disabled))
 					{
-						solidBrush->SetColor(solidBrush->GetColor().MakeDisabled());
+						if (brush = gc->GetFontBrush())
+						{
+							if (object_ptr<IGraphicsSolidBrush> solidBrush; brush->QueryInterface(solidBrush))
+							{
+								solidBrush->SetColor(solidBrush->GetColor().MakeDisabled());
+							}
+						}
+						else
+						{
+							brush = gc->GetRenderer().CreateSolidBrush(System::GetColor(SystemColor::MenuText).MakeDisabled());
+						}
 					}
-					gc->SetBrush(brush);
+					else if (owningMenu->m_ColorText)
+					{
+						brush = gc->GetRenderer().CreateSolidBrush(owningMenu->m_ColorText);
+					}
 					gc->SetFontBrush(brush);
 				}
 
@@ -190,11 +214,17 @@ namespace kxf::Widgets
 				// Draw the label
 				if (!label.IsEmpty())
 				{
-					gc->DrawLabel(label, labelRect, Alignment::CenterVertical, acceleratorIndex);
+					const String labelWithMnemonics = m_MenuItem->GetItemLabel();
+					const size_t acceleratorIndex = owningMenu->IsFocusVisible() ? labelWithMnemonics.Find('&') : String::npos;
+					auto labelBounds = gc->DrawLabel(gc->EllipsizeText(label, labelRect.GetWidth(), EllipsizeMode::End), labelRect, Alignment::CenterVertical, acceleratorIndex);
 
 					if (auto acceleratorText = labelWithMnemonics.AfterFirst('\t'); !acceleratorText.IsEmpty())
 					{
-						gc->DrawLabel(acceleratorText, labelRect, Alignment::CenterVertical|Alignment::Right);
+						RectF acceleratorRect = labelRect;
+						acceleratorRect.X() += labelBounds.GetWidth();
+						acceleratorRect.Width() -= labelBounds.GetWidth();
+
+						gc->DrawLabel(acceleratorText, acceleratorRect, Alignment::CenterVertical|Alignment::Right);
 					}
 				}
 
@@ -352,16 +382,13 @@ namespace kxf::Widgets
 			{
 				return StdID::Separator;
 			}
-			else
-			{
-				return m_ItemID;
-			}
+			return m_ItemID;
 		}
 		return {};
 	}
 	void MenuWidgetItem::SetItemID(WidgetID id)
 	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		if (m_MenuItem && !m_MenuItem->IsSeparator() && id != StdID::Separator)
 		{
 			m_ItemID = id;
 		}
@@ -380,25 +407,6 @@ namespace kxf::Widgets
 		if (m_MenuItem)
 		{
 			m_Icon = icon;
-
-			// Don't support checked bitmap for now 
-			BitmapImage checked;
-
-			if (m_MenuItem->IsCheckable())
-			{
-				if (checked)
-				{
-					m_MenuItem->SetBitmaps(m_Icon.ToGDIBitmap().ToWxBitmap(), checked.ToGDIBitmap().ToWxBitmap());
-				}
-				else
-				{
-					m_MenuItem->SetBitmap(m_Icon.ToGDIBitmap().ToWxBitmap(), false);
-				}
-			}
-			else
-			{
-				m_MenuItem->SetBitmaps(m_Icon.ToGDIBitmap().ToWxBitmap(), checked.ToGDIBitmap().ToWxBitmap());
-			}
 		}
 	}
 
@@ -432,5 +440,11 @@ namespace kxf::Widgets
 		{
 			m_MenuItem->Check(checked);
 		}
+	}
+
+	// MenuWidgetItem
+	wxMenuItem* MenuWidgetItem::GetWxItem() const
+	{
+		return m_MenuItem.get();
 	}
 }

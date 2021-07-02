@@ -17,6 +17,7 @@ namespace kxf
 
 		protected:
 			virtual void SaveReference(std::weak_ptr<IWidget> ref) = 0;
+			virtual void InheritVisualAttributes(const IWidget& parent);
 
 		public:
 			virtual ~IWidget() = default;
@@ -28,7 +29,7 @@ namespace kxf
 
 			// Lifetime management
 			virtual std::shared_ptr<IWidget> LockReference() const = 0;
-			virtual bool CreateWidget(IWidget* parent, const String& text, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) = 0;
+			virtual bool CreateWidget(std::shared_ptr<IWidget> parent, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) = 0;
 			virtual bool CloseWidget(bool force = false) = 0;
 			virtual bool DestroyWidget() = 0;
 			virtual bool IsWidgetAlive() const = 0;
@@ -292,10 +293,10 @@ namespace kxf
 	}
 
 	template<std::derived_from<IWidget> TWidget, class... Args>
-	std::shared_ptr<TWidget> NewWidget(IWidget* parent, const String& text, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize(), Args&&... arg)
+	std::shared_ptr<TWidget> NewWidget(std::shared_ptr<IWidget> parent, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize(), Args&&... arg)
 	{
 		auto widget = NewWidget<TWidget>();
-		widget->TWidget::CreateWidget(parent, text, pos, size, std::forward<Args>(arg)...);
+		widget->TWidget::CreateWidget(std::move(parent), text, pos, size, std::forward<Args>(arg)...);
 
 		return widget;
 	}

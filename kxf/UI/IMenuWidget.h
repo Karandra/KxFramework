@@ -44,6 +44,9 @@ namespace kxf
 			virtual void ShowAt(const IWidget& widget, Point pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = {}) = 0;
 			virtual void ShowWithOffset(const IWidget& widget, int offset = 1, FlagSet<Alignment> alignment = {}) = 0;
 
+			virtual Point GetInvokingPosition() const = 0;
+			virtual std::shared_ptr<IWidget> GetInvokingWidget() const = 0;
+
 		public:
 			std::shared_ptr<IMenuWidget> LockMenuReference() const
 			{

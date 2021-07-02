@@ -32,7 +32,7 @@ namespace kxf::Widgets
 		friend class WXUI::MenuItem;
 		friend class BasicEvtHandler<MenuWidgetItem, IMenuWidgetItem>;
 
-		private:
+		protected:
 			EvtHandler m_EvtHandler;
 			std::unique_ptr<WXUI::MenuItem> m_MenuItem;
 			std::weak_ptr<MenuWidget> m_OwningMenu;
@@ -42,7 +42,7 @@ namespace kxf::Widgets
 			WidgetID m_ItemID;
 			BitmapImage m_Icon;
 
-		private:
+		protected:
 			EvtHandler& GetThisEvtHandler() noexcept
 			{
 				return m_EvtHandler;
@@ -68,8 +68,8 @@ namespace kxf::Widgets
 			bool IsFirstItem() const;
 			bool IsLastItem() const;
 
-		private:
-			Size OnMeasureItem(Size size) const;
+		protected:
+			SizeF OnMeasureItem(SizeF size) const;
 			void OnDrawItem(std::shared_ptr<IGraphicsContext> gc, RectF rect, FlagSet<NativeWidgetFlag> flags);
 
 		protected:
@@ -121,6 +121,10 @@ namespace kxf::Widgets
 
 			bool IsChecked() const override;
 			void SetChecked(bool checked = true) override;
+
+		public:
+			// MenuWidgetItem
+			wxMenuItem* GetWxItem() const;
 
 		public:
 			MenuWidgetItem& operator=(const MenuWidgetItem&) = delete;

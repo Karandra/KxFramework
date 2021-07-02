@@ -49,3 +49,10 @@ namespace kxf
 			virtual bool SetForegroundWindow() = 0;
 	};
 }
+
+namespace kxf::Widgets
+{
+	void* GetNativeHandleOf(const IWidget& widget) noexcept;
+	void* GetShellNativeHandle() noexcept;
+	void* GetAnyTopLevelNativeHandle(const IWidget* widget = nullptr) noexcept;
+}

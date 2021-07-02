@@ -4,32 +4,27 @@
 #include "../MenuWidgetItem.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/System/SystemInformation.h"
-#include "kxf/Utility/Common.h"
 
 namespace kxf::WXUI
 {
 	bool MenuItem::OnMeasureItem(size_t* width, size_t* height)
 	{
-		Geometry::BasicSize<size_t> defaultSize;
-		wxMenuItem::OnMeasureItem(&defaultSize.Width(), &defaultSize.Height());
-		Utility::SetIfNotNull(width, defaultSize.GetWidth());
-		Utility::SetIfNotNull(height, defaultSize.GetHeight());
+		// TODO: Fully reimplement 'wxMenuItem::OnMeasureItem' here
+		wxMenuItem::OnMeasureItem(width, height);
 
-		auto size = m_Item->OnMeasureItem(defaultSize);
+		auto size = m_Item->OnMeasureItem(SizeF(*width, *height));
 		if (size.GetWidth() != Geometry::DefaultCoord)
 		{
-			Utility::SetIfNotNull(width, size.GetWidth());
+			*width = size.GetWidth();
 		}
 		if (size.GetHeight() != Geometry::DefaultCoord)
 		{
-			Utility::SetIfNotNull(height, size.GetHeight());
+			*height = size.GetHeight();
 		}
 		return true;
 	}
 	bool MenuItem::OnDrawItem(wxDC& dc, const wxRect& rect, wxODAction action, wxODStatus status)
 	{
-		//return wxMenuItem::OnDrawItem(dc, rect, action, status);
-
 		FlagSet<NativeWidgetFlag> flags;
 		flags.Add(NativeWidgetFlag::Selected, status & wxODStatus::wxODSelected);
 		flags.Add(NativeWidgetFlag::Disabled, status & wxODStatus::wxODGrayed);
@@ -38,7 +33,7 @@ namespace kxf::WXUI
 		flags.Add(NativeWidgetFlag::Focused, status & wxODStatus::wxODHasFocus);
 		flags.Add(NativeWidgetFlag::DefaultItem, status & wxODStatus::wxODDefault);
 
-		auto renderer = m_Item->m_OwningMenu.lock()->m_Renderer;
+		auto renderer = m_Item->m_OwningMenu.lock()->GetActiveGraphicsRenderer();
 
 		auto texture = renderer->CreateTexture(Size(rect.GetSize()), Drawing::GetStockColor(StockColor::Transparent));
 		auto gc = renderer->CreateContext(texture, GetWindow());

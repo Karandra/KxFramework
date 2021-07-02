@@ -10,7 +10,7 @@ namespace kxf::Widgets
 	}
 	Dialog::~Dialog() = default;
 
-	bool Dialog::CreateWidget(IWidget* parent, const String& text, Point pos, Size size)
+	bool Dialog::CreateWidget(std::shared_ptr<IWidget> parent, const String& text, Point pos, Size size)
 	{
 		return Get()->Create(parent ? parent->GetWxWindow() : nullptr, text, pos, size);
 	}

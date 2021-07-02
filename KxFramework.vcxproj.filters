@@ -806,9 +806,6 @@
     <ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h">
       <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Menus\ShellMenu.h">
-      <Filter>kxf\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Controls\DataView\CellState.h">
       <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
@@ -2040,6 +2037,18 @@
     <ClInclude Include="kxf\UI\Menus\WXUI\MenuItem.h">
       <Filter>kxf\UI\Menus\WXUI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IShellMenuWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IShellMenuWidgetItem.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\ShellMenuWidget.h">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Menus\ShellMenuWidgetItem.h">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2336,9 +2345,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
       <Filter>kxf\UI\Dialogs\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp">
-      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\DataView\CellState.cpp">
       <Filter>kxf\UI\Controls\DataView</Filter>
@@ -3071,6 +3077,15 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Menus\WXUI\MenuItem.cpp">
       <Filter>kxf\UI\Menus\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\ShellMenuWidget.cpp">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Menus\ShellMenuWidgetItem.cpp">
+      <Filter>kxf\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\INativeWidget.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

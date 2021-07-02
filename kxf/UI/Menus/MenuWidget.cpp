@@ -8,6 +8,7 @@
 #include "kxf/Threading/Common.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Utility/Enumerator.h"
+#include "kxf/Utility/Drawing.h"
 #include <wx/menu.h>
 #include <wx/colour.h>
 #include <wx/msw/dc.h>
@@ -165,8 +166,8 @@ namespace kxf::Widgets
 
 						auto MakeEvent = [&]()
 						{
-							MenuWidgetEvent event(*menuWidget, *item, m_InvokingWidget);
-							event.SetPopupPosition(m_InvokingPosition);
+							MenuWidgetEvent event(*menuWidget, *item, GetInvokingWidget());
+							event.SetPopupPosition(GetInvokingPosition());
 
 							return event;
 						};
@@ -209,8 +210,8 @@ namespace kxf::Widgets
 					{
 						auto MakeEvent = [&]()
 						{
-							MenuWidgetEvent event(*this, *item, m_InvokingWidget);
-							event.SetPopupPosition(m_InvokingPosition);
+							MenuWidgetEvent event(*this, *item, GetInvokingWidget());
+							event.SetPopupPosition(GetInvokingPosition());
 
 							return event;
 						};
@@ -258,9 +259,7 @@ namespace kxf::Widgets
 					{
 						// Using 'wxDCTemp' to prevent the DC from being released
 						wxDCTemp dc(static_cast<HDC>(drawItem->hDC));
-						wxRect rect(drawItem->rcItem.left, drawItem->rcItem.top, drawItem->rcItem.right - drawItem->rcItem.left, drawItem->rcItem.bottom - drawItem->rcItem.top);
-
-						if (menuItem->OnDrawItem(dc, rect, static_cast<wxOwnerDrawn::wxODAction>(drawItem->itemAction), static_cast<wxOwnerDrawn::wxODStatus>(drawItem->itemState)))
+						if (menuItem->OnDrawItem(dc, Utility::FromWindowsRect(drawItem->rcItem), static_cast<wxOwnerDrawn::wxODAction>(drawItem->itemAction), static_cast<wxOwnerDrawn::wxODStatus>(drawItem->itemState)))
 						{
 							result = TRUE;
 							return true;
@@ -296,6 +295,10 @@ namespace kxf::Widgets
 				return false;
 			}
 		}
+		if (!m_Renderer)
+		{
+			m_Renderer = Drawing::GetDefaultRenderer();
+		}
 
 		auto flags = MapMenuAlignment(alignment);
 		flags.Add(TPM_LEFTBUTTON);
@@ -305,6 +308,10 @@ namespace kxf::Widgets
 		return ::TrackPopupMenuEx(m_Menu->GetHMenu(), *flags, screenPos.GetX(), screenPos.GetY(), static_cast<HWND>(m_NativeWindow.GetHandle()), nullptr);
 	}
 
+	std::shared_ptr<MenuWidgetItem> MenuWidget::DoCreateItem()
+	{
+		return std::make_shared<MenuWidgetItem>();
+	}
 	bool MenuWidget::DoDestroyWidget(bool releaseWX)
 	{
 		if (m_Menu)
@@ -330,11 +337,10 @@ namespace kxf::Widgets
 		DoDestroyWidget(true);
 	}
 
+	// MenuWidget
 	MenuWidget::MenuWidget()
-		:m_EventHandlerStack(m_EvtHandler), m_Menu(std::make_unique<WXUI::Menu>(*this))
+		:m_EventHandlerStack(m_EvtHandler)
 	{
-		Private::AssociateWXObject(*m_Menu, *this);
-		m_Renderer = Drawing::GetDefaultRenderer();
 	}
 	MenuWidget::~MenuWidget()
 	{
@@ -352,7 +358,7 @@ namespace kxf::Widgets
 	{
 		return m_Menu != nullptr;
 	}
-	bool MenuWidget::CreateWidget(IWidget* parent, const String& text, Point pos, Size size)
+	bool MenuWidget::CreateWidget(std::shared_ptr<IWidget> parent, const String& text, Point pos, Size size)
 	{
 		if (!m_Menu)
 		{
@@ -364,7 +370,8 @@ namespace kxf::Widgets
 			m_MaxSize = size;
 			if (parent)
 			{
-				m_ParentWidget = parent->LockReference();
+				m_ParentWidget = std::move(parent);
+				InheritVisualAttributes(*m_ParentWidget);
 			}
 
 			Private::AssociateWXObject(*m_Menu, *this);
@@ -475,6 +482,7 @@ namespace kxf::Widgets
 		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
 			menuWidget->m_IsAttached = true;
+			menuWidget->m_ParentWidget = m_WidgetReference.lock();
 
 			// Create item
 			auto item = std::make_shared<MenuWidgetItem>();
@@ -498,7 +506,7 @@ namespace kxf::Widgets
 	{
 		if (m_Menu && type != MenuWidgetItemType::None)
 		{
-			auto item = std::make_shared<MenuWidgetItem>();
+			auto item = DoCreateItem();
 			switch (type)
 			{
 				case MenuWidgetItemType::Separator:
@@ -610,5 +618,86 @@ namespace kxf::Widgets
 
 			DoShow(widget.ClientToScreen(pos), alignment, widget.LockReference());
 		}
+	}
+
+	// IGraphicsRendererAwareWidget
+	std::shared_ptr<IGraphicsRenderer> MenuWidget::GetActiveGraphicsRenderer() const
+	{
+		if (m_Renderer)
+		{
+			return m_Renderer;
+		}
+		else if (auto parent = m_ParentWidget)
+		{
+			do
+			{
+				std::shared_ptr<IGraphicsRenderer> renderer;
+				if (auto rendererAware = parent->QueryInterface<IGraphicsRendererAwareWidget>())
+				{
+					renderer = rendererAware->GetActiveGraphicsRenderer();
+				}
+				if (renderer)
+				{
+					return renderer;
+				}
+
+				parent = parent->GetParentWidget();
+			}
+			while (parent);
+		}
+		return nullptr;
+	}
+
+	kxf::Point MenuWidget::GetInvokingPosition() const
+	{
+		if (m_InvokingPosition.IsFullySpecified())
+		{
+			return m_InvokingPosition;
+		}
+		else if (auto parent = m_ParentWidget)
+		{
+			do
+			{
+				Point invokingPosition;
+				if (auto menuWidget = parent->QueryInterface<MenuWidget>())
+				{
+					invokingPosition = menuWidget->m_InvokingPosition;
+				}
+				if (m_InvokingPosition.IsFullySpecified())
+				{
+					return invokingPosition;
+				}
+
+				parent = parent->GetParentWidget();
+			}
+			while (parent);
+		}
+		return Point::UnspecifiedPosition();
+	}
+	std::shared_ptr<IWidget> MenuWidget::GetInvokingWidget() const
+	{
+		if (m_InvokingWidget)
+		{
+			return m_InvokingWidget;
+		}
+		else if (auto parent = m_ParentWidget)
+		{
+			do
+			{
+				std::shared_ptr<IWidget> invokingWidget;
+				if (auto menuWidget = parent->QueryInterface<MenuWidget>())
+				{
+					invokingWidget = menuWidget->m_InvokingWidget;
+				}
+				if (invokingWidget)
+				{
+					return invokingWidget;
+				}
+
+				parent = parent->GetParentWidget();
+			}
+			while (parent);
+		}
+		return nullptr;
 	}
 }

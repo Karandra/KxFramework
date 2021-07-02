@@ -19,6 +19,10 @@ namespace kxf::WXUI
 	class Menu;
 	class MenuItem;
 }
+namespace kxf::Widgets
+{
+	class MenuWidgetItem;
+}
 
 namespace kxf::Widgets
 {
@@ -32,12 +36,12 @@ namespace kxf::Widgets
 		friend class WXUI::Menu;
 		friend class WXUI::MenuItem;
 
-		private:
+		protected:
 			static void AssociateWXMenuItem(wxMenuItem& wx, IMenuWidgetItem& item) noexcept;
 			static void DissociateWXMenuItem(wxMenuItem& wx) noexcept;
 			static std::shared_ptr<IMenuWidgetItem> FindByWXMenuItem(const wxMenuItem& wx) noexcept;
 
-		private:
+		protected:
 			EvtHandler m_EvtHandler;
 			EvtHandlerStack m_EventHandlerStack;
 
@@ -63,13 +67,14 @@ namespace kxf::Widgets
 			Point m_PopupPosition = Point::UnspecifiedPosition();
 			Size m_MaxSize = Size::UnspecifiedSize();
 			Font m_Font;
-			Color m_ColorBackround;
+			Color m_ColorBackground;
 			Color m_ColorBorder;
 			Color m_ColorText;
 			float m_Transparency = 0.0f;
+			float m_VisibleFocus = false;
 			bool m_IsEnabled = true;
 
-		private:
+		protected:
 			EvtHandler& GetThisEvtHandler() noexcept
 			{
 				return m_EvtHandler;
@@ -90,15 +95,16 @@ namespace kxf::Widgets
 
 			std::shared_ptr<IWidget> GetAnyWidget() const
 			{
-				if (m_InvokingWidget)
+				if (m_ParentWidget)
 				{
-					return m_InvokingWidget;
+					return m_ParentWidget;
 				}
-				return m_ParentWidget;
+				return GetInvokingWidget();
 			}
 			bool HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam);
 			bool DoShow(Point screenPos, FlagSet<Alignment> alignment, std::shared_ptr<IWidget> invokingWidget);
 
+			virtual std::shared_ptr<MenuWidgetItem> DoCreateItem();
 			bool DoDestroyWidget(bool releaseWX = false);
 			void OnWXMenuDestroyed();
 
@@ -130,7 +136,7 @@ namespace kxf::Widgets
 			}
 
 			bool IsWidgetAlive() const override;
-			bool CreateWidget(IWidget* parent = nullptr, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
+			bool CreateWidget(std::shared_ptr<IWidget> parent = {}, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 			bool CloseWidget(bool force = false) override;
 			bool DestroyWidget() override;
 
@@ -271,10 +277,11 @@ namespace kxf::Widgets
 
 			bool IsFocusVisible() const override
 			{
-				return true;
+				return m_VisibleFocus;
 			}
 			void SetFocusVisible(bool visible = true) override
 			{
+				m_VisibleFocus = visible;
 			}
 
 			// Layout
@@ -370,7 +377,7 @@ namespace kxf::Widgets
 				{
 					case WidgetColorFlag::Background:
 					{
-						return m_ColorBackround;
+						return m_ColorBackground;
 					}
 					case  WidgetColorFlag::Border:
 					{
@@ -388,7 +395,7 @@ namespace kxf::Widgets
 			{
 				if (flags.Contains(WidgetColorFlag::Background))
 				{
-					m_ColorBackround = color;
+					m_ColorBackground = color;
 				}
 				if (flags.Contains(WidgetColorFlag::Border))
 				{
@@ -525,12 +532,12 @@ namespace kxf::Widgets
 			void ShowAt(const IWidget& widget, Point pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = {}) override;
 			void ShowWithOffset(const IWidget& widget, int offset = 1, FlagSet<Alignment> alignment = {}) override;
 
+			Point GetInvokingPosition() const override;
+			std::shared_ptr<IWidget> GetInvokingWidget() const override;
+
 		public:
 			// IGraphicsRendererAwareWidget
-			std::shared_ptr<IGraphicsRenderer> GetActiveGraphicsRenderer() const override
-			{
-				return m_Renderer;
-			}
+			std::shared_ptr<IGraphicsRenderer> GetActiveGraphicsRenderer() const override;
 			void SetActiveGraphicsRenderer(std::shared_ptr<IGraphicsRenderer> renderer) override
 			{
 				m_Renderer = std::move(renderer);
