@@ -81,10 +81,7 @@ namespace kxf
 			virtual ~Font() = default;
 
 		public:
-			bool IsNull() const noexcept
-			{
-				return m_FaceName.IsEmpty() || m_PointSize <= 0 || !m_PixelSize.IsFullySpecified();
-			}
+			bool IsNull() const noexcept;
 			bool IsInstalled() const;
 			Font GetBaseFont() const;
 

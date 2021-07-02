@@ -169,6 +169,10 @@ namespace kxf
 		m_Style.Add(FontStyle::Strikethrough, other.GetStrikethrough());
 	}
 
+	bool Font::IsNull() const noexcept
+	{
+		return m_FaceName.IsEmpty() || (m_PointSize <= 0 && !m_PixelSize.IsFullySpecified());
+	}
 	bool Font::IsInstalled() const
 	{
 		return !ToGDIFont().IsNull();
