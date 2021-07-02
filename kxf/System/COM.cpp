@@ -15,7 +15,7 @@ namespace
 	{
 		FlagSet<DWORD> nativeFlags;
 		nativeFlags.Add(COINIT::COINIT_DISABLE_OLE1DDE, flags & COMInitFlag::DisableOLE1DDE);
-		nativeFlags.Add(COINIT::COINIT_SPEED_OVER_MEMORY, flags & COMInitFlag::SppedOverMemory);
+		nativeFlags.Add(COINIT::COINIT_SPEED_OVER_MEMORY, flags & COMInitFlag::SpeedOverMemory);
 
 		return nativeFlags;
 	}
@@ -105,17 +105,20 @@ namespace kxf
 {
 	void COMInitGuard::DoInitialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags) noexcept
 	{
-		switch (threadingModel)
+		if (!IsInitialized())
 		{
-			case COMThreadingModel::Apartment:
+			switch (threadingModel)
 			{
-				m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED|*MapCOMInitFlag(flags));
-			}
-			case COMThreadingModel::Concurrent:
-			{
-				m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED|*MapCOMInitFlag(flags));
-			}
-		};
+				case COMThreadingModel::Apartment:
+				{
+					m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED|*MapCOMInitFlag(flags));
+				}
+				case COMThreadingModel::Concurrent:
+				{
+					m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED|*MapCOMInitFlag(flags));
+				}
+			};
+		}
 	}
 	void COMInitGuard::DoUninitialize() noexcept
 	{
@@ -125,13 +128,21 @@ namespace kxf
 			m_Status = HResult::Pending();
 		}
 	}
+
+	bool COMInitGuard::IsInitialized() const noexcept
+	{
+		return m_Status.IsSuccess() || m_Status == RPC_E_CHANGED_MODE;
+	}
 }
 
 namespace kxf
 {
 	void OLEInitGuard::DoInitialize() noexcept
 	{
-		m_Status = ::OleInitialize(nullptr);
+		if (!IsInitialized())
+		{
+			m_Status = ::OleInitialize(nullptr);
+		}
 	}
 	void OLEInitGuard::DoUninitialize() noexcept
 	{

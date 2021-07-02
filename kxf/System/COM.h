@@ -23,7 +23,7 @@ namespace kxf
 		None = 0,
 
 		DisableOLE1DDE = 1 << 0,
-		SppedOverMemory = 1 << 1
+		SpeedOverMemory = 1 << 1
 	};
 	enum class ClassContext: uint32_t
 	{
@@ -112,6 +112,7 @@ namespace kxf
 			void DoUninitialize() noexcept;
 
 		public:
+			COMInitGuard() noexcept = default;
 			COMInitGuard(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags = {}) noexcept
 			{
 				DoInitialize(threadingModel, flags);
@@ -128,9 +129,12 @@ namespace kxf
 			{
 				return m_Status;
 			}
-			bool IsInitialized() const noexcept
+			bool IsInitialized() const noexcept;
+
+			HResult Initialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags = {}) noexcept
 			{
-				return m_Status.IsSuccess();
+				DoInitialize(threadingModel, flags);
+				return m_Status;
 			}
 			void Uninitialize() noexcept
 			{
