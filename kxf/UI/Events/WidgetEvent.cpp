@@ -6,7 +6,7 @@ namespace kxf
 {
 	// WidgetEvent
 	WidgetEvent::WidgetEvent(IWidget& widget) noexcept
-		:m_Widget(widget.LockReference())
+		:m_Widget(widget.QueryInterface<IWidget>())
 	{
 	}
 

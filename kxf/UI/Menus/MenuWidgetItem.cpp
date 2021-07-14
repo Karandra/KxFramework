@@ -265,7 +265,7 @@ namespace kxf::Widgets
 				auto widget = Private::FindByWXObject(*subMenu);
 				if (widget && widget->QueryInterface(menu))
 				{
-					return menu->LockReference()->QueryInterface<IMenuWidget>();
+					return menu;
 				}
 			}
 		}

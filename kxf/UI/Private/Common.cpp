@@ -12,7 +12,7 @@ namespace kxf::Private
 {
 	void AssociateWXObject(wxObject& object, IWidget& widget) noexcept
 	{
-		g_WXObjectMap.insert_or_assign(&object, widget.LockReference());
+		g_WXObjectMap.insert_or_assign(&object, widget.QueryInterface<IWidget>());
 	}
 	void AssociateWXObject(wxWindow& window, IWidget& widget) noexcept
 	{
@@ -53,7 +53,7 @@ namespace kxf::Private
 	{
 		if (auto widget = static_cast<IWidget*>(evtHandler.GetClientData()))
 		{
-			return widget->LockReference();
+			return widget->QueryInterface<IWidget>();
 		}
 		return nullptr;
 	}

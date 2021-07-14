@@ -47,7 +47,6 @@ namespace kxf::Widgets
 
 			std::unique_ptr<WXUI::Menu> m_Menu;
 			std::shared_ptr<IWidget> m_ParentWidget;
-			std::weak_ptr<MenuWidget> m_WidgetReference;
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
 			bool m_IsAttached = false;
 
@@ -108,13 +107,6 @@ namespace kxf::Widgets
 			bool DoDestroyWidget(bool releaseWX = false);
 			void OnWXMenuDestroyed();
 
-		protected:
-			// IWidget
-			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
-			{
-				m_WidgetReference = std::static_pointer_cast<MenuWidget>(ref.lock());
-			}
-
 		public:
 			MenuWidget();
 			MenuWidget(const MenuWidget&) = delete;
@@ -130,11 +122,6 @@ namespace kxf::Widgets
 			}
 
 			// Lifetime management
-			std::shared_ptr<IWidget> LockReference() const override
-			{
-				return m_WidgetReference.lock();
-			}
-
 			bool IsWidgetAlive() const override;
 			bool CreateWidget(std::shared_ptr<IWidget> parent = {}, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 			bool CloseWidget(bool force = false) override;
@@ -328,7 +315,7 @@ namespace kxf::Widgets
 			}
 			void SetParentWidget(IWidget& widget) override
 			{
-				m_ParentWidget = widget.LockReference();
+				m_ParentWidget = widget.QueryInterface<IWidget>();
 			}
 
 			std::shared_ptr<IWidget> GetPrevSiblingWidget() const override

@@ -58,7 +58,7 @@ namespace kxf::Widgets
 					{
 						// Create a sub-menu and copy the shell menu object to it to allow
 						// 'InvokeShellCommand' to access it from the this menu's sub-items.
-						auto subMenu = NewWidget<ShellMenuWidget>(menu.LockReference());
+						auto subMenu = NewWidget<ShellMenuWidget>(menu.QueryInterface<IWidget>());
 						subMenu->m_ShellMenu = m_ShellMenu;
 
 						// Fill subitems (possibly recursively)

@@ -180,8 +180,6 @@ namespace kxf::Private
 	{
 		private:
 			TWindowImpl m_Window;
-			std::weak_ptr<IWidget> m_WidgetReference;
-
 			EvtHandler m_EvtHandler;
 			EvtHandlerStack m_EventHandlerStack;
 
@@ -206,12 +204,6 @@ namespace kxf::Private
 			}
 
 		protected:
-			// IWidget
-			void SaveReference(std::weak_ptr<IWidget> ref) noexcept override
-			{
-				m_WidgetReference = std::move(ref);
-			}
-
 			// BasicWxWidget
 			IEvtHandler& GetThisEvtHandler() noexcept
 			{
@@ -355,11 +347,6 @@ namespace kxf::Private
 			}
 
 			// Lifetime management
-			std::shared_ptr<IWidget> LockReference() const override
-			{
-				return m_WidgetReference.lock();
-			}
-
 			bool IsWidgetAlive() const override
 			{
 				return m_Window.IsWidgetAlive();

@@ -16,7 +16,6 @@ namespace kxf
 			static std::shared_ptr<IWidget> FindFocus() noexcept;
 
 		protected:
-			virtual void SaveReference(std::weak_ptr<IWidget> ref) = 0;
 			virtual void InheritVisualAttributes(const IWidget& parent);
 
 		public:
@@ -28,7 +27,6 @@ namespace kxf
 			virtual wxWindow* GetWxWindow() const = 0;
 
 			// Lifetime management
-			virtual std::shared_ptr<IWidget> LockReference() const = 0;
 			virtual bool CreateWidget(std::shared_ptr<IWidget> parent, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) = 0;
 			virtual bool CloseWidget(bool force = false) = 0;
 			virtual bool DestroyWidget() = 0;
@@ -286,10 +284,7 @@ namespace kxf
 	template<std::derived_from<IWidget> TWidget>
 	std::shared_ptr<TWidget> NewWidget()
 	{
-		auto widget = std::make_shared<TWidget>();
-		static_cast<IWidget&>(*widget).SaveReference(widget);
-
-		return widget;
+		return std::make_shared<TWidget>();
 	}
 
 	template<std::derived_from<IWidget> TWidget, class... Args>

@@ -468,7 +468,7 @@ namespace kxf::Widgets
 		{
 			if (auto menuItem = item.QueryInterface<MenuWidgetItem>())
 			{
-				menuItem->m_OwningMenu = m_WidgetReference;
+				menuItem->m_OwningMenu = QueryInterface<MenuWidget>();
 				m_Menu->Insert(std::clamp(index, 0_uz, m_Menu->GetMenuItemCount()), menuItem->m_MenuItem.get());
 
 				return menuItem->LockReference();
@@ -482,12 +482,12 @@ namespace kxf::Widgets
 		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
 			menuWidget->m_IsAttached = true;
-			menuWidget->m_ParentWidget = m_WidgetReference.lock();
+			menuWidget->m_ParentWidget = QueryInterface<IWidget>();
 
 			// Create item
 			auto item = std::make_shared<MenuWidgetItem>();
 			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, menuWidget, *menuWidget->m_Menu);
-			item->m_OwningMenu = m_WidgetReference;
+			item->m_OwningMenu = QueryInterface<MenuWidget>();
 			item->SaveReference(item);
 			item->DoCreateWidget();
 
@@ -597,7 +597,7 @@ namespace kxf::Widgets
 					pos = parent->ClientToScreen(pos);
 				}
 			}
-			DoShow(pos, alignment, widget.LockReference());
+			DoShow(pos, alignment, std::const_pointer_cast<IWidget>(widget.QueryInterface<IWidget>()));
 		}
 	}
 	void MenuWidget::ShowWithOffset(const IWidget& widget, int offset, FlagSet<Alignment> alignment)
@@ -616,7 +616,7 @@ namespace kxf::Widgets
 				pos.Y() = -offset;
 			}
 
-			DoShow(widget.ClientToScreen(pos), alignment, widget.LockReference());
+			DoShow(widget.ClientToScreen(pos), alignment, std::const_pointer_cast<IWidget>(widget.QueryInterface<IWidget>()));
 		}
 	}
 
