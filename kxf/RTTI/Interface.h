@@ -20,7 +20,7 @@ namespace kxf::RTTI
 			{
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
-					return static_cast<ClassInfo*>(&ms_ClassInfo);
+					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				return IObject::QuerySelf(iid, static_cast<T&>(*this));
 			}
@@ -48,7 +48,7 @@ namespace kxf::RTTI
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
-					return static_cast<ClassInfo*>(&ms_ClassInfo);
+					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
 			}
@@ -76,11 +76,11 @@ namespace kxf::RTTI
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
-					return static_cast<ClassInfo*>(&ms_ClassInfo);
+					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
-				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
-					return ptr;
+					return query;
 				}
 				return nullptr;
 			}
@@ -112,15 +112,15 @@ namespace kxf::RTTI
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
-					return static_cast<ClassInfo*>(&ms_ClassInfo);
+					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				else if (iid.IsOfType<TDerived>())
 				{
-					return static_cast<TDerived*>(this);
+					return static_cast<TDerived&>(*this);
 				}
-				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
-					return ptr;
+					return query;
 				}
 				return nullptr;
 			}
@@ -148,11 +148,11 @@ namespace kxf::RTTI
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
-					return static_cast<ClassInfo*>(&ms_ClassInfo);
+					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
-				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
-					return ptr;
+					return query;
 				}
 				return nullptr;
 			}
@@ -172,7 +172,7 @@ public:	\
 	{	\
 		if (iid.IsOfType<kxf::RTTI::ClassInfo>())	\
 		{	\
-			return static_cast<kxf::RTTI::ClassInfo*>(&ms_ClassInfo);	\
+			return static_cast<kxf::RTTI::ClassInfo&>(ms_ClassInfo);	\
 		}	\
 		return kxf::IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
 	}

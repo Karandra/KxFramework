@@ -49,6 +49,7 @@ namespace kxf
 			class XMLDocumentLibraryInfo final: public ILibraryInfo
 			{
 				public:
+					// ILibraryInfo
 					String GetName() const override
 					{
 						return "TinyXML2";
@@ -81,7 +82,7 @@ namespace kxf
 			};
 
 			static XMLDocumentLibraryInfo libraryInfo;
-			return static_cast<ILibraryInfo*>(&libraryInfo);
+			return static_cast<ILibraryInfo&>(libraryInfo);
 		}
 		return IObject::QuerySelf(iid, *this);
 	}

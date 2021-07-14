@@ -48,11 +48,6 @@ namespace kxf
 			virtual std::shared_ptr<IWidget> GetInvokingWidget() const = 0;
 
 		public:
-			std::shared_ptr<IMenuWidget> LockMenuReference() const
-			{
-				return std::static_pointer_cast<IMenuWidget>(LockReference());
-			}
-
 			std::shared_ptr<IMenuWidgetItem> InsertItem(const String& label, WidgetID id = {}, size_t index = npos)
 			{
 				return CreateAndInsert(MenuWidgetItemType::Regular, label, id, index);

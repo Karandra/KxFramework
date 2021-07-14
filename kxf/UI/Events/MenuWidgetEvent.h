@@ -18,14 +18,13 @@ namespace kxf
 			KxEVENT_MEMBER(MenuWidgetEvent, Hover);
 
 		private:
-			std::shared_ptr<IMenuWidget> m_Menu;
 			std::shared_ptr<IMenuWidgetItem> m_Item;
 			std::shared_ptr<IWidget> m_InvokingWidget;
 			Point m_PopupPosition = Point::UnspecifiedPosition();
 
 		public:
-			MenuWidgetEvent(IMenuWidget& menu, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
-			MenuWidgetEvent(IMenuWidget& menu, IMenuWidgetItem& menuItem, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
+			MenuWidgetEvent(IMenuWidget& widget, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
+			MenuWidgetEvent(IMenuWidget& widget, IMenuWidgetItem& menuItem, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
 
 		public:
 			// IEvent
@@ -35,11 +34,8 @@ namespace kxf
 			}
 
 			// MenuWidgetEvent
-			std::shared_ptr<IMenuWidget> GetMenu() const noexcept
-			{
-				return m_Menu;
-			}
-			std::shared_ptr<IMenuWidgetItem> GetMenuItem() const noexcept
+			std::shared_ptr<IMenuWidget> GetMenuWidget() const noexcept;
+			std::shared_ptr<IMenuWidgetItem> GetMenuWidgetItem() const noexcept
 			{
 				return m_Item;
 			}

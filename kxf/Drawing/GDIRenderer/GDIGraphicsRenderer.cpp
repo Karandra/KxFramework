@@ -38,7 +38,7 @@ namespace kxf
 			case PenStyle::Hatch:
 			{
 				auto brush = pen.GetBrush();
-				if (object_ptr<IGraphicsHatchBrush> hatchBrush; brush && brush->QueryInterface(hatchBrush))
+				if (std::shared_ptr<IGraphicsHatchBrush> hatchBrush; brush && brush->QueryInterface(hatchBrush))
 				{
 					gdiPen.SetHatchStyle(hatchBrush->GetHatchStyle());
 				}
@@ -56,7 +56,7 @@ namespace kxf
 			case PenStyle::Texture:
 			{
 				auto brush = pen.GetBrush();
-				if (object_ptr<IGraphicsTextureBrush> textureBrush; brush && brush->QueryInterface(textureBrush))
+				if (std::shared_ptr<IGraphicsTextureBrush> textureBrush; brush && brush->QueryInterface(textureBrush))
 				{
 					if (auto texture = textureBrush->GetTexture())
 					{

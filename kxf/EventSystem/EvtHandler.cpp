@@ -185,7 +185,7 @@ namespace kxf
 		if (IsEventProcessingEnabled())
 		{
 			// There is an implicit entry for indirect invocation in every event handler
-			object_ptr<IIndirectInvocationEvent> indirectInvoke;
+			std::shared_ptr<IIndirectInvocationEvent> indirectInvoke;
 			if (event.GetEventSource() == this && event.QueryInterface(indirectInvoke))
 			{
 				indirectInvoke->Execute();

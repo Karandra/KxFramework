@@ -42,7 +42,7 @@ namespace kxf::Private
 	{
 		private:
 			Widgets::MenuWidget& m_Menu;
-			object_ptr<INativeWidget> m_NativeInvokingWidget;
+			std::shared_ptr<INativeWidget> m_NativeInvokingWidget;
 			wxWindow* m_InvokingWindowWX = nullptr;
 			Point m_InvokingPosition;
 
@@ -155,7 +155,7 @@ namespace kxf::Widgets
 
 				if (itemWX && (flags.Contains(MF_HILITE) || flags.Contains(MF_MOUSESELECT)))
 				{
-					object_ptr<IMenuWidget> menuWidget = RTTI::assume_non_owned(*this);
+					std::shared_ptr<IMenuWidget> menuWidget = RTTI::assume_non_owned(*this);
 					if (auto item = FindByWXMenuItem(*itemWX))
 					{
 						// Try to get an actual sub-menu object for the event
@@ -395,7 +395,7 @@ namespace kxf::Widgets
 	// Child management functions
 	void MenuWidget::AddChildWidget(IWidget& widget)
 	{
-		object_ptr<IMenuWidget> menuWidget;
+		std::shared_ptr<IMenuWidget> menuWidget;
 		if (m_Menu && widget.QueryInterface(menuWidget))
 		{
 			MenuWidget::InsertMenu(*menuWidget);
@@ -478,7 +478,7 @@ namespace kxf::Widgets
 	}
 	std::shared_ptr<IMenuWidgetItem> MenuWidget::InsertMenu(IMenuWidget& subMenu, const String& label, WidgetID id, size_t index)
 	{
-		object_ptr<MenuWidget> menuWidget;
+		std::shared_ptr<MenuWidget> menuWidget;
 		if (m_Menu && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
 			menuWidget->m_IsAttached = true;
@@ -486,7 +486,7 @@ namespace kxf::Widgets
 
 			// Create item
 			auto item = std::make_shared<MenuWidgetItem>();
-			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, menuWidget->LockMenuReference(), *menuWidget->m_Menu);
+			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, menuWidget, *menuWidget->m_Menu);
 			item->m_OwningMenu = m_WidgetReference;
 			item->SaveReference(item);
 			item->DoCreateWidget();

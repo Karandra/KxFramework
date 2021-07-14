@@ -16,11 +16,11 @@ namespace kxf
 	{
 		if (iid.IsOfType<IObject>())
 		{
-			return this;
+			return *this;
 		}
 		else if (iid.IsOfType<RTTI::ClassInfo>())
 		{
-			return static_cast<RTTI::ClassInfo*>(&g_ClassInfo);
+			return static_cast<RTTI::ClassInfo&>(g_ClassInfo);
 		}
 		return nullptr;
 	}

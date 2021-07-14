@@ -75,7 +75,7 @@ namespace kxf
 	{
 		uint64_t Serialize(IOutputStream& stream, const IID& value) const
 		{
-			return Serialization::WriteObject(stream, value.ToNativeUUID());
+			return Serialization::WriteObject(stream, value.m_ID);
 		}
 		uint64_t Deserialize(IInputStream& stream, IID& value) const
 		{
@@ -87,7 +87,7 @@ namespace kxf
 namespace std
 {
 	template<>
-	struct hash<kxf::IID>
+	struct hash<kxf::IID> final
 	{
 		constexpr size_t operator()(const kxf::IID& iid) const noexcept
 		{

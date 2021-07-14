@@ -166,7 +166,7 @@ namespace kxf::RTTI
 		m_FirstClassInfo = m_NextClassInfo;
 	}
 
-	std::unique_ptr<IObject> ClassInfo::DoCreateImplementation(const IID& iid) const
+	std::shared_ptr<IObject> ClassInfo::DoCreateImplementation(const IID& iid) const
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && iid)
 		{
@@ -174,13 +174,13 @@ namespace kxf::RTTI
 			{
 				if (classInfo.GetIID() == iid)
 				{
-					return classInfo.CreateObjectInstance();
+					return classInfo.DoCreateObjectInstance();
 				}
 			};
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IObject> ClassInfo::DoCreateImplementation(const String& fullyQualifiedName) const
+	std::shared_ptr<IObject> ClassInfo::DoCreateImplementation(const String& fullyQualifiedName) const
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && !fullyQualifiedName.IsEmpty())
 		{
@@ -188,19 +188,19 @@ namespace kxf::RTTI
 			{
 				if (fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
 				{
-					return classInfo.CreateObjectInstance();
+					return classInfo.DoCreateObjectInstance();
 				}
 			};
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IObject> ClassInfo::DoCreateAnyImplementation() const
+	std::shared_ptr<IObject> ClassInfo::DoCreateAnyImplementation() const
 	{
 		if (m_Traits.Contains(ClassTrait::Interface))
 		{
 			for (const ClassInfo& classInfo: EnumDynamicImplementations())
 			{
-				return classInfo.CreateObjectInstance();
+				return classInfo.DoCreateObjectInstance();
 			};
 		}
 		return nullptr;
@@ -209,7 +209,7 @@ namespace kxf::RTTI
 	// IObject
 	RTTI::QueryInfo ClassInfo::DoQueryInterface(const IID& iid) noexcept
 	{
-		return nullptr;
+		return {};
 	}
 
 	// ClassInfo

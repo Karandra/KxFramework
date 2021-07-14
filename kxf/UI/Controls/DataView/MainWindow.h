@@ -119,7 +119,7 @@ namespace kxf::UI::DataView
 
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
 			size_t m_ItemsCount = INVALID_COUNT;
-			object_ptr<Model> m_Model;
+			std::shared_ptr<Model> m_Model;
 			RootNode* m_TreeRoot = nullptr;
 
 			// String to display when the control is empty
@@ -189,7 +189,7 @@ namespace kxf::UI::DataView
 			void OnItemsCleared();
 			void OnShouldResort();
 
-			void DoAssignModel(object_ptr<Model> model);
+			void DoAssignModel(std::shared_ptr<Model> model);
 			bool IsListLike() const;
 
 			// Misc

@@ -61,9 +61,9 @@ namespace kxf::RTTI
 			void OnCreate() noexcept;
 			void OnDestroy() noexcept;
 
-			std::unique_ptr<IObject> DoCreateImplementation(const IID& iid) const;
-			std::unique_ptr<IObject> DoCreateImplementation(const String& fullyQualifiedName) const;
-			std::unique_ptr<IObject> DoCreateAnyImplementation() const;
+			std::shared_ptr<IObject> DoCreateImplementation(const IID& iid) const;
+			std::shared_ptr<IObject> DoCreateImplementation(const String& fullyQualifiedName) const;
+			std::shared_ptr<IObject> DoCreateAnyImplementation() const;
 
 		protected:
 			// IObject
@@ -74,7 +74,26 @@ namespace kxf::RTTI
 
 			virtual IID DoGetIID() const noexcept = 0;
 			virtual size_t DoGetBaseClass(const ClassInfo** classInfo, size_t index = std::numeric_limits<size_t>::max()) const noexcept = 0;
-			virtual std::unique_ptr<IObject> DoCreateObjectInstance() const = 0;
+			virtual std::shared_ptr<IObject> DoCreateObjectInstance() const = 0;
+
+			template<class TResult>
+			static std::unique_ptr<TResult> DynamicCast(std::unique_ptr<IObject> ptr) noexcept
+			{
+				if constexpr(std::is_same_v<IObject, TResult>)
+				{
+					return ptr;
+				}
+				else if (ptr)
+				{
+					auto temp = ptr->QueryInterface<TResult>();
+					ptr.release();
+
+					// It's assumed that in this case 'QueryInterface' used 'assume_non_owned' to return
+					// the requested interface. This is a really dirty hack and it needs to be fixed.
+					return std::unique_ptr<TResult>(temp.get());
+				}
+				return nullptr;
+			}
 
 		protected:
 			ClassInfo(std::string_view name, size_t size, size_t alignment, FlagSet<ClassTrait> traits, const std::type_info& typeInfo) noexcept
@@ -125,28 +144,44 @@ namespace kxf::RTTI
 			Enumerator<const ClassInfo&> EnumDynamicImplementations() const noexcept;
 			Enumerator<const ClassInfo&> EnumDerivedInterfaces() const noexcept;
 
-			template<class T = IObject>
-			std::unique_ptr<T> CreateObjectInstance() const
+			template<std::derived_from<IObject> T = IObject>
+			std::shared_ptr<T> CreateObjectInstance() const
 			{
-				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateObjectInstance());
+				if (auto instance = DoCreateObjectInstance())
+				{
+					return instance->QueryInterface<T>();
+				}
+				return nullptr;
 			}
 
-			template<class T = IObject>
-			std::unique_ptr<T> CreateImplementation(const IID& iid) const
+			template<std::derived_from<IObject> T = IObject>
+			std::shared_ptr<T> CreateImplementation(const IID& iid) const
 			{
-				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateImplementation(iid));
+				if (auto instance = DoCreateImplementation(iid))
+				{
+					return instance->QueryInterface<T>();
+				}
+				return nullptr;
 			}
 
-			template<class T = IObject>
-			std::unique_ptr<T> CreateImplementation(const String& fullyQualifiedName) const
+			template<std::derived_from<IObject> T = IObject>
+			std::shared_ptr<T> CreateImplementation(const String& fullyQualifiedName) const
 			{
-				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateImplementation(fullyQualifiedName));
+				if (auto instance = DoCreateImplementation(fullyQualifiedName))
+				{
+					return instance->QueryInterface<T>();
+				}
+				return nullptr;
 			}
 
-			template<class T = IObject>
-			std::unique_ptr<T> CreateAnyImplementation() const
+			template<std::derived_from<IObject> T = IObject>
+			std::shared_ptr<T> CreateAnyImplementation() const
 			{
-				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateAnyImplementation());
+				if (auto instance = DoCreateAnyImplementation())
+				{
+					return instance->QueryInterface<T>();
+				}
+				return nullptr;
 			}
 
 		public:
@@ -206,7 +241,7 @@ namespace kxf::RTTI::Private
 			{
 				return {};
 			}
-			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			std::shared_ptr<IObject> DoCreateObjectInstance() const override
 			{
 				return nullptr;
 			}
@@ -294,9 +329,9 @@ namespace kxf::RTTI
 			{
 				return RTTI::GetInterfaceID<T>();
 			}
-			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			std::shared_ptr<IObject> DoCreateObjectInstance() const override
 			{
-				return RTTI::new_object<T>();
+				return std::make_shared<T>();
 			}
 
 		public:

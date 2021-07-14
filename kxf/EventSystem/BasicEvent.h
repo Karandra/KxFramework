@@ -146,7 +146,7 @@ namespace kxf
 			{
 				if (iid.IsOfType<IEventInternal>())
 				{
-					return static_cast<IEventInternal*>(this);
+					return *static_cast<IEventInternal*>(this);
 				}
 				return TBaseClass::DoQueryInterface(iid);
 			}

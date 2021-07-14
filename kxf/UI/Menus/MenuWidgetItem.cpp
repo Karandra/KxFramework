@@ -167,7 +167,7 @@ namespace kxf::Widgets
 					{
 						if (brush = gc->GetFontBrush())
 						{
-							if (object_ptr<IGraphicsSolidBrush> solidBrush; brush->QueryInterface(solidBrush))
+							if (std::shared_ptr<IGraphicsSolidBrush> solidBrush; brush->QueryInterface(solidBrush))
 							{
 								solidBrush->SetColor(solidBrush->GetColor().MakeDisabled());
 							}
@@ -261,11 +261,11 @@ namespace kxf::Widgets
 		{
 			if (auto subMenu = m_MenuItem->GetSubMenu())
 			{
-				object_ptr<IMenuWidget> menu;
+				std::shared_ptr<IMenuWidget> menu;
 				auto widget = Private::FindByWXObject(*subMenu);
 				if (widget && widget->QueryInterface(menu))
 				{
-					return menu->LockMenuReference();
+					return menu->LockReference()->QueryInterface<IMenuWidget>();
 				}
 			}
 		}
@@ -273,7 +273,7 @@ namespace kxf::Widgets
 	}
 	void MenuWidgetItem::SetSubMenu(IMenuWidget& subMenu)
 	{
-		object_ptr<MenuWidget> menuWidget;
+		std::shared_ptr<MenuWidget> menuWidget;
 		if (m_MenuItem && subMenu.IsWidgetAlive() && subMenu.QueryInterface(menuWidget) && !menuWidget->m_IsAttached)
 		{
 			m_MenuItem->SetSubMenu(menuWidget->m_Menu.get());

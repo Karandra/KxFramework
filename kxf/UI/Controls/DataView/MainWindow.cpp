@@ -1849,7 +1849,7 @@ namespace kxf::UI::DataView
 		UpdateDisplay();
 	}
 
-	void MainWindow::DoAssignModel(object_ptr<Model> model)
+	void MainWindow::DoAssignModel(std::shared_ptr<Model> model)
 	{
 		if (m_Model)
 		{

@@ -66,7 +66,7 @@ namespace kxf::Drawing::Private
 	}
 	bool SVGImageHandler::LoadImage(IImage2D& image, IInputStream& stream, size_t index)
 	{
-		if (object_ptr<SVGImage> svgImage; image.QueryInterface(svgImage))
+		if (std::shared_ptr<SVGImage> svgImage; image.QueryInterface(svgImage))
 		{
 			return svgImage->Load(stream, ImageFormat::SVG);
 		}
@@ -74,7 +74,7 @@ namespace kxf::Drawing::Private
 	}
 	bool SVGImageHandler::SaveImage(const IImage2D& image, IOutputStream& stream) const
 	{
-		if (object_ptr<const SVGImage> svgImage; image.QueryInterface(svgImage))
+		if (std::shared_ptr<const SVGImage> svgImage; image.QueryInterface(svgImage))
 		{
 			return svgImage->Save(stream, ImageFormat::SVG);
 		}

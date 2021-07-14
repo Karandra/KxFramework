@@ -379,7 +379,7 @@ namespace kxf
 	}
 	void GDIGraphicsContext::SetFontBrush(std::shared_ptr<IGraphicsBrush> brush)
 	{
-		object_ptr<IGraphicsSolidBrush> solidBrush;
+		std::shared_ptr<IGraphicsSolidBrush> solidBrush;
 		if (brush && brush->QueryInterface(solidBrush))
 		{
 			m_DC.SetTextForeground(solidBrush->GetColor());

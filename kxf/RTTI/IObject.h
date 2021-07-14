@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "IID.h"
-#include "ObjectPtr.h"
 #include "kxf/General/FlagSet.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/TypeTraits.h>
@@ -10,119 +9,103 @@ namespace kxf::RTTI
 {
 	class ClassInfo;
 
+	template<std::derived_from<IObject> T>
+	std::shared_ptr<T> assume_non_owned(T& value) noexcept
+	{
+		struct OwnerlessDeleter final
+		{
+			void operator()(T*) noexcept
+			{
+			}
+		};
+		return {&value, OwnerlessDeleter()};
+	}
+}
+
+namespace kxf::RTTI
+{
 	class QueryInfo final
 	{
 		private:
-			void* m_Object = nullptr;
-			std::unique_ptr<RTTI::ObjectDeleter> m_Deleter;
-
-		private:
-			template<class T = void>
-			T* ExchangeObject(T* newObject = nullptr) noexcept
-			{
-				void* oldObject = m_Object;
-				m_Object = const_cast<std::remove_const_t<T>*>(newObject);
-
-				return static_cast<T*>(oldObject);
-			}
+			std::shared_ptr<void> m_Lock;
+			void* m_Ref = nullptr;
 
 		public:
 			QueryInfo() noexcept = default;
-			QueryInfo(void* ptr, std::unique_ptr<RTTI::ObjectDeleter> deleter = {}) noexcept
-				:m_Object(ptr), m_Deleter(std::move(deleter))
+			QueryInfo(std::nullptr_t) noexcept
 			{
 			}
 
-			template<class T>
-			QueryInfo(std::unique_ptr<T> ptr) noexcept
-				:m_Object(ptr.release())
+			template<std::derived_from<IObject> T>
+			QueryInfo(T& ref) noexcept
 			{
-				m_Deleter.reset(&RTTI::GetDefaultDeleter());
+				if (auto weak = ref.weak_from_this(); weak.expired())
+				{
+					// Assume it was never allocated on the heap
+					m_Lock = assume_non_owned(ref);
+				}
+				else
+				{
+					m_Lock = weak.lock();
+				}
+				m_Ref = &ref;
 			}
 
-			template<class T>
-			QueryInfo(object_ptr<T> ptr) noexcept
-				:m_Deleter(ptr.get_deleter())
+			template<std::derived_from<IObject> T>
+			QueryInfo(std::shared_ptr<T> ptr) noexcept
+				:m_Lock(std::move(ptr)), m_Ref(m_Lock.get())
 			{
-				m_Object = ptr.release();
 			}
 
 			QueryInfo(const QueryInfo&) = delete;
-			QueryInfo(QueryInfo&& other) noexcept
-				:m_Object(other.ExchangeObject()), m_Deleter(std::move(other.m_Deleter))
-			{
-			}
-			~QueryInfo()
-			{
-				DestroyObject();
-			}
+			QueryInfo(QueryInfo&&) noexcept = default;
+			~QueryInfo() = default;
 
 		public:
-			bool is_null() const noexcept
+			bool IsNull() const noexcept
 			{
-				return m_Object == nullptr;
-			}
-			bool is_reference() const noexcept
-			{
-				return m_Deleter == nullptr;
+				return m_Ref == nullptr || m_Lock == nullptr;
 			}
 
-			const void* get() const noexcept
+			template<std::derived_from<IObject> T>
+			std::shared_ptr<T> LockObject() const&& noexcept
 			{
-				return m_Object;
-			}
-			void* get() noexcept
-			{
-				return m_Object;
-			}
-
-			void DestroyObject()
-			{
-				if (m_Deleter)
+				if (m_Ref)
 				{
-					m_Deleter->Invoke(static_cast<IObject*>(m_Object));
-					m_Deleter = nullptr;
+					return std::shared_ptr<T>(m_Lock, reinterpret_cast<T*>(m_Ref));
 				}
-				m_Object = nullptr;
+				return nullptr;
 			}
 
-			template<class T>
-			object_ptr<T> TakeObject() noexcept
+			template<std::derived_from<IObject> T>
+			std::shared_ptr<T> LockObject() && noexcept
 			{
-				return object_ptr<T>(ExchangeObject<T>(), std::move(m_Deleter));
-			}
-
-			template<class T>
-			object_ptr<T> ReferenceObject() const noexcept
-			{
-				return object_ptr<T>(static_cast<T*>(m_Object));
+				if (void* ref = m_Ref)
+				{
+					m_Ref = nullptr;
+					return std::shared_ptr<T>(std::move(m_Lock), reinterpret_cast<T*>(ref));
+				}
+				return nullptr;
 			}
 
 		public:
 			explicit operator bool() const noexcept
 			{
-				return !is_null();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return is_null();
+				return IsNull();
 			}
 
 			QueryInfo& operator=(const QueryInfo&) = delete;
-			QueryInfo& operator=(QueryInfo&& other) noexcept
-			{
-				DestroyObject();
-				m_Object = other.ExchangeObject();
-				m_Deleter = std::move(other.m_Deleter);
-
-				return *this;
-			}
+			QueryInfo& operator=(QueryInfo&&) noexcept = default;
 	};
 }
 
 namespace kxf
 {
-	class KX_API IObject
+	class KX_API IObject: public std::enable_shared_from_this<IObject>
 	{
 		template<class T>
 		friend constexpr IID RTTI::GetInterfaceID() noexcept;
@@ -130,8 +113,7 @@ namespace kxf
 		template<class T>
 		friend const RTTI::ClassInfo& RTTI::GetClassInfo() noexcept;
 
-		template<class T>
-		friend class object_ptr;
+		friend class RTTI::QueryInfo;
 
 		private:
 			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
@@ -145,7 +127,7 @@ namespace kxf
 
 				if (iid.IsOfType<T>())
 				{
-					return &object;
+					return object;
 				}
 				return nullptr;
 			}
@@ -155,11 +137,11 @@ namespace kxf
 			{
 				if (iid.IsOfType<TSelf>())
 				{
-					return &self;
+					return self;
 				}
-				else if (RTTI::QueryInfo ptr; ((ptr = static_cast<Args&>(self).Args::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				else if (RTTI::QueryInfo query; ((query = static_cast<Args&>(self).Args::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
-					return ptr;
+					return query;
 				}
 				return self.IObject::DoQueryInterface(iid);
 			}
@@ -167,10 +149,10 @@ namespace kxf
 			template<class... Args>
 			static RTTI::QueryInfo UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
 			{
-				void* ptr = nullptr;
-				if (((ptr = Cast<Args>(arg, iid), ptr != nullptr) || ...))
+				RTTI::QueryInfo query;
+				if (((query = Cast<Args>(arg, iid), !query.IsNull()) || ...))
 				{
-					return ptr;
+					return query;
 				}
 				return nullptr;
 			}
@@ -192,65 +174,32 @@ namespace kxf
 				return const_cast<IObject*>(this)->DoQueryInterface(iid);
 			}
 
-			template<class T>
-			object_ptr<T> QueryInterface() noexcept
+			template<std::derived_from<IObject> T>
+			std::shared_ptr<T> QueryInterface() noexcept
 			{
-				return this->DoQueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<T>();
+				return this->DoQueryInterface(RTTI::GetInterfaceID<T>()).LockObject<T>();
 			}
 
-			template<class T>
-			object_ptr<const T> QueryInterface() const noexcept
+			template<std::derived_from<IObject> T>
+			std::shared_ptr<const T> QueryInterface() const noexcept
 			{
-				return const_cast<IObject*>(this)->DoQueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<const T>();
+				return const_cast<IObject*>(this)->DoQueryInterface(RTTI::GetInterfaceID<T>()).LockObject<const T>();
 			}
 
-			template<class T>
-			bool QueryInterface(object_ptr<T>& ptr) noexcept
+			template<std::derived_from<IObject> T>
+			bool QueryInterface(std::shared_ptr<T>& ptr) noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
 			}
 
-			template<class T>
-			bool QueryInterface(object_ptr<const T>& ptr) const noexcept
+			template<std::derived_from<IObject> T>
+			bool QueryInterface(std::shared_ptr<const T>& ptr) const noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
 			}
 	};
-}
-
-namespace kxf::RTTI
-{
-	template<class TResult, class T>
-	std::unique_ptr<TResult> dynamic_cast_unique_ptr(std::unique_ptr<T> ptr) noexcept
-	{
-		static_assert(std::is_base_of_v<IObject, T> && std::is_base_of_v<IObject, TResult>, "RTTI object required");
-
-		if constexpr(std::is_same_v<T, TResult>)
-		{
-			return ptr;
-		}
-		else if (ptr)
-		{
-			auto ptr2 = ptr->IObject::QueryInterface<TResult>();
-			wxASSERT_MSG(ptr2.is_reference(), "IObject must not be dynamic");
-
-			// Release the source pointer and create a 'unique_ptr' from the pointer retrieved from the 'QueryInterface' call.
-			// This is effectively a move from the source 'unique_ptr<T>' to target 'unique_ptr<TResult>'.
-			ptr.release();
-			return std::unique_ptr<TResult>(ptr2.release());
-		}
-		return nullptr;
-	}
-
-	template<class T, class... Args>
-	std::unique_ptr<IObject> new_object(Args&&... arg)
-	{
-		static_assert(std::is_base_of_v<IObject, T>, "RTTI object required");
-
-		return dynamic_cast_unique_ptr<IObject>(std::make_unique<T>(std::forward<Args>(arg)...));
-	}
 }
 
 #define KxRTTI_DeclareIID(T, ...)	\

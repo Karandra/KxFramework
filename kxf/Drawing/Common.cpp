@@ -30,7 +30,7 @@ namespace kxf::Drawing
 				};
 
 				IObject* objectKxf = dynamic_cast<IObject*>(objectWx);
-				if (object_ptr<IImageHandler> handlerKxf; objectKxf && objectKxf->QueryInterface(handlerKxf))
+				if (std::shared_ptr<IImageHandler> handlerKxf; objectKxf && objectKxf->QueryInterface(handlerKxf))
 				{
 					auto image = handlerKxf->CreateImage();
 					if (handlerKxf->LoadImage(*image, stream, index) && *image)
