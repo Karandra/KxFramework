@@ -345,7 +345,6 @@
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
     <ClInclude Include="kxf\RTTI\Interface.h" />
-    <ClInclude Include="kxf\RTTI\ObjectPtr.h" />
     <ClInclude Include="kxf\RTTI\RTTI.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
@@ -488,9 +487,11 @@
     <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetEvent.h" />
+    <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IMenuWidget.h" />
@@ -833,7 +834,6 @@
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
     <ClCompile Include="kxf\RTTI\IObject.cpp" />
-    <ClCompile Include="kxf\RTTI\ObjectPtr.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
@@ -946,6 +946,7 @@
     <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp" />
+    <ClCompile Include="kxf\UI\Events\ButtonWidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\MenuWidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />

@@ -284,6 +284,9 @@
     <Filter Include="kxf\UI\Menus\WXUI">
       <UniqueIdentifier>{0aa287b3-3ebc-4774-b17c-e1e3202db0bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\UI\Widgets\WXUI">
+      <UniqueIdentifier>{d7e87a57-f65e-49cd-afb0-126278f00f7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1382,9 +1385,6 @@
     <ClInclude Include="kxf\RTTI\IID.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\RTTI\ObjectPtr.h">
-      <Filter>kxf\RTTI</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\IO\IStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
@@ -2048,6 +2048,12 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\Menus\ShellMenuWidgetItem.h">
       <Filter>kxf\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IButtonWidget.h">
+      <Filter>kxf\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2730,9 +2736,6 @@
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\RTTI\ObjectPtr.cpp">
-      <Filter>kxf\RTTI</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\Color.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
@@ -3086,6 +3089,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\INativeWidget.cpp">
       <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\ButtonWidgetEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
