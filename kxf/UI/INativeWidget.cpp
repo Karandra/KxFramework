@@ -1,7 +1,16 @@
 #include "KxfPCH.h"
 #include "INativeWidget.h"
 #include "IWidget.h"
+#include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/Application/IGUIApplication.h"
+
+namespace kxf
+{
+	void INativeWidget::OnMessageProcessed(void* handle, uint32_t messageID, intptr_t result)
+	{
+		QueryInterface<IEvtHandler>()->ProcessSignal(&INativeWidget::OnMessageProcessed, handle, messageID, result);
+	}
+}
 
 namespace kxf::Widgets
 {

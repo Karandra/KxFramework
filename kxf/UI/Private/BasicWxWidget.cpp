@@ -788,6 +788,10 @@ namespace kxf::Private
 			return ::SetWindowTheme(m_Window->GetHandle(), applicationName.wc_str(), nullptr);
 		}
 	}
+	bool BasicWxWidgetBase::IsForegroundWindow() const
+	{
+		return m_Window->GetHandle() == ::GetForegroundWindow();
+	}
 	bool BasicWxWidgetBase::SetForegroundWindow()
 	{
 		return ::SetForegroundWindow(m_Window->GetHandle());

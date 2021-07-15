@@ -169,6 +169,7 @@ namespace kxf::Private
 			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout);
 
 			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs);
+			bool IsForegroundWindow() const;
 			bool SetForegroundWindow();
 	};
 }
@@ -724,6 +725,10 @@ namespace kxf::Private
 			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs = {}) override
 			{
 				return m_Window.SetWindowTheme(applicationName, subIDs);
+			}
+			bool IsForegroundWindow() const override
+			{
+				return m_Window.IsForegroundWindow();
 			}
 			bool SetForegroundWindow() override
 			{
