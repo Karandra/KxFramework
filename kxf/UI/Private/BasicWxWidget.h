@@ -16,6 +16,7 @@ namespace kxf::Private
 	{
 		private:
 			IWidget& m_Widget;
+			std::shared_ptr<IObject> m_RefLock;
 			wxWindow* m_Window = nullptr;
 			bool m_ShouldDelete = false;
 

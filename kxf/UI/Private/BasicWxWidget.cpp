@@ -62,12 +62,14 @@ namespace kxf::Private
 {
 	void BasicWxWidgetBase::OnWindowCreate(wxWindowCreateEvent& event)
 	{
+		m_RefLock = m_Widget.shared_from_this();
 		event.Skip();
 	}
 	void BasicWxWidgetBase::OnWindowDestroy(wxWindowDestroyEvent& event)
 	{
 		DissociateWXObject(*m_Window);
 		m_Window = nullptr;
+		m_RefLock = nullptr;
 		m_ShouldDelete = false;
 
 		event.Skip();
@@ -101,6 +103,7 @@ namespace kxf::Private
 		}
 
 		m_Window = nullptr;
+		m_RefLock = nullptr;
 		m_ShouldDelete = false;
 	}
 
