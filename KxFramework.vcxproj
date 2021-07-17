@@ -522,7 +522,9 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h" />
     <ClInclude Include="kxf\UI\WidgetID.h" />
+    <ClInclude Include="kxf\UI\Widgets\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="kxf\UI\Windows\Frame.h" />
@@ -968,6 +970,8 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\Window.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\Button.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="kxf\UI\Windows\Frame.cpp" />

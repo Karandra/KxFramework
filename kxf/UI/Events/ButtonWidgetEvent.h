@@ -13,6 +13,7 @@ namespace kxf
 	{
 		public:
 			KxEVENT_MEMBER(ButtonWidgetEvent, Click);
+			KxEVENT_MEMBER(ButtonWidgetEvent, Dropdown);
 
 		public:
 			ButtonWidgetEvent(IButtonWidget& widget) noexcept;

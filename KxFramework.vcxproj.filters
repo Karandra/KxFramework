@@ -2055,6 +2055,12 @@
     <ClInclude Include="kxf\UI\IButtonWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\Button.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3092,6 +3098,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Events\ButtonWidgetEvent.cpp">
       <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\Button.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
