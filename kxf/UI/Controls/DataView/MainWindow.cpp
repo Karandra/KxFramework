@@ -52,7 +52,7 @@ namespace kxf::UI::DataView
 						indent = m_MainWindow.m_Indent * node->GetItemIndent() + m_ExpanderSize;
 					}
 
-					auto gc = m_MainWindow.m_GraphicsRenderer->CreateMeasuringContext(m_MainWindow.GetView());
+					auto gc = m_MainWindow.m_GraphicsRenderer->CreateLegacyMeasuringContext(m_MainWindow.GetView());
 
 					Renderer& renderer = node->GetCellRenderer(m_Column);
 					renderer.BeginCellRendering(*node, m_Column, *gc);
@@ -1050,7 +1050,7 @@ namespace kxf::UI::DataView
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
-		auto gc = m_GraphicsRenderer->CreateWindowPaintContext(*this);
+		auto gc = m_GraphicsRenderer->CreateLegacyWindowPaintContext(*this);
 		gc->SetAntialiasMode(AntialiasMode::None);
 		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
 

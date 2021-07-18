@@ -56,7 +56,7 @@ namespace kxf::WXUI
 		IRendererNative& nativeRenderer = IRendererNative::Get();
 		auto renderer = m_Widget.GetActiveGraphicsRenderer();
 
-		auto gc = renderer->CreateWindowPaintContext(*this);
+		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->Clear(renderer->GetTransparentBrush());
 
 		const bool isEnabled = IsEnabled();

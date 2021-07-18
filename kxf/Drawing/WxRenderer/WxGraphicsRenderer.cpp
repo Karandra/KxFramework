@@ -8,6 +8,7 @@
 #include "WxGraphicsPath.h"
 #include "../SVGImage.h"
 #include "../BitmapImage.h"
+#include "kxf/UI/IWidget.h"
 #include <wx/graphics.h>
 
 namespace kxf
@@ -60,7 +61,40 @@ namespace kxf
 		return {major, minor, micro};
 	}
 
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, IWidget* widget)
+	{
+		return WxGraphicsRenderer::CreateLegacyContext(std::move(texture), widget ? widget->GetWxWindow() : nullptr);
+	}
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWidgetContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return WxGraphicsRenderer::CreateLegacyWindowContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWidgetClientContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return WxGraphicsRenderer::CreateLegacyWindowClientContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWidgetPaintContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return WxGraphicsRenderer::CreateLegacyWindowPaintContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(IWidget* widget)
+	{
+		return WxGraphicsRenderer::CreateLegacyMeasuringContext(widget ? widget->GetWxWindow() : nullptr);
+	}
+
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
@@ -68,7 +102,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyContext(wxDC& dc, const Size& size)
 	{
 		if (dc.IsOk())
 		{
@@ -76,15 +110,15 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyWindowContext(wxWindow& window)
 	{
 		return std::make_shared<WxGraphicsWindowContext>(*this, window);
 	}
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyWindowClientContext(wxWindow& window)
 	{
 		return std::make_shared<WxGraphicsWindowClientContext>(*this, window);
 	}
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyWindowPaintContext(wxWindow& window)
 	{
 		// Context created for 'wxBufferedPaintDC' doesn't work correctly with Direct2D and
 		// leaves a black surface after flushing, so we're going to use regular 'wxPaintDC' here.
@@ -99,7 +133,7 @@ namespace kxf
 			return std::make_shared<WxGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateLegacyMeasuringContext(wxWindow* window)
 	{
 		if (m_Type == Type::GDIPlus)
 		{

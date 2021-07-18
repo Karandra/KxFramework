@@ -177,7 +177,7 @@ namespace kxf::UI::DataView
 		{
 			// No existing window context right now, create one to measure text
 			IGraphicsRenderer& renderer = m_Renderer.GetGraphicsRenderer();
-			auto gc = renderer.CreateMeasuringContext(m_Renderer.GetView());
+			auto gc = renderer.CreateLegacyMeasuringContext(m_Renderer.GetView());
 
 			return GetTextExtent(*gc, string);
 		}

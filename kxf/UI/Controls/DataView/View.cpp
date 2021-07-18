@@ -164,7 +164,7 @@ namespace kxf::UI::DataView
 	{
 		IGraphicsRenderer& renderer = *m_ClientArea->m_GraphicsRenderer;
 
-		auto gc = renderer.CreateWindowPaintContext(*this);
+		auto gc = renderer.CreateLegacyWindowPaintContext(*this);
 		gc->SetAntialiasMode(AntialiasMode::None);
 		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
 

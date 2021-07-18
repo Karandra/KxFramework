@@ -34,12 +34,18 @@ namespace kxf
 			String GetName() const override;
 			Version GetVersion() const override;
 
-			std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override;
-			std::shared_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override;
-			std::shared_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) override;
-			std::shared_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) override;
-			std::shared_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) override;
-			std::shared_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) override;
+			std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, IWidget* window = nullptr) override;
+			std::shared_ptr<IGraphicsContext> CreateWidgetContext(IWidget& window) override;
+			std::shared_ptr<IGraphicsContext> CreateWidgetClientContext(IWidget& window) override;
+			std::shared_ptr<IGraphicsContext> CreateWidgetPaintContext(IWidget& window) override;
+			std::shared_ptr<IGraphicsContext> CreateMeasuringContext(IWidget* window = nullptr) override;
+
+			std::shared_ptr<IGraphicsContext> CreateLegacyContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override;
+			std::shared_ptr<IGraphicsContext> CreateLegacyContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override;
+			std::shared_ptr<IGraphicsContext> CreateLegacyWindowContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateLegacyWindowClientContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateLegacyWindowPaintContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateLegacyMeasuringContext(wxWindow* window = nullptr) override;
 
 		public:
 			// Pen and brush functions

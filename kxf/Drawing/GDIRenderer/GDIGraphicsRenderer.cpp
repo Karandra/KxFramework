@@ -7,6 +7,7 @@
 #include "GDIGraphicsFont.h"
 #include "../SVGImage.h"
 #include "../BitmapImage.h"
+#include "kxf/UI/IWidget.h"
 #include "kxf/Utility/Container.h"
 
 namespace kxf
@@ -112,7 +113,40 @@ namespace kxf
 		return "1.0";
 	}
 
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, IWidget* widget)
+	{
+		return GDIGraphicsRenderer::CreateLegacyContext(std::move(texture), widget ? widget->GetWxWindow() : nullptr);
+	}
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWidgetContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return GDIGraphicsRenderer::CreateLegacyWindowContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWidgetClientContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return GDIGraphicsRenderer::CreateLegacyWindowClientContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWidgetPaintContext(IWidget& widget)
+	{
+		if (wxWindow* window = widget.GetWxWindow())
+		{
+			return GDIGraphicsRenderer::CreateLegacyWindowPaintContext(*window);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext(IWidget* widget)
+	{
+		return GDIGraphicsRenderer::CreateLegacyMeasuringContext(widget ? widget->GetWxWindow() : nullptr);
+	}
+
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
@@ -120,7 +154,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyContext(wxDC& dc, const Size& size)
 	{
 		if (dc.IsOk())
 		{
@@ -128,15 +162,15 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyWindowContext(wxWindow& window)
 	{
 		return std::make_shared<GDIGraphicsWindowContext>(*this, window);
 	}
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyWindowClientContext(wxWindow& window)
 	{
 		return std::make_shared<GDIGraphicsWindowClientContext>(*this, window);
 	}
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyWindowPaintContext(wxWindow& window)
 	{
 		if (window.IsDoubleBuffered())
 		{
@@ -147,7 +181,7 @@ namespace kxf
 			return std::make_shared<GDIGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateLegacyMeasuringContext(wxWindow* window)
 	{
 		return std::make_shared<GDIGraphicsMemoryContext>(*this, nullptr, window);
 	}

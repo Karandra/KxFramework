@@ -36,7 +36,7 @@ namespace kxf::WXUI
 		auto renderer = m_Item->m_OwningMenu.lock()->GetActiveGraphicsRenderer();
 
 		auto texture = renderer->CreateTexture(Size(rect.GetSize()), Drawing::GetStockColor(StockColor::Transparent));
-		auto gc = renderer->CreateContext(texture, GetWindow());
+		auto gc = renderer->CreateLegacyContext(texture, GetWindow());
 		m_Item->OnDrawItem(std::move(gc), Rect(rect.GetSize()), flags);
 
 		dc.DrawBitmap(texture->ToBitmapImage().ToGDIBitmap().ToWxBitmap(), rect.GetPosition());

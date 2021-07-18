@@ -8,6 +8,7 @@ class wxDC;
 namespace kxf
 {
 	class Font;
+	class IWidget;
 	class IImage2D;
 	class BitmapImage;
 
@@ -36,12 +37,18 @@ namespace kxf
 			virtual String GetName() const = 0;
 			virtual Version GetVersion() const = 0;
 
-			virtual std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) = 0;
-			virtual std::shared_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) = 0;
-			virtual std::shared_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) = 0;
-			virtual std::shared_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) = 0;
-			virtual std::shared_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) = 0;
-			virtual std::shared_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, IWidget* window = nullptr) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWidgetContext(IWidget& widget) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWidgetClientContext(IWidget& widget) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWidgetPaintContext(IWidget& widget) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateMeasuringContext(IWidget* widget = nullptr) = 0;
+
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyWindowContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyWindowClientContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyWindowPaintContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateLegacyMeasuringContext(wxWindow* window = nullptr) = 0;
 
 		public:
 			// Pen and brush functions
