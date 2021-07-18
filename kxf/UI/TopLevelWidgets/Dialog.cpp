@@ -6,7 +6,7 @@ namespace kxf::Widgets
 {
 	Dialog::Dialog()
 	{
-		InitializeWithWindow();
+		InitializeWxWidget();
 	}
 	Dialog::~Dialog() = default;
 

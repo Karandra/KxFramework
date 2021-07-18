@@ -690,7 +690,6 @@
     <ClInclude Include="kxf\Threading\Common.h" />
     <ClInclude Include="kxf\UI.hpp" />
     <ClInclude Include="kxf\UI\Common.h" />
-    <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h" />
     <ClInclude Include="kxf\UI\StdButton.h" />
     <ClInclude Include="kxf\UI\StdDialogButtonSizer.h" />
     <ClInclude Include="kxf\UI\StdIcon.h" />
@@ -1018,7 +1017,6 @@
     <ClCompile Include="kxf\System\TaskScheduler.cpp" />
     <ClCompile Include="kxf\System\WOW64FSRedirection.cpp" />
     <ClCompile Include="kxf\UI\Common.cpp" />
-    <ClCompile Include="kxf\UI\HiDPIEnabledWindow.cpp" />
     <ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp" />
     <ClCompile Include="kxf\UI\Validator.cpp" />
     <ClCompile Include="kxf\Utility\String.cpp" />

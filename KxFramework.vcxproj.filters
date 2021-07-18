@@ -971,9 +971,6 @@
     <ClInclude Include="kxf\UI\Controls\WebView.h">
       <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\StdDialogButtonSizer.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
@@ -2501,9 +2498,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\WebView.cpp">
       <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\HiDPIEnabledWindow.cpp">
-      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>

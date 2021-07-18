@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "BasicWxWidget.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
+#include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/Enumerator.h"
 #include "kxf/Utility/String.h"
 #include <wx/window.h>
@@ -791,6 +792,15 @@ namespace kxf::Private
 			return ::SetWindowTheme(m_Window->GetHandle(), applicationName.wc_str(), nullptr);
 		}
 	}
+	bool BasicWxWidgetBase::EnableNonClientDPIScaling()
+	{
+		if (NativeAPI::User32::EnableNonClientDpiScaling)
+		{
+			return NativeAPI::User32::EnableNonClientDpiScaling(m_Window->GetHandle());
+		}
+		return false;
+	}
+
 	bool BasicWxWidgetBase::IsForegroundWindow() const
 	{
 		return m_Window->GetHandle() == ::GetForegroundWindow();

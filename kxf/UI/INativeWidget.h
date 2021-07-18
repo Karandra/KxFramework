@@ -46,6 +46,8 @@ namespace kxf
 			virtual intptr_t SendMessage(uint32_t messageID, intptr_t wParam = 0, intptr_t lParam = 0, TimeSpan timeout = {}) = 0;
 
 			virtual HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs = {}) = 0;
+			virtual bool EnableNonClientDPIScaling() = 0;
+
 			virtual bool IsForegroundWindow() const = 0;
 			virtual bool SetForegroundWindow() = 0;
 	};

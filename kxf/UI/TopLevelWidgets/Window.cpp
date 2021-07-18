@@ -6,7 +6,7 @@ namespace kxf::Widgets
 {
 	Window::Window()
 	{
-		InitializeWithWindow();
+		InitializeWxWidget();
 	}
 	Window::~Window() = default;
 

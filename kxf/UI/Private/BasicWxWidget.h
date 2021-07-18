@@ -170,6 +170,8 @@ namespace kxf::Private
 			intptr_t SendMessage(uint32_t messageID, intptr_t wParam, intptr_t lParam, TimeSpan timeout);
 
 			HResult SetWindowTheme(const String& applicationName, const std::vector<String>& subIDs);
+			bool EnableNonClientDPIScaling();
+
 			bool IsForegroundWindow() const;
 			bool SetForegroundWindow();
 	};
@@ -235,7 +237,7 @@ namespace kxf::Private
 			}
 
 			template<class... Args> requires(std::is_constructible_v<TWindow, TDerived&, Args...>)
-			void InitializeWithWindow(Args&&... arg)
+			void InitializeWxWidget(Args&&... arg)
 			{
 				m_Window.Initialize(std::make_unique<TWindow>(Self(), std::forward<Args>(arg)...));
 			}
@@ -727,6 +729,11 @@ namespace kxf::Private
 			{
 				return m_Window.SetWindowTheme(applicationName, subIDs);
 			}
+			bool EnableNonClientDPIScaling() override
+			{
+				return m_Window.EnableNonClientDPIScaling();
+			}
+
 			bool IsForegroundWindow() const override
 			{
 				return m_Window.IsForegroundWindow();
