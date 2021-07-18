@@ -99,9 +99,15 @@ namespace kxf
 			WidgetEvent& operator=(const WidgetEvent&) = default;
 			WidgetEvent& operator=(WidgetEvent&& other) noexcept
 			{
+				static_cast<BasicEvent&>(*this) = std::move(other);
+
+				m_Widget = std::move(other.m_Widget);
 				m_WidgetID = Utility::ExchangeResetAndReturn(other.m_WidgetID, StdID::None);
 				m_PropagationLevel = Utility::ExchangeResetAndReturn(other.m_PropagationLevel, PropagationLevel::Max);
+
 				m_String = std::move(other.m_String);
+				m_Int = Utility::ExchangeResetAndReturn(other.m_Int, 0);
+				m_ExtraInt = Utility::ExchangeResetAndReturn(other.m_ExtraInt, 0);
 
 				return *this;
 			}
