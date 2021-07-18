@@ -123,6 +123,28 @@ namespace kxf
 			{
 				return DrawLabel(text, rect, NullGraphicsTexture, font, brush, alignment, acceleratorIndex);
 			}
+			RectF DrawLabel(const String& text, const RectF& rect, const IImage2D& icon, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
+			{
+				if (auto texture = GetRenderer().CreateTexture(icon))
+				{
+					return DrawLabel(text, rect, *texture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+				}
+				else
+				{
+					return DrawLabel(text, rect, NullGraphicsTexture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+				}
+			}
+			RectF DrawLabel(const String& text, const RectF& rect, const BitmapImage& icon, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
+			{
+				if (auto texture = GetRenderer().CreateTexture(icon))
+				{
+					return DrawLabel(text, rect, *texture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+				}
+				else
+				{
+					return DrawLabel(text, rect, NullGraphicsTexture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+				}
+			}
 			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
 			{
 				return DrawLabel(text, rect, icon, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);

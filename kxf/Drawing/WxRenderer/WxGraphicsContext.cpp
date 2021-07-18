@@ -62,8 +62,7 @@ namespace kxf
 
 			if (!pen && !canUseNullPen)
 			{
-				auto color = brush.QueryInterface<IGraphicsSolidBrush>()->GetColor();
-				m_Context.SetPen(m_Context.CreatePen(color));
+				m_Context.SetPen(m_Context.CreatePen(brush.GetColor()));
 			}
 			else
 			{
@@ -157,13 +156,7 @@ namespace kxf
 	}
 	wxGraphicsFont WxGraphicsContext::MakeGCFont(const IGraphicsFont& font, const IGraphicsBrush& brush) const
 	{
-		Color color = m_CurrentFontColor;
-		if (auto solidBrush = brush.QueryInterface<IGraphicsSolidBrush>())
-		{
-			color = solidBrush->GetColor();
-		}
-
-		return MakeGCFont(font, color);
+		return MakeGCFont(font, brush ? brush.GetColor() : m_CurrentFontColor);
 	}
 
 	void WxGraphicsContext::UpdateCurrentFont()

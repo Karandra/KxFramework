@@ -91,9 +91,7 @@ namespace kxf::WXUI
 			{
 				bitmap = bitmap.ConvertToDisabled();
 			}
-
-			auto texture = renderer->CreateTexture(bitmap);
-			gc->DrawLabel(GetLabelText(), contentRect, *texture, Alignment::Center);
+			gc->DrawLabel(GetLabelText(), contentRect, bitmap, Alignment::Center);
 		}
 		else
 		{

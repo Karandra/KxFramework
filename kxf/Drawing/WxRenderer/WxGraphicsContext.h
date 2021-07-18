@@ -350,7 +350,7 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				return nullptr;
 			}
@@ -396,7 +396,7 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				return nullptr;
 			}
@@ -428,19 +428,22 @@ namespace kxf
 
 	class KX_API WxGraphicsMeasuringContext: public WxGraphicsContext
 	{
+		private:
+			wxWindow* m_Window = nullptr;
+
 		public:
 			WxGraphicsMeasuringContext() noexcept = default;
 			WxGraphicsMeasuringContext(WxGraphicsRenderer& rendrer, wxWindow* window = nullptr)
-				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateMeasuringContext()))
+				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateMeasuringContext())), m_Window(window)
 			{
 				SetupGC(window);
 			}
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsMeasuringContext>(*m_Renderer);
+				return std::make_unique<WxGraphicsMeasuringContext>(*m_Renderer, m_Window);
 			}
 
 			// IGraphicsContext
@@ -484,9 +487,9 @@ namespace kxf
 
 			public:
 				// IGraphicsObject
-				std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+				std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 				{
-					return std::make_unique<WxGraphicsBasicGDIContext<T>>(*m_Renderer, *m_Context->GetWindow());
+					return std::make_shared<WxGraphicsBasicGDIContext<T>>(*m_Renderer, *m_Context->GetWindow());
 				}
 		};
 
@@ -514,9 +517,9 @@ namespace kxf
 
 			public:
 				// IGraphicsObject
-				std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+				std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 				{
-					return std::make_unique<WxGraphicsBasicGDIContext_ImageBuffered>(*m_Renderer, *m_DC.GetWindow());
+					return std::make_shared<WxGraphicsBasicGDIContext_ImageBuffered>(*m_Renderer, *m_DC.GetWindow());
 				}
 		};
 	}

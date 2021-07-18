@@ -9,7 +9,7 @@
 
 namespace kxf
 {
-	class KX_API GDIGraphicsTexture: public RTTI::ExtendInterface<GDIGraphicsTexture, IGraphicsTexture, IGDIObject>
+	class KX_API GDIGraphicsTexture: public RTTI::DynamicImplementation<GDIGraphicsTexture, IGraphicsTexture, IGDIObject>
 	{
 		KxRTTI_DeclareIID(GDIGraphicsTexture, {0xc046e1f4, 0xcff5, 0x419a, {0x98, 0xf5, 0xf4, 0x75, 0x6d, 0xdb, 0xc4, 0x8d}});
 
@@ -86,9 +86,9 @@ namespace kxf
 			{
 				return DoIsSameAs(other);
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsTexture>(*this);
+				return std::make_shared<GDIGraphicsTexture>(*this);
 			}
 
 			GDIGraphicsRenderer& GetRenderer() override
@@ -169,7 +169,7 @@ namespace kxf
 			}
 	};
 
-	class KX_API GDIGraphicsVectorTexture: public RTTI::ExtendInterface<GDIGraphicsVectorTexture, IGraphicsTexture>
+	class KX_API GDIGraphicsVectorTexture: public RTTI::DynamicImplementation<GDIGraphicsVectorTexture, IGraphicsTexture>
 	{
 		KxRTTI_DeclareIID(GDIGraphicsVectorTexture, {0xdffe01f1, 0xcc55, 0x4a8f, {0x84, 0x7d, 0xd0, 0xdd, 0xc5, 0x66, 0x4a, 0xed}});
 
@@ -232,9 +232,9 @@ namespace kxf
 				}
 				return false;
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsVectorTexture>(*this);
+				return std::make_shared<GDIGraphicsVectorTexture>(*this);
 			}
 
 			GDIGraphicsRenderer& GetRenderer() override

@@ -18,15 +18,14 @@ namespace kxf
 
 		public:
 			virtual bool IsTransparent() const = 0;
+
+			virtual Color GetColor() const = 0;
+			virtual void SetColor(const Color& color) = 0;
 	};
 
 	class KX_API IGraphicsSolidBrush: public RTTI::ExtendInterface<IGraphicsSolidBrush, IGraphicsBrush>
 	{
 		KxRTTI_DeclareIID(IGraphicsSolidBrush, {0xc0252eaf, 0x8ce8, 0x482f, {0x9e, 0xe4, 0xd2, 0x40, 0x81, 0x95, 0xa7, 0xc9}});
-
-		public:
-			virtual Color GetColor() const = 0;
-			virtual void SetColor(const Color& color) = 0;
 	};
 
 	class KX_API IGraphicsHatchBrush: public RTTI::ExtendInterface<IGraphicsHatchBrush, IGraphicsBrush>

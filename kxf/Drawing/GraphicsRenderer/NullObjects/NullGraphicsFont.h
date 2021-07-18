@@ -20,7 +20,7 @@ namespace kxf::Drawing
 			{
 				return other.IsNull();
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				return nullptr;
 			}

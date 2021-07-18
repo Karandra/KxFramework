@@ -19,7 +19,7 @@ namespace kxf
 		public:
 			virtual bool IsNull() const = 0;
 			virtual bool IsSameAs(const IGraphicsObject& other) const = 0;
-			virtual std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const = 0;
+			virtual std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const = 0;
 
 			virtual IGraphicsRenderer& GetRenderer() = 0;
 			virtual void* GetNativeHandle() const = 0;

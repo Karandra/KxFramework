@@ -5,6 +5,8 @@
 #include "GDIGraphicsBrush.h"
 #include "GDIGraphicsPen.h"
 #include "GDIGraphicsFont.h"
+#include "../SVGImage.h"
+#include "../BitmapImage.h"
 #include "kxf/Utility/Container.h"
 
 namespace kxf
@@ -110,44 +112,44 @@ namespace kxf
 		return "1.0";
 	}
 
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
-			return std::make_unique<GDIGraphicsMemoryContext>(*this, std::move(texture), window);
+			return std::make_shared<GDIGraphicsMemoryContext>(*this, std::move(texture), window);
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
 	{
 		if (dc.IsOk())
 		{
-			return std::make_unique<GDIGraphicsAnyContext>(*this, dc, size);
+			return std::make_shared<GDIGraphicsAnyContext>(*this, dc, size);
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowContext(wxWindow& window)
 	{
-		return std::make_unique<GDIGraphicsWindowContext>(*this, window);
+		return std::make_shared<GDIGraphicsWindowContext>(*this, window);
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
 	{
-		return std::make_unique<GDIGraphicsWindowClientContext>(*this, window);
+		return std::make_shared<GDIGraphicsWindowClientContext>(*this, window);
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
 	{
 		if (window.IsDoubleBuffered())
 		{
-			return std::make_unique<GDIGraphicsPaintContext>(*this, window);
+			return std::make_shared<GDIGraphicsPaintContext>(*this, window);
 		}
 		else
 		{
-			return std::make_unique<GDIGraphicsBufferedPaintContext>(*this, window);
+			return std::make_shared<GDIGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
+	std::shared_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
 	{
-		return std::make_unique<GDIGraphicsMemoryContext>(*this, nullptr, window);
+		return std::make_shared<GDIGraphicsMemoryContext>(*this, nullptr, window);
 	}
 
 	// Pen and brush functions
@@ -212,6 +214,25 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsTexture>(*this);
 	}
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const IImage2D& image)
+	{
+		if (image)
+		{
+			if (auto vector = image.QueryInterface<SVGImage>())
+			{
+				return std::make_shared<GDIGraphicsVectorTexture>(*this, *vector);
+			}
+			else if (auto bitmap = image.QueryInterface<BitmapImage>())
+			{
+				return std::make_shared<GDIGraphicsTexture>(*this, *bitmap);
+			}
+			else
+			{
+				return std::make_shared<GDIGraphicsTexture>(*this, image.ToBitmapImage());
+			}
+		}
+		return nullptr;
+	}
 	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const BitmapImage& image)
 	{
 		if (image)
@@ -220,13 +241,9 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const SVGImage& vectorImage)
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const SizeF& size, const Color& color)
 	{
-		if (vectorImage)
-		{
-			return std::make_shared<GDIGraphicsVectorTexture>(*this, vectorImage);
-		}
-		return nullptr;
+		return std::make_shared<GDIGraphicsTexture>(*this, size, color);
 	}
 	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const GDIBitmap& bitmap)
 	{
@@ -235,10 +252,6 @@ namespace kxf
 			return std::make_shared<GDIGraphicsTexture>(*this, bitmap);
 		}
 		return nullptr;
-	}
-	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const SizeF& size, const Color& color)
-	{
-		return std::make_shared<GDIGraphicsTexture>(*this, size, color);
 	}
 
 	// Text functions

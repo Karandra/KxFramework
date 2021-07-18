@@ -106,6 +106,16 @@ namespace kxf::Drawing::Private
 				return m_Brush.IsTransparent();
 			}
 
+			Color GetColor() const override
+			{
+				return m_Brush.GetColor();
+			}
+			void SetColor(const Color& color) override
+			{
+				m_Brush.SetColor(color);
+				Invalidate();
+			}
+
 			// WxGraphicsBrush
 			const wxGraphicsBrush& Get() const override
 			{
@@ -158,27 +168,16 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsSolidBrush>(*this);
-			}
-
-			// IGraphicsSolidBrush
-			Color GetColor() const override
-			{
-				return m_Brush.GetColor();
-			}
-			void SetColor(const Color& color) override
-			{
-				m_Brush.SetColor(color);
-				Invalidate();
+				return std::make_shared<WxGraphicsSolidBrush>(*this);
 			}
 	};
 
 	class KX_API WxGraphicsHatchBrush: public Drawing::Private::WxGraphicsBrushBase<IGraphicsHatchBrush>
 	{
 		private:
-			Color m_ForgroundColor;
+			Color m_BackgroundColor;
 
 		public:
 			WxGraphicsHatchBrush() = default;
@@ -194,29 +193,29 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsHatchBrush>(*this);
+				return std::make_shared<WxGraphicsHatchBrush>(*this);
 			}
 
 			// IGraphicsHatchBrush
 			Color GetBackgroundColor() const override
 			{
-				return m_Brush.GetColor();
+				return m_BackgroundColor;
 			}
 			void SetBackgroundColor(const Color& color) override
 			{
-				m_Brush.SetColor(color);
-				Invalidate();
+				m_BackgroundColor = color;
 			}
 
 			Color GetForegroundColor() const override
 			{
-				return m_ForgroundColor;
+				return m_Brush.GetColor();
 			}
 			void SetForegroundColor(const Color& color) override
 			{
-				m_ForgroundColor = color;
+				m_Brush.SetColor(color);
+				Invalidate();
 			}
 
 			HatchStyle GetHatchStyle() const override
@@ -253,9 +252,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsTextureBrush>(*this);
+				return std::make_shared<WxGraphicsTextureBrush>(*this);
 			}
 
 			// IGraphicsTextureBrush
@@ -307,9 +306,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsLinearGradientBrush>(*this);
+				return std::make_shared<WxGraphicsLinearGradientBrush>(*this);
 			}
 
 			// IGraphicsLinearGradientBrush
@@ -371,9 +370,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsRadialGradientBrush>(*this);
+				return std::make_shared<WxGraphicsRadialGradientBrush>(*this);
 			}
 
 			// IGraphicsRadialGradientBrush

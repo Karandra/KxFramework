@@ -8,7 +8,7 @@
 
 namespace kxf
 {
-	class KX_API WxGraphicsTexture: public RTTI::ExtendInterface<WxGraphicsTexture, IGraphicsTexture>
+	class KX_API WxGraphicsTexture: public RTTI::DynamicImplementation<WxGraphicsTexture, IGraphicsTexture>
 	{
 		KxRTTI_DeclareIID(WxGraphicsTexture, {0x4c8a8b87, 0x9696, 0x4682, {0xb1, 0x8f, 0xc9, 0x55, 0x1f, 0xaa, 0xc, 0xd2}});
 
@@ -78,9 +78,9 @@ namespace kxf
 				}
 				return false;
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsTexture>(*this);
+				return std::make_shared<WxGraphicsTexture>(*this);
 			}
 
 			WxGraphicsRenderer& GetRenderer() override
@@ -177,7 +177,7 @@ namespace kxf
 			}
 	};
 
-	class KX_API WxGraphicsVectorTexture: public RTTI::ExtendInterface<WxGraphicsVectorTexture, IGraphicsTexture>
+	class KX_API WxGraphicsVectorTexture: public RTTI::DynamicImplementation<WxGraphicsVectorTexture, IGraphicsTexture>
 	{
 		KxRTTI_DeclareIID(WxGraphicsVectorTexture, {0xe067b8fd, 0x2be6, 0x48b4, {0x8d, 0x7c, 0xd1, 0x27, 0x85, 0xa8, 0x99, 0x25}});
 
@@ -227,9 +227,9 @@ namespace kxf
 				}
 				return false;
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsVectorTexture>(*this);
+				return std::make_shared<WxGraphicsVectorTexture>(*this);
 			}
 
 			WxGraphicsRenderer& GetRenderer() override

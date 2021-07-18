@@ -336,7 +336,7 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				return nullptr;
 			}
@@ -363,16 +363,16 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				if (m_Texture)
 				{
-					auto copy = Utility::StaticCastUniquePtr<IGraphicsTexture>(m_Texture->CloneGraphicsObject());
-					return std::make_unique<GDIGraphicsMemoryContext>(*m_Renderer, std::move(copy));
+					auto copy = m_Texture->CloneGraphicsObject();
+					return std::make_shared<GDIGraphicsMemoryContext>(*m_Renderer, copy->QueryInterface<IGraphicsTexture>());
 				}
 				else
 				{
-					return std::make_unique<GDIGraphicsMemoryContext>(*m_Renderer, nullptr);
+					return std::make_shared<GDIGraphicsMemoryContext>(*m_Renderer, nullptr);
 				}
 			}
 
@@ -397,9 +397,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsWindowContext>(*m_Renderer, *m_WindowDC.GetWindow());
+				return std::make_shared<GDIGraphicsWindowContext>(*m_Renderer, *m_WindowDC.GetWindow());
 			}
 	};
 
@@ -418,9 +418,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsWindowClientContext>(*m_Renderer, *m_ClientDC.GetWindow());
+				return std::make_shared<GDIGraphicsWindowClientContext>(*m_Renderer, *m_ClientDC.GetWindow());
 			}
 	};
 
@@ -439,9 +439,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsPaintContext>(*m_Renderer, *m_PaintDC.GetWindow());
+				return std::make_shared<GDIGraphicsPaintContext>(*m_Renderer, *m_PaintDC.GetWindow());
 			}
 	};
 }
@@ -471,16 +471,16 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				if (m_Texture)
 				{
-					auto copy = Utility::StaticCastUniquePtr<IGraphicsTexture>(m_Texture->CloneGraphicsObject());
-					return std::make_unique<GDIGraphicsBufferedContext>(*m_Renderer, std::move(copy), GetFlags());
+					auto copy = m_Texture->CloneGraphicsObject();
+					return std::make_shared<GDIGraphicsBufferedContext>(*m_Renderer, copy->QueryInterface<IGraphicsTexture>(), GetFlags());
 				}
 				else
 				{
-					return std::make_unique<GDIGraphicsBufferedContext>(*m_Renderer, Size(m_BufferedDC.GetSize()), GetFlags());
+					return std::make_shared<GDIGraphicsBufferedContext>(*m_Renderer, Size(m_BufferedDC.GetSize()), GetFlags());
 				}
 			}
 
@@ -514,9 +514,9 @@ namespace kxf
 
 		public:
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsBufferedPaintContext>(*m_Renderer, *m_BufferedPaintDC.GetWindow(), GetFlags());
+				return std::make_shared<GDIGraphicsBufferedPaintContext>(*m_Renderer, *m_BufferedPaintDC.GetWindow(), GetFlags());
 			}
 
 			// GDIGraphicsBufferedContext

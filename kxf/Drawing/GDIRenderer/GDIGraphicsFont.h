@@ -85,9 +85,9 @@ namespace kxf
 			{
 				return DoIsSameAs(other);
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsFont>(*this);
+				return std::make_shared<GDIGraphicsFont>(*this);
 			}
 
 			GDIGraphicsRenderer& GetRenderer() override

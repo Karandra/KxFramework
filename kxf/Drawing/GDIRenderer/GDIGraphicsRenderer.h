@@ -28,12 +28,12 @@ namespace kxf
 			String GetName() const override;
 			Version GetVersion() const override;
 
-			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override;
-			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override;
-			std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) override;
-			std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) override;
-			std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) override;
-			std::unique_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) override;
+			std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override;
+			std::shared_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) override;
+			std::shared_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) override;
+			std::shared_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) override;
 
 		public:
 			// Pen and brush functions
@@ -55,10 +55,10 @@ namespace kxf
 
 			// Texture functions
 			std::shared_ptr<IGraphicsTexture> CreateTexture() override;
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const IImage2D& image) override;
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) override;
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const SVGImage& vectorImage) override;
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const GDIBitmap& bitmap);
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) override;
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const GDIBitmap& bitmap);
 
 			// Text functions
 			std::shared_ptr<IGraphicsFont> CreateFont() override;

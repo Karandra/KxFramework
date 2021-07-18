@@ -8,7 +8,7 @@ class wxDC;
 namespace kxf
 {
 	class Font;
-	class SVGImage;
+	class IImage2D;
 	class BitmapImage;
 
 	class IGraphicsContext;
@@ -36,12 +36,12 @@ namespace kxf
 			virtual String GetName() const = 0;
 			virtual Version GetVersion() const = 0;
 
-			virtual std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) = 0;
-			virtual std::unique_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc, const Size& size = Size::UnspecifiedSize()) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) = 0;
+			virtual std::shared_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) = 0;
 
 		public:
 			// Pen and brush functions
@@ -59,8 +59,8 @@ namespace kxf
 
 			// Texture functions
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture() = 0;
+			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const IImage2D& image) = 0;
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) = 0;
-			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const SVGImage& vectorImage) = 0;
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) = 0;
 
 			// Text functions

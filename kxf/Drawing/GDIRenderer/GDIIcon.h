@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	class KX_API GDIIcon: public RTTI::ExtendInterface<GDIIcon, IGDIObject, IImage2D>
+	class KX_API GDIIcon: public RTTI::DynamicImplementation<GDIIcon, IGDIObject, IImage2D>
 	{
 		KxRTTI_DeclareIID(GDIIcon, {0x5da6784, 0xf20c, 0x4ad6, {0xb1, 0x3b, 0x3a, 0xa1, 0x2d, 0xd9, 0x66, 0x4a}});
 

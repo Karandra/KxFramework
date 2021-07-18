@@ -62,9 +62,9 @@ namespace kxf
 				}
 				return false;
 			}
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<WxGraphicsPen>(*this);
+				return std::make_shared<WxGraphicsPen>(*this);
 			}
 
 			WxGraphicsRenderer& GetRenderer() override

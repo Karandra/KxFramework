@@ -102,6 +102,15 @@ namespace kxf::Drawing::Private
 				return m_Brush.IsTransparent();
 			}
 
+			Color GetColor() const override
+			{
+				return m_Brush.GetColor();
+			}
+			void SetColor(const Color& color) override
+			{
+				m_Brush.SetColor(color);
+			}
+
 			// GDIGraphicsBrush
 			const GDIBrush& Get() const override
 			{
@@ -149,26 +158,16 @@ namespace kxf
 			}
 
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsSolidBrush>(*this);
-			}
-
-			// IGraphicsSolidBrush
-			Color GetColor() const override
-			{
-				return m_Brush.GetColor();
-			}
-			void SetColor(const Color& color) override
-			{
-				m_Brush.SetColor(color);
+				return std::make_shared<GDIGraphicsSolidBrush>(*this);
 			}
 	};
 
 	class KX_API GDIGraphicsHatchBrush: public Drawing::Private::GDIGraphicsBrushBase<IGraphicsHatchBrush>
 	{
 		private:
-			Color m_ForgroundColor;
+			Color m_BackgroundColor;
 
 		public:
 			GDIGraphicsHatchBrush() = default;
@@ -190,28 +189,28 @@ namespace kxf
 			}
 
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsHatchBrush>(*this);
+				return std::make_shared<GDIGraphicsHatchBrush>(*this);
 			}
 
 			// IGraphicsHatchBrush
 			Color GetBackgroundColor() const override
 			{
-				return m_Brush.GetColor();
+				return m_BackgroundColor;
 			}
 			void SetBackgroundColor(const Color& color) override
 			{
-				m_Brush.SetColor(color);
+				m_BackgroundColor = color;
 			}
 
 			Color GetForegroundColor() const override
 			{
-				return m_ForgroundColor;
+				return m_Brush.GetColor();
 			}
 			void SetForegroundColor(const Color& color) override
 			{
-				m_ForgroundColor = color;
+				m_Brush.SetColor(color);
 			}
 
 			HatchStyle GetHatchStyle() const override
@@ -253,9 +252,9 @@ namespace kxf
 			}
 
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsTextureBrush>(*this);
+				return std::make_shared<GDIGraphicsTextureBrush>(*this);
 			}
 
 			// IGraphicsTextureBrush
@@ -312,9 +311,9 @@ namespace kxf
 			}
 
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsLinearGradientBrush>(*this);
+				return std::make_shared<GDIGraphicsLinearGradientBrush>(*this);
 			}
 
 			// IGraphicsLinearGradientBrush
@@ -382,9 +381,9 @@ namespace kxf
 			}
 
 			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			std::shared_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
-				return std::make_unique<GDIGraphicsRadialGradientBrush>(*this);
+				return std::make_shared<GDIGraphicsRadialGradientBrush>(*this);
 			}
 
 			// IGraphicsRadialGradientBrush

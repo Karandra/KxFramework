@@ -10,7 +10,7 @@ namespace lunasvg
 
 namespace kxf
 {
-	class KX_API SVGImage final: public RTTI::ExtendInterface<SVGImage, IVectorImage>
+	class KX_API SVGImage final: public RTTI::DynamicImplementation<SVGImage, IVectorImage>
 	{
 		KxRTTI_DeclareIID_Using(SVGImage, ImageFormat::SVG.ToNativeUUID());
 		

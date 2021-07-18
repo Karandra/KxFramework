@@ -6,6 +6,8 @@
 #include "WxGraphicsPen.h"
 #include "WxGraphicsFont.h"
 #include "WxGraphicsPath.h"
+#include "../SVGImage.h"
+#include "../BitmapImage.h"
 #include <wx/graphics.h>
 
 namespace kxf
@@ -58,55 +60,55 @@ namespace kxf
 		return {major, minor, micro};
 	}
 
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
-			return std::make_unique<WxGraphicsMemoryContext>(*this, std::move(texture), window);
+			return std::make_shared<WxGraphicsMemoryContext>(*this, std::move(texture), window);
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateGDIContext(wxDC& dc, const Size& size)
 	{
 		if (dc.IsOk())
 		{
-			return std::make_unique<WxGraphicsGDIContext>(*this, dc, size);
+			return std::make_shared<WxGraphicsGDIContext>(*this, dc, size);
 		}
 		return nullptr;
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowContext(wxWindow& window)
 	{
-		return std::make_unique<WxGraphicsWindowContext>(*this, window);
+		return std::make_shared<WxGraphicsWindowContext>(*this, window);
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
 	{
-		return std::make_unique<WxGraphicsWindowClientContext>(*this, window);
+		return std::make_shared<WxGraphicsWindowClientContext>(*this, window);
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
 	{
 		// Context created for 'wxBufferedPaintDC' doesn't work correctly with Direct2D and
-		// leaves black surface after flushing, so we're going to use regular 'wxPaintDC' here.
+		// leaves a black surface after flushing, so we're going to use regular 'wxPaintDC' here.
 		// It's still buffered by the Direct2D anyway.
 
 		if (m_Type == Type::Direct2D || window.IsDoubleBuffered())
 		{
-			return std::make_unique<WxGraphicsPaintContext>(*this, window);
+			return std::make_shared<WxGraphicsPaintContext>(*this, window);
 		}
 		else
 		{
-			return std::make_unique<WxGraphicsBufferedPaintContext>(*this, window);
+			return std::make_shared<WxGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
+	std::shared_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
 	{
 		if (m_Type == Type::GDIPlus)
 		{
 			// Measuring context works fine in GDI+ expect that for some unknown reason it draws its content on top of the entire screen.
-			return std::make_unique<WxGraphicsMemoryContext>(*this, CreateTexture({1.0f, 1.0f}, Drawing::GetStockColor(StockColor::Transparent)), window);
+			return std::make_shared<WxGraphicsMemoryContext>(*this, CreateTexture({1.0f, 1.0f}, Drawing::GetStockColor(StockColor::Transparent)), window);
 		}
 		else
 		{
-			return std::make_unique<WxGraphicsMeasuringContext>(*this, window);
+			return std::make_shared<WxGraphicsMeasuringContext>(*this, window);
 		}
 	}
 
@@ -178,6 +180,25 @@ namespace kxf
 	{
 		return std::make_shared<WxGraphicsTexture>(*this);
 	}
+	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const IImage2D& image)
+	{
+		if (image)
+		{
+			if (auto vector = image.QueryInterface<SVGImage>())
+			{
+				return std::make_shared<WxGraphicsVectorTexture>(*this, *vector);
+			}
+			else if (auto bitmap = image.QueryInterface<BitmapImage>())
+			{
+				return std::make_shared<WxGraphicsTexture>(*this, *bitmap);
+			}
+			else
+			{
+				return std::make_shared<WxGraphicsTexture>(*this, image.ToBitmapImage());
+			}
+		}
+		return nullptr;
+	}
 	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const BitmapImage& image)
 	{
 		if (image)
@@ -185,10 +206,6 @@ namespace kxf
 			return std::make_shared<WxGraphicsTexture>(*this, image);
 		}
 		return nullptr;
-	}
-	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const SVGImage& vectorImage)
-	{
-		return std::make_shared<WxGraphicsVectorTexture>(*this, vectorImage);
 	}
 	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const SizeF& size, const Color& color)
 	{

@@ -33,9 +33,9 @@ namespace
 						m_Font.Set(font.ToFont());
 					}
 				}
-				if (auto solidBrush = brush.QueryInterface<IGraphicsSolidBrush>())
+				if (brush)
 				{
-					m_TextForeground.Set(solidBrush->GetColor());
+					m_TextForeground.Set(brush.GetColor());
 				}
 			}
 	};
@@ -379,10 +379,9 @@ namespace kxf
 	}
 	void GDIGraphicsContext::SetFontBrush(std::shared_ptr<IGraphicsBrush> brush)
 	{
-		std::shared_ptr<IGraphicsSolidBrush> solidBrush;
-		if (brush && brush->QueryInterface(solidBrush))
+		if (brush)
 		{
-			m_DC.SetTextForeground(solidBrush->GetColor());
+			m_DC.SetTextForeground(brush->GetColor());
 		}
 		else
 		{
