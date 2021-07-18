@@ -2,8 +2,14 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/IButtonWidget.h"
+#include "kxf/Drawing/IRendererNative.h"
 #include <wx/anybutton.h>
 #include <wx/systhemectrl.h>
+
+namespace kxf::Widgets
+{
+	class Button;
+}
 
 namespace kxf::WXUI
 {
@@ -13,10 +19,10 @@ namespace kxf::WXUI
 			static Size GetDefaultSize();
 
 		private:
-			IButtonWidget& m_Widget;
+			Widgets::Button& m_Widget;
 			wxEvtHandler m_EventHandler;
 
-			int m_ControlState = wxCONTROL_NONE;
+			NativeWidgetFlag m_WidgetState = NativeWidgetFlag::None;
 			bool m_IsDropdownEnbled = false;
 
 		private:
@@ -34,7 +40,7 @@ namespace kxf::WXUI
 			wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
 
 		public:
-			Button(IButtonWidget& widget)
+			Button(Widgets::Button& widget)
 				:m_Widget(widget)
 			{
 			}

@@ -1,6 +1,8 @@
 #include "KxfPCH.h"
 #include "Button.h"
+#include "../Button.h"
 #include "../../Events/ButtonWidgetEvent.h"
+
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
@@ -51,15 +53,15 @@ namespace kxf::WXUI
 
 	void Button::OnPaint(wxPaintEvent& event)
 	{
-		using namespace kxf;
+		IRendererNative& nativeRenderer = IRendererNative::Get();
+		auto renderer = m_Widget.GetActiveGraphicsRenderer();
 
-		GDIAutoBufferedPaintContext dc(*this);
-		UxTheme::ClearDC(*this, dc);
-		wxRendererNative& renderer = wxRendererNative::Get();
+		auto gc = renderer->CreateWindowPaintContext(*this);
+		gc->Clear(renderer->GetTransparentBrush());
 
 		const bool isEnabled = IsEnabled();
-		const Size clientSize = Size(GetSize());
-		const Rect contentRect = Rect(wxRect(FromDIP(Point(2, 2)), clientSize - FromDIP(wxSize(4, 4))));
+		const Size clientSize = m_Widget.GetSize();
+		const Rect contentRect = {m_Widget.FromDIP<Point>(2, 2), clientSize - m_Widget.FromDIP<Size>(4, 4)};
 		int width = clientSize.GetWidth();
 		int widthMod = 2;
 		if (m_IsDropdownEnbled)
@@ -69,34 +71,33 @@ namespace kxf::WXUI
 		}
 		Rect rect(-1, -1, width + widthMod, clientSize.GetHeight() + 2);
 
-		int controlState = m_ControlState;
-		if (!isEnabled)
-		{
-			controlState |= wxCONTROL_DISABLED;
-		}
+		FlagSet<NativeWidgetFlag> widgetState = m_WidgetState;
+		widgetState.Add(NativeWidgetFlag::Disabled, !isEnabled);
 
-		// Draw first part
-		dc.SetTextForeground(isEnabled ? GetForegroundColour() : GetForegroundColour().MakeDisabled());
-		renderer.DrawPushButton(this, dc.ToWxDC(), rect, controlState);
+		// Draw the first part
+		gc->SetFontBrush(renderer->CreateSolidBrush(isEnabled ? GetForegroundColour() : GetForegroundColour().MakeDisabled()));
+		nativeRenderer.DrawPushButton(this, *gc, rect, widgetState);
 
 		// Draw focus rectangle
 		if (HasFocus() && m_Widget.IsFocusVisible())
 		{
-			renderer.DrawFocusRect(this, dc.ToWxDC(), contentRect, wxCONTROL_SELECTED);
+			nativeRenderer.DrawItemFocusRect(this, *gc, contentRect, NativeWidgetFlag::Selected);
 		}
 
 		// Draw bitmap and label
-		if (wxBitmap bitmap = GetBitmap(); bitmap.IsOk())
+		if (BitmapImage bitmap = GDIBitmap(GetBitmap()))
 		{
 			if (!isEnabled)
 			{
 				bitmap = bitmap.ConvertToDisabled();
 			}
-			dc.DrawLabel(GetLabelText(), contentRect, bitmap, Alignment::Center);
+
+			auto texture = renderer->CreateTexture(bitmap);
+			gc->DrawLabel(GetLabelText(), contentRect, *texture, Alignment::Center);
 		}
 		else
 		{
-			dc.DrawLabel(GetLabelText(), contentRect, Alignment::Center);
+			gc->DrawLabel(GetLabelText(), contentRect, Alignment::Center);
 		}
 
 		// Draw second part of the button
@@ -108,40 +109,40 @@ namespace kxf::WXUI
 			splitRect.Width() = FromDIPX(this, g_ArrowButtonWidth);
 			splitRect.Height() = clientSize.GetHeight() + FromDIPX(this, 2);
 
-			renderer.DrawPushButton(this, dc.ToWxDC(), splitRect, controlState);
-			renderer.DrawDropArrow(this, dc.ToWxDC(), splitRect, controlState);
+			nativeRenderer.DrawPushButton(this, *gc, splitRect, widgetState);
+			nativeRenderer.DrawDropArrow(this, *gc, splitRect, widgetState);
 		}
 	}
 	void Button::OnResize(wxSizeEvent& event)
 	{
-		ScheduleRefresh();
+		Refresh();
 		event.Skip();
 	}
 	void Button::OnKillFocus(wxFocusEvent& event)
 	{
 		ScheduleRefresh();
-		m_ControlState = wxCONTROL_NONE;
+		m_WidgetState = NativeWidgetFlag::None;
 
 		event.Skip();
 	}
 	void Button::OnMouseEnter(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
-		m_ControlState = wxCONTROL_CURRENT;
+		m_WidgetState = NativeWidgetFlag::Current;
 
 		event.Skip();
 	}
 	void Button::OnMouseLeave(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
-		m_ControlState = wxCONTROL_NONE;
+		m_WidgetState = NativeWidgetFlag::None;
 
 		event.Skip();
 	}
 	void Button::OnLeftButtonUp(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
-		m_ControlState = wxCONTROL_NONE;
+		m_WidgetState = NativeWidgetFlag::None;
 
 		const Point pos = Point(event.GetPosition());
 		if (m_IsDropdownEnbled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
@@ -158,7 +159,7 @@ namespace kxf::WXUI
 	void Button::OnLeftButtonDown(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
-		m_ControlState = wxCONTROL_PRESSED;
+		m_WidgetState = NativeWidgetFlag::Pressed;
 
 		event.Skip();
 	}

@@ -3,6 +3,7 @@
 #include "WXUI/Button.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Drawing/ImageBundle.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 
 namespace kxf::Widgets
@@ -10,7 +11,7 @@ namespace kxf::Widgets
 	// Button
 	Button::Button()
 	{
-		InitializeWithWindow();
+		InitializeWxWidget();
 	}
 	Button::~Button() = default;
 
@@ -21,20 +22,27 @@ namespace kxf::Widgets
 	}
 
 	// IButtonWidget
-	bool Button::IsDefaultButton() const
+	String Button::GetButtonLabel(FlagSet<WidgetTextFlag> flags) const
 	{
-		return Get()->IsDefaultButton();
-	}
-	std::shared_ptr<IButtonWidget> Button::SetDefaultButton()
-	{
-		if (auto button = Get()->SetDefaultButton())
+		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
-			if (auto widget = Private::FindByWXObject(*button))
-			{
-				return widget->QueryInterface<IButtonWidget>();
-			}
+			return Get()->GetLabel();
 		}
-		return {};
+		else
+		{
+			return Get()->GetLabelText();
+		}
+	}
+	void Button::SetButtonLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	{
+		if (flags.Contains(WidgetTextFlag::WithMnemonics))
+		{
+			Get()->SetLabel(label);
+		}
+		else
+		{
+			Get()->SetLabelText(label);
+		}
 	}
 
 	BitmapImage Button::GetButtonIcon() const
@@ -67,6 +75,22 @@ namespace kxf::Widgets
 		Button::SetButtonIcon({}, direction);
 	}
 
+	bool Button::IsDefaultButton() const
+	{
+		return Get()->IsDefaultButton();
+	}
+	std::shared_ptr<IButtonWidget> Button::SetDefaultButton()
+	{
+		if (auto button = Get()->SetDefaultButton())
+		{
+			if (auto widget = Private::FindByWXObject(*button))
+			{
+				return widget->QueryInterface<IButtonWidget>();
+			}
+		}
+		return {};
+	}
+
 	bool Button::IsDropdownEnabled() const
 	{
 		return Get()->IsDropdownEnabled();
@@ -74,5 +98,15 @@ namespace kxf::Widgets
 	void Button::SetDropdownEnbled(bool enabled)
 	{
 		Get()->SetDropdownEnbled(enabled);
+	}
+
+	// IGraphicsRendererAwareWidget
+	std::shared_ptr<IGraphicsRenderer> Button::GetActiveGraphicsRenderer() const
+	{
+		if (!m_Renderer)
+		{
+			return Drawing::GetDefaultRenderer();
+		}
+		return m_Renderer;
 	}
 }
