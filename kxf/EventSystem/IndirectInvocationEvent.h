@@ -20,11 +20,11 @@ namespace kxf::EventSystem
 				return EventCategory::Unknown;
 			}
 
-			void SetEventSource(IEvtHandler* evtHandler) override
+			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) override
 			{
 				if (!BasicEvent::GetEventSource())
 				{
-					BasicEvent::SetEventSource(evtHandler);
+					BasicEvent::SetEventSource(std::move(evtHandler));
 				}
 			}
 

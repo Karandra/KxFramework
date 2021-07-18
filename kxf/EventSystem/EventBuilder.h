@@ -9,6 +9,8 @@ namespace kxf
 
 namespace kxf::EventSystem::Private
 {
+	std::shared_ptr<IEvtHandler> QueryEvtHandler(IEvtHandler& evtHandler) noexcept;
+
 	template<class T, class TEvent>
 	class EventBuilderCRTP
 	{
@@ -37,12 +39,12 @@ namespace kxf::EventSystem::Private
 
 			T& SetSourceToSelf()
 			{
-				Self().m_Event->SetEventSource(Self().m_EvtHandler);
+				Self().m_Event->SetEventSource(QueryEvtHandler(*Self().m_EvtHandler));
 				return Self();
 			}
 			T& SetSource(IEvtHandler& source)
 			{
-				Self().m_Event->SetEventSource(&source);
+				Self().m_Event->SetEventSource(QueryEvtHandler(source));
 				return Self();
 			}
 

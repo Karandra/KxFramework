@@ -19,7 +19,7 @@ namespace kxf::Sciter
 	{
 		TEvent event(host);
 		event.Allow();
-		event.SetEventSource(&host.GetEvtHandler());
+		event.SetEventSource(host.GetEvtHandler().QueryInterface<IEvtHandler>());
 
 		return event;
 	}

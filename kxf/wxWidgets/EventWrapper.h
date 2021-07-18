@@ -14,7 +14,7 @@ namespace kxf::wxWidgets
 	{
 		private:
 			optional_ptr<wxEvent> m_Event;
-			IEvtHandler* m_EvtHandler = nullptr;
+			std::shared_ptr<IEvtHandler> m_EvtHandler;
 
 			bool m_ProcessStarted = false;
 			bool m_IsAsync = false;
@@ -131,14 +131,22 @@ namespace kxf::wxWidgets
 				return static_cast<EventCategory>(m_Event->GetEventCategory());
 			}
 
-			IEvtHandler* GetEventSource() const override
+			std::shared_ptr<IEvtHandler> GetEventSource() const override
 			{
-				return m_EvtHandler ? m_EvtHandler : dynamic_cast<IEvtHandler*>(m_Event->GetEventObject());
+				if (m_EvtHandler)
+				{
+					return m_EvtHandler;
+				}
+				else if (auto evtHandler = dynamic_cast<IEvtHandler*>(m_Event->GetEventObject()))
+				{
+					return evtHandler->QueryInterface<IEvtHandler>();
+				}
+				return nullptr;
 			}
-			void SetEventSource(IEvtHandler* evtHandler) override
+			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) override
 			{
 				m_EvtHandler = evtHandler;
-				m_Event->SetEventObject(dynamic_cast<wxObject*>(evtHandler));
+				m_Event->SetEventObject(dynamic_cast<wxObject*>(evtHandler.get()));
 			}
 			
 			bool IsSkipped() const override

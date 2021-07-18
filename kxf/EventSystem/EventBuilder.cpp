@@ -4,6 +4,14 @@
 #include "EvtHandlerAccessor.h"
 #include "kxf/Utility/Common.h"
 
+namespace kxf::EventSystem::Private
+{
+	std::shared_ptr<IEvtHandler> QueryEvtHandler(IEvtHandler& evtHandler) noexcept
+	{
+		return evtHandler.QueryInterface<IEvtHandler>();
+	}
+}
+
 namespace kxf::EventSystem
 {
 	void EventBuilderBase::Move(EventBuilderBase&& other) noexcept

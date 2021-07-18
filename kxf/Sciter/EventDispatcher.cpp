@@ -14,7 +14,7 @@ namespace kxf::Sciter
 	TEvent MakeEvent(BasicEventDispatcher& evtHandler)
 	{
 		TEvent event(evtHandler.GetHost());
-		event.SetEventSource(&evtHandler.GetEvtHandler());
+		event.SetEventSource(evtHandler.GetEvtHandler().QueryInterface<IEvtHandler>());
 		event.Allow();
 
 		return event;

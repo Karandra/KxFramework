@@ -55,7 +55,7 @@ namespace kxf
 
 		private:
 			EventID m_EventID;
-			IEvtHandler* m_EventSource = nullptr;
+			std::shared_ptr<IEvtHandler> m_EventSource;
 			UniversallyUniqueID m_UniqueID;
 			TimeSpan m_Timestamp;
 
@@ -183,13 +183,13 @@ namespace kxf
 				return EventCategory::None;
 			}
 
-			IEvtHandler* GetEventSource() const override
+			std::shared_ptr<IEvtHandler> GetEventSource() const override
 			{
 				return m_EventSource;
 			}
-			void SetEventSource(IEvtHandler* evtHandler) override
+			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) override
 			{
-				m_EventSource = evtHandler;
+				m_EventSource = std::move(evtHandler);
 			}
 			
 			bool IsSkipped() const override
@@ -215,7 +215,7 @@ namespace kxf
 			BasicEvent& operator=(BasicEvent&& other) noexcept
 			{
 				m_EventID = std::move(other.m_EventID);
-				m_EventSource = Utility::ExchangeResetAndReturn(other.m_EventSource, nullptr);
+				m_EventSource = std::move(other.m_EventSource);
 				m_UniqueID = std::move(other.m_UniqueID);
 				m_Timestamp = std::move(other.m_Timestamp);
 

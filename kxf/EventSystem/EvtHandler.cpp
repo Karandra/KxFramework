@@ -108,7 +108,7 @@ namespace kxf
 			// Set event source for indirect event calls
 			if (isAsync && event.QueryInterface<IIndirectInvocationEvent>())
 			{
-				event.SetEventSource(this);
+				event.SetEventSource(QueryInterface<IEvtHandler>());
 			}
 		}
 	}
@@ -186,7 +186,7 @@ namespace kxf
 		{
 			// There is an implicit entry for indirect invocation in every event handler
 			std::shared_ptr<IIndirectInvocationEvent> indirectInvoke;
-			if (event.GetEventSource() == this && event.QueryInterface(indirectInvoke))
+			if (event.GetEventSource().get() == this && event.QueryInterface(indirectInvoke))
 			{
 				indirectInvoke->Execute();
 				return true;

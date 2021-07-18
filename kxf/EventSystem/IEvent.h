@@ -38,8 +38,8 @@ namespace kxf
 			virtual UniversallyUniqueID GetUniqueID() const = 0;
 			virtual FlagSet<EventCategory> GetEventCategory() const = 0;
 
-			virtual IEvtHandler* GetEventSource() const = 0;
-			virtual void SetEventSource(IEvtHandler* evtHandler) = 0;
+			virtual std::shared_ptr<IEvtHandler> GetEventSource() const = 0;
+			virtual void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) = 0;
 
 			virtual bool IsSkipped() const = 0;
 			virtual void Skip(bool skip = true) = 0;
