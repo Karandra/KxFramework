@@ -491,6 +491,9 @@
     <ClInclude Include="kxf\UI\Events\Common.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetLifetimeEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
@@ -515,16 +518,19 @@
     <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h" />
     <ClInclude Include="kxf\UI\Private\BasicWxWidget.h" />
     <ClInclude Include="kxf\UI\Private\Common.h" />
+    <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Dialog.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Window.h" />
+    <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h" />
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Widgets\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="kxf\UI\Windows\Frame.h" />
@@ -964,6 +970,7 @@
     <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\Common.cpp" />
+    <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp" />
     <ClCompile Include="kxf\UI\StdIcon.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\Dialog.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\Window.cpp" />

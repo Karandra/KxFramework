@@ -1,18 +1,18 @@
 #pragma once
-#include "kxf/UI/Common.h"
+#include "Common.h"
 #include "kxf/UI/IDalogWidget.h"
 #include <wx/dialog.h>
 
 namespace kxf::WXUI
 {
-	class KX_API Dialog: public wxDialog
+	class KX_API Dialog: public EvtHandlerWrapper<wxDialog>
 	{
 		private:
 			IDalogWidget& m_Widget;
 
 		public:
 			Dialog(IDalogWidget& widget)
-				:m_Widget(widget)
+				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 				m_Widget.SetPreventApplicationExit(false);
 			}

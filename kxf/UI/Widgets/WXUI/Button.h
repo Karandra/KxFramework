@@ -1,7 +1,7 @@
 #pragma once
-#include "kxf/UI/Common.h"
+#include "Common.h"
+#include "../Button.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
-#include "kxf/UI/IButtonWidget.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include <wx/anybutton.h>
 #include <wx/systhemectrl.h>
@@ -13,7 +13,7 @@ namespace kxf::Widgets
 
 namespace kxf::WXUI
 {
-	class KX_API Button: public UI::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>
+	class KX_API Button: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>>
 	{
 		public:
 			static Size GetDefaultSize();
@@ -41,7 +41,7 @@ namespace kxf::WXUI
 
 		public:
 			Button(Widgets::Button& widget)
-				:m_Widget(widget)
+				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 			}
 			~Button()

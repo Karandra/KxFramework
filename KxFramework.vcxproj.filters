@@ -127,9 +127,6 @@
     <Filter Include="VCPkg\triplets\community">
       <UniqueIdentifier>{7962b0c5-a73a-435e-81c8-d700627df6f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\UI\Dialogs\Private">
-      <UniqueIdentifier>{8748a1a3-30f0-4977-9c4b-3fffaf785b0e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\UI\Controls\DataView\Editors">
       <UniqueIdentifier>{88feb086-33ff-447b-9a97-120aa1397e12}</UniqueIdentifier>
     </Filter>
@@ -266,9 +263,6 @@
     <Filter Include="kxf\Log\Private">
       <UniqueIdentifier>{3cb0f35f-aa0a-4fd7-a98d-2a50367f82d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\UI\Private">
-      <UniqueIdentifier>{033972eb-2a62-4706-a4e8-26049721ba7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\UI\Widgets">
       <UniqueIdentifier>{9885b6ce-bc89-43ff-9df4-e9cae60f59e8}</UniqueIdentifier>
     </Filter>
@@ -286,6 +280,12 @@
     </Filter>
     <Filter Include="kxf\UI\Widgets\WXUI">
       <UniqueIdentifier>{d7e87a57-f65e-49cd-afb0-126278f00f7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\UI\Dialogs\Private">
+      <UniqueIdentifier>{8748a1a3-30f0-4977-9c4b-3fffaf785b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\UI\Private">
+      <UniqueIdentifier>{033972eb-2a62-4706-a4e8-26049721ba7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2058,6 +2058,24 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Common.h">
+      <Filter>kxf\UI\TopLevelWidgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetLifetimeEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3098,6 +3116,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp">
+      <Filter>kxf\UI\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

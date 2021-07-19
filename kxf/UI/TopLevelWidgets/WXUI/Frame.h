@@ -1,18 +1,18 @@
 #pragma once
-#include "kxf/UI/Common.h"
+#include "Common.h"
 #include "kxf/UI/ITopLevelWidget.h"
 #include <wx/frame.h>
 
 namespace kxf::WXUI
 {
-	class KX_API Frame: public wxFrame
+	class KX_API Frame: public EvtHandlerWrapper<wxFrame>
 	{
 		private:
 			ITopLevelWidget& m_Widget;
 
 		public:
 			Frame(ITopLevelWidget& widget)
-				:m_Widget(widget)
+				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 			}
 

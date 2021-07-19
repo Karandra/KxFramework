@@ -1,7 +1,6 @@
 #pragma once
 #include "WidgetEvent.h"
 
-
 namespace kxf
 {
 	class IButtonWidget;

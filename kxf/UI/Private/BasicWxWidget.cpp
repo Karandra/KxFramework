@@ -2,6 +2,7 @@
 #include "BasicWxWidget.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/System/NativeAPI.h"
+#include "kxf/Utility/Common.h"
 #include "kxf/Utility/Enumerator.h"
 #include "kxf/Utility/String.h"
 #include <wx/window.h>
@@ -90,20 +91,18 @@ namespace kxf::Private
 	}
 	void BasicWxWidgetBase::Uninitialize()
 	{
-		if (m_Window)
+		if (wxWindow* window = Utility::ExchangeResetAndReturn(m_Window, nullptr))
 		{
-			m_Window->Unbind(wxEVT_CREATE, &BasicWxWidgetBase::OnWindowCreate, this);
-			m_Window->Unbind(wxEVT_DESTROY, &BasicWxWidgetBase::OnWindowDestroy, this);
-			DissociateWXObject(*m_Window);
+			window->Unbind(wxEVT_CREATE, &BasicWxWidgetBase::OnWindowCreate, this);
+			window->Unbind(wxEVT_DESTROY, &BasicWxWidgetBase::OnWindowDestroy, this);
+			DissociateWXObject(*window);
 
 			if (m_ShouldDelete)
 			{
-				m_Window->Destroy();
-				delete m_Window;
+				window->Destroy();
+				delete window;
 			}
 		}
-
-		m_Window = nullptr;
 		m_RefLock = nullptr;
 		m_ShouldDelete = false;
 	}
