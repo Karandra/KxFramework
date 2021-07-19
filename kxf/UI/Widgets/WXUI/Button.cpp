@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "Button.h"
-#include "../Button.h"
 #include "../../Events/ButtonWidgetEvent.h"
 
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
@@ -140,7 +139,7 @@ namespace kxf::WXUI
 	void Button::OnLeftButtonUp(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
-		m_WidgetState = NativeWidgetFlag::None;
+		m_WidgetState = NativeWidgetFlag::Current;
 
 		const Point pos = Point(event.GetPosition());
 		if (m_IsDropdownEnbled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
