@@ -2076,6 +2076,15 @@
     <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetContextMenuEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetKeyEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

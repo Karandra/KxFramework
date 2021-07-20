@@ -489,8 +489,11 @@
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetContextMenuEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetKeyEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetLifetimeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />

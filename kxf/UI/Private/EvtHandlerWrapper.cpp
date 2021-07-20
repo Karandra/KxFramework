@@ -4,9 +4,12 @@
 #include "../IGraphicsRendererAwareWidget.h"
 
 #include "../Events/WidgetEvent.h"
-#include "../Events/WidgetLifetimeEvent.h"
+#include "../Events/WidgetKeyEvent.h"
 #include "../Events/WidgetSizeEvent.h"
 #include "../Events/WidgetDrawEvent.h"
+#include "../Events/WidgetFocusEvent.h"
+#include "../Events/WidgetLifetimeEvent.h"
+#include "../Events/WidgetContextMenuEvent.h"
 
 namespace kxf::WXUI::Private
 {
@@ -25,7 +28,6 @@ namespace kxf::WXUI::Private
 				return std::make_unique<WxWidgetPaintEvent>(std::move(*this));
 			}
 
-		public:
 			// WidgetDrawEvent
 			std::shared_ptr<IGraphicsContext> GetGraphicsContext() override
 			{
@@ -63,7 +65,6 @@ namespace kxf::WXUI::Private
 				return std::make_unique<WxWidgetEraseEvent>(std::move(*this));
 			}
 
-		public:
 			// WidgetDrawEvent
 			std::shared_ptr<IGraphicsContext> GetGraphicsContext() override
 			{
@@ -114,6 +115,23 @@ namespace kxf::WXUI::Private
 				WxWidgetEraseEvent event(m_Widget, *dc);
 				return m_Widget.ProcessEvent(event, WidgetDrawEvent::EvtDrawBackground);
 			}
+		}
+		else if (eventType == wxEVT_CONTEXT_MENU)
+		{
+			auto& event = static_cast<wxContextMenuEvent&>(anyEvent);
+			return m_Widget.ProcessEvent(WidgetContextMenuEvent::EvtShow, m_Widget, Point(event.GetPosition()));
+		}
+		else if (eventType == wxEVT_SET_FOCUS)
+		{
+			return m_Widget.ProcessEvent(WidgetFocusEvent::EvtFocusReceived, m_Widget);
+		}
+		else if (eventType == wxEVT_KILL_FOCUS)
+		{
+			return m_Widget.ProcessEvent(WidgetFocusEvent::EvtFocusLost, m_Widget);
+		}
+		else if (eventType == wxEVT_KEY_UP || eventType == wxEVT_KEY_DOWN || eventType == wxEVT_CHAR || eventType == wxEVT_CHAR_HOOK)
+		{
+			//return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyUp, m_Widget);
 		}
 		return false;
 	}
