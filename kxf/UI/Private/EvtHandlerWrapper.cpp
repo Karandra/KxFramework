@@ -131,7 +131,30 @@ namespace kxf::WXUI::Private
 		}
 		else if (eventType == wxEVT_KEY_UP || eventType == wxEVT_KEY_DOWN || eventType == wxEVT_CHAR || eventType == wxEVT_CHAR_HOOK)
 		{
-			//return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyUp, m_Widget);
+			auto& event = static_cast<wxKeyEvent&>(anyEvent);
+			if (eventType == wxEVT_KEY_UP)
+			{
+				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyUp, m_Widget, event);
+			}
+			else if (eventType == wxEVT_KEY_DOWN)
+			{
+				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyDown, m_Widget, event);
+			}
+			else if (eventType == wxEVT_CHAR)
+			{
+				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtChar, m_Widget, event);
+			}
+			else if (eventType == wxEVT_CHAR_HOOK)
+			{
+				WidgetKeyEvent keyEvent(m_Widget, event);
+				const bool result = m_Widget.ProcessEvent(keyEvent, WidgetKeyEvent::EvtCharHook);
+
+				if (keyEvent.IsNextEventAllowed())
+				{
+					event.DoAllowNextEvent();
+				}
+				return result;
+			}
 		}
 		return false;
 	}

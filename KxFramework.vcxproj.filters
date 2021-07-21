@@ -2085,6 +2085,9 @@
     <ClInclude Include="kxf\UI\Events\WidgetKeyEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\KeyCode.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3128,6 +3131,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\KeyCode.cpp">
+      <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
