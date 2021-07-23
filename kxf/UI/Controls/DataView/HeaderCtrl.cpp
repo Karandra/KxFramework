@@ -3,6 +3,7 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "Column.h"
+#include "kxf/UI/Common.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/Utility/System.h"
@@ -14,25 +15,25 @@ Kx_MakeWinUnicodeCallWrapper(SendMessage);
 
 namespace
 {
-	enum class MouseButton
+	enum class MouseButtonType
 	{
 		Left = 0,
 		Right = 1,
 		Middle = 2,
 	};
-	wxEventTypeTag<wxHeaderCtrlEvent> GetClickEventType(bool isDoubleClick, MouseButton button)
+	wxEventTypeTag<wxHeaderCtrlEvent> GetClickEventType(bool isDoubleClick, MouseButtonType button)
 	{
 		switch (button)
 		{
-			case MouseButton::Left:
+			case MouseButtonType::Left:
 			{
 				return isDoubleClick ? wxEVT_HEADER_DCLICK : wxEVT_HEADER_CLICK;
 			}
-			case MouseButton::Right:
+			case MouseButtonType::Right:
 			{
 				return isDoubleClick ? wxEVT_HEADER_RIGHT_DCLICK : wxEVT_HEADER_RIGHT_CLICK;
 			}
-			case MouseButton::Middle:
+			case MouseButtonType::Middle:
 			{
 				return isDoubleClick ? wxEVT_HEADER_MIDDLE_DCLICK : wxEVT_HEADER_MIDDLE_CLICK;
 			}
@@ -351,7 +352,7 @@ namespace kxf::UI::DataView
 				m_DraggedColumn = nullptr;
 				if (Column* column = GetColumn())
 				{
-					wxEventType eventType = ::GetClickEventType(notification == static_cast<int>(HDN_ITEMDBLCLICK), static_cast<MouseButton>(header->iButton));
+					wxEventType eventType = ::GetClickEventType(notification == static_cast<int>(HDN_ITEMDBLCLICK), static_cast<MouseButtonType>(header->iButton));
 					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
 					SendHeaderEvent(event);
 
@@ -384,7 +385,7 @@ namespace kxf::UI::DataView
 				m_DraggedColumn = nullptr;
 				if (Column* column = GetColumn(true))
 				{
-					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButton::Right);
+					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButtonType::Right);
 					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
 					SendHeaderEvent(event);
 

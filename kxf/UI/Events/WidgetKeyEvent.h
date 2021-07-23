@@ -15,7 +15,8 @@ namespace kxf
 			KxEVENT_MEMBER(WidgetKeyEvent, CharHook);
 
 		private:
-			Point m_Position;
+			KeyboardState m_KeyboardState;
+			Point m_Position = Point::UnspecifiedPosition();
 			KeyCode m_KeyCode = KeyCode::None;
 			UniChar m_UnicodeKey;
 			uint32_t m_NativeKeyCode = 0;
@@ -41,6 +42,10 @@ namespace kxf
 			}
 
 			// WidgetKeyEvent
+			KeyboardState GetKeyboardState() const noexcept
+			{
+				return m_KeyboardState;
+			}
 			KeyCode GetKeyCode() const noexcept
 			{
 				return m_KeyCode;

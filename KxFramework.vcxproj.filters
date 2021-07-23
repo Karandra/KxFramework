@@ -2088,6 +2088,12 @@
     <ClInclude Include="kxf\UI\KeyCode.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\KeyboardState.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\MouseState.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3137,6 +3143,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp">
       <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\KeyboardState.cpp">
+      <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\MouseState.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

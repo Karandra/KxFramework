@@ -3,6 +3,8 @@
 #include "StdIcon.h"
 #include "StdButton.h"
 #include "KeyCode.h"
+#include "MouseState.h"
+#include "KeyboardState.h"
 #include "WidgetID.h"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"

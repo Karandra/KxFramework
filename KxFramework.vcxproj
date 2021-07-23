@@ -508,6 +508,7 @@
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\IWidgetEvent.h" />
+    <ClInclude Include="kxf\UI\KeyboardState.h" />
     <ClInclude Include="kxf\UI\KeyCode.h" />
     <ClInclude Include="kxf\UI\Menus\Common.h" />
     <ClInclude Include="kxf\UI\Menus\MenuWidget.h" />
@@ -517,6 +518,7 @@
     <ClInclude Include="kxf\UI\Menus\ShellMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\Menus\WXUI\Menu.h" />
     <ClInclude Include="kxf\UI\Menus\WXUI\MenuItem.h" />
+    <ClInclude Include="kxf\UI\MouseState.h" />
     <ClInclude Include="kxf\UI\Private\AnonymousNativeWindow.h" />
     <ClInclude Include="kxf\UI\Private\BasicDialogWidget.h" />
     <ClInclude Include="kxf\UI\Private\BasicWindowWidget.h" />
@@ -964,6 +966,7 @@
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />
+    <ClCompile Include="kxf\UI\KeyboardState.cpp" />
     <ClCompile Include="kxf\UI\KeyCode.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuWidget.cpp" />
     <ClCompile Include="kxf\UI\Menus\MenuWidgetItem.cpp" />
@@ -971,6 +974,7 @@
     <ClCompile Include="kxf\UI\Menus\ShellMenuWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\Menus\WXUI\Menu.cpp" />
     <ClCompile Include="kxf\UI\Menus\WXUI\MenuItem.cpp" />
+    <ClCompile Include="kxf\UI\MouseState.cpp" />
     <ClCompile Include="kxf\UI\Private\AnonymousNativeWindow.cpp" />
     <ClCompile Include="kxf\UI\Private\BasicDialogWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\BasicWindowWidget.cpp" />

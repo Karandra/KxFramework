@@ -6,7 +6,7 @@
 namespace kxf
 {
 	WidgetKeyEvent::WidgetKeyEvent(IWidget& widget, const wxKeyEvent& keyEventWX) noexcept
-		:WidgetEvent(widget)
+		:WidgetEvent(widget), m_KeyboardState(keyEventWX)
 	{
 		m_Position = {keyEventWX.GetX(), keyEventWX.GetY()};
 		m_KeyCode = Private::MapKeyCode(static_cast<wxKeyCode>(keyEventWX.GetKeyCode()));

@@ -204,6 +204,18 @@ namespace kxf
 	};
 	KxFlagSet_Declare(KeyModifier);
 
+	enum class MouseButton: uint32_t
+	{
+		None = 0,
+
+		Left = FlagSetValue<KeyModifier>(0),
+		Right = FlagSetValue<KeyModifier>(1),
+		Middle = FlagSetValue<KeyModifier>(2),
+		Aux1 = FlagSetValue<KeyModifier>(3),
+		Aux2 = FlagSetValue<KeyModifier>(4)
+	};
+	KxFlagSet_Declare(MouseButton);
+
 	enum class KeyCategory: uint32_t
 	{
 		None = 0,
