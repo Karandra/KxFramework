@@ -65,7 +65,7 @@ namespace kxf
 			EventSystem::Private::EventWaitInfo m_WaitInfo;
 
 		private:
-			bool TestAndSetPrivateState(EventPrivateState flag) const
+			bool TestAndSetPrivateState(EventPrivateState flag) const noexcept
 			{
 				if (!m_PrivateState.Contains(flag))
 				{
@@ -76,24 +76,24 @@ namespace kxf
 			}
 
 			// IEventInternal
-			bool IsAsync() const override
+			bool IsAsync() const noexcept override
 			{
 				return m_PrivateState.Contains(EventPrivateState::Async);
 			}
-			bool WasReQueued() const override
+			bool WasReQueued() const noexcept override
 			{
 				return TestAndSetPrivateState(EventPrivateState::ReQueued);
 			}
-			bool WasProcessed() const override
+			bool WasProcessed() const noexcept override
 			{
 				return TestAndSetPrivateState(EventPrivateState::ProcessedOnce);
 			}
-			bool WillBeProcessedAgain() const override
+			bool WillBeProcessedAgain() const noexcept override
 			{
 				return TestAndSetPrivateState(EventPrivateState::WillBeProcessedAgain);
 			}
 
-			bool OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
+			bool OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) noexcept override
 			{
 				if (!m_PrivateState.Contains(EventPrivateState::Started))
 				{
@@ -109,12 +109,12 @@ namespace kxf
 				}
 				return false;
 			}
-			FlagSet<ProcessEventFlag> GetProcessFlags() const override
+			FlagSet<ProcessEventFlag> GetProcessFlags() const noexcept override
 			{
 				return m_ProcessFlags;
 			}
 
-			std::unique_ptr<IEvent> WaitProcessed() override
+			std::unique_ptr<IEvent> WaitProcessed() noexcept override
 			{
 				if (!m_WaitInfo.HasWaitInfo())
 				{
@@ -123,7 +123,7 @@ namespace kxf
 				}
 				return nullptr;
 			}
-			void SignalProcessed(std::unique_ptr<IEvent> event) override
+			void SignalProcessed(std::unique_ptr<IEvent> event) noexcept override
 			{
 				if (m_PrivateState.Contains(EventPrivateState::Waitable))
 				{
@@ -131,11 +131,11 @@ namespace kxf
 				}
 			}
 
-			void PutWaitResult(std::unique_ptr<IEvent> event) override
+			void PutWaitResult(std::unique_ptr<IEvent> event) noexcept override
 			{
 				m_WaitInfo.PutWaitResult(std::move(event));
 			}
-			std::unique_ptr<IEvent> GetWaitResult()
+			std::unique_ptr<IEvent> GetWaitResult() noexcept override
 			{
 				return m_WaitInfo.GetWaitResult();
 			}
@@ -166,46 +166,46 @@ namespace kxf
 				return std::make_unique<BasicEvent>(std::move(*this));
 			}
 
-			EventID GetEventID() const override
+			EventID GetEventID() const noexcept override
 			{
 				return m_EventID;
 			}
-			TimeSpan GetTimestamp() const override
+			TimeSpan GetTimestamp() const noexcept override
 			{
 				return m_Timestamp;
 			}
-			UniversallyUniqueID GetUniqueID() const override
+			UniversallyUniqueID GetUniqueID() const noexcept override
 			{
 				return m_UniqueID;
 			}
-			FlagSet<EventCategory> GetEventCategory() const override
+			FlagSet<EventCategory> GetEventCategory() const noexcept override
 			{
 				return EventCategory::None;
 			}
 
-			std::shared_ptr<IEvtHandler> GetEventSource() const override
+			std::shared_ptr<IEvtHandler> GetEventSource() const noexcept override
 			{
 				return m_EventSource;
 			}
-			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) override
+			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) noexcept override
 			{
 				m_EventSource = std::move(evtHandler);
 			}
 			
-			bool IsSkipped() const override
+			bool IsSkipped() const noexcept override
 			{
 				return m_PublicState.Contains(EventPublicState::Skipped);
 			}
-			void Skip(bool skip = true) override
+			void Skip(bool skip = true) noexcept override
 			{
 				m_PublicState.Mod(EventPublicState::Skipped, skip);
 			}
 
-			bool IsAllowed() const override
+			bool IsAllowed() const noexcept override
 			{
 				return m_PublicState.Contains(EventPublicState::Allowed);
 			}
-			void Allow(bool allow = true) override
+			void Allow(bool allow = true) noexcept override
 			{
 				m_PublicState.Mod(EventPublicState::Allowed, allow);
 			}

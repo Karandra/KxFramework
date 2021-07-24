@@ -32,36 +32,36 @@ namespace kxf
 			{
 				return std::make_unique<WidgetEvent>(std::move(*this));
 			}
-			FlagSet<EventCategory> GetEventCategory() const override
+			FlagSet<EventCategory> GetEventCategory() const noexcept override
 			{
 				return EventCategory::UI;
 			}
 
 			// IWidgetEvent
-			std::shared_ptr<IWidget> GetWidget() const override
+			std::shared_ptr<IWidget> GetWidget() const noexcept override
 			{
 				return m_Widget;
 			}
-			void SetWidget(std::shared_ptr<IWidget> widget) override
+			void SetWidget(std::shared_ptr<IWidget> widget) noexcept override
 			{
 				m_Widget = std::move(widget);
 			}
 
-			WidgetID GetWidgetID() const override;
-			void SetWidgetID(WidgetID id) override
+			WidgetID GetWidgetID() const noexcept override;
+			void SetWidgetID(WidgetID id) noexcept override
 			{
 				m_WidgetID = id;
 			}
 
-			size_t StopPropagation() override
+			size_t StopPropagation() noexcept override
 			{
 				return Utility::ExchangeResetAndReturn(m_PropagationLevel, PropagationLevel::None);
 			}
-			void ResumePropagation(size_t level) override
+			void ResumePropagation(size_t level) noexcept override
 			{
 				m_PropagationLevel = level;
 			}
-			bool ShouldPropagate() const override
+			bool ShouldPropagate() const noexcept override
 			{
 				return m_PropagationLevel != PropagationLevel::None;
 			}
@@ -74,25 +74,25 @@ namespace kxf
 			{
 				m_String = value;
 			}
-			void SetString(String&& value)
+			void SetString(String&& value) noexcept
 			{
 				m_String = std::move(value);
 			}
 
-			int64_t GetInt() const override
+			int64_t GetInt() const noexcept override
 			{
 				return m_Int;
 			}
-			void SetInt(int64_t value) override
+			void SetInt(int64_t value) noexcept override
 			{
 				m_Int = value;
 			}
 
-			int64_t GetExtraInt() const override
+			int64_t GetExtraInt() const noexcept override
 			{
 				return m_ExtraInt;
 			}
-			void SetExtraInt(int64_t value) override
+			void SetExtraInt(int64_t value) noexcept override
 			{
 				m_ExtraInt = value;
 			}

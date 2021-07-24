@@ -42,7 +42,7 @@ namespace kxf
 			{
 				return std::make_unique<SciterEvent>(std::move(*this));
 			}
-			FlagSet<EventCategory> GetEventCategory() const override
+			FlagSet<EventCategory> GetEventCategory() const noexcept override
 			{
 				return EventCategory::UI;
 			}

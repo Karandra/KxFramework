@@ -11,16 +11,16 @@ namespace kxf::EventSystem
 
 		public:
 			// IEvent
-			EventID GetEventID() const override
+			EventID GetEventID() const noexcept override
 			{
 				return EvtIndirectInvocation;
 			}
-			FlagSet<EventCategory> GetEventCategory() const override
+			FlagSet<EventCategory> GetEventCategory() const noexcept override
 			{
 				return EventCategory::Unknown;
 			}
 
-			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) override
+			void SetEventSource(std::shared_ptr<IEvtHandler> evtHandler) noexcept override
 			{
 				if (!BasicEvent::GetEventSource())
 				{
@@ -28,19 +28,19 @@ namespace kxf::EventSystem
 				}
 			}
 
-			bool IsSkipped() const override
+			bool IsSkipped() const noexcept override
 			{
 				return false;
 			}
-			void Skip(bool skip = true) override
+			void Skip(bool skip = true) noexcept override
 			{
 			}
 
-			bool IsAllowed() const override
+			bool IsAllowed() const noexcept override
 			{
 				return true;
 			}
-			void Allow(bool allow = true) override
+			void Allow(bool allow = true) noexcept override
 			{
 			}
 	};

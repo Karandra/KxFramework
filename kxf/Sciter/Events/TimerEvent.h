@@ -23,7 +23,7 @@ namespace kxf::Sciter
 			{
 				return std::make_unique<TimerEvent>(std::move(*this));
 			}
-			FlagSet<EventCategory> GetEventCategory() const override
+			FlagSet<EventCategory> GetEventCategory() const noexcept override
 			{
 				return EventCategory::Timer;
 			}

@@ -11,7 +11,7 @@ namespace kxf
 	}
 
 	// IWidgetEvent
-	WidgetID WidgetEvent::GetWidgetID() const
+	WidgetID WidgetEvent::GetWidgetID() const noexcept
 	{
 		if (m_Widget && m_WidgetID.IsNone())
 		{
