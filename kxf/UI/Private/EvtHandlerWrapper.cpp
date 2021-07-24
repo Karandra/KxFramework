@@ -7,12 +7,123 @@
 #include "../Events/WidgetKeyEvent.h"
 #include "../Events/WidgetSizeEvent.h"
 #include "../Events/WidgetDrawEvent.h"
+#include "../Events/WidgetMouseEvent.h"
 #include "../Events/WidgetFocusEvent.h"
 #include "../Events/WidgetLifetimeEvent.h"
 #include "../Events/WidgetContextMenuEvent.h"
 
 namespace kxf::WXUI::Private
 {
+	EventID MapMouseEvent(const wxEventType& eventType) noexcept
+	{
+		if (eventType == wxEVT_LEFT_UP)
+		{
+			return WidgetMouseEvent::EvtLeftUp;
+		}
+		else if (eventType == wxEVT_LEFT_DOWN)
+		{
+			return WidgetMouseEvent::EvtLeftDown;
+		}
+		else if (eventType == wxEVT_LEFT_DCLICK)
+		{
+			return WidgetMouseEvent::EvtLeftDoubleClick;
+		}
+
+		else if (eventType == wxEVT_RIGHT_UP)
+		{
+			return WidgetMouseEvent::EvtRightUp;
+		}
+		else if (eventType == wxEVT_RIGHT_DOWN)
+		{
+			return WidgetMouseEvent::EvtRightDown;
+		}
+		else if (eventType == wxEVT_RIGHT_DCLICK)
+		{
+			return WidgetMouseEvent::EvtRightDoubleClick;
+		}
+
+		else if (eventType == wxEVT_MIDDLE_UP)
+		{
+			return WidgetMouseEvent::EvtMiddleUp;
+		}
+		else if (eventType == wxEVT_MIDDLE_DOWN)
+		{
+			return WidgetMouseEvent::EvtMiddleDown;
+		}
+		else if (eventType == wxEVT_MIDDLE_DCLICK)
+		{
+			return WidgetMouseEvent::EvtMiddleDoubleClick;
+		}
+
+		else if (eventType == wxEVT_AUX1_UP)
+		{
+			return WidgetMouseEvent::EvtAux1Up;
+		}
+		else if (eventType == wxEVT_AUX1_DOWN)
+		{
+			return WidgetMouseEvent::EvtAux1Down;
+		}
+		else if (eventType == wxEVT_AUX1_DCLICK)
+		{
+			return WidgetMouseEvent::EvtAux1DoubleClick;
+		}
+
+		else if (eventType == wxEVT_AUX2_UP)
+		{
+			return WidgetMouseEvent::EvtAux2Up;
+		}
+		else if (eventType == wxEVT_AUX2_DOWN)
+		{
+			return WidgetMouseEvent::EvtAux2Down;
+		}
+		else if (eventType == wxEVT_AUX2_DCLICK)
+		{
+			return WidgetMouseEvent::EvtAux2DoubleClick;
+		}
+
+		else if (eventType == wxEVT_MOTION)
+		{
+			return WidgetMouseEvent::EvtMove;
+		}
+		else if (eventType == wxEVT_ENTER_WINDOW)
+		{
+			return WidgetMouseEvent::EvtEnter;
+		}
+		else if (eventType == wxEVT_LEAVE_WINDOW)
+		{
+			return WidgetMouseEvent::EvtLeave;
+		}
+		else if (eventType == wxEVT_MOUSEWHEEL)
+		{
+			return WidgetMouseEvent::EvtWheel;
+		}
+		else if (eventType == wxEVT_MAGNIFY)
+		{
+			return WidgetMouseEvent::EvtMagnification;
+		}
+		return {};
+	}
+	EventID MapKeyboardEvent(const wxEventType& eventType) noexcept
+	{
+		if (eventType == wxEVT_KEY_UP)
+		{
+			return WidgetKeyEvent::EvtKeyUp;
+		}
+		else if (eventType == wxEVT_KEY_DOWN)
+		{
+			return WidgetKeyEvent::EvtKeyDown;
+		}
+		else if (eventType == wxEVT_CHAR)
+		{
+			return WidgetKeyEvent::EvtChar;
+		}
+		else if (eventType == wxEVT_CHAR_HOOK)
+		{
+			return WidgetKeyEvent::EvtCharHook;
+		}
+		return {};
+	}
+
 	class WxWidgetPaintEvent final: public WidgetDrawEvent
 	{
 		public:
@@ -129,32 +240,24 @@ namespace kxf::WXUI::Private
 		{
 			return m_Widget.ProcessEvent(WidgetFocusEvent::EvtFocusLost, m_Widget);
 		}
-		else if (eventType == wxEVT_KEY_UP || eventType == wxEVT_KEY_DOWN || eventType == wxEVT_CHAR || eventType == wxEVT_CHAR_HOOK)
+		else if (auto eventID = MapKeyboardEvent(eventType))
 		{
 			auto& event = static_cast<wxKeyEvent&>(anyEvent);
-			if (eventType == wxEVT_KEY_UP)
-			{
-				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyUp, m_Widget, event);
-			}
-			else if (eventType == wxEVT_KEY_DOWN)
-			{
-				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtKeyDown, m_Widget, event);
-			}
-			else if (eventType == wxEVT_CHAR)
-			{
-				return m_Widget.ProcessEvent(WidgetKeyEvent::EvtChar, m_Widget, event);
-			}
-			else if (eventType == wxEVT_CHAR_HOOK)
-			{
-				WidgetKeyEvent keyEvent(m_Widget, event);
-				const bool result = m_Widget.ProcessEvent(keyEvent, WidgetKeyEvent::EvtCharHook);
 
-				if (keyEvent.IsNextEventAllowed())
-				{
-					event.DoAllowNextEvent();
-				}
-				return result;
+			WidgetKeyEvent keyEvent(m_Widget, event);
+			const bool result = m_Widget.ProcessEvent(keyEvent, eventID);
+			if (eventID == WidgetKeyEvent::EvtCharHook && keyEvent.IsNextEventAllowed())
+			{
+				event.DoAllowNextEvent();
 			}
+			return result;
+		}
+		else if (auto eventID = MapMouseEvent(eventType))
+		{
+			auto& event = static_cast<wxMouseEvent&>(anyEvent);
+
+			WidgetMouseEvent keyEvent(m_Widget, event);
+			return m_Widget.ProcessEvent(keyEvent, eventID);
 		}
 		return false;
 	}

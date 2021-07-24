@@ -206,6 +206,7 @@ namespace kxf
 
 	enum class MouseButton: uint32_t
 	{
+		Any = std::numeric_limits<uint32_t>::max(),
 		None = 0,
 
 		Left = FlagSetValue<KeyModifier>(0),
