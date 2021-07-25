@@ -489,6 +489,7 @@
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetContextMenuEvent.h" />
@@ -499,10 +500,12 @@
     <ClInclude Include="kxf\UI\Events\WidgetMouseEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
+    <ClInclude Include="kxf\UI\ICheckWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IMenuWidget.h" />
     <ClInclude Include="kxf\UI\INativeWidget.h" />
+    <ClInclude Include="kxf\UI\IStaticLabel.h" />
     <ClInclude Include="kxf\UI\IScrollableWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidgetItem.h" />
@@ -535,9 +538,13 @@
     <ClInclude Include="kxf\UI\TopLevelWidgets\WXUI\Frame.h" />
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Widgets\Button.h" />
+    <ClInclude Include="kxf\UI\Widgets\Check.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Check.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="kxf\UI\Windows\Frame.h" />
@@ -989,7 +996,11 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Dialog.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Button.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="kxf\UI\Windows\Frame.cpp" />
