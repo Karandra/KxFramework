@@ -24,6 +24,7 @@ namespace kxf
 
 		public:
 			EventID() noexcept = default;
+			EventID(bool) = delete;
 
 			// Null pointer
 			EventID(std::nullptr_t) noexcept
@@ -32,7 +33,7 @@ namespace kxf
 			}
 
 			// Member function pointer
-			template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+			template<class TFunc> requires(std::is_member_function_pointer_v<TFunc>)
 			EventID(TFunc func) noexcept
 				:m_ID(Utility::StoreMemberFunction(func).ToUniversallyUniqueID())
 			{

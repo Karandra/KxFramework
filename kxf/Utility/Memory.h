@@ -21,7 +21,7 @@ namespace kxf::Utility
 		std::destroy_at(static_cast<T*>(buffer));
 	}
 
-	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+	template<class TFunc> requires(std::is_member_function_pointer_v<TFunc>)
 	NativeUUID StoreMemberFunction(TFunc func) noexcept
 	{
 		static_assert(sizeof(func) <= sizeof(NativeUUID), "Member function size must be less or equal to the size of 'NativeUUID' type");
