@@ -2118,6 +2118,12 @@
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\StaticLabel.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\StaticLabel.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3188,6 +3194,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp">
       <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\StaticLabel.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\StaticLabel.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

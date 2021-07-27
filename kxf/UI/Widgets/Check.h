@@ -17,9 +17,12 @@ namespace kxf::Widgets
 
 		public:
 			// IWidget
-			bool CreateWidget(std::shared_ptr<IWidget> parent, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
+			bool CreateWidget(std::shared_ptr<IWidget> parent, const String& label = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 
 			// ICheckWidget
+			String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const override;
+			void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) override;
+
 			bool IsThirdStateSelectable() const override;
 			void SetThirdStateSelectable(bool isSelectable = true) override;
 

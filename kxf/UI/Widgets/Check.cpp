@@ -12,12 +12,39 @@ namespace kxf::Widgets
 	Check::~Check() = default;
 
 	// IWidget
-	bool Check::CreateWidget(std::shared_ptr<IWidget> parent, const String& text, Point pos, Size size)
+	bool Check::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
 	{
-		return Get()->Create(parent ? parent->GetWxWindow() : nullptr, text, pos, size);
+		if (parent)
+		{
+			return Get()->Create(parent->GetWxWindow(), label, pos, size);
+		}
+		return false;
 	}
 
 	// ICheckWidget
+	String Check::GetLabel(FlagSet<WidgetTextFlag> flags) const
+	{
+		if (flags.Contains(WidgetTextFlag::WithMnemonics))
+		{
+			return Get()->GetLabel();
+		}
+		else
+		{
+			return Get()->GetLabelText();
+		}
+	}
+	void Check::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	{
+		if (flags.Contains(WidgetTextFlag::WithMnemonics))
+		{
+			Get()->SetLabel(label);
+		}
+		else
+		{
+			Get()->SetLabelText(label);
+		}
+	}
+
 	bool Check::IsThirdStateSelectable() const
 	{
 		return Get()->Is3rdStateAllowedForUser();

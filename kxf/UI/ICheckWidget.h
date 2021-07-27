@@ -19,6 +19,9 @@ namespace kxf
 		KxRTTI_DeclareIID(ICheckWidget, {0xffcee75f, 0x809d, 0x417f, {0x96, 0x6d, 0xc4, 0x44, 0x83, 0xaa, 0xc8, 0x6e}});
 
 		public:
+			virtual String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const = 0;
+			virtual void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) = 0;
+
 			virtual bool IsThirdStateSelectable() const = 0;
 			virtual void SetThirdStateSelectable(bool isSelectable = true) = 0;
 

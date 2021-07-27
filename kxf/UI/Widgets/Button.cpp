@@ -16,13 +16,17 @@ namespace kxf::Widgets
 	Button::~Button() = default;
 
 	// IWidget
-	bool Button::CreateWidget(std::shared_ptr<IWidget> parent, const String& text, Point pos, Size size)
+	bool Button::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
 	{
-		return Get()->Create(parent ? parent->GetWxWindow() : nullptr, text, pos, size);
+		if (parent)
+		{
+			return Get()->Create(parent->GetWxWindow(), label, pos, size);
+		}
+		return false;
 	}
 
 	// IButtonWidget
-	String Button::GetButtonLabel(FlagSet<WidgetTextFlag> flags) const
+	String Button::GetLabel(FlagSet<WidgetTextFlag> flags) const
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -33,7 +37,7 @@ namespace kxf::Widgets
 			return Get()->GetLabelText();
 		}
 	}
-	void Button::SetButtonLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	void Button::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -45,15 +49,15 @@ namespace kxf::Widgets
 		}
 	}
 
-	BitmapImage Button::GetButtonIcon() const
+	BitmapImage Button::GetIcon() const
 	{
 		return GDIBitmap(Get()->GetBitmap());
 	}
-	void Button::SetButtonIcon(const BitmapImage& icon, FlagSet<Direction> direction)
+	void Button::SetIcon(const BitmapImage& icon, FlagSet<Direction> direction)
 	{
 		Get()->SetBitmap(icon.ToGDIBitmap().ToWxBitmap());
 	}
-	void Button::SetStdButtonIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
+	void Button::SetStdIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
 	{
 		if (stdIcon.Contains(StdIcon::Authentication))
 		{
@@ -65,23 +69,23 @@ namespace kxf::Widgets
 				{
 					if (BitmapImage image = bundle.GetImage(Size(GetSize()), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{
-						Button::SetButtonIcon(image, direction);
+						Button::SetIcon(image, direction);
 						return;
 					}
 				}
 			}
 		}
 
-		Button::SetButtonIcon({}, direction);
+		Button::SetIcon({}, direction);
 	}
 
-	bool Button::IsDefaultButton() const
+	bool Button::IsDefault() const
 	{
-		return Get()->IsDefaultButton();
+		return Get()->IsDefault();
 	}
-	std::shared_ptr<IButtonWidget> Button::SetDefaultButton()
+	std::shared_ptr<IButtonWidget> Button::SetDefault()
 	{
-		if (auto button = Get()->SetDefaultButton())
+		if (auto button = Get()->SetDefault())
 		{
 			if (auto widget = Private::FindByWXObject(*button))
 			{

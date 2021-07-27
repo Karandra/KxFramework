@@ -1,11 +1,8 @@
 #include "KxfPCH.h"
 #include "Button.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 #include "../../Events/ButtonWidgetEvent.h"
 
-#include "kxf/Drawing/GDIRenderer/UxTheme.h"
-#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
-#include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
-#include "kxf/System/Private/System.h"
 #include <wx/toplevel.h>
 #include <wx/button.h>
 
@@ -197,22 +194,22 @@ namespace kxf::WXUI
 			EnableSystemTheme();
 			MakeOwnerDrawn();
 
-			m_EventHandler.Bind(wxEVT_PAINT, &Button::OnPaint, this);
-			m_EventHandler.Bind(wxEVT_SIZE, &Button::OnResize, this);
-			m_EventHandler.Bind(wxEVT_KILL_FOCUS, &Button::OnKillFocus, this);
-			m_EventHandler.Bind(wxEVT_LEFT_UP, &Button::OnLeftButtonUp, this);
-			m_EventHandler.Bind(wxEVT_LEFT_DOWN, &Button::OnLeftButtonDown, this);
-			m_EventHandler.Bind(wxEVT_LEAVE_WINDOW, &Button::OnMouseLeave, this);
-			m_EventHandler.Bind(wxEVT_ENTER_WINDOW, &Button::OnMouseEnter, this);
+			m_EvtHandler.Bind(wxEVT_PAINT, &Button::OnPaint, this);
+			m_EvtHandler.Bind(wxEVT_SIZE, &Button::OnResize, this);
+			m_EvtHandler.Bind(wxEVT_KILL_FOCUS, &Button::OnKillFocus, this);
+			m_EvtHandler.Bind(wxEVT_LEFT_UP, &Button::OnLeftButtonUp, this);
+			m_EvtHandler.Bind(wxEVT_LEFT_DOWN, &Button::OnLeftButtonDown, this);
+			m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &Button::OnMouseLeave, this);
+			m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &Button::OnMouseEnter, this);
 
-			PushEventHandler(&m_EventHandler);
-			m_EventHandler.SetClientData(this);
+			PushEventHandler(&m_EvtHandler);
+			m_EvtHandler.SetClientData(this);
 			return true;
 		}
 		return false;
 	};
 
-	bool Button::IsDefaultButton() const
+	bool Button::IsDefault() const
 	{
 		const wxWindow* tlwParent = ::wxGetTopLevelParent(const_cast<Button*>(this));
 		if (tlwParent && tlwParent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
@@ -221,7 +218,7 @@ namespace kxf::WXUI
 		}
 		return false;
 	}
-	wxWindow* Button::SetDefaultButton()
+	wxWindow* Button::SetDefault()
 	{
 		ScheduleRefresh();
 

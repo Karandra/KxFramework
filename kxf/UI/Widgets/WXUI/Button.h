@@ -20,7 +20,7 @@ namespace kxf::WXUI
 
 		private:
 			Widgets::Button& m_Widget;
-			wxEvtHandler m_EventHandler;
+			wxEvtHandler m_EvtHandler;
 
 			NativeWidgetFlag m_WidgetState = NativeWidgetFlag::None;
 			bool m_IsDropdownEnbled = false;
@@ -46,7 +46,7 @@ namespace kxf::WXUI
 			}
 			~Button()
 			{
-				if (m_EventHandler.GetClientData() == this)
+				if (m_EvtHandler.GetClientData() == this)
 				{
 					PopEventHandler();
 				}
@@ -71,8 +71,8 @@ namespace kxf::WXUI
 				wxAnyButton::SetLabel(label);
 			}
 		
-			bool IsDefaultButton() const;
-			wxWindow* SetDefaultButton();
+			bool IsDefault() const;
+			wxWindow* SetDefault();
 
 			bool IsDropdownEnabled() const
 			{
