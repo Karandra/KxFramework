@@ -1,9 +1,11 @@
 #include "KxfPCH.h"
 #include "EvtHandlerWrapper.h"
+#include "kxf/Network/URI.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "../IGraphicsRendererAwareWidget.h"
 
 #include "../Events/WidgetEvent.h"
+#include "../Events/WidgetTextEvent.h"
 #include "../Events/WidgetKeyEvent.h"
 #include "../Events/WidgetSizeEvent.h"
 #include "../Events/WidgetDrawEvent.h"
@@ -256,8 +258,44 @@ namespace kxf::WXUI::Private
 		{
 			auto& event = static_cast<wxMouseEvent&>(anyEvent);
 
-			WidgetMouseEvent keyEvent(m_Widget, event);
-			return m_Widget.ProcessEvent(keyEvent, eventID);
+			WidgetMouseEvent mouseEvent(m_Widget, event);
+			return m_Widget.ProcessEvent(mouseEvent, eventID);
+		}
+		else if (eventType == wxEVT_TEXT || eventType == wxEVT_TEXT_ENTER || eventType == wxEVT_TEXT_MAXLEN ||
+				 eventType == wxEVT_TEXT_URL || eventType == wxEVT_TEXT_CUT || eventType == wxEVT_TEXT_COPY ||
+				 eventType == wxEVT_TEXT_PASTE)
+		{
+			auto& event = static_cast<wxTextUrlEvent&>(anyEvent);
+			if (eventType == wxEVT_TEXT)
+			{
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtChanged, m_Widget, event.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_CUT)
+			{
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCut, m_Widget, event.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_COPY)
+			{
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCopy, m_Widget, event.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_PASTE)
+			{
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtPaste, m_Widget, event.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_ENTER)
+			{
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCommit, m_Widget);
+			}
+			else if (eventType == wxEVT_TEXT_MAXLEN)
+			{
+				// No way to know the actual length limit here
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtLengthLimit, m_Widget);
+			}
+			else if (eventType == wxEVT_TEXT_URL)
+			{
+				WidgetMouseEvent mouseEvent(m_Widget, event.GetMouseEvent());
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtURI, m_Widget, event.GetString(), std::move(mouseEvent));
+			}
 		}
 		return false;
 	}

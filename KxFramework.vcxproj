@@ -499,6 +499,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetMouseEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
@@ -974,6 +975,7 @@
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetMouseEvent.cpp" />
+    <ClCompile Include="kxf\UI\Events\WidgetTextEvent.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />

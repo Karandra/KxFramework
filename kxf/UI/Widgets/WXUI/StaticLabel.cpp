@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "StaticLabel.h"
+#include "../../Events/WidgetTextEvent.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/System/SystemInformation.h"
@@ -178,16 +179,12 @@ namespace kxf::WXUI
 		ScheduleRefresh();
 		m_State = NativeWidgetFlag::Focused;
 
-		if (m_Style & LabelStyle::Hyperlink)
-		{
-			wxTextUrlEvent evt(GetId(), event, 0, 0);
-			evt.SetEventType(wxEVT_TEXT_URL);
-			evt.SetEventObject(this);
-			evt.SetString(m_URI ? m_URI.BuildURI() : m_Label);
-			ProcessWindowEvent(evt);
-		}
-
 		event.Skip();
+		if (m_Style & LabelStyle::Hyperlink && m_URI)
+		{
+			WidgetMouseEvent mouseEvent(m_Widget, event);
+			m_Widget.ProcessEvent(WidgetTextEvent::EvtURI, m_Widget, m_URI, std::move(mouseEvent));
+		}
 	}
 
 	bool StaticLabel::Create(wxWindow* parent,

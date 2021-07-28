@@ -2124,6 +2124,9 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\StaticLabel.h">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3200,6 +3203,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\StaticLabel.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\WidgetTextEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
