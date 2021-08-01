@@ -36,7 +36,6 @@ namespace kxf::Widgets
 			EvtHandler m_EvtHandler;
 			std::unique_ptr<WXUI::MenuItem> m_MenuItem;
 			std::weak_ptr<MenuWidget> m_OwningMenu;
-			std::weak_ptr<IMenuWidgetItem> m_WidgetReference;
 
 			// Options
 			WidgetID m_ItemID;
@@ -72,13 +71,6 @@ namespace kxf::Widgets
 			SizeF OnMeasureItem(SizeF size) const;
 			void OnDrawItem(std::shared_ptr<IGraphicsContext> gc, RectF rect, FlagSet<NativeWidgetFlag> flags);
 
-		protected:
-			// IMenuWidgetItem
-			void SaveReference(std::weak_ptr<IMenuWidgetItem> ref) noexcept override
-			{
-				m_WidgetReference = std::move(ref);
-			}
-
 		public:
 			MenuWidgetItem();
 			MenuWidgetItem(const MenuWidgetItem&) = delete;
@@ -86,12 +78,6 @@ namespace kxf::Widgets
 
 			// --- IMenuWidgetItem ---
 		public:
-			// Lifetime management
-			std::shared_ptr<IMenuWidgetItem> LockReference() const override
-			{
-				return m_WidgetReference.lock();
-			}
-
 			// General
 			std::shared_ptr<IMenuWidget> GetOwningMenu() const override;
 

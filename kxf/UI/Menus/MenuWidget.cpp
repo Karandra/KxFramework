@@ -124,7 +124,7 @@ namespace kxf::Widgets
 	// MenuWidget
 	void MenuWidget::AssociateWXMenuItem(wxMenuItem& wx, IMenuWidgetItem& item) noexcept
 	{
-		g_MenuItemMap.insert_or_assign(&wx, item.LockReference());
+		g_MenuItemMap.insert_or_assign(&wx, item.QueryInterface<IMenuWidgetItem>());
 	}
 	void MenuWidget::DissociateWXMenuItem(wxMenuItem& wx) noexcept
 	{
@@ -471,7 +471,7 @@ namespace kxf::Widgets
 				menuItem->m_OwningMenu = QueryInterface<MenuWidget>();
 				m_Menu->Insert(std::clamp(index, 0_uz, m_Menu->GetMenuItemCount()), menuItem->m_MenuItem.get());
 
-				return menuItem->LockReference();
+				return menuItem;
 			}
 		}
 		return nullptr;
@@ -488,7 +488,6 @@ namespace kxf::Widgets
 			auto item = std::make_shared<MenuWidgetItem>();
 			item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, menuWidget, *menuWidget->m_Menu);
 			item->m_OwningMenu = QueryInterface<MenuWidget>();
-			item->SaveReference(item);
 			item->DoCreateWidget();
 
 			item->SetLabel(!label.IsEmpty() ? label : menuWidget->GetLabel(), WidgetTextFlag::WithMnemonics);
@@ -531,7 +530,6 @@ namespace kxf::Widgets
 				}
 			};
 
-			item->SaveReference(item);
 			item->DoCreateWidget();
 			item->SetLabel(label);
 			item->SetItemID(id);

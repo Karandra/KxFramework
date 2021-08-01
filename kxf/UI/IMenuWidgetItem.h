@@ -27,16 +27,10 @@ namespace kxf
 	{
 		KxRTTI_DeclareIID(IMenuWidgetItem, {0xb1e0d965, 0x3eec, 0x42d8, {0xa4, 0x4e, 0xd9, 0xce, 0xd7, 0xb7, 0x93, 0x3e}});
 
-		protected:
-			virtual void SaveReference(std::weak_ptr<IMenuWidgetItem> ref) = 0;
-
 		public:
 			virtual ~IMenuWidgetItem() = default;
 
 		public:
-			// Lifetime management
-			virtual std::shared_ptr<IMenuWidgetItem> LockReference() const = 0;
-
 			// General
 			virtual std::shared_ptr<IMenuWidget> GetOwningMenu() const = 0;
 
