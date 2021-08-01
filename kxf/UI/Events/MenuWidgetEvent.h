@@ -1,11 +1,7 @@
 #pragma once
 #include "WidgetEvent.h"
-
-namespace kxf
-{
-	class IMenuWidget;
-	class IMenuWidgetItem;
-}
+#include "../IMenuWidget.h"
+#include "../IMenuWidgetItem.h"
 
 namespace kxf
 {
@@ -23,8 +19,14 @@ namespace kxf
 			Point m_PopupPosition = Point::UnspecifiedPosition();
 
 		public:
-			MenuWidgetEvent(IMenuWidget& widget, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
-			MenuWidgetEvent(IMenuWidget& widget, IMenuWidgetItem& menuItem, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept;
+			MenuWidgetEvent(IMenuWidget& widget, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept
+				:WidgetEvent(widget), m_InvokingWidget(std::move(invokingWidget))
+			{
+			}
+			MenuWidgetEvent(IMenuWidget& widget, IMenuWidgetItem& menuItem, std::shared_ptr<IWidget> invokingWidget = nullptr) noexcept
+				:WidgetEvent(widget), m_InvokingWidget(std::move(invokingWidget)), m_Item(menuItem.QueryInterface<IMenuWidgetItem>())
+			{
+			}
 
 		public:
 			// IEvent
@@ -34,7 +36,10 @@ namespace kxf
 			}
 
 			// MenuWidgetEvent
-			std::shared_ptr<IMenuWidget> GetMenuWidget() const noexcept;
+			std::shared_ptr<IMenuWidget> GetMenuWidget() const noexcept
+			{
+				return GetWidget()->QueryInterface<IMenuWidget>();
+			}
 			std::shared_ptr<IMenuWidgetItem> GetMenuWidgetItem() const noexcept
 			{
 				return m_Item;

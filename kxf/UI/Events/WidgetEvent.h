@@ -13,10 +13,6 @@ namespace kxf
 			WidgetID m_WidgetID;
 			size_t m_PropagationLevel = PropagationLevel::Max;
 
-			String m_String;
-			int64_t m_Int = 0;
-			int64_t m_ExtraInt = 0;
-
 		public:
 			WidgetEvent() noexcept = default;
 			WidgetEvent(IWidget& widget) noexcept;
@@ -65,37 +61,6 @@ namespace kxf
 			{
 				return m_PropagationLevel != PropagationLevel::None;
 			}
-			
-			String GetString() const override
-			{
-				return m_String;
-			}
-			void SetString(const String& value) override
-			{
-				m_String = value;
-			}
-			void SetString(String&& value) noexcept
-			{
-				m_String = std::move(value);
-			}
-
-			int64_t GetInt() const noexcept override
-			{
-				return m_Int;
-			}
-			void SetInt(int64_t value) noexcept override
-			{
-				m_Int = value;
-			}
-
-			int64_t GetExtraInt() const noexcept override
-			{
-				return m_ExtraInt;
-			}
-			void SetExtraInt(int64_t value) noexcept override
-			{
-				m_ExtraInt = value;
-			}
 
 		public:
 			WidgetEvent& operator=(const WidgetEvent&) = default;
@@ -106,10 +71,6 @@ namespace kxf
 				m_Widget = std::move(other.m_Widget);
 				m_WidgetID = Utility::ExchangeResetAndReturn(other.m_WidgetID, StdID::None);
 				m_PropagationLevel = Utility::ExchangeResetAndReturn(other.m_PropagationLevel, PropagationLevel::Max);
-
-				m_String = std::move(other.m_String);
-				m_Int = Utility::ExchangeResetAndReturn(other.m_Int, 0);
-				m_ExtraInt = Utility::ExchangeResetAndReturn(other.m_ExtraInt, 0);
 
 				return *this;
 			}

@@ -39,14 +39,5 @@ namespace kxf
 			virtual size_t StopPropagation() = 0;
 			virtual void ResumePropagation(size_t level) = 0;
 			virtual bool ShouldPropagate() const = 0;
-
-			virtual String GetString() const = 0;
-			virtual void SetString(const String& value) = 0;
-
-			virtual int64_t GetInt() const = 0;
-			virtual void SetInt(int64_t value) = 0;
-
-			virtual int64_t GetExtraInt() const = 0;
-			virtual void SetExtraInt(int64_t value) = 0;
 	};
 }

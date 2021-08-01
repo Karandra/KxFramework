@@ -1,11 +1,7 @@
 #pragma once
 #include "WidgetEvent.h"
 #include "WidgetMouseEvent.h"
-
-namespace kxf
-{
-	class URI;
-}
+#include "kxf/Network/URI.h"
 
 namespace kxf
 {
@@ -23,6 +19,8 @@ namespace kxf
 
 		private:
 			WidgetMouseEvent m_MouseEvent;
+			URI m_URI;
+			String m_Text;
 			size_t m_LengthLimit = String::npos;
 
 		public:
@@ -35,12 +33,14 @@ namespace kxf
 				:WidgetEvent(widget), m_LengthLimit(lengthLimit)
 			{
 			}
-			WidgetTextEvent(IWidget& widget, const String& text) noexcept
-				:WidgetEvent(widget)
+			WidgetTextEvent(IWidget& widget, String text) noexcept
+				:WidgetEvent(widget), m_Text(std::move(text))
 			{
-				WidgetEvent::SetString(text);
 			}
-			WidgetTextEvent(IWidget& widget, const URI& uri, WidgetMouseEvent mouseEvent) noexcept;
+			WidgetTextEvent(IWidget& widget, URI uri, WidgetMouseEvent mouseEvent) noexcept
+				:WidgetEvent(widget), m_MouseEvent(std::move(mouseEvent)), m_URI(std::move(uri))
+			{
+			}
 
 		public:
 			// IEvent
@@ -51,7 +51,6 @@ namespace kxf
 
 		public:
 			// WidgetURIEvent
-			URI GetURI() const;
 			const WidgetMouseEvent& GetMouseEvent() const noexcept
 			{
 				return m_MouseEvent;
@@ -61,6 +60,14 @@ namespace kxf
 				return m_MouseEvent;
 			}
 
+			URI GetURI() const
+			{
+				return m_URI;
+			}
+			String GetText() const
+			{
+				return m_Text;
+			}
 			size_t GetLengthLimit() const noexcept
 			{
 				return m_LengthLimit;

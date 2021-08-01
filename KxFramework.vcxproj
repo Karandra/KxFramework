@@ -488,6 +488,7 @@
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
     <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h" />
@@ -978,12 +979,9 @@
     <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp" />
-    <ClCompile Include="kxf\UI\Events\ButtonWidgetEvent.cpp" />
-    <ClCompile Include="kxf\UI\Events\MenuWidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetMouseEvent.cpp" />
-    <ClCompile Include="kxf\UI\Events\WidgetTextEvent.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />

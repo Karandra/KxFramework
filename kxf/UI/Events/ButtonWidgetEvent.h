@@ -1,10 +1,6 @@
 #pragma once
 #include "WidgetEvent.h"
-
-namespace kxf
-{
-	class IButtonWidget;
-}
+#include "../IButtonWidget.h"
 
 namespace kxf
 {
@@ -15,7 +11,10 @@ namespace kxf
 			KxEVENT_MEMBER(ButtonWidgetEvent, Dropdown);
 
 		public:
-			ButtonWidgetEvent(IButtonWidget& widget) noexcept;
+			ButtonWidgetEvent(IButtonWidget& widget) noexcept
+				:WidgetEvent(widget)
+			{
+			}
 
 		public:
 			// IEvent
@@ -25,6 +24,9 @@ namespace kxf
 			}
 
 			// ButtonWidgetEvent
-			std::shared_ptr<IButtonWidget> GetButtonWidget() const noexcept;
+			std::shared_ptr<IButtonWidget> GetButtonWidget() const noexcept
+			{
+				return GetWidget()->QueryInterface<IButtonWidget>();
+			}
 	};
 }

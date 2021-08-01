@@ -2151,6 +2151,9 @@
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3150,9 +3153,6 @@
     <ClCompile Include="kxf\UI\StdIcon.cpp">
       <Filter>kxf\UI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Events\MenuWidgetEvent.cpp">
-      <Filter>kxf\UI\Events</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\Menus\MenuWidget.cpp">
       <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
@@ -3182,9 +3182,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\INativeWidget.cpp">
       <Filter>kxf\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Events\ButtonWidgetEvent.cpp">
-      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\Button.cpp">
       <Filter>kxf\UI\Widgets</Filter>
@@ -3227,9 +3224,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\StaticLabel.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Events\WidgetTextEvent.cpp">
-      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
