@@ -2127,6 +2127,30 @@
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IComboBoxWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\ITextWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IImageComboBoxWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ComboBox.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3206,6 +3230,21 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Events\WidgetTextEvent.cpp">
       <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\WxTextEntryWrapper.cpp">
+      <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

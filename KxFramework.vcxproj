@@ -500,8 +500,10 @@
     <ClInclude Include="kxf\UI\Events\WidgetMouseEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
+    <ClInclude Include="kxf\UI\IImageComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
+    <ClInclude Include="kxf\UI\IComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IMenuWidget.h" />
@@ -510,6 +512,7 @@
     <ClInclude Include="kxf\UI\IScrollableWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidgetItem.h" />
+    <ClInclude Include="kxf\UI\ITextWidget.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\IWidgetEvent.h" />
@@ -531,6 +534,7 @@
     <ClInclude Include="kxf\UI\Private\Common.h" />
     <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
+    <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Dialog.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Window.h" />
@@ -540,12 +544,16 @@
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Widgets\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\Check.h" />
+    <ClInclude Include="kxf\UI\Widgets\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\StaticLabel.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Check.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StaticLabel.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
@@ -994,6 +1002,7 @@
     <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\Common.cpp" />
     <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp" />
+    <ClCompile Include="kxf\UI\Private\WxTextEntryWrapper.cpp" />
     <ClCompile Include="kxf\UI\StdIcon.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\Dialog.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\Window.cpp" />
@@ -1001,10 +1010,14 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StaticLabel.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StaticLabel.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
