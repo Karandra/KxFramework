@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "StaticLabel.h"
 #include "WXUI/StaticLabel.h"
+#include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::Widgets
@@ -56,7 +57,14 @@ namespace kxf::Widgets
 	}
 	void StaticLabel::SetStdIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
 	{
-		StaticLabel::SetIcon({}, direction);
+		if (stdIcon.Contains(StdIcon::Authentication))
+		{
+			StaticLabel::SetIcon(ArtProvider::GetMessageBoxResource(StdIcon::Authentication), direction);
+		}
+		else
+		{
+			StaticLabel::SetIcon({}, direction);
+		}
 	}
 
 	// IGraphicsRendererAwareWidget

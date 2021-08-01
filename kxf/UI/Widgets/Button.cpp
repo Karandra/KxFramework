@@ -1,8 +1,7 @@
 #include "KxfPCH.h"
 #include "Button.h"
 #include "WXUI/Button.h"
-#include "kxf/System/DynamicLibrary.h"
-#include "kxf/Drawing/ImageBundle.h"
+#include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 
@@ -61,22 +60,12 @@ namespace kxf::Widgets
 	{
 		if (stdIcon.Contains(StdIcon::Authentication))
 		{
-			DynamicLibrary library("ImageRes.dll", DynamicLibraryFlag::Resource);
-			if (library)
-			{
-				// 78 is the index of UAC shield icon
-				if (ImageBundle bundle = library.GetIconBundleResource("78"))
-				{
-					if (BitmapImage image = bundle.GetImage(Size(GetSize()), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
-					{
-						Button::SetIcon(image, direction);
-						return;
-					}
-				}
-			}
+			Button::SetIcon(ArtProvider::GetMessageBoxResource(StdIcon::Authentication), direction);
 		}
-
-		Button::SetIcon({}, direction);
+		else
+		{
+			Button::SetIcon({}, direction);
+		}
 	}
 
 	bool Button::IsDefault() const
