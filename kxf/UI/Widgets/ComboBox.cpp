@@ -23,6 +23,15 @@ namespace kxf::Widgets
 	}
 
 	// IComboBoxWidget
+	void ComboBox::ShowDropdown()
+	{
+		Get()->Popup();
+	}
+	void ComboBox::DismissDropdown()
+	{
+		Get()->Dismiss();
+	}
+
 	size_t ComboBox::InsertItem(size_t index, const String& label, void* data)
 	{
 		const auto count = Get()->GetCount();

@@ -28,6 +28,9 @@ namespace kxf::Widgets
 			bool CreateWidget(std::shared_ptr<IWidget> parent, const String& label = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 
 			// IComboBoxWidget
+			void ShowDropdown() override;
+			void DismissDropdown() override;
+
 			using IComboBoxWidget::AddItem;
 			size_t InsertItem(size_t index, const String& label, void* data = nullptr) override;
 			void RemoveItem(size_t index) override;

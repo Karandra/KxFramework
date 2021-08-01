@@ -1,10 +1,32 @@
 #include "KxfPCH.h"
 #include "ComboBox.h"
+#include "../../Events/ComboBoxWidgetEvent.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::WXUI
 {
+	bool ComboBox::DoTryBefore(wxEvent& event)
+	{
+		const auto eventType = event.GetEventType();
+		if (eventType == wxEVT_COMBOBOX)
+		{
+			auto& eventWx = static_cast<wxCommandEvent&>(event);
+			auto index = eventWx.GetSelection();
+
+			return m_Widget.ProcessEvent(ComboBoxWidgetEvent::EvtItemSelected, m_Widget, index >= 0 ? index : IComboBoxWidget::npos);
+		}
+		else if (eventType == wxEVT_COMBOBOX_DROPDOWN)
+		{
+			return m_Widget.ProcessEvent(ComboBoxWidgetEvent::EvtDropdownShow, m_Widget);
+		}
+		else if (eventType == wxEVT_COMBOBOX_CLOSEUP)
+		{
+			return m_Widget.ProcessEvent(ComboBoxWidgetEvent::EvtDropdownDismiss, m_Widget);
+		}
+		return false;
+	}
+
 	bool ComboBox::Create(wxWindow* parent,
 						const String& label,
 						const Point& pos,

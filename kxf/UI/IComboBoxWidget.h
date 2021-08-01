@@ -12,6 +12,9 @@ namespace kxf
 			static constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		public:
+			virtual void ShowDropdown() = 0;
+			virtual void DismissDropdown() = 0;
+
 			virtual size_t InsertItem(size_t index, const String& label, void* data = nullptr) = 0;
 			size_t AddItem(const String& label, void* data = nullptr)
 			{

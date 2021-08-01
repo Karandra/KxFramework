@@ -12,6 +12,20 @@ namespace kxf::WXUI
 		private:
 			IImageComboBoxWidget& m_Widget;
 
+		private:
+			bool DoTryBefore(wxEvent& event);
+
+		protected:
+			// wxEvtHandler
+			bool TryBefore(wxEvent& event) override
+			{
+				if (DoTryBefore(event))
+				{
+					return true;
+				}
+				return EvtHandlerWrapper::TryBefore(event);
+			}
+
 		public:
 			ImageComboBox(IImageComboBoxWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)

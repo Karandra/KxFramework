@@ -12,6 +12,20 @@ namespace kxf::WXUI
 		private:
 			IComboBoxWidget& m_Widget;
 
+		private:
+			bool DoTryBefore(wxEvent& event);
+
+		protected:
+			// wxEvtHandler
+			bool TryBefore(wxEvent& event) override
+			{
+				if (DoTryBefore(event))
+				{
+					return true;
+				}
+				return EvtHandlerWrapper::TryBefore(event);
+			}
+
 		public:
 			ComboBox(IComboBoxWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
