@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "../StaticLabel.h"
+#include "../Label.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/Network/URI.h"
@@ -28,11 +28,11 @@ namespace kxf
 
 namespace kxf::WXUI
 {
-	class KX_API StaticLabel: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>>
+	class KX_API Label: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>>
 	{
 		private:
 			wxEvtHandler m_EvtHandler;
-			Widgets::StaticLabel& m_Widget;
+			Widgets::Label& m_Widget;
 
 			String m_Label;
 			URI m_URI;
@@ -86,11 +86,11 @@ namespace kxf::WXUI
 			}
 
 		public:
-			StaticLabel(Widgets::StaticLabel& widget)
+			Label(Widgets::Label& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 			}
-			~StaticLabel()
+			~Label()
 			{
 				if (m_EvtHandler.GetClientData() == this)
 				{
@@ -137,7 +137,7 @@ namespace kxf::WXUI
 				return false;
 			}
 
-			// StaticLabel
+			// Label
 			void Wrap(int width)
 			{
 				ScheduleRefresh();

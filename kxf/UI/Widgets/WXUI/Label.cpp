@@ -1,5 +1,5 @@
 #include "KxfPCH.h"
-#include "StaticLabel.h"
+#include "Label.h"
 #include "../../Events/WidgetTextEvent.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
@@ -7,13 +7,12 @@
 
 namespace
 {
-	constexpr wxEllipsizeMode g_EllipsizeMode = wxELLIPSIZE_END;
 	constexpr int g_MinSingleLineHeight = 23;
 }
 
 namespace kxf::WXUI
 {
-	Color StaticLabel::GetStateColor() const
+	Color Label::GetStateColor() const
 	{
 		Color color;
 
@@ -54,7 +53,7 @@ namespace kxf::WXUI
 		}
 		return color;
 	}
-	Size StaticLabel::CalcBestSize(std::shared_ptr<IGraphicsContext> gc)
+	Size Label::CalcBestSize(std::shared_ptr<IGraphicsContext> gc)
 	{
 		const SizeF padding = Size(ConvertDialogToPixels(wxSize(3, 1)));
 
@@ -66,7 +65,7 @@ namespace kxf::WXUI
 		return gc->GetTextExtent(m_Label) + padding;
 	}
 
-	void StaticLabel::OnPaint(wxPaintEvent& event)
+	void Label::OnPaint(wxPaintEvent& event)
 	{
 		IRendererNative& nativeRenderer = IRendererNative::Get();
 		auto renderer = m_Widget.GetActiveGraphicsRenderer();
@@ -153,28 +152,28 @@ namespace kxf::WXUI
 			gc->DrawLine(pos1, pos2, *pen);
 		}
 	}
-	void StaticLabel::OnEnter(wxMouseEvent& event)
+	void Label::OnEnter(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
 		m_State = NativeWidgetFlag::Focused;
 
 		event.Skip();
 	}
-	void StaticLabel::OnLeave(wxMouseEvent& event)
+	void Label::OnLeave(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
 		m_State = NativeWidgetFlag::None;
 
 		event.Skip();
 	}
-	void StaticLabel::OnMouseDown(wxMouseEvent& event)
+	void Label::OnMouseDown(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
 		m_State = NativeWidgetFlag::Pressed;
 
 		event.Skip();
 	}
-	void StaticLabel::OnMouseUp(wxMouseEvent& event)
+	void Label::OnMouseUp(wxMouseEvent& event)
 	{
 		ScheduleRefresh();
 		m_State = NativeWidgetFlag::Focused;
@@ -187,7 +186,7 @@ namespace kxf::WXUI
 		}
 	}
 
-	bool StaticLabel::Create(wxWindow* parent,
+	bool Label::Create(wxWindow* parent,
 							 const String& label,
 							 const Point& pos,
 							 const Size& size,
@@ -215,11 +214,11 @@ namespace kxf::WXUI
 			m_BestSize = CalcBestSize();
 
 			// Events
-			m_EvtHandler.Bind(wxEVT_PAINT, &StaticLabel::OnPaint, this);
-			m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &StaticLabel::OnEnter, this);
-			m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &StaticLabel::OnLeave, this);
-			m_EvtHandler.Bind(wxEVT_LEFT_DOWN, &StaticLabel::OnMouseDown, this);
-			m_EvtHandler.Bind(wxEVT_LEFT_UP, &StaticLabel::OnMouseUp, this);
+			m_EvtHandler.Bind(wxEVT_PAINT, &Label::OnPaint, this);
+			m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &Label::OnEnter, this);
+			m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &Label::OnLeave, this);
+			m_EvtHandler.Bind(wxEVT_LEFT_DOWN, &Label::OnMouseDown, this);
+			m_EvtHandler.Bind(wxEVT_LEFT_UP, &Label::OnMouseUp, this);
 
 			PushEventHandler(&m_EvtHandler);
 			m_EvtHandler.SetClientData(this);
@@ -228,7 +227,7 @@ namespace kxf::WXUI
 		return false;
 	}
 
-	void StaticLabel::SetBitmap(const BitmapImage& image)
+	void Label::SetBitmap(const BitmapImage& image)
 	{
 		ScheduleRefresh();
 

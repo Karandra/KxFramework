@@ -2,7 +2,6 @@
 #include "Button.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "../../Events/ButtonWidgetEvent.h"
-
 #include <wx/toplevel.h>
 #include <wx/button.h>
 
@@ -50,7 +49,7 @@ namespace kxf::WXUI
 	void Button::OnPaint(wxPaintEvent& event)
 	{
 		IRendererNative& nativeRenderer = IRendererNative::Get();
-		auto renderer = m_Widget.GetActiveGraphicsRenderer();
+		auto renderer = m_RendererAware->GetActiveGraphicsRenderer();
 
 		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->Clear(renderer->GetTransparentBrush());

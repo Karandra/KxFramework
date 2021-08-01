@@ -1,20 +1,20 @@
 #include "KxfPCH.h"
-#include "StaticLabel.h"
-#include "WXUI/StaticLabel.h"
+#include "Label.h"
+#include "WXUI/Label.h"
 #include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::Widgets
 {
 	// Button
-	StaticLabel::StaticLabel()
+	Label::Label()
 	{
 		InitializeWxWidget();
 	}
-	StaticLabel::~StaticLabel() = default;
+	Label::~Label() = default;
 
 	// IWidget
-	bool StaticLabel::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
+	bool Label::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
 	{
 		if (parent)
 		{
@@ -24,7 +24,7 @@ namespace kxf::Widgets
 	}
 
 	// IButtonWidget
-	String StaticLabel::GetLabel(FlagSet<WidgetTextFlag> flags) const
+	String Label::GetLabel(FlagSet<WidgetTextFlag> flags) const
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -35,7 +35,7 @@ namespace kxf::Widgets
 			return Get()->GetLabelText();
 		}
 	}
-	void StaticLabel::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	void Label::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -47,28 +47,28 @@ namespace kxf::Widgets
 		}
 	}
 
-	BitmapImage StaticLabel::GetIcon() const
+	BitmapImage Label::GetIcon() const
 	{
 		return Get()->GetBitmap();
 	}
-	void StaticLabel::SetIcon(const BitmapImage& icon, FlagSet<Direction> direction)
+	void Label::SetIcon(const BitmapImage& icon, FlagSet<Direction> direction)
 	{
 		Get()->SetBitmap(icon);
 	}
-	void StaticLabel::SetStdIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
+	void Label::SetStdIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
 	{
 		if (stdIcon.Contains(StdIcon::Authentication))
 		{
-			StaticLabel::SetIcon(ArtProvider::GetMessageBoxResource(StdIcon::Authentication), direction);
+			Label::SetIcon(ArtProvider::GetMessageBoxResource(StdIcon::Authentication), direction);
 		}
 		else
 		{
-			StaticLabel::SetIcon({}, direction);
+			Label::SetIcon({}, direction);
 		}
 	}
 
 	// IGraphicsRendererAwareWidget
-	std::shared_ptr<IGraphicsRenderer> StaticLabel::GetActiveGraphicsRenderer() const
+	std::shared_ptr<IGraphicsRenderer> Label::GetActiveGraphicsRenderer() const
 	{
 		if (!m_Renderer)
 		{

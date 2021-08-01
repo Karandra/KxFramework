@@ -4,9 +4,9 @@
 
 namespace kxf
 {
-	class KX_API IStaticLabel: public RTTI::ExtendInterface<IStaticLabel, IWidget>
+	class KX_API ILabelWidget: public RTTI::ExtendInterface<ILabelWidget, IWidget>
 	{
-		KxRTTI_DeclareIID(IStaticLabel, {0x205021cb, 0x1bd9, 0x4014, {0xb2, 0x62, 0xdf, 0xbb, 0xc7, 0xa6, 0xa2, 0x99}});
+		KxRTTI_DeclareIID(ILabelWidget, {0x205021cb, 0x1bd9, 0x4014, {0xb2, 0x62, 0xdf, 0xbb, 0xc7, 0xa6, 0xa2, 0x99}});
 
 		public:
 			virtual String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const = 0;

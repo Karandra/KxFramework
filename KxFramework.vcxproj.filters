@@ -2103,7 +2103,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\IStaticLabel.h">
+    <ClInclude Include="kxf\UI\ILabelWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h">
@@ -2118,10 +2118,10 @@
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Widgets\StaticLabel.h">
+    <ClInclude Include="kxf\UI\Widgets\Label.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Widgets\WXUI\StaticLabel.h">
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h">
@@ -2153,6 +2153,15 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IProgressMeterWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3219,10 +3228,10 @@
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Widgets\StaticLabel.cpp">
+    <ClCompile Include="kxf\UI\Widgets\Label.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Widgets\WXUI\StaticLabel.cpp">
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp">
@@ -3238,6 +3247,12 @@
       <Filter>kxf\UI\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>

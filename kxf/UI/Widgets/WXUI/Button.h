@@ -1,15 +1,11 @@
 #pragma once
 #include "Common.h"
-#include "../Button.h"
+#include "../../IButtonWidget.h"
+#include "../../IGraphicsRendererAwareWidget.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include <wx/anybutton.h>
 #include <wx/systhemectrl.h>
-
-namespace kxf::Widgets
-{
-	class Button;
-}
 
 namespace kxf::WXUI
 {
@@ -19,7 +15,8 @@ namespace kxf::WXUI
 			static Size GetDefaultSize();
 
 		private:
-			Widgets::Button& m_Widget;
+			IButtonWidget& m_Widget;
+			std::shared_ptr<IGraphicsRendererAwareWidget> m_RendererAware;
 			wxEvtHandler m_EvtHandler;
 
 			NativeWidgetFlag m_WidgetState = NativeWidgetFlag::None;
@@ -40,9 +37,10 @@ namespace kxf::WXUI
 			wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
 
 		public:
-			Button(Widgets::Button& widget)
+			Button(IButtonWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
+				widget.QueryInterface(m_RendererAware);
 			}
 			~Button()
 			{
