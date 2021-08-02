@@ -2163,6 +2163,9 @@
     <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3254,6 +3257,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp">
       <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp">
+      <Filter>kxf\UI\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

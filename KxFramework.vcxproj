@@ -536,6 +536,7 @@
     <ClInclude Include="kxf\UI\Private\Common.h" />
     <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
+    <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Dialog.h" />
@@ -1003,6 +1004,7 @@
     <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\Common.cpp" />
     <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp" />
+    <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxTextEntryWrapper.cpp" />
     <ClCompile Include="kxf\UI\StdIcon.cpp" />
     <ClCompile Include="kxf\UI\TopLevelWidgets\Dialog.cpp" />
