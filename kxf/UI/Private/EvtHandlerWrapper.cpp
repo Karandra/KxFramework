@@ -14,6 +14,8 @@
 #include "../Events/WidgetLifetimeEvent.h"
 #include "../Events/WidgetContextMenuEvent.h"
 
+#include "../ITextWidget.h"
+
 namespace kxf::WXUI::Private
 {
 	EventID MapMouseEvent(const wxEventType& eventType) noexcept
@@ -288,8 +290,13 @@ namespace kxf::WXUI::Private
 			}
 			else if (eventType == wxEVT_TEXT_MAXLEN)
 			{
-				// No way to know the actual length limit here
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtLengthLimit, m_Widget);
+				size_t limit = ITextEntry::npos;
+				if (auto textEntry = m_Widget.QueryInterface<ITextEntry>())
+				{
+					limit = textEntry->GetLengthLimit();
+				}
+
+				return m_Widget.ProcessEvent(WidgetTextEvent::EvtLengthLimit, m_Widget, limit);
 			}
 			else if (eventType == wxEVT_TEXT_URL)
 			{

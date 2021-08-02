@@ -4,14 +4,17 @@ class wxTextEntry;
 
 namespace kxf::WXUI::Private
 {
-	class KX_API WxTextEntryWrapper final
+	class KX_API WxTextEntryWrapper
 	{
 		public:
 			static constexpr size_t npos = std::numeric_limits<size_t>::max();
 
-		private:
+		protected:
 			wxTextEntry* m_TextEntry = nullptr;
+
+		private:
 			size_t m_LengthLimit = npos;
+			size_t m_TabWidth = 0;
 			bool m_IsModified = false;
 
 		public:
@@ -43,7 +46,10 @@ namespace kxf::WXUI::Private
 			void SetModified(bool isModified = true);
 
 			size_t GetLengthLimit() const;
-			void SetLengthLimit(size_t maxLength);
+			void SetLengthLimit(size_t limit);
+
+			size_t GetTabWidth() const;
+			void SetTabWidth(size_t width);
 
 			size_t GetInsertionPoint() const;
 			void SetInsertionPoint(size_t pos);

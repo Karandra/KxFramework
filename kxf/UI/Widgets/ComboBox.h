@@ -47,7 +47,7 @@ namespace kxf::Widgets
 			size_t GetSelectedItem() const override;
 			void SetSelectedItem(size_t index) override;
 
-			// ITextWidget
+			// ITextEntry
 			bool CanCut() const override
 			{
 				return m_TextEntryWrapper.CanCut();
@@ -106,6 +106,14 @@ namespace kxf::Widgets
 			void SetEditable(bool isEditable = true) override
 			{
 				m_TextEntryWrapper.SetEditable(isEditable);
+			}
+
+			bool IsMultiline() const override
+			{
+				return false;
+			}
+			void SetMultiline(bool isMultiline = true) override
+			{
 			}
 
 			bool IsModified() const override
@@ -169,6 +177,7 @@ namespace kxf::Widgets
 				m_TextEntryWrapper.AppendText(text);
 			}
 
+			// ITextWidget
 			String GetHint() const override
 			{
 				return m_TextEntryWrapper.GetHint();

@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "WxTextEntryWrapper.h"
-#include "kxf/Network/URI.h"
+#include <wx/textentry.h>
 
 namespace kxf::WXUI::Private
 {
@@ -61,7 +61,7 @@ namespace kxf::WXUI::Private
 
 	void WxTextEntryWrapper::ClearText()
 	{
-		m_TextEntry->Clear();
+		m_TextEntry->ChangeValue({});
 	}
 	bool WxTextEntryWrapper::IsTextEmpty() const
 	{
@@ -94,6 +94,15 @@ namespace kxf::WXUI::Private
 	{
 		m_LengthLimit = limit;
 		m_TextEntry->SetMaxLength(limit);
+	}
+
+	size_t WxTextEntryWrapper::GetTabWidth() const
+	{
+		return m_TabWidth;
+	}
+	void WxTextEntryWrapper::SetTabWidth(size_t width)
+	{
+		m_TabWidth = width;
 	}
 
 	size_t WxTextEntryWrapper::GetInsertionPoint() const
@@ -157,7 +166,7 @@ namespace kxf::WXUI::Private
 	}
 	void WxTextEntryWrapper::SetText(const String& text)
 	{
-		m_TextEntry->SetValue(text);
+		m_TextEntry->ChangeValue(text);
 	}
 	void WxTextEntryWrapper::AppendText(const String& text)
 	{
