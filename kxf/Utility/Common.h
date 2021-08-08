@@ -74,7 +74,14 @@ namespace kxf::Utility
 	template<class TTarget, class TSource>
 	std::unique_ptr<TTarget> DynamicCastUniquePtr(std::unique_ptr<TSource> source) noexcept
 	{
-		return std::unique_ptr<TTarget>(dynamic_cast<TTarget*>(source.release()));
+		if (auto ptr = dynamic_cast<TTarget*>(source.get()))
+		{
+			std::unique_ptr<TTarget> result(ptr);
+			source.release();
+
+			return result;
+		}
+		return nullptr;
 	}
 
 	template<class T, class... Args> requires((std::is_integral_v<T> || std::is_enum_v<T>) && (std::is_enum_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...))
