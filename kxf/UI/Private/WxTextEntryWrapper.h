@@ -18,7 +18,11 @@ namespace kxf::WXUI::Private
 			bool m_IsModified = false;
 
 		public:
-			WxTextEntryWrapper() = default;
+			WxTextEntryWrapper() noexcept = default;
+			WxTextEntryWrapper(wxTextEntry& textEntry) noexcept
+			{
+				Initialize(textEntry);
+			}
 
 		public:
 			void Initialize(wxTextEntry& textEntry) noexcept;
@@ -60,6 +64,7 @@ namespace kxf::WXUI::Private
 			void RemoveRange(size_t from, size_t to);
 			void ReplaceRange(size_t from, size_t to, const String& text);
 
+			size_t GetTextLength() const;
 			String GetText() const;
 			void SetText(const String& text);
 			void AppendText(const String& text);

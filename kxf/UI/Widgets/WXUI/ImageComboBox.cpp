@@ -24,7 +24,7 @@ namespace kxf::WXUI
 		{
 			return m_Widget.ProcessEvent(ComboBoxWidgetEvent::EvtDropdownDismiss, m_Widget);
 		}
-		return false;
+		return TranslateTextEvent(m_Widget, event);
 	}
 
 	bool ImageComboBox::Create(wxWindow* parent,

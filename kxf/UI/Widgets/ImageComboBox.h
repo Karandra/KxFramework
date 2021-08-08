@@ -11,7 +11,7 @@ namespace kxf::WXUI
 
 namespace kxf::Widgets
 {
-	class KX_API ImageComboBox: public RTTI::Implementation<ImageComboBox, Private::BasicWxWidget<ImageComboBox, WXUI::ImageComboBox, IImageComboBoxWidget>, ITextWidget>
+	class KX_API ImageComboBox: public RTTI::Implementation<ImageComboBox, Private::BasicWxWidget<ImageComboBox, WXUI::ImageComboBox, IImageComboBoxWidget>, ITextEntry>
 	{
 		public:
 			static constexpr size_t npos = std::numeric_limits<size_t>::max();
@@ -172,6 +172,10 @@ namespace kxf::Widgets
 				m_TextEntryWrapper.ReplaceRange(from, to, text);
 			}
 
+			size_t GetTextLength() const override
+			{
+				return m_TextEntryWrapper.GetTextLength();
+			}
 			String GetText() const override
 			{
 				return m_TextEntryWrapper.GetText();
@@ -185,7 +189,6 @@ namespace kxf::Widgets
 				m_TextEntryWrapper.AppendText(text);
 			}
 
-			// ITextWidget
 			String GetHint() const override
 			{
 				return m_TextEntryWrapper.GetHint();
@@ -194,5 +197,30 @@ namespace kxf::Widgets
 			{
 				m_TextEntryWrapper.SetHint(hint);
 			}
+
+			size_t GetRowCount() const override
+			{
+				return 1;
+			}
+			size_t GetColumnCount() const override
+			{
+				return m_TextEntryWrapper.GetTextLength();
+			}
+			size_t GetRowLength(size_t index) const override
+			{
+				return index == 0 ? m_TextEntryWrapper.GetTextLength() : 0;
+			}
+
+			UniChar GetPasswordMask() const
+			{
+				return {};
+			}
+			void SetPasswordMask(const UniChar& c) const
+			{
+			}
+			void RemovePasswordMask() const
+			{
+			}
+			using ITextEntry::SetPasswordMask;
 	};
 }

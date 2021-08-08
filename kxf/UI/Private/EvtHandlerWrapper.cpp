@@ -202,6 +202,7 @@ namespace kxf::WXUI::Private
 
 namespace kxf::WXUI::Private
 {
+	// wxEvtHandler
 	bool EvtHandlerWrapperBase::TryBefore(wxEvent& anyEvent)
 	{
 		const auto eventType = anyEvent.GetEventType();
@@ -263,47 +264,6 @@ namespace kxf::WXUI::Private
 			WidgetMouseEvent mouseEvent(m_Widget, event);
 			return m_Widget.ProcessEvent(mouseEvent, eventID);
 		}
-		else if (eventType == wxEVT_TEXT || eventType == wxEVT_TEXT_ENTER || eventType == wxEVT_TEXT_MAXLEN ||
-				 eventType == wxEVT_TEXT_URL || eventType == wxEVT_TEXT_CUT || eventType == wxEVT_TEXT_COPY ||
-				 eventType == wxEVT_TEXT_PASTE)
-		{
-			auto& event = static_cast<wxTextUrlEvent&>(anyEvent);
-			if (eventType == wxEVT_TEXT)
-			{
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtChanged, m_Widget, event.GetString());
-			}
-			else if (eventType == wxEVT_TEXT_CUT)
-			{
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCut, m_Widget, event.GetString());
-			}
-			else if (eventType == wxEVT_TEXT_COPY)
-			{
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCopy, m_Widget, event.GetString());
-			}
-			else if (eventType == wxEVT_TEXT_PASTE)
-			{
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtPaste, m_Widget, event.GetString());
-			}
-			else if (eventType == wxEVT_TEXT_ENTER)
-			{
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtCommit, m_Widget);
-			}
-			else if (eventType == wxEVT_TEXT_MAXLEN)
-			{
-				size_t limit = ITextEntry::npos;
-				if (auto textEntry = m_Widget.QueryInterface<ITextEntry>())
-				{
-					limit = textEntry->GetLengthLimit();
-				}
-
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtLengthLimit, m_Widget, limit);
-			}
-			else if (eventType == wxEVT_TEXT_URL)
-			{
-				WidgetMouseEvent mouseEvent(m_Widget, event.GetMouseEvent());
-				return m_Widget.ProcessEvent(WidgetTextEvent::EvtURI, m_Widget, event.GetString(), std::move(mouseEvent));
-			}
-		}
 		return false;
 	}
 	bool EvtHandlerWrapperBase::TryAfter(wxEvent& anyEvent)
@@ -319,5 +279,76 @@ namespace kxf::WXUI::Private
 	bool EvtHandlerWrapperBase::OnDynamicBind(wxDynamicEventTableEntry& eventItem)
 	{
 		return true;
+	}
+
+	// EvtHandlerWrapperBase
+	bool EvtHandlerWrapperBase::TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event)
+	{
+		auto TranslateEvent = [&evtHandler, &event, eventType = event.GetEventType()](auto& object)
+		{
+			if (eventType == wxEVT_TEXT)
+			{
+				auto& commandEvent = static_cast<wxCommandEvent&>(event);
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtChanged, object, commandEvent.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_CUT)
+			{
+				auto& commandEvent = static_cast<wxCommandEvent&>(event);
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCut, object, commandEvent.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_COPY)
+			{
+				auto& commandEvent = static_cast<wxCommandEvent&>(event);
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCopy, object, commandEvent.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_PASTE)
+			{
+				auto& commandEvent = static_cast<wxCommandEvent&>(event);
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtPaste, object, commandEvent.GetString());
+			}
+			else if (eventType == wxEVT_TEXT_ENTER)
+			{
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCommit, object);
+			}
+			else if (eventType == wxEVT_TEXT_MAXLEN)
+			{
+				size_t limit = ITextEntry::npos;
+
+				using T = std::remove_reference_t<decltype(object)>;
+				if constexpr(std::is_same_v<T, ITextEntry> || std::is_same_v<T, ITextWidget>)
+				{
+					limit = object.GetLengthLimit();
+				}
+				return evtHandler.ProcessEvent(WidgetTextEvent::EvtLengthLimit, object, limit);
+			}
+			else if (eventType == wxEVT_TEXT_URL)
+			{
+				auto& urlEvent = static_cast<wxTextUrlEvent&>(event);
+				if (auto widget = object.QueryInterface<IWidget>())
+				{
+					WidgetMouseEvent mouseEvent(*widget, urlEvent.GetMouseEvent());
+					return evtHandler.ProcessEvent(WidgetTextEvent::EvtURI, object, urlEvent.GetString(), std::move(mouseEvent));
+				}
+				else
+				{
+					return evtHandler.ProcessEvent(WidgetTextEvent::EvtURI, object, urlEvent.GetString());
+				}
+			}
+			return false;
+		};
+
+		if (auto textWidget = evtHandler.QueryInterface<ITextWidget>())
+		{
+			return TranslateEvent(*textWidget);
+		}
+		else if (auto textEntry = evtHandler.QueryInterface<ITextEntry>())
+		{
+			return TranslateEvent(*textEntry);
+		}
+		else if (auto widget = evtHandler.QueryInterface<IWidget>())
+		{
+			return TranslateEvent(*widget);
+		}
+		return false;
 	}
 }

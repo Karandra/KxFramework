@@ -12,7 +12,11 @@ namespace kxf::WXUI::Private
 			UniChar m_PasswordChar;
 
 		public:
-			WxTextCtrlWrapper() = default;
+			WxTextCtrlWrapper() noexcept = default;
+			WxTextCtrlWrapper(wxTextCtrl& textCtrl) noexcept
+			{
+				Initialize(textCtrl);
+			}
 
 		public:
 			void Initialize(wxTextCtrl& textCtrl) noexcept;

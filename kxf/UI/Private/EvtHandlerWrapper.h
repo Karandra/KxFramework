@@ -21,10 +21,15 @@ namespace kxf::WXUI::Private
 			}
 
 		public:
+			// wxEvtHandler
 			bool TryBefore(wxEvent& anyEvent);
 			bool TryAfter(wxEvent& anyEvent);
 
 			bool OnDynamicBind(wxDynamicEventTableEntry& eventItem);
+
+		public:
+			// EvtHandlerWrapperBase
+			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event);
 	};
 }
 
@@ -37,6 +42,7 @@ namespace kxf::WXUI
 			Private::EvtHandlerWrapperBase m_Wrapper;
 
 		protected:
+			// wxEvtHandler
 			bool TryBefore(wxEvent& event) override
 			{
 				if (m_Wrapper.TryBefore(event))
@@ -57,6 +63,12 @@ namespace kxf::WXUI
 			bool OnDynamicBind(wxDynamicEventTableEntry& eventItem) override
 			{
 				return m_Wrapper.OnDynamicBind(eventItem) && TBase::OnDynamicBind(eventItem);
+			}
+
+			// EvtHandlerWrapper
+			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event)
+			{
+				return m_Wrapper.TranslateTextEvent(evtHandler, event);
 			}
 
 		public:

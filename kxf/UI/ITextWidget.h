@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "IWidget.h"
 
 namespace kxf
 {
@@ -83,22 +84,11 @@ namespace kxf
 				return GetRange(from, to);
 			}
 
+			virtual size_t GetTextLength() const = 0;
 			virtual String GetText() const = 0;
 			virtual void SetText(const String& text) = 0;
 			virtual void AppendText(const String& text) = 0;
-	};
-}
 
-namespace kxf
-{
-	class KX_API ITextWidget: public RTTI::ExtendInterface<ITextWidget, IWidget, ITextEntry>
-	{
-		KxRTTI_DeclareIID(ITextWidget, {0x711b7c3, 0x54cd, 0x4147, {0x9b, 0xdd, 0x2, 0x8, 0x65, 0x6f, 0x61, 0x1}});
-
-		public:
-			virtual ~ITextWidget() = default;
-
-		public:
 			virtual String GetHint() const = 0;
 			virtual void SetHint(const String& hint) = 0;
 
@@ -114,6 +104,19 @@ namespace kxf
 			}
 			virtual void RemovePasswordMask() const = 0;
 
+	};
+}
+
+namespace kxf
+{
+	class KX_API ITextWidget: public RTTI::ExtendInterface<ITextWidget, IWidget, ITextEntry>
+	{
+		KxRTTI_DeclareIID(ITextWidget, {0x711b7c3, 0x54cd, 0x4147, {0x9b, 0xdd, 0x2, 0x8, 0x65, 0x6f, 0x61, 0x1}});
+
+		public:
+			virtual ~ITextWidget() = default;
+
+		public:
 			virtual void EnsurePositionVisible(size_t pos) = 0;
 			virtual Point MapPositionToCoordinates(size_t pos) const = 0;
 			virtual size_t MapCoordinatesToPosition(const Point& point) const = 0;

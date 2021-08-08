@@ -160,6 +160,10 @@ namespace kxf::WXUI::Private
 		}
 	}
 
+	size_t WxTextEntryWrapper::GetTextLength() const
+	{
+		return m_TextEntry->GetLastPosition();
+	}
 	String WxTextEntryWrapper::GetText() const
 	{
 		return m_TextEntry->GetValue();

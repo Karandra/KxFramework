@@ -553,6 +553,7 @@
     <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\Label.h" />
+    <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Check.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
@@ -561,6 +562,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="kxf\UI\Windows\Frame.h" />
@@ -1018,6 +1020,7 @@
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Label.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
@@ -1025,6 +1028,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="kxf\UI\Windows\Frame.cpp" />

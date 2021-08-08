@@ -2166,6 +2166,12 @@
     <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\TextBox.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3260,6 +3266,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\TextBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
