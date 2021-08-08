@@ -141,4 +141,32 @@ namespace kxf::WXUI::Private
 		auto pos = m_TextCtrl->XYToPosition(rowColumn.GetX(), rowColumn.GetY());
 		return pos >= 0 ? pos : npos;
 	}
+
+	TextWrapMode WxTextCtrlWrapper::GetWrapMode() const
+	{
+		const FlagSet style = m_TextCtrl->GetWindowStyle();
+
+		if (style.Contains(wxTE_WORDWRAP))
+		{
+			return TextWrapMode::Word;
+		}
+		else if (style.Contains(wxTE_CHARWRAP))
+		{
+			return TextWrapMode::Character;
+		}
+		return TextWrapMode::None;
+	}
+	void WxTextCtrlWrapper::SetWrapMode(TextWrapMode wrapMode)
+	{
+		FlagSet style = m_TextCtrl->GetWindowStyle();
+		style.Remove(wxTE_WORDWRAP);
+		style.Remove(wxTE_CHARWRAP);
+		style.Remove(wxTE_DONTWRAP);
+
+		style.Add(wxTE_DONTWRAP, wrapMode == TextWrapMode::None);
+		style.Add(wxTE_WORDWRAP, wrapMode == TextWrapMode::Word || wrapMode == TextWrapMode::Whitespace);
+		style.Add(wxTE_CHARWRAP, wrapMode == TextWrapMode::Character);
+
+		m_TextCtrl->SetWindowStyle(*style);
+	}
 }

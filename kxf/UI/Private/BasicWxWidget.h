@@ -218,10 +218,13 @@ namespace kxf::Private
 				return *m_EventHandlerStack.GetTop();
 			}
 
+			template<class T = TWindow>
 			TWindow* Get() noexcept
 			{
 				return static_cast<TWindow*>(m_Window.GetWxWindow());
 			}
+
+			template<class T = TWindow>
 			const TWindow* Get() const noexcept
 			{
 				return static_cast<const TWindow*>(m_Window.GetWxWindow());

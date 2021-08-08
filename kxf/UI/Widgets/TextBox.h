@@ -114,6 +114,15 @@ namespace kxf::Widgets
 				m_TextCtrlWrapper.SetLengthLimit(limit);
 			}
 
+			size_t GetTabWidth() const
+			{
+				return m_TextCtrlWrapper.GetTabWidth();
+			}
+			void SetTabWidth(size_t width)
+			{
+				m_TextCtrlWrapper.SetTabWidth(width);
+			}
+
 			size_t GetInsertionPoint() const override
 			{
 				return m_TextCtrlWrapper.GetInsertionPoint();
@@ -218,6 +227,15 @@ namespace kxf::Widgets
 			size_t MapRowColumnToPosition(const Point& rowColumn) const override
 			{
 				return m_TextCtrlWrapper.MapRowColumnToPosition(rowColumn);
+			}
+
+			TextWrapMode GetWrapMode() const override
+			{
+				return m_TextCtrlWrapper.GetWrapMode();
+			}
+			void SetWrapMode(TextWrapMode wrapMode) override
+			{
+				m_TextCtrlWrapper.SetWrapMode(wrapMode);
 			}
 	};
 }

@@ -4,6 +4,17 @@
 
 namespace kxf
 {
+	enum class TextWrapMode
+	{
+		None = 0,
+		Character,
+		Whitespace,
+		Word,
+	};
+}
+
+namespace kxf
+{
 	class KX_API ITextEntry: public RTTI::Interface<ITextEntry>
 	{
 		KxRTTI_DeclareIID(ITextEntry, {0x42e05214, 0x6cf3, 0x4fd5, {0x95, 0x53, 0x20, 0xc7, 0xdc, 0x95, 0xa, 0x9}});
@@ -123,5 +134,8 @@ namespace kxf
 
 			virtual Point MapPositionToRowColumn(size_t pos) const = 0;
 			virtual size_t MapRowColumnToPosition(const Point& rowColumn) const = 0;
+
+			virtual TextWrapMode GetWrapMode() const = 0;
+			virtual void SetWrapMode(TextWrapMode wrapMode) = 0;
 	};
 }

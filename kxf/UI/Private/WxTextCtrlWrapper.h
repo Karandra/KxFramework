@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "WxTextEntryWrapper.h"
+#include "../ITextWidget.h"
 class wxTextCtrl;
 
 namespace kxf::WXUI::Private
@@ -50,5 +51,8 @@ namespace kxf::WXUI::Private
 
 			Point MapPositionToRowColumn(size_t pos) const;
 			size_t MapRowColumnToPosition(const Point& rowColumn) const;
+
+			TextWrapMode GetWrapMode() const;
+			void SetWrapMode(TextWrapMode wrapMode);
 	};
 }

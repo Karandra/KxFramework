@@ -134,6 +134,15 @@ namespace kxf::Widgets
 				m_TextEntryWrapper.SetLengthLimit(limit);
 			}
 
+			size_t GetTabWidth() const override
+			{
+				return m_TextEntryWrapper.GetTabWidth();
+			}
+			void SetTabWidth(size_t width) override
+			{
+				m_TextEntryWrapper.SetTabWidth(width);
+			}
+
 			size_t GetInsertionPoint() const override
 			{
 				return m_TextEntryWrapper.GetInsertionPoint();

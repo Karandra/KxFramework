@@ -25,7 +25,7 @@ namespace kxf::WXUI
 						 const Size& size
 	)
 	{
-		if (wxTextCtrl::Create(parent, wxID_NONE, text, pos, size, wxTE_LEFT))
+		if (wxTextCtrl::Create(parent, wxID_NONE, text, pos, size, wxTE_LEFT|wxTE_BESTWRAP))
 		{
 			SetDoubleBuffered(true);
 

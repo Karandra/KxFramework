@@ -2172,6 +2172,15 @@
     <ClInclude Include="kxf\UI\Widgets\TextBox.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\StyledTextBox.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IStyledTextWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3271,6 +3280,12 @@
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\StyledTextBox.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>

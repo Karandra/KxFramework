@@ -2,7 +2,6 @@
 #include "StyledTextBox.h"
 #include <Scintilla\Scintilla.h>
 #include <Scintilla\Sci_Position.h>
-#include "..\Widgets\StyledTextBox.h"
 
 namespace
 {
@@ -10,25 +9,26 @@ namespace
 	constexpr int g_DefaultStyle = wxSTC_STYLE_DEFAULT;
 }
 
-namespace kxf::UI
+namespace kxf::WXUI
 {
-	wxIMPLEMENT_DYNAMIC_CLASS(StyledTextBox, wxStyledTextCtrl);
+	bool StyledTextBox::DoTryBefore(wxEvent& event)
+	{
+		return false;
+	}
 
 	bool StyledTextBox::Create(wxWindow* parent,
-							   wxWindowID id,
-							   long style,
-							   const wxValidator& validator
+							   const String& text,
+							   const Point& pos,
+							   const Size& size
 	)
 	{
-		if (wxStyledTextCtrl::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style))
+		if (wxStyledTextCtrl::Create(parent, wxID_NONE, pos, size, 0))
 		{
-			SetValidator(validator);
-
 			GDIFont font = parent->GetFont();
 			font.SetFamily(FontFamily::FixedWidth);
-			if (font.SetFaceName("Consolas"))
+			if (font.SetFaceName("Consolas") || font.SetFaceName("Courier New"))
 			{
-				StyleSetFont(style, font.ToWxFont());
+				StyleSetFont(g_GlobalStyle, font.ToWxFont());
 				StyleSetFont(wxSTC_STYLE_LINENUMBER, font.ToWxFont());
 			}
 
@@ -48,6 +48,7 @@ namespace kxf::UI
 		return false;
 	}
 
+	// wxWindow
 	bool StyledTextBox::SetBackgroundColour(const wxColour& color)
 	{
 		if (m_IsCreated)
