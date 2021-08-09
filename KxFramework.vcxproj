@@ -501,6 +501,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetMouseEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
+    <ClInclude Include="kxf\UI\IClusterMapWidget.h" />
     <ClInclude Include="kxf\UI\IImageComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
@@ -548,6 +549,7 @@
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Widgets\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\Check.h" />
+    <ClInclude Include="kxf\UI\Widgets\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
@@ -558,6 +560,7 @@
     <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Check.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
@@ -1018,6 +1021,7 @@
     <ClCompile Include="kxf\UI\TopLevelWidgets\WXUI\Frame.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp" />
@@ -1027,6 +1031,7 @@
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp" />
