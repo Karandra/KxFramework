@@ -5,6 +5,7 @@
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 #include "kxf/System/SystemInformation.h"
+#include "kxf/Utility/Drawing.h"
 #include "WXUI/Menu.h"
 #include "WXUI/MenuItem.h"
 #include <wx/menu.h>
@@ -78,15 +79,20 @@ namespace kxf::Widgets
 				}
 			}
 
-			// Restrict max width
+			// Restrict max width of the menu itself
 			if (auto menu = m_OwningMenu.lock())
 			{
-				int maxWidth = menu->m_MaxSize.GetWidth();
+				auto maxWidth = menu->m_MaxSize.GetWidth();
 				if (maxWidth != Geometry::DefaultCoord && size.GetWidth() > maxWidth)
 				{
 					size.SetWidth(maxWidth);
 				}
 			}
+
+			// Restrict size for the individual item
+			size.IncToIfSpecified(m_MinSize);
+			size.DecToIfSpecified(m_MaxSize);
+
 			return size;
 		}
 		return Size::UnspecifiedSize();
@@ -248,13 +254,172 @@ namespace kxf::Widgets
 		DoDestroyWidget();
 	}
 
-	// --- IMenuWidgetItem ---
-	// General
-	std::shared_ptr<IMenuWidget> MenuWidgetItem::GetOwningMenu() const
+	// IWidgetItem
+	std::shared_ptr<IWidget> MenuWidgetItem::GetOwningWidget() const
 	{
 		return m_OwningMenu.lock();
 	}
 
+	String MenuWidgetItem::GetLabel(FlagSet<WidgetTextFlag> flags) const
+	{
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		{
+			if (flags.Contains(WidgetTextFlag::WithMnemonics))
+			{
+				return m_MenuItem->GetItemLabel();
+			}
+			else
+			{
+				return m_MenuItem->GetItemLabelText();
+			}
+		}
+		return {};
+	}
+	void MenuWidgetItem::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	{
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		{
+			m_MenuItem->SetItemLabel(label);
+		}
+	}
+
+	String MenuWidgetItem::GetDescription() const
+	{
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		{
+			return m_MenuItem->GetHelp();
+		}
+		return {};
+	}
+	void MenuWidgetItem::SetDescription(const String& description)
+	{
+		if (m_MenuItem && !m_MenuItem->IsSeparator())
+		{
+			m_MenuItem->SetHelp(description);
+		}
+	}
+
+	WidgetID MenuWidgetItem::GetID() const
+	{
+		if (m_MenuItem)
+		{
+			if (m_MenuItem->IsSeparator())
+			{
+				return StdID::Separator;
+			}
+			return m_ItemID;
+		}
+		return {};
+	}
+	void MenuWidgetItem::SetID(WidgetID id)
+	{
+		if (m_MenuItem && !m_MenuItem->IsSeparator() && id != StdID::Separator)
+		{
+			m_ItemID = id;
+		}
+	}
+
+	BitmapImage MenuWidgetItem::GetIcon() const
+	{
+		if (m_MenuItem)
+		{
+			return m_Icon;
+		}
+		return {};
+	}
+	void MenuWidgetItem::SetIcon(const BitmapImage& icon)
+	{
+		if (m_MenuItem)
+		{
+			m_Icon = icon;
+		}
+	}
+
+	bool MenuWidgetItem::IsEnabled() const
+	{
+		if (m_MenuItem)
+		{
+			return m_MenuItem->IsEnabled();
+		}
+		return false;
+	}
+	void MenuWidgetItem::SetEnabled(bool enabled)
+	{
+		if (m_MenuItem)
+		{
+			m_MenuItem->Enable(enabled);
+		}
+	}
+
+	bool MenuWidgetItem::IsVisible() const
+	{
+		return true;
+	}
+	void MenuWidgetItem::SetVisible(bool visible)
+	{
+	}
+
+	Point MenuWidgetItem::GetPosition() const
+	{
+		return MenuWidgetItem::GetRect().GetPosition();
+	}
+	void MenuWidgetItem::SetPosition(const Point& pos)
+	{
+	}
+
+	Rect MenuWidgetItem::GetRect(WidgetSizeFlag sizeType) const
+	{
+		Rect rect = Rect::UnspecifiedRect();
+		if (m_MenuItem)
+		{
+			if (auto menu = m_OwningMenu.lock())
+			{
+				RECT itemRect = {};
+				if (::GetMenuItemRect(nullptr, static_cast<HMENU>(menu->GetHandle()), WXUI::Menu::WxIDToWin(m_MenuItem->GetId()), &itemRect))
+				{
+					rect = Utility::FromWindowsRect(itemRect);
+				}
+			}
+		}
+
+		switch (sizeType)
+		{
+			case WidgetSizeFlag::Client:
+			case WidgetSizeFlag::Widget:
+			{
+				return rect;
+			}
+			case WidgetSizeFlag::ClientMin:
+			case WidgetSizeFlag::WidgetMin:
+			{
+				return {rect.GetPosition(), m_MinSize};
+			}
+			case WidgetSizeFlag::ClientMax:
+			case WidgetSizeFlag::WidgetMax:
+			{
+				return {rect.GetPosition(), m_MaxSize};
+			}
+		};
+		return Rect::UnspecifiedRect();
+	}
+	Size MenuWidgetItem::GetSize(WidgetSizeFlag sizeType) const
+	{
+		return MenuWidgetItem::GetRect(sizeType).GetSize();
+	}
+	void MenuWidgetItem::SetSize(const Size& size, FlagSet<WidgetSizeFlag> sizeType)
+	{
+		if (sizeType.Contains(WidgetSizeFlag::ClientMin) || sizeType.Contains(WidgetSizeFlag::WidgetMin))
+		{
+			m_MinSize = size;
+		}
+		if (sizeType.Contains(WidgetSizeFlag::ClientMax) || sizeType.Contains(WidgetSizeFlag::WidgetMax))
+		{
+			m_MaxSize = size;
+		}
+	}
+
+	// --- IMenuWidgetItem ---
+	// General
 	std::shared_ptr<IMenuWidget> MenuWidgetItem::GetSubMenu() const
 	{
 		if (m_MenuItem)
@@ -333,97 +498,6 @@ namespace kxf::Widgets
 			};
 		}
 		return MenuWidgetItemType::None;
-	}
-
-	String MenuWidgetItem::GetLabel(FlagSet<WidgetTextFlag> flags) const
-	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator())
-		{
-			if (flags.Contains(WidgetTextFlag::WithMnemonics))
-			{
-				return m_MenuItem->GetItemLabel();
-			}
-			else
-			{
-				return m_MenuItem->GetItemLabelText();
-			}
-		}
-		return {};
-	}
-	void MenuWidgetItem::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
-	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator())
-		{
-			m_MenuItem->SetItemLabel(label);
-		}
-	}
-
-	String MenuWidgetItem::GetDescription() const
-	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator())
-		{
-			return m_MenuItem->GetHelp();
-		}
-		return {};
-	}
-	void MenuWidgetItem::SetDescription(const String& description)
-	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator())
-		{
-			m_MenuItem->SetHelp(description);
-		}
-	}
-
-	WidgetID MenuWidgetItem::GetItemID() const
-	{
-		if (m_MenuItem)
-		{
-			if (m_MenuItem->IsSeparator())
-			{
-				return StdID::Separator;
-			}
-			return m_ItemID;
-		}
-		return {};
-	}
-	void MenuWidgetItem::SetItemID(WidgetID id)
-	{
-		if (m_MenuItem && !m_MenuItem->IsSeparator() && id != StdID::Separator)
-		{
-			m_ItemID = id;
-		}
-	}
-
-	BitmapImage MenuWidgetItem::GetItemIcon() const
-	{
-		if (m_MenuItem)
-		{
-			return m_Icon;
-		}
-		return {};
-	}
-	void MenuWidgetItem::SetItemIcon(const BitmapImage& icon)
-	{
-		if (m_MenuItem)
-		{
-			m_Icon = icon;
-		}
-	}
-
-	bool MenuWidgetItem::IsEnabled() const
-	{
-		if (m_MenuItem)
-		{
-			return m_MenuItem->IsEnabled();
-		}
-		return false;
-	}
-	void MenuWidgetItem::SetEnabled(bool enabled)
-	{
-		if (m_MenuItem)
-		{
-			m_MenuItem->Enable(enabled);
-		}
 	}
 
 	bool MenuWidgetItem::IsChecked() const

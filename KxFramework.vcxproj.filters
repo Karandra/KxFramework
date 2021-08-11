@@ -2184,11 +2184,20 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ClusterMap.h">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\IClusterMapWidget.h">
-      <Filter>kxf\UI\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\ClusterMap.h">
       <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IClusterMapWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IWidgetItem.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\WidgetUtility.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\WidgetItemEvent.h">
+      <Filter>kxf\UI\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3302,6 +3311,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\ClusterMap.cpp">
       <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\IMenuWidgetItem.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,12 @@
 #pragma once
 #include "Common.h"
+#include "Private/WidgetUtility.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/IEvent.h"
 
 namespace kxf
 {
-	class KX_API IWidget: public RTTI::ExtendInterface<IWidget, IEvtHandler>
+	class KX_API IWidget: public RTTI::ExtendInterface<IWidget, IEvtHandler>, public Private::WidgetDIP<IWidget>, public Private::WidgetDLU<IWidget>
 	{
 		KxRTTI_DeclareIID(IWidget, {0xd5a7bb64, 0x7a68, 0x4906, {0x91, 0x3d, 0x7d, 0x3e, 0x3f, 0x84, 0xdf, 0xa0}});
 
@@ -43,56 +44,10 @@ namespace kxf
 			virtual float GetContentScaleFactor() const = 0;
 
 			virtual void FromDIP(int& x, int& y) const = 0;
-			int FromDIP(int x) const
-			{
-				int y = Geometry::DefaultCoord;
-				FromDIP(x, y);
-
-				return x;
-			}
-			Size FromDIP(Size size) const
-			{
-				FromDIP(size.Width(), size.Height());
-				return size;
-			}
-			Point FromDIP(Point point) const
-			{
-				FromDIP(point.X(), point.Y());
-				return point;
-			}
-
-			template<std::constructible_from<int, int> T>
-			T FromDIP(int x, int y) const
-			{
-				FromDIP(x, y);
-				return {x, y};
-			}
+			using WidgetDIP::FromDIP;
 
 			virtual void ToDIP(int& x, int& y) const = 0;
-			int ToDIP(int x) const
-			{
-				int y = Geometry::DefaultCoord;
-				ToDIP(x, y);
-
-				return x;
-			}
-			Size ToDIP(Size size) const
-			{
-				ToDIP(size.Width(), size.Height());
-				return size;
-			}
-			Point ToDIP(Point point) const
-			{
-				ToDIP(point.X(), point.Y());
-				return point;
-			}
-
-			template<std::constructible_from<int, int> T>
-			T ToDIP(int x, int y) const
-			{
-				FromDIP(x, y);
-				return {x, y};
-			}
+			using WidgetDIP::ToDIP;
 
 			// Positioning functions
 			virtual Point GetPosition() const = 0;
@@ -146,42 +101,10 @@ namespace kxf
 			}
 
 			virtual void DialogUnitsToPixels(int& x, int& y) const = 0;
-			Size DialogUnitsToPixels(Size size) const
-			{
-				DialogUnitsToPixels(size.Width(), size.Height());
-				return size;
-			}
-			Point DialogUnitsToPixels(Point point) const
-			{
-				DialogUnitsToPixels(point.X(), point.Y());
-				return point;
-			}
-
-			template<std::constructible_from<int, int> T>
-			T DialogUnitsToPixels(int x, int y) const
-			{
-				DialogUnitsToPixels(x, y);
-				return {x, y};
-			}
+			using WidgetDLU::DialogUnitsToPixels;
 
 			virtual void PixelsToDialogUnits(int& x, int& y) const = 0;
-			Size PixelsToDialogUnits(Size size) const
-			{
-				PixelsToDialogUnits(size.Width(), size.Height());
-				return size;
-			}
-			Point PixelsToDialogUnits(Point point) const
-			{
-				PixelsToDialogUnits(point.X(), point.Y());
-				return point;
-			}
-
-			template<std::constructible_from<int, int> T>
-			T PixelsToDialogUnits(int x, int y) const
-			{
-				PixelsToDialogUnits(x, y);
-				return {x, y};
-			}
+			using WidgetDLU::PixelsToDialogUnits;
 
 			// Focus
 			virtual bool IsFocusable() const = 0;

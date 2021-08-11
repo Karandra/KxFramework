@@ -40,6 +40,8 @@ namespace kxf::Widgets
 			// Options
 			WidgetID m_ItemID;
 			BitmapImage m_Icon;
+			Size m_MinSize = Size::UnspecifiedSize();
+			Size m_MaxSize = Size::UnspecifiedSize();
 
 		protected:
 			EvtHandler& GetThisEvtHandler() noexcept
@@ -76,11 +78,37 @@ namespace kxf::Widgets
 			MenuWidgetItem(const MenuWidgetItem&) = delete;
 			~MenuWidgetItem();
 
-			// --- IMenuWidgetItem ---
 		public:
-			// General
-			std::shared_ptr<IMenuWidget> GetOwningMenu() const override;
+			// IWidgetItem
+			std::shared_ptr<IWidget> GetOwningWidget() const override;
 
+			String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const override;
+			void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) override;
+
+			String GetDescription() const override;
+			void SetDescription(const String& description) override;
+
+			WidgetID GetID() const override;
+			void SetID(WidgetID id) override;
+
+			BitmapImage GetIcon() const override;
+			void SetIcon(const BitmapImage& icon) override;
+
+			bool IsEnabled() const override;
+			void SetEnabled(bool enabled = true) override;
+
+			bool IsVisible() const override;
+			void SetVisible(bool visible) override;
+
+			Point GetPosition() const override;
+			void SetPosition(const Point& pos) override;
+
+			Rect GetRect(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const override;
+			Size GetSize(WidgetSizeFlag sizeType = WidgetSizeFlag::Widget) const override;
+			void SetSize(const Size& size, FlagSet<WidgetSizeFlag> sizeType = WidgetSizeFlag::Widget) override;
+
+			// --- IMenuWidgetItem ---
+			// General
 			std::shared_ptr<IMenuWidget> GetSubMenu() const override;
 			void SetSubMenu(IMenuWidget& subMenu) override;
 
@@ -89,21 +117,6 @@ namespace kxf::Widgets
 
 			// Properties
 			MenuWidgetItemType GetItemType() const override;
-
-			String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const override;
-			void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) override;
-
-			String GetDescription() const override;
-			void SetDescription(const String& description) override;
-
-			WidgetID GetItemID() const override;
-			void SetItemID(WidgetID id) override;
-
-			BitmapImage GetItemIcon() const override;
-			void SetItemIcon(const BitmapImage& icon) override;
-
-			bool IsEnabled() const override;
-			void SetEnabled(bool enabled = true) override;
 
 			bool IsChecked() const override;
 			void SetChecked(bool checked = true) override;

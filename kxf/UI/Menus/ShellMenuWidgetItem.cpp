@@ -33,7 +33,7 @@ namespace kxf::Widgets
 		return {};
 	}
 
-	// IMenuWidgetItem
+	// IWidgetItem
 	String ShellMenuWidgetItem::GetDescription() const
 	{
 		String result = MenuWidgetItem::GetDescription();

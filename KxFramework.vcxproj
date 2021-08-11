@@ -495,6 +495,7 @@
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetContextMenuEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetItemEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetKeyEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetLifetimeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h" />
@@ -520,6 +521,7 @@
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
     <ClInclude Include="kxf\UI\IWidgetEvent.h" />
+    <ClInclude Include="kxf\UI\IWidgetItem.h" />
     <ClInclude Include="kxf\UI\KeyboardState.h" />
     <ClInclude Include="kxf\UI\KeyCode.h" />
     <ClInclude Include="kxf\UI\Menus\Common.h" />
@@ -538,6 +540,7 @@
     <ClInclude Include="kxf\UI\Private\Common.h" />
     <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
+    <ClInclude Include="kxf\UI\Private\WidgetUtility.h" />
     <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
@@ -994,6 +997,7 @@
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetMouseEvent.cpp" />
+    <ClCompile Include="kxf\UI\IMenuWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />

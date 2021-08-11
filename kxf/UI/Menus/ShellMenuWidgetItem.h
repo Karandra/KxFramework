@@ -16,7 +16,7 @@ namespace kxf::Widgets
 			~ShellMenuWidgetItem() = default;
 
 		public:
-			// IMenuWidgetItem
+			// IWidgetItem
 			String GetDescription() const override;
 
 			// IShellMenuWidgetItem

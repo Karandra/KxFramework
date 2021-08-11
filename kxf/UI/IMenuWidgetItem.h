@@ -1,13 +1,12 @@
 #pragma once
 #include "Common.h"
-#include "IWidget.h"
+#include "IWidgetItem.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/IEvent.h"
 
 namespace kxf
 {
 	class IMenuWidget;
-	class BitmapImage;
 
 	enum class MenuWidgetItemType
 	{
@@ -23,7 +22,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IMenuWidgetItem: public RTTI::ExtendInterface<IMenuWidgetItem, IEvtHandler>
+	class KX_API IMenuWidgetItem: public RTTI::ExtendInterface<IMenuWidgetItem, IWidgetItem>
 	{
 		KxRTTI_DeclareIID(IMenuWidgetItem, {0xb1e0d965, 0x3eec, 0x42d8, {0xa4, 0x4e, 0xd9, 0xce, 0xd7, 0xb7, 0x93, 0x3e}});
 
@@ -32,7 +31,7 @@ namespace kxf
 
 		public:
 			// General
-			virtual std::shared_ptr<IMenuWidget> GetOwningMenu() const = 0;
+			std::shared_ptr<IMenuWidget> GetOwningMenu() const;
 
 			virtual std::shared_ptr<IMenuWidget> GetSubMenu() const = 0;
 			virtual void SetSubMenu(IMenuWidget& subMenu) = 0;
@@ -62,21 +61,6 @@ namespace kxf
 			{
 				return GetItemType() == MenuWidgetItemType::SubMenu;
 			}
-
-			virtual String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const = 0;
-			virtual void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) = 0;
-
-			virtual String GetDescription() const = 0;
-			virtual void SetDescription(const String& description) = 0;
-
-			virtual WidgetID GetItemID() const = 0;
-			virtual void SetItemID(WidgetID id) = 0;
-
-			virtual BitmapImage GetItemIcon() const = 0;
-			virtual void SetItemIcon(const BitmapImage& icon) = 0;
-
-			virtual bool IsEnabled() const = 0;
-			virtual void SetEnabled(bool enabled = true) = 0;
 
 			virtual bool IsChecked() const = 0;
 			virtual void SetChecked(bool checked = true) = 0;

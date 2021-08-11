@@ -124,7 +124,7 @@ namespace kxf::Widgets
 							ToBitmapImage(itemInfo.hbmpUnchecked);
 						}
 
-						item->SetItemIcon(image);
+						item->SetIcon(image);
 					}
 
 					item->SetChecked(itemInfo.fState & MFS_CHECKED);

@@ -173,10 +173,10 @@ namespace kxf::Widgets
 						};
 
 						auto event = MakeEvent();
-						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtHover, ProcessEventFlag::HandleExceptions))
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtEnter, ProcessEventFlag::HandleExceptions))
 						{
 							event = MakeEvent();
-							ProcessEvent(event, MenuWidgetEvent::EvtHover, ProcessEventFlag::HandleExceptions);
+							ProcessEvent(event, MenuWidgetEvent::EvtEnter, ProcessEventFlag::HandleExceptions);
 						}
 					}
 
@@ -217,10 +217,10 @@ namespace kxf::Widgets
 						};
 
 						auto event = MakeEvent();
-						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtSelect, ProcessEventFlag::HandleExceptions))
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtClick, ProcessEventFlag::HandleExceptions))
 						{
 							event = MakeEvent();
-							ProcessEvent(event, MenuWidgetEvent::EvtSelect, ProcessEventFlag::HandleExceptions);
+							ProcessEvent(event, MenuWidgetEvent::EvtClick, ProcessEventFlag::HandleExceptions);
 						}
 					}
 
@@ -490,8 +490,8 @@ namespace kxf::Widgets
 			item->m_OwningMenu = QueryInterface<MenuWidget>();
 			item->DoCreateWidget();
 
+			item->SetID(id);
 			item->SetLabel(!label.IsEmpty() ? label : menuWidget->GetLabel(), WidgetTextFlag::WithMnemonics);
-			item->SetItemID(!id.IsNone() ? id : menuWidget->GetWidgetID());
 			item->SetDescription(menuWidget->GetDescription());
 
 			// Insert the menu
@@ -532,7 +532,7 @@ namespace kxf::Widgets
 
 			item->DoCreateWidget();
 			item->SetLabel(label);
-			item->SetItemID(id);
+			item->SetID(id);
 
 			return item;
 		}
