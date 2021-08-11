@@ -11,7 +11,7 @@ namespace kxf
 			KxEVENT_MEMBER(ButtonWidgetEvent, Dropdown);
 
 		public:
-			ButtonWidgetEvent(IWidget& widget) noexcept
+			ButtonWidgetEvent(IButtonWidget& widget) noexcept
 				:WidgetEvent(widget)
 			{
 			}

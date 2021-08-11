@@ -1,17 +1,13 @@
 #include "KxfPCH.h"
 #include "ClusterMap.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
-#include "../../Events/ButtonWidgetEvent.h"
-#include "kxf/Drawing/GDIRenderer/UxTheme.h"
-#include "kxf/Drawing/IRendererNative.h"
+#include "../../Events/WidgetItemEvent.h"
 
 namespace kxf::WXUI
 {
 	void ClusterMap::OnPaint(wxPaintEvent& event)
 	{
-		IRendererNative& nativeRenderer = IRendererNative::Get();
 		auto renderer = m_RendererAware->GetActiveGraphicsRenderer();
-
 		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->Clear(renderer->GetTransparentBrush());
 
@@ -54,36 +50,33 @@ namespace kxf::WXUI
 	}
 	void ClusterMap::OnMouse(wxMouseEvent& event)
 	{
-		int index = HitTest(Point(event.GetPosition()));
+		size_t index = HitTest(Point(event.GetPosition()));
 		if (index != m_UnderMouseIndex)
 		{
+			if (index != IClusterMapWidget::npos)
+			{
+				m_Widget.ProcessEvent(WidgetItemEvent::EvtEnter, m_Widget, index);
+			}
+
 			m_UnderMouseIndex = index;
 			ScheduleRefresh();
-
-			if (index != -1)
-			{
-				wxCommandEvent evt(wxEVT_TOOL_ENTER, GetId());
-				evt.SetEventObject(this);
-				evt.SetInt(m_UnderMouseIndex);
-
-				ProcessWindowEvent(evt);
-			}
 		}
 	}
 	void ClusterMap::OnMouseLeave(wxMouseEvent& event)
 	{
+		if (m_UnderMouseIndex != IClusterMapWidget::npos)
+		{
+			m_Widget.ProcessEvent(WidgetItemEvent::EvtLeave, m_Widget, m_UnderMouseIndex);
+		}
+
 		m_UnderMouseIndex = IClusterMapWidget::npos;
 		ScheduleRefresh();
 	}
 	void ClusterMap::OnLeftUp(wxMouseEvent& event)
 	{
-		if (m_UnderMouseIndex != -1 && event.LeftUp())
+		if (m_UnderMouseIndex != IClusterMapWidget::npos)
 		{
-			wxCommandEvent evt(wxEVT_BUTTON, GetId());
-			evt.SetEventObject(this);
-			evt.SetInt(m_UnderMouseIndex);
-
-			ProcessWindowEvent(evt);
+			m_Widget.ProcessEvent(WidgetItemEvent::EvtClick, m_Widget, m_UnderMouseIndex);
 		}
 	}
 
