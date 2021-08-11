@@ -39,7 +39,7 @@ namespace kxf
 	{
 		if (volume)
 		{
-			m_Path[0] = volume.GetChar().GetAs<XChar>();
+			m_Path[0] = volume.GetChar();
 			m_Path[1] = ':';
 			m_Path[2] = '\\';
 			m_Path[3] = '\0';

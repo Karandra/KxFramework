@@ -378,7 +378,7 @@ namespace kxf
 			if (drive)
 			{
 				// Replace the disk designator
-				m_Path[0] = drive.GetChar().GetAs<XChar>();
+				m_Path[0] = drive.GetChar();
 			}
 			else
 			{
@@ -393,7 +393,7 @@ namespace kxf
 			{
 				// Replace with legacy drive path
 				char disk[] = "\0:\\";
-				disk[0] = drive.GetChar().GetAs<XChar>();
+				disk[0] = drive.GetChar();
 				m_Path.ReplaceRange(0, g_VolumePathTotalLength, StringViewOf(disk));
 			}
 			else
@@ -407,7 +407,7 @@ namespace kxf
 		{
 			// Perpend a new disk designator
 			char disk[] = "\0:\\";
-			disk[0] = drive.GetChar().GetAs<XChar>();
+			disk[0] = drive.GetChar();
 			m_Path.Prepend(disk);
 
 			Normalize();

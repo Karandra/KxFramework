@@ -155,7 +155,7 @@ namespace kxf
 		if (volume)
 		{
 			XChar disk[] = kxS("\0:\\");
-			disk[0] = volume.GetChar().GetAs<XChar>();
+			disk[0] = volume.GetChar();
 
 			return ::DeleteVolumeMountPointW(disk);
 		}
@@ -358,7 +358,7 @@ namespace kxf
 		if (volume)
 		{
 			XChar disk[] = kxS("\0:\\");
-			disk[0] = volume.GetChar().GetAs<XChar>();
+			disk[0] = volume.GetChar();
 
 			return ::SetVolumeMountPointW(disk, m_Path);
 		}
