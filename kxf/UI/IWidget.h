@@ -214,8 +214,10 @@ namespace kxf
 	std::shared_ptr<TWidget> NewWidget(std::shared_ptr<IWidget> parent, const String& text = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize(), Args&&... arg)
 	{
 		auto widget = NewWidget<TWidget>();
-		widget->TWidget::CreateWidget(std::move(parent), text, pos, size, std::forward<Args>(arg)...);
-
-		return widget;
+		if (widget->TWidget::CreateWidget(std::move(parent), text, pos, size, std::forward<Args>(arg)...))
+		{
+			return widget;
+		}
+		return nullptr;
 	}
 }
