@@ -55,11 +55,11 @@ namespace kxf::WXUI
 	}
 	Size Label::CalcBestSize(std::shared_ptr<IGraphicsContext> gc)
 	{
-		const SizeF padding = Size(ConvertDialogToPixels(wxSize(3, 1)));
+		const SizeF padding = m_Widget.DialogUnitsToPixels<Size>(3, 1);
 
 		if (!gc)
 		{
-			auto renderer = m_Widget.GetActiveGraphicsRenderer();
+			auto renderer = m_RendererAware->GetActiveGraphicsRenderer();
 			gc = renderer->CreateLegacyMeasuringContext(this);
 		}
 		return gc->GetTextExtent(m_Label) + padding;
@@ -68,7 +68,7 @@ namespace kxf::WXUI
 	void Label::OnPaint(wxPaintEvent& event)
 	{
 		IRendererNative& nativeRenderer = IRendererNative::Get();
-		auto renderer = m_Widget.GetActiveGraphicsRenderer();
+		auto renderer = m_RendererAware->GetActiveGraphicsRenderer();
 
 		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->Clear(renderer->GetTransparentBrush());
@@ -222,7 +222,8 @@ namespace kxf::WXUI
 
 			PushEventHandler(&m_EvtHandler);
 			m_EvtHandler.SetClientData(this);
-			return true;
+
+			return m_Widget.QueryInterface(m_RendererAware);
 		}
 		return false;
 	}

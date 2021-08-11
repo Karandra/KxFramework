@@ -190,7 +190,8 @@ namespace kxf::WXUI
 
 			PushEventHandler(&m_EvtHandler);
 			m_EvtHandler.SetClientData(this);
-			return true;
+
+			return m_Widget.QueryInterface(m_RendererAware);
 		}
 		return false;
 	}

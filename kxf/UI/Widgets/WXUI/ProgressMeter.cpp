@@ -33,7 +33,8 @@ namespace kxf::WXUI
 		if (wxGauge::Create(parent, wxID_NONE, 100, pos, size, wxGA_HORIZONTAL|wxGA_SMOOTH))
 		{
 			SetLabel(label);
-			return true;
+
+			return m_Widget.QueryInterface(m_RendererAware);
 		}
 		return false;
 	}

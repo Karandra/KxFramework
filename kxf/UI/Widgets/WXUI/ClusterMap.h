@@ -63,7 +63,6 @@ namespace kxf::WXUI
 			ClusterMap(IClusterMapWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
-				widget.QueryInterface(m_RendererAware);
 			}
 			~ClusterMap()
 			{

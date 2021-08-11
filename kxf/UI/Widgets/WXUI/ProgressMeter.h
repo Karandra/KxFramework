@@ -25,7 +25,6 @@ namespace kxf::WXUI
 			ProgressMeter(IProgressMeterWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
-				widget.QueryInterface(m_RendererAware);
 			}
 
 		public:

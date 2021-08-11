@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "../Label.h"
+#include "../../ILabelWidget.h"
+#include "../../IGraphicsRendererAwareWidget.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/Network/URI.h"
@@ -32,7 +33,8 @@ namespace kxf::WXUI
 	{
 		private:
 			wxEvtHandler m_EvtHandler;
-			Widgets::Label& m_Widget;
+			ILabelWidget& m_Widget;
+			std::shared_ptr<IGraphicsRendererAwareWidget> m_RendererAware;
 
 			String m_Label;
 			URI m_URI;
@@ -86,7 +88,7 @@ namespace kxf::WXUI
 			}
 
 		public:
-			Label(Widgets::Label& widget)
+			Label(ILabelWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 			}
