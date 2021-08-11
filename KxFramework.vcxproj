@@ -508,6 +508,7 @@
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
     <ClInclude Include="kxf\UI\IComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
+    <ClInclude Include="kxf\UI\IImageViewWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IMenuWidget.h" />
     <ClInclude Include="kxf\UI\INativeWidget.h" />
@@ -556,6 +557,7 @@
     <ClInclude Include="kxf\UI\Widgets\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\Label.h" />
@@ -567,6 +569,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h" />
@@ -1028,6 +1031,7 @@
     <ClCompile Include="kxf\UI\Widgets\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Label.cpp" />
@@ -1038,6 +1042,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp" />

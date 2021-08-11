@@ -2199,6 +2199,15 @@
     <ClInclude Include="kxf\UI\Events\WidgetItemEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ImageView.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IImageViewWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ImageView.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3314,6 +3323,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\IMenuWidgetItem.cpp">
       <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ImageView.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ImageView.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
