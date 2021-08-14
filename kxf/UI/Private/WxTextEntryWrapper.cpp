@@ -2,12 +2,39 @@
 #include "WxTextEntryWrapper.h"
 #include <wx/textentry.h>
 
+#define DispatchCall(ret, name, ...)	\
+if (m_TextEntry)	\
+{	\
+	return m_TextEntry->name(__VA_ARGS__);	\
+}	\
+else if (m_TextInterface)	\
+{	\
+	return m_TextInterface->name(__VA_ARGS__);	\
+}	\
+return ret;
+
 namespace kxf::WXUI::Private
 {
 	void WxTextEntryWrapper::Initialize(wxTextEntry& textEntry) noexcept
 	{
 		m_TextEntry = &textEntry;
+		m_TextInterface = dynamic_cast<wxTextCtrlIface*>(&textEntry);
+
 		if (auto evtHandler = dynamic_cast<wxEvtHandler*>(&textEntry))
+		{
+			evtHandler->Bind(wxEVT_TEXT, [&](wxCommandEvent& event)
+			{
+				m_IsModified = true;
+				event.Skip();
+			});
+		}
+	}
+	void WxTextEntryWrapper::Initialize(wxTextCtrlIface& textInterface) noexcept
+	{
+		m_TextEntry = dynamic_cast<wxTextEntry*>(&textInterface);
+		m_TextInterface = &textInterface;
+
+		if (auto evtHandler = dynamic_cast<wxEvtHandler*>(&textInterface))
 		{
 			evtHandler->Bind(wxEVT_TEXT, [&](wxCommandEvent& event)
 			{
@@ -19,62 +46,62 @@ namespace kxf::WXUI::Private
 
 	bool WxTextEntryWrapper::CanCut() const
 	{
-		return m_TextEntry->CanCut();
+		DispatchCall(false, CanCut);
 	}
 	bool WxTextEntryWrapper::CanCopy() const
 	{
-		return m_TextEntry->CanCopy();
+		DispatchCall(false, CanCopy);
 	}
 	bool WxTextEntryWrapper::CanPaste() const
 	{
-		return m_TextEntry->CanPaste();
+		DispatchCall(false, CanPaste);
 	}
 	bool WxTextEntryWrapper::CanUndo() const
 	{
-		return m_TextEntry->CanUndo();
+		DispatchCall(false, CanRedo);
 	}
 	bool WxTextEntryWrapper::CanRedo() const
 	{
-		return m_TextEntry->CanRedo();
+		DispatchCall(false, CanRedo);
 	}
 
 	void WxTextEntryWrapper::Cut()
 	{
-		m_TextEntry->Cut();
+		DispatchCall(, Cut);
 	}
 	void WxTextEntryWrapper::Copy()
 	{
-		m_TextEntry->Copy();
+		DispatchCall(, Copy);
 	}
 	void WxTextEntryWrapper::Paste()
 	{
-		m_TextEntry->Copy();
+		DispatchCall(, Paste);
 	}
 	void WxTextEntryWrapper::Undo()
 	{
-		m_TextEntry->Undo();
+		DispatchCall(, Undo);
 	}
 	void WxTextEntryWrapper::Redo()
 	{
-		m_TextEntry->Redo();
+		DispatchCall(, Redo);
 	}
 
 	void WxTextEntryWrapper::ClearText()
 	{
-		m_TextEntry->ChangeValue({});
+		DispatchCall(, ChangeValue, {});
 	}
 	bool WxTextEntryWrapper::IsTextEmpty() const
 	{
-		return m_TextEntry->IsEmpty();
+		DispatchCall(false, IsEmpty);
 	}
 
 	bool WxTextEntryWrapper::IsEditable() const
 	{
-		return m_TextEntry->IsEditable();
+		DispatchCall(false, IsEditable);
 	}
 	void WxTextEntryWrapper::SetEditable(bool isEditable)
 	{
-		m_TextEntry->SetEditable(isEditable);
+		DispatchCall(, SetEditable, isEditable);
 	}
 
 	bool WxTextEntryWrapper::IsModified() const
@@ -93,7 +120,7 @@ namespace kxf::WXUI::Private
 	void WxTextEntryWrapper::SetLengthLimit(size_t limit)
 	{
 		m_LengthLimit = limit;
-		m_TextEntry->SetMaxLength(limit);
+		DispatchCall(, SetMaxLength, limit);
 	}
 
 	size_t WxTextEntryWrapper::GetTabWidth() const
@@ -107,33 +134,37 @@ namespace kxf::WXUI::Private
 
 	size_t WxTextEntryWrapper::GetInsertionPoint() const
 	{
-		return m_TextEntry->GetInsertionPoint();
+		DispatchCall(npos, GetInsertionPoint);
 	}
 	void WxTextEntryWrapper::SetInsertionPoint(size_t pos)
 	{
-		m_TextEntry->SetInsertionPoint(pos != npos ? pos : -1);
+		DispatchCall(, SetInsertionPoint, pos != npos ? pos : -1);
 	}
 
 	void WxTextEntryWrapper::SelectRange(size_t from, size_t to)
 	{
 		if (from == to || from == npos)
 		{
-			m_TextEntry->SelectNone();
+			DispatchCall(, SelectNone);
 		}
 		else if (from == 0 && to == npos)
 		{
+			DispatchCall(, SelectAll);
 			m_TextEntry->SelectAll();
 		}
 		else
 		{
-			m_TextEntry->SetSelection(from, to);
+			DispatchCall(, SetSelection, from, to);
 		}
 	}
 	std::pair<size_t, size_t> WxTextEntryWrapper::GetSelectionRange() const
 	{
 		long from = 0;
 		long to = 0;
-		m_TextEntry->GetSelection(&from, &to);
+		[&]()
+		{
+			DispatchCall(, GetSelection, &from, &to);
+		}();
 
 		return {static_cast<size_t>(from), static_cast<size_t>(to)};
 	}
@@ -141,7 +172,7 @@ namespace kxf::WXUI::Private
 	{
 		if (from != npos)
 		{
-			return m_TextEntry->GetRange(from, to != npos ? to : -1);
+			DispatchCall({}, GetRange, from, to != npos ? to : -1);
 		}
 		return {};
 	}
@@ -149,40 +180,44 @@ namespace kxf::WXUI::Private
 	{
 		if (from != npos)
 		{
-			return m_TextEntry->Remove(from, to != npos ? to : -1);
+			DispatchCall(, Remove, from, to != npos ? to : -1);
 		}
 	}
 	void WxTextEntryWrapper::ReplaceRange(size_t from, size_t to, const String& text)
 	{
 		if (from != npos)
 		{
-			return m_TextEntry->Replace(from, to != npos ? to : -1, text);
+			DispatchCall(, Replace, from, to != npos ? to : -1, text);
 		}
 	}
 
 	size_t WxTextEntryWrapper::GetTextLength() const
 	{
-		return m_TextEntry->GetLastPosition();
+		DispatchCall(0, GetLastPosition);
 	}
 	String WxTextEntryWrapper::GetText() const
 	{
-		return m_TextEntry->GetValue();
+		DispatchCall({}, GetValue);
 	}
 	void WxTextEntryWrapper::SetText(const String& text)
 	{
-		m_TextEntry->ChangeValue(text);
+		DispatchCall(, ChangeValue, text);
 	}
 	void WxTextEntryWrapper::AppendText(const String& text)
 	{
-		m_TextEntry->AppendText(text);
+		DispatchCall(, AppendText, text);
 	}
 
 	String WxTextEntryWrapper::GetHint() const
 	{
-		return m_TextEntry->GetHint();
+		DispatchCall({}, GetHint);
 	}
 	void WxTextEntryWrapper::SetHint(const String& hint)
 	{
-		m_TextEntry->SetHint(hint);
+		auto DoCall = [&]()
+		{
+			DispatchCall(false, SetHint, hint);
+		};
+		DoCall();
 	}
 }

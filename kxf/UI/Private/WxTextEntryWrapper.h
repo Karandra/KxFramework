@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 class wxTextEntry;
+class wxTextCtrlIface;
 
 namespace kxf::WXUI::Private
 {
@@ -11,6 +12,7 @@ namespace kxf::WXUI::Private
 
 		protected:
 			wxTextEntry* m_TextEntry = nullptr;
+			wxTextCtrlIface* m_TextInterface = nullptr;
 
 		private:
 			size_t m_LengthLimit = npos;
@@ -23,9 +25,14 @@ namespace kxf::WXUI::Private
 			{
 				Initialize(textEntry);
 			}
+			WxTextEntryWrapper(wxTextCtrlIface& textInterface) noexcept
+			{
+				Initialize(textInterface);
+			}
 
 		public:
 			void Initialize(wxTextEntry& textEntry) noexcept;
+			void Initialize(wxTextCtrlIface& textInterface) noexcept;
 
 		public:
 			bool CanCut() const;
