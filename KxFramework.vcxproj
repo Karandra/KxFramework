@@ -490,6 +490,7 @@
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
+    <ClInclude Include="kxf\UI\Events\SearchWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />
@@ -515,6 +516,7 @@
     <ClInclude Include="kxf\UI\IProgressMeterWidget.h" />
     <ClInclude Include="kxf\UI\ILabelWidget.h" />
     <ClInclude Include="kxf\UI\IScrollableWidget.h" />
+    <ClInclude Include="kxf\UI\ISearchWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IStyledTextWidget.h" />
@@ -561,6 +563,7 @@
     <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\Label.h" />
+    <ClInclude Include="kxf\UI\Widgets\SearchBox.h" />
     <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
@@ -573,6 +576,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\SearchBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
@@ -1035,6 +1039,7 @@
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Label.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\SearchBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
@@ -1046,6 +1051,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\SearchBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
