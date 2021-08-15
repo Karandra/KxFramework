@@ -212,16 +212,16 @@ namespace kxf::Private
 
 				case WidgetSizeFlag::Virtual:
 				{
-					return {{0, 0}, m_Window->GetVirtualSize()};
+					return {m_Window->GetClientRect().GetPosition(), m_Window->GetVirtualSize()};
 				}
 				case WidgetSizeFlag::VirtualBest:
 				{
-					return {{0, 0}, m_Window->GetBestVirtualSize()};
+					return {m_Window->GetClientRect().GetPosition(), m_Window->GetBestVirtualSize()};
 				}
 
 				case WidgetSizeFlag::Border:
 				{
-					return {{0, 0}, m_Window->GetWindowBorderSize()};
+					return {m_Window->GetClientRect().GetPosition(), m_Window->GetWindowBorderSize()};
 				}
 			}
 			return {wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord};

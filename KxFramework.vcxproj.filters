@@ -2220,6 +2220,18 @@
     <ClInclude Include="kxf\UI\Events\SearchWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IHTMLWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\HTMLBox.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Private\WxScrolledWrapper.h">
+      <Filter>kxf\UI\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3347,6 +3359,15 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\SearchBox.cpp">
       <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\HTMLBox.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Private\WxScrolledWrapper.cpp">
+      <Filter>kxf\UI\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -29,14 +29,14 @@ namespace kxf
 			virtual Point CalcScrolledPosition(const Point& point) const = 0;
 			virtual Point CalcUnscrolledPosition(const Point& point) const = 0;
 
-			virtual void SetupScrollbars(Size pixelsPerUnit, Size unitsCount) = 0;
+			virtual void SetupScrollbars(const Size& pixelPerUnit, const Size& unitCount) = 0;
 			virtual void ShowScrollbars(ScrollbarVisibility x, ScrollbarVisibility y) = 0;
 
 			virtual Size GetScrollRate() const = 0;
-			virtual void SetScrollRate(Size scrollRate) = 0;
+			virtual void SetScrollRate(const Size& scrollRate) = 0;
 
 			virtual Point GetViewStart() const = 0;
-			virtual void ScrollTo(const Point& pos) = 0;
+			virtual void ScrollTo(const Point& point) = 0;
 
 			virtual SizeF GetScrollScale() const = 0;
 			virtual void SetScrollScale(const SizeF& scale) = 0;

@@ -504,6 +504,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
     <ClInclude Include="kxf\UI\IClusterMapWidget.h" />
+    <ClInclude Include="kxf\UI\IHTMLWidget.h" />
     <ClInclude Include="kxf\UI\IImageComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
@@ -544,6 +545,7 @@
     <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
     <ClInclude Include="kxf\UI\Private\WidgetUtility.h" />
+    <ClInclude Include="kxf\UI\Private\WxScrolledWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h" />
     <ClInclude Include="kxf\UI\TopLevelWidgets\Common.h" />
@@ -558,6 +560,7 @@
     <ClInclude Include="kxf\UI\Widgets\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h" />
@@ -571,6 +574,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h" />
@@ -1023,6 +1027,7 @@
     <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\Common.cpp" />
     <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp" />
+    <ClCompile Include="kxf\UI\Private\WxScrolledWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxTextEntryWrapper.cpp" />
     <ClCompile Include="kxf\UI\StdIcon.cpp" />
@@ -1034,6 +1039,7 @@
     <ClCompile Include="kxf\UI\Widgets\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp" />
@@ -1046,6 +1052,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp" />
