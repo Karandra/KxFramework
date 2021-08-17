@@ -521,6 +521,7 @@
     <ClInclude Include="kxf\UI\ISearchWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidget.h" />
     <ClInclude Include="kxf\UI\IShellMenuWidgetItem.h" />
+    <ClInclude Include="kxf\UI\ISliderWidget.h" />
     <ClInclude Include="kxf\UI\IStyledTextWidget.h" />
     <ClInclude Include="kxf\UI\ITextWidget.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
@@ -568,6 +569,7 @@
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\Label.h" />
     <ClInclude Include="kxf\UI\Widgets\SearchBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\Slider.h" />
     <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
@@ -582,6 +584,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\SearchBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Slider.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
@@ -1047,6 +1050,7 @@
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Label.cpp" />
     <ClCompile Include="kxf\UI\Widgets\SearchBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\Slider.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
@@ -1060,6 +1064,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\SearchBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Slider.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />

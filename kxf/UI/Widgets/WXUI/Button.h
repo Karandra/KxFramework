@@ -32,6 +32,7 @@ namespace kxf::WXUI
 			void OnLeftButtonDown(wxMouseEvent& event);
 
 		protected:
+			// wxWindow
 			wxSize DoGetBestSize() const override;
 			wxSize DoGetBestClientSize() const override;
 			wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
@@ -57,6 +58,7 @@ namespace kxf::WXUI
 			);
 
 		public:
+			// wxWindow
 			bool Enable(bool enable = true) override
 			{
 				ScheduleRefresh();
@@ -67,7 +69,8 @@ namespace kxf::WXUI
 				ScheduleRefresh();
 				wxAnyButton::SetLabel(label);
 			}
-		
+
+			// Button
 			bool IsDefault() const;
 			wxWindow* SetDefault();
 

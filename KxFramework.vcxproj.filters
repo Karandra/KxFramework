@@ -2235,6 +2235,15 @@
     <ClInclude Include="kxf\UI\Events\WidgetScrollEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\ISliderWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Slider.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\Slider.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3371,6 +3380,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\WxScrolledWrapper.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Slider.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\Slider.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
