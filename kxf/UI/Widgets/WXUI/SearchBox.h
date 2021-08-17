@@ -6,8 +6,10 @@
 
 namespace kxf::WXUI
 {
-	class KX_API SearchBox: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSearchCtrl>>
+	class KX_API SearchBox: public EvtHandlerWrapper<SearchBox, UI::WindowRefreshScheduler<wxSearchCtrl>>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			ISearchWidget& m_Widget;
 
@@ -24,16 +26,6 @@ namespace kxf::WXUI
 			bool DoTryBefore(wxEvent& event);
 
 		protected:
-			// wxEvtHandler
-			bool TryBefore(wxEvent& event) override
-			{
-				if (DoTryBefore(event))
-				{
-					return true;
-				}
-				return EvtHandlerWrapper::TryBefore(event);
-			}
-
 			// wxWindow
 			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
 

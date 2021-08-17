@@ -8,7 +8,7 @@
 
 namespace kxf::WXUI
 {
-	class KX_API ClusterMap: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxControl>>>
+	class KX_API ClusterMap: public EvtHandlerWrapper<ClusterMap, UI::WindowRefreshScheduler<wxSystemThemedControl<wxControl>>>
 	{
 		private:
 			struct DrawInfo final

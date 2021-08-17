@@ -5,7 +5,7 @@
 
 namespace kxf::WXUI
 {
-	class KX_API Frame: public EvtHandlerWrapper<wxFrame>
+	class KX_API Frame: public EvtHandlerWrapper<Frame, wxFrame>
 	{
 		private:
 			ITopLevelWidget& m_Widget;

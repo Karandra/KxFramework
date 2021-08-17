@@ -5,24 +5,15 @@
 
 namespace kxf::WXUI
 {
-	class KX_API RadioCheck: public EvtHandlerWrapper<wxRadioButton>
+	class KX_API RadioCheck: public EvtHandlerWrapper<RadioCheck, wxRadioButton>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			ICheckWidget& m_Widget;
 
 		private:
 			bool DoTryBefore(wxEvent& event);
-
-		protected:
-			// wxEvtHandler
-			bool TryBefore(wxEvent& event) override
-			{
-				if (DoTryBefore(event))
-				{
-					return true;
-				}
-				return EvtHandlerWrapper::TryBefore(event);
-			}
 
 		public:
 			RadioCheck(ICheckWidget& widget)

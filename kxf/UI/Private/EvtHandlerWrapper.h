@@ -15,7 +15,7 @@ namespace kxf::WXUI::Private
 			IWidget& m_Widget;
 
 		public:
-			EvtHandlerWrapperBase(IWidget& widget)
+			EvtHandlerWrapperBase(IWidget& widget) noexcept
 				:m_Widget(widget)
 			{
 			}
@@ -36,17 +36,37 @@ namespace kxf::WXUI::Private
 
 namespace kxf::WXUI
 {
-	template<class TBase>
+	template<class TDerived, class TBase>
 	class EvtHandlerWrapper: public TBase
 	{
 		private:
 			Private::EvtHandlerWrapperBase m_Wrapper;
 
+		private:
+			TDerived& Self() noexcept
+			{
+				return static_cast<TDerived&>(*this);
+			}
+			const TDerived& Self() const noexcept
+			{
+				return static_cast<const TDerived&>(*this);
+			}
+
+		private:
+			bool DoTryBefore(wxEvent& event) noexcept
+			{
+				return false;
+			}
+			bool DoTryAfter(wxEvent& event) noexcept
+			{
+				return false;
+			}
+
 		protected:
 			// wxEvtHandler
 			bool TryBefore(wxEvent& event) override
 			{
-				if (m_Wrapper.TryBefore(event))
+				if (Self().DoTryBefore(event) || m_Wrapper.TryBefore(event))
 				{
 					return true;
 				}
@@ -58,7 +78,7 @@ namespace kxf::WXUI
 				{
 					return true;
 				}
-				return m_Wrapper.TryAfter(event);
+				return Self().DoTryAfter(event) || m_Wrapper.TryAfter(event);
 			}
 
 			bool OnDynamicBind(wxDynamicEventTableEntry& eventItem) override
@@ -77,7 +97,7 @@ namespace kxf::WXUI
 			}
 
 		public:
-			EvtHandlerWrapper(IWidget& widget)
+			EvtHandlerWrapper(IWidget& widget) noexcept
 				:m_Wrapper(widget)
 			{
 			}

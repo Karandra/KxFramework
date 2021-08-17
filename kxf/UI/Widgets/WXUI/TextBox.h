@@ -6,8 +6,10 @@
 
 namespace kxf::WXUI
 {
-	class KX_API TextBox: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxTextCtrl>>
+	class KX_API TextBox: public EvtHandlerWrapper<TextBox, UI::WindowRefreshScheduler<wxTextCtrl>>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			ITextWidget& m_Widget;
 
@@ -15,16 +17,6 @@ namespace kxf::WXUI
 			bool DoTryBefore(wxEvent& event);
 
 		protected:
-			// wxEvtHandler
-			bool TryBefore(wxEvent& event) override
-			{
-				if (DoTryBefore(event))
-				{
-					return true;
-				}
-				return EvtHandlerWrapper::TryBefore(event);
-			}
-
 			// wxWindow
 			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
 

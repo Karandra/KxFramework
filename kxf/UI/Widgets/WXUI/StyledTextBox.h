@@ -6,25 +6,16 @@
 
 namespace kxf::WXUI
 {
-	class KX_API StyledTextBox: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxStyledTextCtrl>>
+	class KX_API StyledTextBox: public EvtHandlerWrapper<StyledTextBox, UI::WindowRefreshScheduler<wxStyledTextCtrl>>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			IStyledTextWidget& m_Widget;
 			bool m_IsCreated = false;
 
 		private:
 			bool DoTryBefore(wxEvent& event);
-
-		protected:
-			// wxEvtHandler
-			bool TryBefore(wxEvent& event) override
-			{
-				if (DoTryBefore(event))
-				{
-					return true;
-				}
-				return EvtHandlerWrapper::TryBefore(event);
-			}
 		
 		public:
 			StyledTextBox(IStyledTextWidget& widget)

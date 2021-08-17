@@ -29,7 +29,7 @@ namespace kxf
 
 namespace kxf::WXUI
 {
-	class KX_API Label: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>>
+	class KX_API Label: public EvtHandlerWrapper<Label, UI::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>>
 	{
 		private:
 			wxEvtHandler m_EvtHandler;
@@ -65,6 +65,7 @@ namespace kxf::WXUI
 			Size CalcBestSize(std::shared_ptr<IGraphicsContext> gc = nullptr);
 
 		protected:
+			// wxWindow
 			void DoEnable(bool enable) override
 			{
 				ScheduleRefresh();

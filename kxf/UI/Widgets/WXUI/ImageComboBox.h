@@ -7,24 +7,15 @@
 
 namespace kxf::WXUI
 {
-	class KX_API ImageComboBox: public EvtHandlerWrapper<UI::WindowRefreshScheduler<wxSystemThemedControl<wxBitmapComboBox>>>
+	class KX_API ImageComboBox: public EvtHandlerWrapper<ImageComboBox, UI::WindowRefreshScheduler<wxSystemThemedControl<wxBitmapComboBox>>>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			IImageComboBoxWidget& m_Widget;
 
 		private:
 			bool DoTryBefore(wxEvent& event);
-
-		protected:
-			// wxEvtHandler
-			bool TryBefore(wxEvent& event) override
-			{
-				if (DoTryBefore(event))
-				{
-					return true;
-				}
-				return EvtHandlerWrapper::TryBefore(event);
-			}
 
 		public:
 			ImageComboBox(IImageComboBoxWidget& widget)
