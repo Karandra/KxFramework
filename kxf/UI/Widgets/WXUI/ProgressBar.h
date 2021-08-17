@@ -9,7 +9,7 @@
 
 namespace kxf::WXUI
 {
-	class KX_API ProgressMeter: public EvtHandlerWrapper<ProgressMeter, UI::WindowRefreshScheduler<wxSystemThemedControl<wxGauge>>>
+	class KX_API ProgressBar: public EvtHandlerWrapper<ProgressBar, UI::WindowRefreshScheduler<wxSystemThemedControl<wxGauge>>>
 	{
 		private:
 			IProgressMeterWidget& m_Widget;
@@ -22,7 +22,7 @@ namespace kxf::WXUI
 			void OnPaint(wxPaintEvent& event);
 
 		public:
-			ProgressMeter(IProgressMeterWidget& widget)
+			ProgressBar(IProgressMeterWidget& widget)
 				:EvtHandlerWrapper(widget), m_Widget(widget)
 			{
 			}
@@ -58,7 +58,7 @@ namespace kxf::WXUI
 				wxGauge::SetValue(std::clamp(value, 0, GetRange()));
 			}
 
-			// ProgressMeter
+			// ProgressBar
 			int GetStep() const
 			{
 				return m_Step;

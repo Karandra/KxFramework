@@ -1,12 +1,12 @@
 #include "KxfPCH.h"
-#include "ProgressMeter.h"
+#include "ProgressBar.h"
 #include "kxf/General/Format.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::WXUI
 {
-	// ProgressMeter
-	void ProgressMeter::OnPaint(wxPaintEvent& event)
+	// ProgressBar
+	void ProgressBar::OnPaint(wxPaintEvent& event)
 	{
 		if (!m_InPulseMode)
 		{
@@ -24,7 +24,7 @@ namespace kxf::WXUI
 		}
 	}
 
-	bool ProgressMeter::Create(wxWindow* parent,
+	bool ProgressBar::Create(wxWindow* parent,
 							   const String& label,
 							   const Point& pos,
 							   const Size& size
@@ -40,15 +40,15 @@ namespace kxf::WXUI
 	}
 
 	// wxWindow
-	void ProgressMeter::SetLabel(const wxString& label)
+	void ProgressBar::SetLabel(const wxString& label)
 	{
 		if (!label.IsEmpty() && !IsVertical())
 		{
-			Bind(wxEVT_PAINT, &ProgressMeter::OnPaint, this);
+			Bind(wxEVT_PAINT, &ProgressBar::OnPaint, this);
 		}
 		else
 		{
-			Unbind(wxEVT_PAINT, &ProgressMeter::OnPaint, this);
+			Unbind(wxEVT_PAINT, &ProgressBar::OnPaint, this);
 		}
 
 		ScheduleRefresh();

@@ -5,19 +5,19 @@
 
 namespace kxf::WXUI
 {
-	class ProgressMeter;
+	class ProgressBar;
 }
 
 namespace kxf::Widgets
 {
-	class KX_API ProgressMeter: public RTTI::Implementation<ProgressMeter, Private::BasicWxWidget<ProgressMeter, WXUI::ProgressMeter, IProgressMeterWidget>, IGraphicsRendererAwareWidget>
+	class KX_API ProgressBar: public RTTI::Implementation<ProgressBar, Private::BasicWxWidget<ProgressBar, WXUI::ProgressBar, IProgressMeterWidget>, IGraphicsRendererAwareWidget>
 	{
 		private:
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
 
 		public:
-			ProgressMeter();
-			~ProgressMeter();
+			ProgressBar();
+			~ProgressBar();
 
 		public:
 			// IWidget

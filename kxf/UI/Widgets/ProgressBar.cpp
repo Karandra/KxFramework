@@ -1,19 +1,19 @@
 #include "KxfPCH.h"
-#include "ProgressMeter.h"
-#include "WXUI/ProgressMeter.h"
+#include "ProgressBar.h"
+#include "WXUI/ProgressBar.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::Widgets
 {
-	// ProgressMeter
-	ProgressMeter::ProgressMeter()
+	// ProgressBar
+	ProgressBar::ProgressBar()
 	{
 		InitializeWxWidget();
 	}
-	ProgressMeter::~ProgressMeter() = default;
+	ProgressBar::~ProgressBar() = default;
 
 	// IWidget
-	bool ProgressMeter::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
+	bool ProgressBar::CreateWidget(std::shared_ptr<IWidget> parent, const String& label, Point pos, Size size)
 	{
 		if (parent)
 		{
@@ -23,44 +23,44 @@ namespace kxf::Widgets
 	}
 
 	// IProgressMeter
-	int ProgressMeter::GetRange() const
+	int ProgressBar::GetRange() const
 	{
 		return Get()->GetRange();
 	}
-	void ProgressMeter::SetRange(int range)
+	void ProgressBar::SetRange(int range)
 	{
 		Get()->SetRange(range);
 	}
 
-	int ProgressMeter::GetValue() const
+	int ProgressBar::GetValue() const
 	{
 		return Get()->GetValue();
 	}
-	void ProgressMeter::SetValue(int value)
+	void ProgressBar::SetValue(int value)
 	{
 		Get()->SetValue(value);
 	}
 
-	int ProgressMeter::GetStep() const
+	int ProgressBar::GetStep() const
 	{
 		return Get()->GetStep();
 	}
-	void ProgressMeter::SetStep(int step)
+	void ProgressBar::SetStep(int step)
 	{
 		Get()->SetValue(step);
 	}
 
-	void ProgressMeter::Pulse()
+	void ProgressBar::Pulse()
 	{
 		Get()->Pulse();
 	}
-	bool ProgressMeter::IsPulsing() const
+	bool ProgressBar::IsPulsing() const
 	{
 		return Get()->IsPulsing();
 	}
 
 	// IProgressMeterWidget
-	String ProgressMeter::GetLabel(FlagSet<WidgetTextFlag> flags) const
+	String ProgressBar::GetLabel(FlagSet<WidgetTextFlag> flags) const
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -71,7 +71,7 @@ namespace kxf::Widgets
 			return Get()->GetLabelText();
 		}
 	}
-	void ProgressMeter::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
+	void ProgressBar::SetLabel(const String& label, FlagSet<WidgetTextFlag> flags)
 	{
 		if (flags.Contains(WidgetTextFlag::WithMnemonics))
 		{
@@ -83,11 +83,11 @@ namespace kxf::Widgets
 		}
 	}
 
-	Orientation ProgressMeter::GetOrientation() const
+	Orientation ProgressBar::GetOrientation() const
 	{
 		return Get()->IsVertical() ? Orientation::Vertical : Orientation::Horizontal;
 	}
-	void ProgressMeter::SetOrientation(Orientation orientation)
+	void ProgressBar::SetOrientation(Orientation orientation)
 	{
 		FlagSet style = Get()->GetWindowStyle();
 		style.Mod(wxGA_VERTICAL, orientation == Orientation::Vertical);
@@ -97,7 +97,7 @@ namespace kxf::Widgets
 	}
 
 	// IGraphicsRendererAwareWidget
-	std::shared_ptr<IGraphicsRenderer> ProgressMeter::GetActiveGraphicsRenderer() const
+	std::shared_ptr<IGraphicsRenderer> ProgressBar::GetActiveGraphicsRenderer() const
 	{
 		if (!m_Renderer)
 		{
