@@ -501,6 +501,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetLifetimeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetDrawEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetMouseEvent.h" />
+    <ClInclude Include="kxf\UI\Events\WidgetScrollEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
     <ClInclude Include="kxf\UI\IClusterMapWidget.h" />

@@ -30,6 +30,7 @@ namespace kxf::WXUI::Private
 		public:
 			// EvtHandlerWrapperBase
 			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event);
+			bool TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event);
 	};
 }
 
@@ -69,6 +70,10 @@ namespace kxf::WXUI
 			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event)
 			{
 				return m_Wrapper.TranslateTextEvent(evtHandler, event);
+			}
+			bool TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event)
+			{
+				return m_Wrapper.TranslateScrollEvent(evtHandler, event);
 			}
 
 		public:

@@ -11,6 +11,7 @@
 #include "../Events/WidgetDrawEvent.h"
 #include "../Events/WidgetMouseEvent.h"
 #include "../Events/WidgetFocusEvent.h"
+#include "../Events/WidgetScrollEvent.h"
 #include "../Events/WidgetLifetimeEvent.h"
 #include "../Events/WidgetContextMenuEvent.h"
 
@@ -124,6 +125,79 @@ namespace kxf::WXUI::Private
 		else if (eventType == wxEVT_CHAR_HOOK)
 		{
 			return WidgetKeyEvent::EvtCharHook;
+		}
+		return {};
+	}
+
+	EventID MapScrollEventEvent(const wxEventType& eventType) noexcept
+	{
+		if (eventType == wxEVT_SCROLL_TOP)
+		{
+			return WidgetScrollEvent::EvtTop;
+		}
+		else if (eventType == wxEVT_SCROLL_BOTTOM)
+		{
+			return WidgetScrollEvent::EvtBottom;
+		}
+		else if (eventType == wxEVT_SCROLL_LINEUP)
+		{
+			return WidgetScrollEvent::EvtLineUp;
+		}
+		else if (eventType == wxEVT_SCROLL_LINEDOWN)
+		{
+			return WidgetScrollEvent::EvtLineDown;
+		}
+		else if (eventType == wxEVT_SCROLL_PAGEUP)
+		{
+			return WidgetScrollEvent::EvtPageUp;
+		}
+		else if (eventType == wxEVT_SCROLL_PAGEDOWN)
+		{
+			return WidgetScrollEvent::EvtPageDown;
+		}
+		else if (eventType == wxEVT_SCROLL_THUMBTRACK || eventType == wxEVT_SCROLL_CHANGED)
+		{
+			return WidgetScrollEvent::EvtThumbTrack;
+		}
+		else if (eventType == wxEVT_SCROLL_THUMBRELEASE)
+		{
+			return WidgetScrollEvent::EvtThumbRelease;
+		}
+		return {};
+	}
+	EventID MapScrollWinEventEvent(const wxEventType& eventType) noexcept
+	{
+		if (eventType == wxEVT_SCROLLWIN_TOP)
+		{
+			return WidgetScrollEvent::EvtTop;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_BOTTOM)
+		{
+			return WidgetScrollEvent::EvtBottom;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_LINEUP)
+		{
+			return WidgetScrollEvent::EvtLineUp;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_LINEDOWN)
+		{
+			return WidgetScrollEvent::EvtLineDown;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_PAGEUP)
+		{
+			return WidgetScrollEvent::EvtPageUp;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_PAGEDOWN)
+		{
+			return WidgetScrollEvent::EvtPageDown;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_THUMBTRACK)
+		{
+			return WidgetScrollEvent::EvtThumbTrack;
+		}
+		else if (eventType == wxEVT_SCROLLWIN_THUMBRELEASE)
+		{
+			return WidgetScrollEvent::EvtThumbRelease;
 		}
 		return {};
 	}
@@ -348,6 +422,25 @@ namespace kxf::WXUI::Private
 		else if (auto widget = evtHandler.QueryInterface<IWidget>())
 		{
 			return TranslateEvent(*widget);
+		}
+		return false;
+	}
+	bool EvtHandlerWrapperBase::TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event)
+	{
+		const auto eventType = event.GetEventType();
+		if (auto eventID = MapScrollEventEvent(eventType))
+		{
+			auto& eventWx = static_cast<wxScrollEvent&>(event);
+
+			WidgetScrollEvent event(m_Widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
+			return m_Widget.ProcessEvent(event, eventID);
+		}
+		else if (auto eventID = MapScrollWinEventEvent(eventType))
+		{
+			auto& eventWx = static_cast<wxScrollWinEvent&>(event);
+
+			WidgetScrollEvent event(m_Widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
+			return m_Widget.ProcessEvent(event, eventID);
 		}
 		return false;
 	}

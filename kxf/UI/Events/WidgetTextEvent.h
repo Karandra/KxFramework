@@ -87,7 +87,7 @@ namespace kxf
 			}
 
 		public:
-			// WidgetURIEvent
+			// WidgetTextEvent
 			std::shared_ptr<ITextWidget> GetTextWidget() const noexcept
 			{
 				if (auto widget = GetWidget())
