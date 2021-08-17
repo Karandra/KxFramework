@@ -4,7 +4,7 @@
 
 namespace kxf::Widgets
 {
-	// ProgressMeter
+	// Slider
 	Slider::Slider()
 	{
 		InitializeWxWidget();

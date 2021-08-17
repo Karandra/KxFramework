@@ -8,6 +8,11 @@
 
 namespace kxf::WXUI
 {
+	bool Slider::DoTryBefore(wxEvent& event)
+	{
+		return TranslateScrollEvent(m_Widget, event);
+	}
+
 	bool Slider::Create(wxWindow* parent,
 						const String& label,
 						const Point& pos,

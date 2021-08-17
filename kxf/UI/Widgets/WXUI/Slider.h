@@ -8,8 +8,13 @@ namespace kxf::WXUI
 {
 	class KX_API Slider: public EvtHandlerWrapper<Slider, UI::WindowRefreshScheduler<wxSystemThemedControl<wxSlider>>>
 	{
+		friend class EvtHandlerWrapper;
+
 		private:
 			ISliderWidget& m_Widget;
+
+		private:
+			bool DoTryBefore(wxEvent& event);
 
 		public:
 			Slider(ISliderWidget& widget)
