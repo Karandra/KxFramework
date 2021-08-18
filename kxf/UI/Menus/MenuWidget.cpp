@@ -173,10 +173,10 @@ namespace kxf::Widgets
 						};
 
 						auto event = MakeEvent();
-						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtEnter, ProcessEventFlag::HandleExceptions))
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtFocused, ProcessEventFlag::HandleExceptions))
 						{
 							event = MakeEvent();
-							ProcessEvent(event, MenuWidgetEvent::EvtEnter, ProcessEventFlag::HandleExceptions);
+							ProcessEvent(event, MenuWidgetEvent::EvtFocused, ProcessEventFlag::HandleExceptions);
 						}
 					}
 
@@ -217,10 +217,10 @@ namespace kxf::Widgets
 						};
 
 						auto event = MakeEvent();
-						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtClick, ProcessEventFlag::HandleExceptions))
+						if (!item->ProcessEvent(event, MenuWidgetEvent::EvtSelected, ProcessEventFlag::HandleExceptions))
 						{
 							event = MakeEvent();
-							ProcessEvent(event, MenuWidgetEvent::EvtClick, ProcessEventFlag::HandleExceptions);
+							ProcessEvent(event, MenuWidgetEvent::EvtSelected, ProcessEventFlag::HandleExceptions);
 						}
 					}
 

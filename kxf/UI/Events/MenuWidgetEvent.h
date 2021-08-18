@@ -11,9 +11,8 @@ namespace kxf
 			KxEVENT_MEMBER(MenuWidgetEvent, Open);
 			KxEVENT_MEMBER(MenuWidgetEvent, Close);
 
-			KxEVENT_MEMBER_AS(MenuWidgetEvent, Click, WidgetItemEvent::EvtClick);
-			KxEVENT_MEMBER_AS(MenuWidgetEvent, Enter, WidgetItemEvent::EvtEnter);
-			KxEVENT_MEMBER_AS(MenuWidgetEvent, Leave, WidgetItemEvent::EvtLeave);
+			KxEVENT_MEMBER_AS(MenuWidgetEvent, Selected, WidgetItemEvent::EvtSelected);
+			KxEVENT_MEMBER_AS(MenuWidgetEvent, Focused, WidgetItemEvent::EvtEnter);
 
 		private:
 			std::shared_ptr<IWidget> m_InvokingWidget;
