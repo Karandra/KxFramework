@@ -76,7 +76,7 @@ namespace kxf::WXUI
 	{
 		if (m_UnderMouseIndex != IClusterMapWidget::npos)
 		{
-			m_Widget.ProcessEvent(WidgetItemEvent::EvtClick, m_Widget, m_UnderMouseIndex);
+			m_Widget.ProcessEvent(WidgetItemEvent::EvtSelected, m_Widget, m_UnderMouseIndex);
 		}
 	}
 

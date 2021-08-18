@@ -87,7 +87,7 @@ namespace kxf::WXUI
 		{
 			auto item = MakeItem(StdID::Copy);
 			item->SetEnabled(CanCopy());
-			item->Bind(MenuWidgetEvent::EvtClick, [&](IEvent& event)
+			item->Bind(MenuWidgetEvent::EvtSelected, [&](IEvent& event)
 			{
 				Copy();
 			});
@@ -95,7 +95,7 @@ namespace kxf::WXUI
 		if (link)
 		{
 			auto item = MakeItem(StdID::CopyLink);
-			item->Bind(MenuWidgetEvent::EvtClick, [&, link](IEvent& event)
+			item->Bind(MenuWidgetEvent::EvtSelected, [&, link](IEvent& event)
 			{
 				CopyTextToClipboard(link->GetHref());
 			});
@@ -112,7 +112,7 @@ namespace kxf::WXUI
 		{
 			auto item = MakeItem(StdID::SelectAll);
 			item->SetEnabled(!IsEmpty());
-			item->Bind(MenuWidgetEvent::EvtClick, [&](IEvent& event)
+			item->Bind(MenuWidgetEvent::EvtSelected, [&](IEvent& event)
 			{
 				SelectAll();
 			});
