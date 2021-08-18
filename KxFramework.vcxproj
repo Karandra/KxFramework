@@ -511,6 +511,7 @@
     <ClInclude Include="kxf\UI\ICheckWidget.h" />
     <ClInclude Include="kxf\UI\IComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IDalogWidget.h" />
+    <ClInclude Include="kxf\UI\IImageGalleryWidget.h" />
     <ClInclude Include="kxf\UI\IImageViewWidget.h" />
     <ClInclude Include="kxf\UI\IMenuWidgetItem.h" />
     <ClInclude Include="kxf\UI\IMenuWidget.h" />
@@ -565,6 +566,7 @@
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\ImageGallery.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\ProgressBar.h" />
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
@@ -581,6 +583,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ImageGallery.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageView.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressBar.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
@@ -1049,6 +1052,7 @@
     <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ImageGallery.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ProgressBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
@@ -1064,6 +1068,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ImageGallery.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
