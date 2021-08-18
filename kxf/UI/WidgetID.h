@@ -7,9 +7,12 @@ namespace kxf
 	class WidgetID final
 	{
 		private:
-			static constexpr int MakeInt(StdID id) noexcept
+			using TInt = std::underlying_type_t<StdID>;
+
+		private:
+			static constexpr TInt CastToInt(StdID id) noexcept
 			{
-				return static_cast<int>(id);
+				return static_cast<TInt>(id);
 			}
 
 		private:
@@ -21,7 +24,7 @@ namespace kxf
 				:m_ID(id)
 			{
 			}
-			constexpr WidgetID(int id) noexcept
+			constexpr WidgetID(TInt id) noexcept
 				:m_ID(static_cast<StdID>(id))
 			{
 			}
@@ -42,28 +45,34 @@ namespace kxf
 
 			constexpr bool IsAutomatic() const noexcept
 			{
-				return Utility::TestRange(MakeInt(m_ID), MakeInt(StdID::WX_AUTO_LOWEST), MakeInt(StdID::WX_AUTO_HIGHEST));
+				return Utility::TestRange(CastToInt(m_ID), CastToInt(StdID::WX_AUTO_LOWEST), CastToInt(StdID::WX_AUTO_HIGHEST));
 			}
 			constexpr bool IsStandard() const noexcept
 			{
-				return IsWxStandard() || Utility::TestRange(MakeInt(m_ID), MakeInt(StdID::KX_LOWEST), MakeInt(StdID::KX_HIGHEST));
+				return IsWxStandard() || Utility::TestRange(CastToInt(m_ID), CastToInt(StdID::KX_LOWEST), CastToInt(StdID::KX_HIGHEST));
 			}
 			constexpr bool IsWxStandard() const noexcept
 			{
-				return Utility::TestRange(MakeInt(m_ID), MakeInt(StdID::WX_LOWEST), MakeInt(StdID::WX_HIGHEST));
+				return Utility::TestRange(CastToInt(m_ID), CastToInt(StdID::WX_LOWEST), CastToInt(StdID::WX_HIGHEST));
 			}
 			constexpr bool IsUserDefined() const noexcept
 			{
 				return !IsAutomatic() && !IsStandard();
 			}
 
-			constexpr int operator*() const noexcept
+			template<std::integral T = TInt>
+			constexpr T ToInt() const noexcept
 			{
-				return MakeInt(m_ID);
+				return static_cast<T>(CastToInt(m_ID));
 			}
 
 		public:
 			constexpr auto operator<=>(const WidgetID&) const noexcept = default;
 			constexpr bool operator==(const WidgetID&) const noexcept = default;
+
+			constexpr TInt operator*() const noexcept
+			{
+				return CastToInt(m_ID);
+			}
 	};
 }
