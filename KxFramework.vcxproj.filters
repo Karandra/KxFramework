@@ -2157,10 +2157,10 @@
     <ClInclude Include="kxf\UI\IProgressMeterWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressMeter.h">
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ProgressBar.h">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Widgets\ProgressMeter.h">
+    <ClInclude Include="kxf\UI\Widgets\ProgressBar.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h">
@@ -2242,6 +2242,18 @@
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\Slider.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IStatusBarWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBarEx.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBar.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\StatusBar.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
@@ -3330,10 +3342,10 @@
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressMeter.cpp">
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ProgressBar.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Widgets\ProgressMeter.cpp">
+    <ClCompile Include="kxf\UI\Widgets\ProgressBar.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp">
@@ -3385,6 +3397,15 @@
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\Slider.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBarEx.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBar.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\StatusBar.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>

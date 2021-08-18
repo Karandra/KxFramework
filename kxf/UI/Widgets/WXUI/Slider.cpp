@@ -21,6 +21,7 @@ namespace kxf::WXUI
 	{
 		if (wxSlider::Create(parent, wxID_NONE, 0, 0, 100, pos, size, wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_SELRANGE, wxDefaultValidator))
 		{
+			SetLabel(label);
 			return true;
 		}
 		return false;
