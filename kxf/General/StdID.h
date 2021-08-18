@@ -3,7 +3,7 @@
 
 namespace kxf
 {
-	enum class StdID: int
+	enum class StdID: intptr_t
 	{
 		// wxWidgets IDs
 		WX_AUTO_LOWEST = -32000,
