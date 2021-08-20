@@ -2265,6 +2265,12 @@
     <ClInclude Include="kxf\UI\Widgets\ImageGallery.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IWebViewWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WebView.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3421,6 +3427,9 @@
       <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\ImageGallery.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WebView.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
