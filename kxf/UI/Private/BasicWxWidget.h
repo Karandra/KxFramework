@@ -239,6 +239,12 @@ namespace kxf::Private
 				return m_Window;
 			}
 
+			template<class T>
+			void AssignWxWidget(std::unique_ptr<T> window)
+			{
+				m_Window.Initialize(std::move(window));
+			}
+
 			template<class... Args> requires(std::is_constructible_v<TWindow, TDerived&, Args...>)
 			void InitializeWxWidget(Args&&... arg)
 			{
