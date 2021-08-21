@@ -529,6 +529,8 @@
     <ClInclude Include="kxf\UI\IStyledTextWidget.h" />
     <ClInclude Include="kxf\UI\ITabBookWidget.h" />
     <ClInclude Include="kxf\UI\ITextWidget.h" />
+    <ClInclude Include="kxf\UI\IToolBarWidget.h" />
+    <ClInclude Include="kxf\UI\IToolBarWidgetItem.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWebViewWidget.h" />
     <ClInclude Include="kxf\UI\IWidget.h" />
@@ -1032,6 +1034,7 @@
     <ClCompile Include="kxf\UI\IMenuWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />
+    <ClCompile Include="kxf\UI\IToolBarWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\IWidget.cpp" />
     <ClCompile Include="kxf\UI\KeyboardState.cpp" />
     <ClCompile Include="kxf\UI\KeyCode.cpp" />

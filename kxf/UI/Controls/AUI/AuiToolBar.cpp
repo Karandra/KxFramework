@@ -135,8 +135,13 @@ namespace kxf::UI
 	}
 	bool AuiToolBar::DoSetToolIndex(AuiToolBarItem& item, size_t newIndex)
 	{
-		if (newIndex < GetToolCount() && item.GetIndex() != newIndex)
+		if (newIndex < GetToolCount())
 		{
+			if (item.GetIndex() == newIndex)
+			{
+				return true;
+			}
+
 			auto& items = wxAuiToolBar::m_items;
 			for (size_t i = 0; i < items.size(); i++)
 			{
@@ -151,7 +156,6 @@ namespace kxf::UI
 					{
 						items.RemoveAt(i + 1);
 					}
-
 					return true;
 				}
 			}

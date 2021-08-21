@@ -2295,6 +2295,12 @@
     <ClInclude Include="kxf\UI\ITabBookWidget.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IToolBarWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\IToolBarWidgetItem.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3470,6 +3476,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\TabBook.cpp">
       <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\IToolBarWidgetItem.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
