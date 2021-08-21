@@ -527,6 +527,7 @@
     <ClInclude Include="kxf\UI\ISliderWidget.h" />
     <ClInclude Include="kxf\UI\IStatusBarWidget.h" />
     <ClInclude Include="kxf\UI\IStyledTextWidget.h" />
+    <ClInclude Include="kxf\UI\ITabBookWidget.h" />
     <ClInclude Include="kxf\UI\ITextWidget.h" />
     <ClInclude Include="kxf\UI\ITopLevelWidget.h" />
     <ClInclude Include="kxf\UI\IWebViewWidget.h" />
@@ -580,6 +581,7 @@
     <ClInclude Include="kxf\UI\Widgets\Slider.h" />
     <ClInclude Include="kxf\UI\Widgets\StatusBar.h" />
     <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\TabBook.h" />
     <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WebView.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
@@ -600,6 +602,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBar.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBarEx.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StyledTextBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\TabBook.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
@@ -1070,6 +1073,7 @@
     <ClCompile Include="kxf\UI\Widgets\Slider.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StatusBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\TabBook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WebView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
@@ -1089,6 +1093,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBarEx.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StyledTextBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\TabBook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />

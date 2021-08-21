@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "Simplebook.h"
-#include "../../Events/WidgetCheckEvent.h"
 
 namespace kxf::WXUI
 {
@@ -10,9 +9,9 @@ namespace kxf::WXUI
 	}
 
 	bool Simplebook::Create(wxWindow* parent,
-					   const String& label,
-					   const Point& pos,
-					   const Size& size
+							const String& label,
+							const Point& pos,
+							const Size& size
 	)
 	{
 		if (wxSimplebook::Create(parent, wxID_NONE, pos, size))

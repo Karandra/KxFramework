@@ -29,6 +29,7 @@ namespace kxf::WXUI
 			);
 
 		public:
+			// wxWindow
 			bool ShouldInheritColours() const override
 			{
 				return true;

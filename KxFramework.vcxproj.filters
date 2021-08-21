@@ -2286,6 +2286,15 @@
     <ClInclude Include="kxf\UI\Events\BookWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\TabBook.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\TabBook.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\ITabBookWidget.h">
+      <Filter>kxf\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3455,6 +3464,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Private\WxBookCtrlWrapper.cpp">
       <Filter>kxf\UI\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\TabBook.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\TabBook.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
