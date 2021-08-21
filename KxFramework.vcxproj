@@ -504,6 +504,7 @@
     <ClInclude Include="kxf\UI\Events\WidgetScrollEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetSizeEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
+    <ClInclude Include="kxf\UI\IBookWidget.h" />
     <ClInclude Include="kxf\UI\IClusterMapWidget.h" />
     <ClInclude Include="kxf\UI\IHTMLWidget.h" />
     <ClInclude Include="kxf\UI\IImageComboBoxWidget.h" />
@@ -550,6 +551,7 @@
     <ClInclude Include="kxf\UI\Private\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WidgetFreezeHandler.h" />
     <ClInclude Include="kxf\UI\Private\WidgetUtility.h" />
+    <ClInclude Include="kxf\UI\Private\WxBookCtrlWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxScrolledWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextCtrlWrapper.h" />
     <ClInclude Include="kxf\UI\Private\WxTextEntryWrapper.h" />
@@ -573,6 +575,7 @@
     <ClInclude Include="kxf\UI\Widgets\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\Label.h" />
     <ClInclude Include="kxf\UI\Widgets\SearchBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\Simplebook.h" />
     <ClInclude Include="kxf\UI\Widgets\Slider.h" />
     <ClInclude Include="kxf\UI\Widgets\StatusBar.h" />
     <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h" />
@@ -591,6 +594,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\RadioCheck.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Label.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\SearchBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\Simplebook.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Slider.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBar.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\StatusBarEx.h" />
@@ -1040,6 +1044,7 @@
     <ClCompile Include="kxf\UI\Private\BasicWxWidget.cpp" />
     <ClCompile Include="kxf\UI\Private\Common.cpp" />
     <ClCompile Include="kxf\UI\Private\EvtHandlerWrapper.cpp" />
+    <ClCompile Include="kxf\UI\Private\WxBookCtrlWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxScrolledWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxTextCtrlWrapper.cpp" />
     <ClCompile Include="kxf\UI\Private\WxTextEntryWrapper.cpp" />
@@ -1060,6 +1065,7 @@
     <ClCompile Include="kxf\UI\Widgets\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Label.cpp" />
     <ClCompile Include="kxf\UI\Widgets\SearchBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\Simplebook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\Slider.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StatusBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp" />
@@ -1077,6 +1083,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\RadioCheck.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Label.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\SearchBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\Simplebook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Slider.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBar.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\StatusBarEx.cpp" />
