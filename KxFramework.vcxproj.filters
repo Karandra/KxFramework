@@ -2283,6 +2283,9 @@
     <ClInclude Include="kxf\UI\Private\WxBookCtrlWrapper.h">
       <Filter>kxf\UI\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Events\BookWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

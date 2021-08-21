@@ -487,6 +487,7 @@
     <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="kxf\UI\Events\BookWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />

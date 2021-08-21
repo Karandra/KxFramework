@@ -16,6 +16,11 @@
 #include "../Events/WidgetContextMenuEvent.h"
 
 #include "../ITextWidget.h"
+#include "../IBookWidget.h"
+#include "../Events/BookWidgetEvent.h"
+
+#include <wx/bookctrl.h>
+#include <wx/aui/auibook.h>
 
 namespace kxf::WXUI::Private
 {
@@ -201,6 +206,70 @@ namespace kxf::WXUI::Private
 		}
 		return {};
 	}
+	EventID MapAuiBookEventEvent(const wxEventType& eventType) noexcept
+	{
+		if (eventType == wxEVT_AUINOTEBOOK_PAGE_CLOSE)
+		{
+			return BookWidgetEvent::EvtPageClose;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_PAGE_CLOSED)
+		{
+			return BookWidgetEvent::EvtPageClosed;
+		}
+
+		else if (eventType == wxEVT_AUINOTEBOOK_ALLOW_DND)
+		{
+			return BookWidgetEvent::EvtDragAllow;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_BEGIN_DRAG)
+		{
+			return BookWidgetEvent::EvtDragBegin;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_BEGIN_DRAG)
+		{
+			return BookWidgetEvent::EvtDragBegin;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_DRAG_MOTION)
+		{
+			return BookWidgetEvent::EvtDragMove;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_END_DRAG)
+		{
+			return BookWidgetEvent::EvtDragEnd;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_DRAG_DONE)
+		{
+			return BookWidgetEvent::EvtDragDone;
+		}
+
+		else if (eventType == wxEVT_AUINOTEBOOK_TAB_MIDDLE_UP)
+		{
+			return BookWidgetEvent::EvtButtonMiddleUp;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_TAB_MIDDLE_DOWN)
+		{
+			return BookWidgetEvent::EvtButtonMiddleDown;
+		}
+
+		else if (eventType == wxEVT_AUINOTEBOOK_TAB_RIGHT_UP)
+		{
+			return BookWidgetEvent::EvtButtonRightUp;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_TAB_RIGHT_DOWN)
+		{
+			return BookWidgetEvent::EvtButtonRightDown;
+		}
+
+		else if (eventType == wxEVT_AUINOTEBOOK_BUTTON)
+		{
+			return BookWidgetEvent::EvtPageMenu;
+		}
+		else if (eventType == wxEVT_AUINOTEBOOK_BG_DCLICK)
+		{
+			return BookWidgetEvent::EvtBackgroundDoubleClick;
+		}
+		return {};
+	}
 
 	class WxWidgetPaintEvent final: public WidgetDrawEvent
 	{
@@ -356,33 +425,33 @@ namespace kxf::WXUI::Private
 	}
 
 	// EvtHandlerWrapperBase
-	bool EvtHandlerWrapperBase::TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event)
+	bool EvtHandlerWrapperBase::TranslateTextEvent(IWidget& widget, wxEvent& event)
 	{
-		auto TranslateEvent = [&evtHandler, &event, eventType = event.GetEventType()](auto& object)
+		auto TranslateEvent = [&widget, &event, eventType = event.GetEventType()](auto& object)
 		{
 			if (eventType == wxEVT_TEXT)
 			{
 				auto& commandEvent = static_cast<wxCommandEvent&>(event);
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtChanged, object, commandEvent.GetString());
+				return widget.ProcessEvent(WidgetTextEvent::EvtChanged, object, commandEvent.GetString());
 			}
 			else if (eventType == wxEVT_TEXT_CUT)
 			{
 				auto& commandEvent = static_cast<wxCommandEvent&>(event);
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCut, object, commandEvent.GetString());
+				return widget.ProcessEvent(WidgetTextEvent::EvtCut, object, commandEvent.GetString());
 			}
 			else if (eventType == wxEVT_TEXT_COPY)
 			{
 				auto& commandEvent = static_cast<wxCommandEvent&>(event);
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCopy, object, commandEvent.GetString());
+				return widget.ProcessEvent(WidgetTextEvent::EvtCopy, object, commandEvent.GetString());
 			}
 			else if (eventType == wxEVT_TEXT_PASTE)
 			{
 				auto& commandEvent = static_cast<wxCommandEvent&>(event);
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtPaste, object, commandEvent.GetString());
+				return widget.ProcessEvent(WidgetTextEvent::EvtPaste, object, commandEvent.GetString());
 			}
 			else if (eventType == wxEVT_TEXT_ENTER)
 			{
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtCommit, object);
+				return widget.ProcessEvent(WidgetTextEvent::EvtCommit, object);
 			}
 			else if (eventType == wxEVT_TEXT_MAXLEN)
 			{
@@ -393,54 +462,76 @@ namespace kxf::WXUI::Private
 				{
 					limit = object.GetLengthLimit();
 				}
-				return evtHandler.ProcessEvent(WidgetTextEvent::EvtLengthLimit, object, limit);
+				return widget.ProcessEvent(WidgetTextEvent::EvtLengthLimit, object, limit);
 			}
 			else if (eventType == wxEVT_TEXT_URL)
 			{
 				auto& urlEvent = static_cast<wxTextUrlEvent&>(event);
-				if (auto widget = object.QueryInterface<IWidget>())
-				{
-					WidgetMouseEvent mouseEvent(*widget, urlEvent.GetMouseEvent());
-					return evtHandler.ProcessEvent(WidgetTextEvent::EvtURI, object, urlEvent.GetString(), std::move(mouseEvent));
-				}
-				else
-				{
-					return evtHandler.ProcessEvent(WidgetTextEvent::EvtURI, object, urlEvent.GetString());
-				}
+
+				WidgetMouseEvent mouseEvent(widget, urlEvent.GetMouseEvent());
+				return widget.ProcessEvent(WidgetTextEvent::EvtURI, object, urlEvent.GetString(), std::move(mouseEvent));
 			}
 			return false;
 		};
 
-		if (auto textWidget = evtHandler.QueryInterface<ITextWidget>())
+		if (auto textWidget = widget.QueryInterface<ITextWidget>())
 		{
 			return TranslateEvent(*textWidget);
 		}
-		else if (auto textEntry = evtHandler.QueryInterface<ITextEntry>())
+		else if (auto textEntry = widget.QueryInterface<ITextEntry>())
 		{
 			return TranslateEvent(*textEntry);
 		}
-		else if (auto widget = evtHandler.QueryInterface<IWidget>())
-		{
-			return TranslateEvent(*widget);
-		}
-		return false;
+		return TranslateEvent(widget);
 	}
-	bool EvtHandlerWrapperBase::TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event)
+	bool EvtHandlerWrapperBase::TranslateScrollEvent(IWidget& widget, wxEvent& event)
 	{
 		const auto eventType = event.GetEventType();
 		if (auto eventID = MapScrollEventEvent(eventType))
 		{
 			auto& eventWx = static_cast<wxScrollEvent&>(event);
 
-			WidgetScrollEvent event(m_Widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
-			return m_Widget.ProcessEvent(event, eventID);
+			WidgetScrollEvent event(widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
+			return widget.ProcessEvent(event, eventID);
 		}
 		else if (auto eventID = MapScrollWinEventEvent(eventType))
 		{
 			auto& eventWx = static_cast<wxScrollWinEvent&>(event);
 
-			WidgetScrollEvent event(m_Widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
-			return m_Widget.ProcessEvent(event, eventID);
+			WidgetScrollEvent event(widget, eventWx.GetOrientation() == wxVERTICAL ? Orientation::Vertical : Orientation::Horizontal, eventWx.GetPosition());
+			return widget.ProcessEvent(event, eventID);
+		}
+		return false;
+	}
+	bool EvtHandlerWrapperBase::TranslateBookEvent(IWidget& widget, wxEvent& event)
+	{
+		auto MapIndex = [](int index) -> size_t
+		{
+			return index >= 0 ? index : IBookWidget::npos;
+		};
+
+		if (auto bookWidget = widget.QueryInterface<IBookWidget>())
+		{
+			const auto eventType = event.GetEventType();
+			if (eventType == wxEVT_BOOKCTRL_PAGE_CHANGING)
+			{
+				auto& eventWx = static_cast<wxBookCtrlEvent&>(event);
+
+				return widget.ProcessEvent(BookWidgetEvent::EvtPageChange, *bookWidget, MapIndex(eventWx.GetOldSelection()), MapIndex(eventWx.GetSelection()));
+			}
+			else if (auto eventID = wxEVT_BOOKCTRL_PAGE_CHANGED)
+			{
+				auto& eventWx = static_cast<wxBookCtrlEvent&>(event);
+
+				return widget.ProcessEvent(BookWidgetEvent::EvtPageChanged, *bookWidget, MapIndex(eventWx.GetOldSelection()), MapIndex(eventWx.GetSelection()));
+			}
+			else if (auto eventID = MapAuiBookEventEvent(eventType))
+			{
+				auto& eventWx = static_cast<wxAuiNotebookEvent&>(event);
+
+				BookWidgetEvent event(*bookWidget, MapIndex(eventWx.GetOldSelection()), MapIndex(eventWx.GetSelection()));
+				return widget.ProcessEvent(event, eventID);
+			}
 		}
 		return false;
 	}

@@ -29,8 +29,9 @@ namespace kxf::WXUI::Private
 
 		public:
 			// EvtHandlerWrapperBase
-			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event);
-			bool TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event);
+			bool TranslateTextEvent(IWidget& widget, wxEvent& event);
+			bool TranslateScrollEvent(IWidget& widget, wxEvent& event);
+			bool TranslateBookEvent(IWidget& widget, wxEvent& event);
 	};
 }
 
@@ -87,13 +88,17 @@ namespace kxf::WXUI
 			}
 
 			// EvtHandlerWrapper
-			bool TranslateTextEvent(IEvtHandler& evtHandler, wxEvent& event)
+			bool TranslateTextEvent(IWidget& widget, wxEvent& event)
 			{
-				return m_Wrapper.TranslateTextEvent(evtHandler, event);
+				return m_Wrapper.TranslateTextEvent(widget, event);
 			}
-			bool TranslateScrollEvent(IEvtHandler& evtHandler, wxEvent& event)
+			bool TranslateScrollEvent(IWidget& widget, wxEvent& event)
 			{
-				return m_Wrapper.TranslateScrollEvent(evtHandler, event);
+				return m_Wrapper.TranslateScrollEvent(widget, event);
+			}
+			bool TranslateBookEvent(IWidget& widget, wxEvent& event)
+			{
+				return m_Wrapper.TranslateBookEvent(widget, event);
 			}
 
 		public:
