@@ -501,24 +501,24 @@ namespace kxf::Widgets
 		return nullptr;
 	}
 
-	std::shared_ptr<IMenuWidgetItem> MenuWidget::CreateItem(const String& label, MenuWidgetItemType type, WidgetID id)
+	std::shared_ptr<IMenuWidgetItem> MenuWidget::CreateItem(const String& label, ItemType type, WidgetID id)
 	{
-		if (m_Menu && type != MenuWidgetItemType::None)
+		if (m_Menu && type != ItemType::None)
 		{
 			auto item = DoCreateItem();
 			switch (type)
 			{
-				case MenuWidgetItemType::Separator:
+				case ItemType::Separator:
 				{
 					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_SEPARATOR);
 					break;
 				}
-				case MenuWidgetItemType::CheckItem:
+				case ItemType::CheckItem:
 				{
 					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_CHECK);
 					break;
 				}
-				case MenuWidgetItemType::RadioItem:
+				case ItemType::RadioItem:
 				{
 					item->m_MenuItem = std::make_unique<WXUI::MenuItem>(item, wxITEM_RADIO);
 					break;
@@ -552,6 +552,11 @@ namespace kxf::Widgets
 			}
 		}
 		return nullptr;
+	}
+
+	size_t MenuWidget::GetMenuItemCount() const
+	{
+		return m_Menu ? m_Menu->GetMenuItemCount() : 0;
 	}
 	Enumerator<std::shared_ptr<IMenuWidgetItem>> MenuWidget::EnumMenuItems() const
 	{

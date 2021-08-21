@@ -116,7 +116,7 @@ namespace kxf::Widgets
 			void SetDefaultItem() override;
 
 			// Properties
-			MenuWidgetItemType GetItemType() const override;
+			ItemType GetItemType() const override;
 
 			bool IsChecked() const override;
 			void SetChecked(bool checked = true) override;

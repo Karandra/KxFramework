@@ -511,8 +511,10 @@ namespace kxf::Widgets
 			std::shared_ptr<IMenuWidgetItem> InsertItem(IMenuWidgetItem& item, size_t index = npos) override;
 			std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, const String& label = {}, WidgetID id = {}, size_t index = npos) override;
 
-			std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, MenuWidgetItemType type = MenuWidgetItemType::Regular, WidgetID id = {}) override;
+			std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, ItemType type = ItemType::Regular, WidgetID id = {}) override;
 			std::shared_ptr<IMenuWidgetItem> GetDefaultItem() const override;
+
+			size_t GetMenuItemCount() const override;
 			Enumerator<std::shared_ptr<IMenuWidgetItem>> EnumMenuItems() const override;
 
 			void Show(Point pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = {}) override;

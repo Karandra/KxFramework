@@ -7,17 +7,6 @@
 namespace kxf
 {
 	class IMenuWidget;
-
-	enum class MenuWidgetItemType
-	{
-		None = -1,
-
-		Regular,
-		SubMenu,
-		Separator,
-		CheckItem,
-		RadioItem
-	};
 }
 
 namespace kxf
@@ -27,7 +16,16 @@ namespace kxf
 		KxRTTI_DeclareIID(IMenuWidgetItem, {0xb1e0d965, 0x3eec, 0x42d8, {0xa4, 0x4e, 0xd9, 0xce, 0xd7, 0xb7, 0x93, 0x3e}});
 
 		public:
-			virtual ~IMenuWidgetItem() = default;
+			enum class ItemType
+			{
+				None = -1,
+
+				Regular,
+				SubMenu,
+				Separator,
+				CheckItem,
+				RadioItem
+			};
 
 		public:
 			// General
@@ -40,26 +38,26 @@ namespace kxf
 			virtual void SetDefaultItem() = 0;
 
 			// Properties
-			virtual MenuWidgetItemType GetItemType() const = 0;
+			virtual ItemType GetItemType() const = 0;
 			bool IsRegularItem() const
 			{
-				return GetItemType() == MenuWidgetItemType::Separator;
+				return GetItemType() == ItemType::Separator;
 			}
 			bool IsSeparatorItem() const
 			{
-				return GetItemType() == MenuWidgetItemType::Separator;
+				return GetItemType() == ItemType::Separator;
 			}
 			bool IsCheckItem() const
 			{
-				return GetItemType() == MenuWidgetItemType::CheckItem;
+				return GetItemType() == ItemType::CheckItem;
 			}
 			bool IsRadioItem() const
 			{
-				return GetItemType() == MenuWidgetItemType::RadioItem;
+				return GetItemType() == ItemType::RadioItem;
 			}
 			bool IsSubMenuItem() const
 			{
-				return GetItemType() == MenuWidgetItemType::SubMenu;
+				return GetItemType() == ItemType::SubMenu;
 			}
 
 			virtual bool IsChecked() const = 0;

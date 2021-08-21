@@ -11,10 +11,11 @@ namespace kxf
 		KxRTTI_DeclareIID(IMenuWidget, {0x1f082719, 0x1c5e, 0x4253, {0x87, 0xb2, 0x5a, 0x7a, 0xb, 0xb8, 0xf2, 0x6e}});
 
 		public:
+			using ItemType = IMenuWidgetItem::ItemType;
 			static constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		private:
-			std::shared_ptr<IMenuWidgetItem> CreateAndInsert(MenuWidgetItemType type, const String& label, WidgetID id, size_t index)
+			std::shared_ptr<IMenuWidgetItem> CreateAndInsert(ItemType type, const String& label, WidgetID id, size_t index)
 			{
 				if (auto item = CreateItem(label, type))
 				{
@@ -36,8 +37,10 @@ namespace kxf
 			virtual std::shared_ptr<IMenuWidgetItem> InsertItem(IMenuWidgetItem& item, size_t index = npos) = 0;
 			virtual std::shared_ptr<IMenuWidgetItem> InsertMenu(IMenuWidget& subMenu, const String& label = {}, WidgetID id = {}, size_t index = npos) = 0;
 
-			virtual std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, MenuWidgetItemType type = MenuWidgetItemType::Regular, WidgetID id = {}) = 0;
+			virtual std::shared_ptr<IMenuWidgetItem> CreateItem(const String& label, ItemType type = ItemType::Regular, WidgetID id = {}) = 0;
 			virtual std::shared_ptr<IMenuWidgetItem> GetDefaultItem() const = 0;
+
+			virtual size_t GetMenuItemCount() const = 0;
 			virtual Enumerator<std::shared_ptr<IMenuWidgetItem>> EnumMenuItems() const = 0;
 
 			virtual void Show(Point pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = {}) = 0;
@@ -50,19 +53,19 @@ namespace kxf
 		public:
 			std::shared_ptr<IMenuWidgetItem> InsertItem(const String& label, WidgetID id = {}, size_t index = npos)
 			{
-				return CreateAndInsert(MenuWidgetItemType::Regular, label, id, index);
+				return CreateAndInsert(ItemType::Regular, label, id, index);
 			}
 			std::shared_ptr<IMenuWidgetItem> InsertCheckItem(const String& label, WidgetID id = {}, size_t index = npos)
 			{
-				return CreateAndInsert(MenuWidgetItemType::CheckItem, label, id, index);
+				return CreateAndInsert(ItemType::CheckItem, label, id, index);
 			}
 			std::shared_ptr<IMenuWidgetItem> InsertRadioItem(const String& label, WidgetID id = {}, size_t index = npos)
 			{
-				return CreateAndInsert(MenuWidgetItemType::RadioItem, label, id, index);
+				return CreateAndInsert(ItemType::RadioItem, label, id, index);
 			}
 			std::shared_ptr<IMenuWidgetItem> InsertSeparator(size_t index = npos)
 			{
-				return CreateAndInsert(MenuWidgetItemType::Separator, {}, {}, index);
+				return CreateAndInsert(ItemType::Separator, {}, {}, index);
 			}
 	};
 }

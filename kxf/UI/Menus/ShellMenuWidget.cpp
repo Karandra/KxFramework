@@ -70,22 +70,22 @@ namespace kxf::Widgets
 				}
 				else if (itemInfo.fType & MFT_SEPARATOR)
 				{
-					item = menu.CreateItem({}, MenuWidgetItemType::Separator);
+					item = menu.CreateItem({}, ItemType::Separator);
 				}
 				else if ((itemInfo.hbmpChecked || itemInfo.hbmpUnchecked) && (itemInfo.hbmpChecked != itemInfo.hbmpUnchecked))
 				{
 					if (itemInfo.fType & MFT_RADIOCHECK)
 					{
-						item = menu.CreateItem(label, MenuWidgetItemType::RadioItem);
+						item = menu.CreateItem(label, ItemType::RadioItem);
 					}
 					else
 					{
-						item = menu.CreateItem(label, MenuWidgetItemType::CheckItem);
+						item = menu.CreateItem(label, ItemType::CheckItem);
 					}
 				}
 				else
 				{
-					item = menu.CreateItem(label, MenuWidgetItemType::Regular);
+					item = menu.CreateItem(label, ItemType::Regular);
 				}
 
 				if (item)

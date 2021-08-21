@@ -468,36 +468,36 @@ namespace kxf::Widgets
 	}
 
 	// Properties
-	MenuWidgetItemType MenuWidgetItem::GetItemType() const
+	IMenuWidgetItem::ItemType MenuWidgetItem::GetItemType() const
 	{
 		if (m_MenuItem)
 		{
 			if (m_MenuItem->IsSubMenu())
 			{
-				return MenuWidgetItemType::SubMenu;
+				return ItemType::SubMenu;
 			}
 
 			switch (m_MenuItem->GetKind())
 			{
 				case wxITEM_NORMAL:
 				{
-					return MenuWidgetItemType::Regular;
+					return ItemType::Regular;
 				}
 				case wxITEM_SEPARATOR:
 				{
-					return MenuWidgetItemType::Separator;
+					return ItemType::Separator;
 				}
 				case wxITEM_CHECK:
 				{
-					return MenuWidgetItemType::CheckItem;
+					return ItemType::CheckItem;
 				}
 				case wxITEM_RADIO:
 				{
-					return MenuWidgetItemType::RadioItem;
+					return ItemType::RadioItem;
 				}
 			};
 		}
-		return MenuWidgetItemType::None;
+		return ItemType::None;
 	}
 
 	bool MenuWidgetItem::IsChecked() const
