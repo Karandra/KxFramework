@@ -21,7 +21,7 @@ namespace kxf::WXUI
 							const Size& size
 	)
 	{
-		if (wxRadioButton::Create(parent, wxID_NONE, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxRB_SINGLE))
+		if (wxRadioButton::Create(parent, wxID_NONE, label, pos, size, wxRB_SINGLE))
 		{
 			return true;
 		}

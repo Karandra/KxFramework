@@ -35,7 +35,7 @@ namespace kxf::WXUI
 					   const Size& size
 	)
 	{
-		if (wxCheckBox::Create(parent, wxID_NONE, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxCHK_3STATE))
+		if (wxCheckBox::Create(parent, wxID_NONE, label, pos, size, wxCHK_3STATE))
 		{
 			return true;
 		}
