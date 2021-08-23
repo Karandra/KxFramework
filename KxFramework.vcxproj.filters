@@ -2301,6 +2301,15 @@
     <ClInclude Include="kxf\UI\IToolBarWidgetItem.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ToolBar.h">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ToolBar.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\ToolBarItem.h">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3479,6 +3488,15 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\IToolBarWidgetItem.cpp">
       <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ToolBar.cpp">
+      <Filter>kxf\UI\Widgets\WXUI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ToolBar.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\ToolBarItem.cpp">
+      <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

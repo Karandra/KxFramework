@@ -585,6 +585,8 @@
     <ClInclude Include="kxf\UI\Widgets\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\TabBook.h" />
     <ClInclude Include="kxf\UI\Widgets\TextBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\ToolBar.h" />
+    <ClInclude Include="kxf\UI\Widgets\ToolBarItem.h" />
     <ClInclude Include="kxf\UI\Widgets\WebView.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Button.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Check.h" />
@@ -606,6 +608,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\StyledTextBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\TabBook.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\TextBox.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\ToolBar.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="kxf\UI\Windows\Frame.h" />
@@ -1078,6 +1081,8 @@
     <ClCompile Include="kxf\UI\Widgets\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\TabBook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\TextBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ToolBar.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\ToolBarItem.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WebView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Button.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
@@ -1098,6 +1103,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\StyledTextBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\TabBook.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\TextBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\ToolBar.cpp" />
     <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="kxf\UI\Windows\Frame.cpp" />
