@@ -33,15 +33,22 @@ namespace kxf
 		public:
 			std::shared_ptr<IToolBarWidget> GetOwningToolBar() const;
 
-			virtual bool IsToggled() const = 0;
-			virtual void SetToggled(bool isToggled = true) = 0;
+			virtual String GetTooltip() const = 0;
+			virtual void SetTooltip(const String& tooltip) = 0;
+
+			virtual bool IsChecked() const = 0;
+			virtual void SetChecked(bool checked = true) = 0;
 
 			virtual int GetProportion() const = 0;
 			virtual void SetProportion(int proportion) = 0;
 
+			virtual int GetSpacerSize() const = 0;
+			virtual void SetSpacerSize(int size) = 0;
+
 			virtual FlagSet<Alignment> GetAlignment() const = 0;
 			virtual void SetAlignment(FlagSet<Alignment> alignment) = 0;
 
+			virtual std::shared_ptr<IWidget> GetHostedWidget() const = 0;
 			virtual size_t GetIndex() const = 0;
 			virtual ItemType GetItemType() const = 0;
 			bool IsWidgetItem() const
