@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "ToolBar.h"
+#include "ToolBarItem.h"
 #include "WXUI/ToolBar.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Utility/Enumerator.h"
@@ -21,6 +22,23 @@ namespace kxf::Widgets
 			return Get()->Create(parent->GetWxWindow(), label, pos, size);
 		}
 		return false;
+	}
+
+	Color ToolBar::GetColor(WidgetColorFlag colorType) const
+	{
+		if (colorType == WidgetColorFlag::Border)
+		{
+			return Get()->GetBorderColor();
+		}
+		return BasicWxWidget::GetColor(colorType);
+	}
+	void ToolBar::SetColor(const Color& color, FlagSet<WidgetColorFlag> flags)
+	{
+		if (flags.Contains(WidgetColorFlag::Border))
+		{
+			Get()->SetBorderColor(color);
+		}
+		BasicWxWidget::SetColor(color, flags);
 	}
 
 	// IToolBarWidget

@@ -2,6 +2,7 @@
 #include "ToolBar.h"
 #include "../ToolBar.h"
 #include "../ToolBarItem.h"
+#include "../../Events/ToolBarWidgetEvent.h"
 #include <wx/wupdlock.h>
 #include <wx/dc.h>
 
@@ -15,70 +16,71 @@ namespace
 
 namespace kxf::WXUI
 {
-	void ToolBar::EventHandler(wxAuiToolBarEvent& event)
+	bool ToolBar::DoTryBefore(wxEvent& event) noexcept
 	{
-		if (IsValidID(event.GetToolId()))
+		EventID type;
+		bool itemRequired = true;
+		bool isCommandEvent = false;
+
+		const auto eventType = event.GetEventType();
+		if (eventType == wxEVT_TOOL)
 		{
-			if (wxAuiToolBarItem* item = FindTool(event.GetToolId()))
+			type = ToolBarWidgetEvent::EvtSelected;
+			isCommandEvent = true;
+		}
+		else if (eventType == wxEVT_AUITOOLBAR_RIGHT_CLICK)
+		{
+			type = ToolBarWidgetEvent::EvtSelectedRightClick;
+		}
+		else if (eventType == wxEVT_AUITOOLBAR_MIDDLE_CLICK)
+		{
+			type = ToolBarWidgetEvent::EvtSelectedMiddleClick;
+		}
+		else if (eventType == wxEVT_AUITOOLBAR_TOOL_DROPDOWN)
+		{
+			type = ToolBarWidgetEvent::EvtDropdownMenu;
+		}
+		else if (eventType == wxEVT_AUITOOLBAR_OVERFLOW_CLICK)
+		{
+			type = ToolBarWidgetEvent::EvtOverflowMenu;
+			itemRequired = false;
+		}
+
+		if (type)
+		{
+			wxAuiToolBarItem* itemWx = nullptr;
+			if (itemRequired)
 			{
-				/*
-				EventID type = event.GetEventType();
-				if (type == wxEVT_AUITOOLBAR_RIGHT_CLICK)
+				if (isCommandEvent)
 				{
-					type = AuiToolBarEvent::EvtItemRightClick;
-				}
-				else if (type == wxEVT_AUITOOLBAR_MIDDLE_CLICK)
-				{
-					type = AuiToolBarEvent::EvtItemMiddleClick;
-				}
-				else if (type == wxEVT_AUITOOLBAR_TOOL_DROPDOWN)
-				{
-					type = AuiToolBarEvent::EvtItemDropdown;
-				}
-				else if (type == wxEVT_AUITOOLBAR_OVERFLOW_CLICK)
-				{
-					type = AuiToolBarEvent::EvtOverflowClick;
+					auto& eventWx = static_cast<wxCommandEvent&>(event);
+					itemWx = FindTool(eventWx.GetId());
 				}
 				else
 				{
-					type = wxEVT_NULL;
+					auto& eventWx = static_cast<wxAuiToolBarEvent&>(event);
+					itemWx = FindTool(eventWx.GetToolId());
 				}
-
-				if (type != wxEVT_NULL)
-				{
-					AuiToolBarEvent newEvent(event);
-					newEvent.SetId(GetId());
-					newEvent.SetEventType(type.AsInt());
-					newEvent.SetEventObject(item);
-					newEvent.SetInt(item->IsToggled());
-					newEvent.SetItem(item);
-
-					item->ProcessEvent(newEvent);
-				}
-				*/
 			}
-		}
-		event.Skip();
-	}
-	void ToolBar::OnLeftClick(wxCommandEvent& event)
-	{
-		if (IsValidID(event.GetId()))
-		{
-			if (wxAuiToolBarItem* item = FindTool(event.GetId()))
+
+			if (itemWx)
 			{
-				/*
-				AuiToolBarEvent newEvent(AuiToolBarEvent::EvtItemClick, GetId());
-				newEvent.SetEventObject(item);
-				newEvent.SetToolId(item->GetID());
-				newEvent.SetInt(item->IsToggled());
-				newEvent.SetItem(item);
-				item->ProcessEvent(newEvent);
-				*/
+				if (auto item = DoGetItem(*itemWx))
+				{
+					ToolBarWidgetEvent tollBarEvent(m_Widget, *item);
+					return m_Widget.ProcessEvent(tollBarEvent, type);
+				}
+			}
+			else if (!itemRequired)
+			{
+				ToolBarWidgetEvent tollBarEvent(m_Widget);
+				return m_Widget.ProcessEvent(tollBarEvent, type);
 			}
 		}
-		event.Skip();
+		return false;
 	}
 
+	// ToolBar
 	std::shared_ptr<IToolBarWidgetItem> ToolBar::DoCreateItem(wxAuiToolBarItem* item, size_t index, WidgetID id)
 	{
 		if (item)
@@ -88,6 +90,7 @@ namespace kxf::WXUI
 			auto ptr = m_Items.insert_or_assign(item, std::make_shared<Widgets::ToolBarItem>(m_Widget, *item)).first->second;
 			ptr->SetID(id);
 
+			m_ItemsChanged = true;
 			return ptr;
 		}
 		return nullptr;
@@ -106,6 +109,7 @@ namespace kxf::WXUI
 
 			wxAuiToolBar::DeleteTool(item.GetId());
 			m_Items.erase(it);
+			m_ItemsChanged = true;
 
 			return true;
 		}
@@ -154,6 +158,18 @@ namespace kxf::WXUI
 		return false;
 	}
 
+	// wxWindow
+	void ToolBar::OnInternalIdle()
+	{
+		if (m_ItemsChanged)
+		{
+			UpdateUI();
+			m_ItemsChanged = false;
+		}
+		EvtHandlerWrapper::OnInternalIdle();
+	}
+
+	// ToolBar
 	ToolBar::ToolBar(Widgets::ToolBar& widget)
 		:EvtHandlerWrapper(widget), m_Widget(widget)
 	{
@@ -176,12 +192,7 @@ namespace kxf::WXUI
 			SetMargins(0, 0, 0, 0);
 			SetArtProvider(new Private::ToolBarRenderer(*this));
 
-			Bind(wxEVT_MENU, &ToolBar::OnLeftClick, this);
-			Bind(wxEVT_AUITOOLBAR_MIDDLE_CLICK, &ToolBar::EventHandler, this);
-			Bind(wxEVT_AUITOOLBAR_RIGHT_CLICK, &ToolBar::EventHandler, this);
-			Bind(wxEVT_AUITOOLBAR_TOOL_DROPDOWN, &ToolBar::EventHandler, this);
-			Bind(wxEVT_AUITOOLBAR_OVERFLOW_CLICK, &ToolBar::EventHandler, this);
-			return true;
+			return m_Widget.QueryInterface(m_RendererAware);
 		}
 		return false;
 	}

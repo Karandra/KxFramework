@@ -31,6 +31,9 @@ namespace kxf::Widgets
 			// IWidget
 			bool CreateWidget(std::shared_ptr<IWidget> parent, const String& label = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 
+			Color GetColor(WidgetColorFlag colorType) const override;
+			void SetColor(const Color& color, FlagSet<WidgetColorFlag> flags) override;
+
 			// IToolBarWidget
 			std::shared_ptr<IToolBarWidgetItem> InsertItem(const String& label, ItemType type = ItemType::Regular, WidgetID id = {}, size_t index = npos) override;
 			std::shared_ptr<IToolBarWidgetItem> InsertWidgetItem(IWidget& widget, size_t index = npos) override;

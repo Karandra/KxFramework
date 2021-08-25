@@ -2310,6 +2310,9 @@
     <ClInclude Include="kxf\UI\Widgets\ToolBarItem.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Events\ToolBarWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

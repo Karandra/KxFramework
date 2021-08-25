@@ -108,3 +108,14 @@ namespace kxf::WXUI
 			}
 	};
 }
+
+namespace kxf::WXUI
+{
+	class SimpleEvtHandlerWrapper final: public EvtHandlerWrapper<SimpleEvtHandlerWrapper, wxEvtHandler>
+	{
+		friend class EvtHandlerWrapper;
+
+		public:
+			using EvtHandlerWrapper::EvtHandlerWrapper;
+	};
+}

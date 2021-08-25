@@ -12,6 +12,7 @@ namespace kxf::Widgets
 	{
 		m_Item = nullptr;
 		m_ItemID = {};
+		m_OwningToolBar = {};
 	}
 	void ToolBarItem::ScheduleRefreshItem()
 	{

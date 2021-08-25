@@ -492,6 +492,7 @@
     <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
     <ClInclude Include="kxf\UI\Events\SearchWidgetEvent.h" />
+    <ClInclude Include="kxf\UI\Events\ToolBarWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetFocusEvent.h" />
     <ClInclude Include="kxf\UI\Events\MenuWidgetEvent.h" />

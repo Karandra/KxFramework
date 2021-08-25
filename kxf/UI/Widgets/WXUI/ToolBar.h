@@ -21,6 +21,7 @@ namespace kxf::WXUI
 {
 	class KX_API ToolBar: public EvtHandlerWrapper<ToolBar, UI::WindowRefreshScheduler<wxSystemThemedControl<wxAuiToolBar>>>
 	{
+		friend class EvtHandlerWrapper;
 		friend class Private::ToolBarRenderer;
 		friend class Widgets::ToolBarItem;
 		friend class Widgets::ToolBar;
@@ -31,10 +32,10 @@ namespace kxf::WXUI
 
 			std::unordered_map<const wxAuiToolBarItem*, std::shared_ptr<Widgets::ToolBarItem>> m_Items;
 			Color m_ColorBorder;
+			bool m_ItemsChanged = false;
 
 		private:
-			void EventHandler(wxAuiToolBarEvent& event);
-			void OnLeftClick(wxCommandEvent& event);
+			bool DoTryBefore(wxEvent& event) noexcept;
 
 			std::shared_ptr<IToolBarWidgetItem> DoCreateItem(wxAuiToolBarItem* item, size_t index, WidgetID id);
 			std::shared_ptr<IToolBarWidgetItem> DoGetItem(const wxAuiToolBarItem& item);
@@ -42,6 +43,10 @@ namespace kxf::WXUI
 
 			size_t DoGetItemIndex(const wxAuiToolBarItem& item) const;
 			bool DoSetItemIndex(wxAuiToolBarItem& item, size_t newIndex);
+
+		protected:
+			// wxWindow
+			void OnInternalIdle() override;
 
 		public:
 			ToolBar(Widgets::ToolBar& widget);
