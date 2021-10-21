@@ -274,6 +274,7 @@
     <ClInclude Include="kxf\General\OptionalRef.h" />
     <ClInclude Include="kxf\General\Private\NativeEncodingConverter.h" />
     <ClInclude Include="kxf\General\Private\WhateverWorksEncodingConverter.h" />
+    <ClInclude Include="kxf\General\RecursionGuard.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
@@ -422,7 +423,7 @@
     <ClInclude Include="kxf\UI\Controls\DataView.h" />
     <ClInclude Include="kxf\UI\Controls\DataViewComboBox.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\CellAttributeOptions.h" />
-    <ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\CellAttributes.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\CellState.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\Column.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\ColumnID.h" />
@@ -476,6 +477,15 @@
     <ClInclude Include="kxf\UI\Controls\TextBox.h" />
     <ClInclude Include="kxf\UI\Controls\ThumbView.h" />
     <ClInclude Include="kxf\UI\Controls\WebView.h" />
+    <ClInclude Include="kxf\UI\DataView\CellAttributes.h" />
+    <ClInclude Include="kxf\UI\DataView\CellAttributeOptions.h" />
+    <ClInclude Include="kxf\UI\DataView\CellState.h" />
+    <ClInclude Include="kxf\UI\DataView\Column.h" />
+    <ClInclude Include="kxf\UI\DataView\Common.h" />
+    <ClInclude Include="kxf\UI\DataView\Node.h" />
+    <ClInclude Include="kxf\UI\DataView\Row.h" />
+    <ClInclude Include="kxf\UI\DataView\SortMode.h" />
+    <ClInclude Include="kxf\UI\DataView\ToolTip.h" />
     <ClInclude Include="kxf\UI\Dialogs\Dialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\ComboBoxDialog.h" />
     <ClInclude Include="kxf\UI\Dialogs\CredentialsDialog.h" />
@@ -508,6 +518,9 @@
     <ClInclude Include="kxf\UI\Events\WidgetTextEvent.h" />
     <ClInclude Include="kxf\UI\IBookWidget.h" />
     <ClInclude Include="kxf\UI\IClusterMapWidget.h" />
+    <ClInclude Include="kxf\UI\IDataViewModel.h" />
+    <ClInclude Include="kxf\UI\IDataViewItem.h" />
+    <ClInclude Include="kxf\UI\IDataViewWidget.h" />
     <ClInclude Include="kxf\UI\IHTMLWidget.h" />
     <ClInclude Include="kxf\UI\IImageComboBoxWidget.h" />
     <ClInclude Include="kxf\UI\IButtonWidget.h" />
@@ -572,6 +585,7 @@
     <ClInclude Include="kxf\UI\Widgets\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\DataView.h" />
     <ClInclude Include="kxf\UI\Widgets\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\ImageGallery.h" />
@@ -594,6 +608,9 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ClusterMap.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Node.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\View.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageGallery.h" />
@@ -972,7 +989,7 @@
     <ClCompile Include="kxf\UI\Controls\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Controls\ComboControl.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataViewComboBox.cpp" />
-    <ClCompile Include="kxf\UI\Controls\DataView\CellAttribute.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\CellAttributes.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\CellState.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\Column.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\Common.cpp" />
@@ -1021,6 +1038,12 @@
     <ClCompile Include="kxf\UI\Controls\TextBox.cpp" />
     <ClCompile Include="kxf\UI\Controls\ThumbView.cpp" />
     <ClCompile Include="kxf\UI\Controls\WebView.cpp" />
+    <ClCompile Include="kxf\UI\DataView\CellAttributes.cpp" />
+    <ClCompile Include="kxf\UI\DataView\CellState.cpp" />
+    <ClCompile Include="kxf\UI\DataView\Column.cpp" />
+    <ClCompile Include="kxf\UI\DataView\Node.cpp" />
+    <ClCompile Include="kxf\UI\DataView\SortMode.cpp" />
+    <ClCompile Include="kxf\UI\DataView\ToolTip.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\Dialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\ComboBoxDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\CredentialsDialog.cpp" />
@@ -1068,6 +1091,7 @@
     <ClCompile Include="kxf\UI\Widgets\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\DataView.cpp" />
     <ClCompile Include="kxf\UI\Widgets\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\ImageGallery.cpp" />
@@ -1089,6 +1113,8 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\Node.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\View.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageGallery.cpp" />

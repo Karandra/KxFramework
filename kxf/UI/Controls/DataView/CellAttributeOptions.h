@@ -187,7 +187,7 @@ namespace kxf::UI::DataView::CellAttributes
 
 namespace kxf::UI::DataView::CellAttributes
 {
-	class BGOptions final: public WithOptions<CellBGOption, CellBGOption::Default>
+	class CellBGOptions final: public WithOptions<CellBGOption, CellBGOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;

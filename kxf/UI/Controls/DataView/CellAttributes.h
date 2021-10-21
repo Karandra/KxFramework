@@ -8,7 +8,7 @@ namespace kxf::UI::DataView
 	{
 		private:
 			CellAttributes::Options m_Options;
-			CellAttributes::BGOptions m_BGOptions;
+			CellAttributes::CellBGOptions m_BGOptions;
 			CellAttributes::FontOptions m_FontOptions;
 
 		public:
@@ -28,11 +28,11 @@ namespace kxf::UI::DataView
 				return m_Options;
 			}
 
-			const CellAttributes::BGOptions& BGOptions() const
+			const CellAttributes::CellBGOptions& BGOptions() const
 			{
 				return m_BGOptions;
 			}
-			CellAttributes::BGOptions& BGOptions()
+			CellAttributes::CellBGOptions& BGOptions()
 			{
 				return m_BGOptions;
 			}

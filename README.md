@@ -1,5 +1,5 @@
 # KxFramework
-Support library for [Kortex Mod Manager](https://github.com/KerberX/Kortex-Mod-Manager). Sometimes is used for my other projects since the stuff that is packed inside is so much useful.
+Support library for [Kortex Mod Manager](https://github.com/Karandra/Kortex-Mod-Manager). Sometimes is used for my other projects since the stuff that is packed inside is so much useful.
 
 # Build
 ## For development
