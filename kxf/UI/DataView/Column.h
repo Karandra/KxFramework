@@ -18,6 +18,7 @@ namespace kxf::DataView
 		friend class WXUI::DataView::MainWindow;
 		friend class WXUI::DataView::HeaderCtrl;
 		friend class WXUI::DataView::HeaderCtrl2;
+		friend class ToolTip;
 
 		public:
 			static constexpr auto npos = std::numeric_limits<size_t>::max();

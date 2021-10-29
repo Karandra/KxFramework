@@ -13,7 +13,7 @@ namespace kxf::DataView
 		if (m_ParentNode)
 		{
 			size_t index = 0;
-			for (const Node& node: EnumChildren())
+			for (const Node& node: m_ParentNode->m_Children)
 			{
 				if (node.IsSameAs(*this))
 				{
@@ -36,7 +36,7 @@ namespace kxf::DataView
 		size_t count = 0;
 		if (m_IsExpanded || IsRootNode())
 		{
-			for (const Node& node: EnumChildren())
+			for (const Node& node: m_Children)
 			{
 				count += node.GetSubTreeCount() + 1;
 			}
@@ -66,13 +66,57 @@ namespace kxf::DataView
 		}
 	}
 
+	void Node::RefreshChildren()
+	{
+		auto DoEnumerate = [&](auto& ref)
+		{
+			for (auto& node: m_Children)
+			{
+				node.OnDetach();
+			}
+			m_Children.clear();
+
+			const size_t count = ref.GetChildrenCount();
+			m_Children.reserve(count);
+			for (size_t i = 0; i < count; i++)
+			{
+				auto& node = m_Children.emplace_back(ref.GetChildItem(i), m_ParentNode);
+				node.OnAttach();
+			}
+		};
+
+		if (IsRootNode())
+		{
+			DoEnumerate(GetDataModel());
+		}
+		else if (m_Item)
+		{
+			DoEnumerate(*m_Item);
+		}
+		m_SubTreeCount = npos;
+	}
+	void Node::SortChildren()
+	{
+		auto sortMode = GetView().GetSortMode();
+		OnSortChildren(sortMode);
+
+		std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right)
+		{
+			if (left.m_Item && right.m_Item)
+			{
+				return left.m_Item->Compare(*right.m_Item, sortMode);
+			}
+			return std::partial_ordering::unordered;
+		});
+	}
+
 	size_t Node::ToggleNodeExpandState()
 	{
 		// We do not allow the (invisible) root node to be collapsed because there is no way to expand it again.
 		if (!IsRootNode())
 		{
 			intptr_t count = 0;
-			for (const Node& node: EnumChildren())
+			for (const Node& node: m_Children)
 			{
 				count += static_cast<intptr_t>(node.GetSubTreeCount()) + 1;
 			}
@@ -88,7 +132,7 @@ namespace kxf::DataView
 				ChangeSubTreeCount(+count);
 
 				// Sort the children if needed
-				OnSortChildren(GetView().GetSortMode());
+				SortChildren();
 			}
 		}
 		return m_SubTreeCount;
@@ -160,11 +204,11 @@ namespace kxf::DataView
 	void Node::ExpandNode()
 	{
 		DoExpandNodeAncestors();
-		GetMainWindow().Expand(*this);
+		GetMainWindow().Expand(*this)
 	}
 	void Node::CollapseNode()
 	{
-		GetMainWindow().Collapse(*this);
+		GetMainWindow().Collapse(*this)
 	}
 
 	void Node::RefreshCell()
@@ -230,7 +274,7 @@ namespace kxf::DataView
 	{
 		GetMainWindow().SelectRow(GetRow(), false);
 	}
-	void Node::MakeItemCurrent()
+	void Node::MakeCurrent()
 	{
 		auto& mainWindow = GetMainWindow();
 		if (mainWindow.IsMultipleSelection())
@@ -282,7 +326,7 @@ namespace kxf::DataView
 			}
 		};
 
-		for (auto& childNode: node.EnumChildren())
+		for (auto& childNode: node.m_Children)
 		{
 			if (DoWalk(childNode, func))
 			{
@@ -295,12 +339,12 @@ namespace kxf::DataView
 
 namespace kxf::DataView
 {
-	NodeOperation::Result NodeOperation_RowToNode::operator()(Node& node)
+	NodeOperation::Result RowToNodeOperation::operator()(Node& node)
 	{
 		m_CurrentRow++;
 		if (m_CurrentRow == m_Row)
 		{
-			m_ResultNode = node;
+			m_ResultNode = &node;
 			return Result::Done;
 		}
 
@@ -309,18 +353,16 @@ namespace kxf::DataView
 			m_CurrentRow += node.GetSubTreeCount();
 			return Result::SkipSubTree;
 		}
-		else if (node.HasChildren())
+		else if (const size_t childrenCount = node.GetChildrenCount(); childrenCount != 0)
 		{
 			// If the current node has only leaf children, we can find the desired node directly.
 			// This can speed up finding the node in some cases, and will have a very good effect for list views.
-			
-			const size_t childrenCount = node.GetChildrenCount();
 			if (node.GetSubTreeCount() == childrenCount)
 			{
 				const size_t index = m_Row - m_CurrentRow - 1;
 				if (index < childrenCount)
 				{
-					m_ResultNode = node.EnumChildren()[index];
+					m_ResultNode = &node.m_Children[index];
 					return Result::Done;
 				}
 			}

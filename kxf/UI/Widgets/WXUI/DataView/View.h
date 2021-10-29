@@ -9,6 +9,7 @@
 #include "../../../IGraphicsRendererAwareWidget.h"
 #include "kxf/UI/WindowWithStyles.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
+#include "kxf/UI/Windows/ToolTipEx.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
@@ -19,9 +20,11 @@ namespace kxf::Widgets
 {
 	class DataView;
 }
+
 namespace kxf::DataView
 {
 	class Column;
+	class ToolTip;
 }
 namespace kxf::WXUI::DataView
 {
@@ -38,6 +41,8 @@ namespace kxf::WXUI::DataView
 	{
 		friend class Widgets::DataView;
 		friend class kxf::DataView::Column;
+		friend class kxf::DataView::ToolTip;
+
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;
 		friend class MainWindow;
@@ -72,10 +77,11 @@ namespace kxf::WXUI::DataView
 			wxSizerItem* m_ClientAreaSI = nullptr;
 
 			FlagSet<WidgetStyle> m_Style = WidgetStyle::VerticalRules|WidgetStyle::FullRowSelection|WidgetStyle::FitLastColumn;
-			bool m_UsingSystemTheme = false;
 			Color m_BorderColor;
 			Color m_AlternateRowColor;
+			bool m_UsingSystemTheme = false;
 			std::vector<std::unique_ptr<DV::Column>> m_Columns;
+			UI::ToolTipEx m_ToolTip;
 
 			// This indicates that at least one entry in 'm_Columns' has 'm_Dirty'
 			// flag set. It's cheaper to check one flag in 'OnInternalIdle' than to
@@ -94,8 +100,8 @@ namespace kxf::WXUI::DataView
 			std::vector<DV::Column*> DoGetColumnsInDisplayOrder(bool physicalOrder) const;
 
 			// Called by header window after reorder
-			void MoveColumn(IDataViewColumn& column, size_t newIndex);
-			void MoveColumnToPhysicalIndex(IDataViewColumn& movedColumn, size_t newIndex);
+			void MoveColumn(DV::Column& column, size_t newIndex);
+			void MoveColumnToPhysicalIndex(DV::Column& movedColumn, size_t newIndex);
 
 			// Update the display after a change to an individual column
 			void OnColumnChange(DV::Column& column);
@@ -272,8 +278,8 @@ namespace kxf::WXUI::DataView
 
 			// Current item is the one used by the keyboard navigation, it is the same as the (unique) selected item
 			// in single selection mode so these functions are mostly useful for controls with 'CtrlStyle::MultipleSelection' style.
-			DV::Node GetCurrentItem() const;
-			DV::Node GetHotTrackedItem() const;
+			DV::Node* GetCurrentItem() const;
+			DV::Node* GetHotTrackedItem() const;
 			DV::Column* GetHotTrackedColumn() const;
 
 			size_t GetSelectedCount() const;
@@ -282,9 +288,9 @@ namespace kxf::WXUI::DataView
 				return GetSelectedCount() != 0;
 			}
 
-			DV::Node GetSelection() const;
-			size_t GetSelections(std::function<bool(DV::Node)> func) const;
-			void SetSelections(const std::vector<DV::Node>& selection);
+			DV::Node* GetSelection() const;
+			size_t GetSelections(std::function<bool(DV::Node*)> func) const;
+			void SetSelections(const std::vector<DV::Node*>& selection);
 
 			void GenerateSelectionEvent(DV::Node& node, const DV::Column* column = nullptr);
 
@@ -294,7 +300,7 @@ namespace kxf::WXUI::DataView
 			int GetUniformRowHeight() const;
 			void SetUniformRowHeight(int rowHeight);
 
-			void HitTest(const Point& point, DV::Node& item, DV::Column*& column) const;
+			void HitTest(const Point& point, DV::Node*& item, DV::Column*& column) const;
 
 			// Drag and drop
 			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);

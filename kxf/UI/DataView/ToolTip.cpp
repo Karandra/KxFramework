@@ -1,17 +1,17 @@
 #include "KxfPCH.h"
 #include "ToolTip.h"
+#include "Column.h"
+#include "../Widgets/WXUI/DataView/View.h"
 #include "../IDataViewWidget.h"
-#include "../IDataViewColumn.h"
-#include "../IDataViewNode.h"
 #include "../IGraphicsRendererAwareWidget.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/SizeRatio.h"
-#include "kxf/UI/Windows/ToolTipEx.h"
+#include "kxf/System/SystemInformation.h"
 #include <wx/textwrapper.h>
 
 namespace kxf::DataView
 {
-	const IDataViewColumn& ToolTip::SelectAnchorColumn(const IDataViewColumn& currentColumn) const
+	const DataView::Column& ToolTip::SelectAnchorColumn(const DataView::Column& currentColumn) const
 	{
 		if (m_AnchorColumn && m_AnchorColumn->IsVisible())
 		{
@@ -19,7 +19,7 @@ namespace kxf::DataView
 		}
 		return currentColumn;
 	}
-	const IDataViewColumn& ToolTip::SelectClipTestColumn(const IDataViewColumn& currentColumn) const
+	const DataView::Column& ToolTip::SelectClipTestColumn(const DataView::Column& currentColumn) const
 	{
 		if (m_ClipTestColumn && m_ClipTestColumn->IsVisible())
 		{
@@ -28,17 +28,17 @@ namespace kxf::DataView
 		return currentColumn;
 	}
 
-	Point ToolTip::GetPopupPosition(const IDataViewNode& node, const IDataViewColumn& column) const
+	Point ToolTip::GetPopupPosition(const DataView::Node& node, const DataView::Column& column) const
 	{
 		const Rect rect = node.GetCellClientRect(SelectAnchorColumn(column));
 		return rect.GetPosition() + Point(0, rect.GetHeight() + 1);
 	}
-	Point ToolTip::AdjustPopupPosition(const IDataViewNode& node, const IDataViewColumn& column, const Point& pos) const
+	Point ToolTip::AdjustPopupPosition(const DataView::Node& node, const DataView::Column& column, const Point& pos) const
 	{
-		auto widget = column.GetOwningWdget();
-		if (std::shared_ptr<IGraphicsRendererAwareWidget> graphicsAware; widget && widget->QueryInterface(graphicsAware))
+		auto& widget = column.GetOwningWdget();
+		if (auto graphicsAware = widget.QueryInterface<IGraphicsRendererAwareWidget>())
 		{
-			if (auto context = graphicsAware->GetActiveGraphicsRenderer()->CreateMeasuringContext(widget.get()))
+			if (auto context = graphicsAware->GetActiveGraphicsRenderer()->CreateMeasuringContext(&widget))
 			{
 				const Size smallIcon = Geometry::SizeRatio::FromSystemSmallIcon();
 				Size textExtent = context->GetTextExtent(m_Message);
@@ -59,8 +59,8 @@ namespace kxf::DataView
 					offset = smallIcon;
 				}
 
-				const Size screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
-				Point adjustedPos = widget->ClientToScreen(pos);
+				const Size screenSize = System::GetMetric(SystemSizeMetric::Screen, widget.GetWxWindow());
+				Point adjustedPos = widget.ClientToScreen(pos);
 				if (int right = adjustedPos.GetX() + textExtent.GetWidth(); right > screenSize.GetWidth())
 				{
 					adjustedPos.X() -= (right - screenSize.GetWidth()) + offset.GetWidth();
@@ -69,20 +69,20 @@ namespace kxf::DataView
 				{
 					adjustedPos.Y() -= (bottom - screenSize.GetHeight()) + offset.GetHeight();
 				}
-				return widget->ScreenToClient(adjustedPos);
+				return widget.ScreenToClient(adjustedPos);
 			}
 		}
 		return Point::UnspecifiedPosition();
 	}
-	String ToolTip::StripMarkupIfNeeded(const IDataViewNode& node, const IDataViewColumn& column, const String& text) const
+	String ToolTip::StripMarkupIfNeeded(const DataView::Node& node, const DataView::Column& column, const String& text) const
 	{
-		auto widget = column.GetOwningWdget();
-		if (widget && !text.IsEmpty())
+		auto& widget = column.GetOwningWdget();
+		if (!text.IsEmpty())
 		{
-			if (auto model = widget->GetDataModel())
+			if (auto model = widget.GetDataModel())
 			{
-				auto renderer = node.GetCellRenderer(*model, column);
-				if (renderer && renderer->IsMarkupEnabled())
+				auto renderer = node.GetCellRenderer(column);
+				if (renderer && renderer.IsMarkupEnabled())
 				{
 					return renderer->StripMarkup(text);
 				}
@@ -100,12 +100,12 @@ namespace kxf::DataView
 		return !m_Message.IsEmpty();
 	}
 
-	bool ToolTip::Show(const IDataViewNode& node, const IDataViewColumn& column)
+	bool ToolTip::Show(const DataView::Node& node, const DataView::Column& column)
 	{
-		auto widget = column.GetOwningWdget();
-		if (widget && !m_Caption.IsEmpty())
+		auto& widget = column.GetOwningWdget();
+		if (!m_Caption.IsEmpty())
 		{
-			UI::ToolTipEx tooltip(widget->GetWxWindow());
+			auto& tooltip = column.m_View->m_ToolTip;
 			tooltip.SetCaption(StripMarkupIfNeeded(node, column, m_Caption));
 			tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
@@ -121,13 +121,10 @@ namespace kxf::DataView
 
 			return tooltip.Popup(AdjustPopupPosition(node, column, GetPopupPosition(node, column)));
 		}
-		else
+		else if (auto window = widget.GetWxWindow())
 		{
-			if (auto window = widget->GetWxWindow())
-			{
-				window->SetToolTip(StripMarkupIfNeeded(node, column, m_Message));
-				return window->GetToolTip() != nullptr;
-			}
+			window->SetToolTip(StripMarkupIfNeeded(node, column, m_Message));
+			return window->GetToolTip() != nullptr;
 		}
 		return false;
 	}

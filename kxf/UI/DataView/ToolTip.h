@@ -5,8 +5,6 @@
 namespace kxf
 {
 	class IDataViewWidget;
-	class IDataViewColumn;
-	class IDataViewNode;
 }
 
 namespace kxf::DataView
@@ -17,19 +15,19 @@ namespace kxf::DataView
 			String m_Caption;
 			String m_Message;
 			std::variant<StdIcon, BitmapImage> m_Icon = StdIcon::None;
-			std::shared_ptr<IDataViewColumn> m_AnchorColumn;
+			DataView::Column* m_AnchorColumn = nullptr;
 
-			std::shared_ptr<IDataViewColumn> m_ClipTestColumn;
+			DataView::Column* m_ClipTestColumn = nullptr;
 			bool m_DisplayOnlyIfClipped = false;
 			bool m_AutoHide = true;
 
 		private:
-			const IDataViewColumn& SelectAnchorColumn(const IDataViewColumn& currentColumn) const;
-			const IDataViewColumn& SelectClipTestColumn(const IDataViewColumn& currentColumn) const;
+			const DataView::Column& SelectAnchorColumn(const DataView::Column& currentColumn) const;
+			const DataView::Column& SelectClipTestColumn(const DataView::Column& currentColumn) const;
 
-			Point GetPopupPosition(const IDataViewNode& node, const IDataViewColumn& column) const;
-			Point AdjustPopupPosition(const IDataViewNode& node, const IDataViewColumn& column, const Point& pos) const;
-			String StripMarkupIfNeeded(const IDataViewNode& node, const IDataViewColumn& column, const String& text) const;
+			Point GetPopupPosition(const DataView::Node& node, const DataView::Column& column) const;
+			Point AdjustPopupPosition(const DataView::Node& node, const DataView::Column& column, const Point& pos) const;
+			String StripMarkupIfNeeded(const DataView::Node& node, const DataView::Column& column, const String& text) const;
 
 			bool IsNull() const noexcept;
 
@@ -49,7 +47,7 @@ namespace kxf::DataView
 			}
 
 		public:
-			bool Show(const IDataViewNode& node, const IDataViewColumn& column);
+			bool Show(const DataView::Node& node, const DataView::Column& column);
 
 			String GetCaption() const
 			{
@@ -98,11 +96,11 @@ namespace kxf::DataView
 				m_Icon = std::move(icon);
 			}
 
-			void SetAnchorColumn(std::shared_ptr<IDataViewColumn> column) noexcept
+			void SetAnchorColumn(DataView::Column* column) noexcept
 			{
-				m_AnchorColumn = std::move(column);
+				m_AnchorColumn = column;
 			}
-			std::shared_ptr<IDataViewColumn> GetAnchorColumn() const noexcept
+			DataView::Column* GetAnchorColumn() const noexcept
 			{
 				return m_AnchorColumn;
 			}
@@ -116,7 +114,7 @@ namespace kxf::DataView
 				m_AutoHide = value;
 			}
 
-			std::shared_ptr<IDataViewColumn> GetClipTestColumn() const noexcept
+			DataView::Column* GetClipTestColumn() const noexcept
 			{
 				return m_ClipTestColumn;
 			}
@@ -132,10 +130,10 @@ namespace kxf::DataView
 					m_ClipTestColumn = nullptr;
 				}
 			}
-			void DisplayOnlyIfClipped(std::shared_ptr<IDataViewColumn> column) noexcept
+			void DisplayOnlyIfClipped(DataView::Column* column) noexcept
 			{
 				m_DisplayOnlyIfClipped = true;
-				m_ClipTestColumn = std::move(column);
+				m_ClipTestColumn = column;
 			}
 
 		public:

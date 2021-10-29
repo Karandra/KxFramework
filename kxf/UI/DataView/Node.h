@@ -19,6 +19,8 @@ namespace kxf::DataView
 	class KX_API Node
 	{
 		friend class RootNode;
+		friend class NodeOperation;
+		friend class RowToNodeOperation;
 		friend class WXUI::DataView::View;
 		friend class WXUI::DataView::MainWindow;
 
@@ -29,6 +31,7 @@ namespace kxf::DataView
 			std::shared_ptr<IDataViewItem> m_Item;
 			RootNode* m_RootNode = nullptr;
 			Node* m_ParentNode = nullptr;
+			std::vector<Node> m_Children;
 
 			mutable size_t m_SubTreeCount = npos;
 			bool m_IsExpanded = false;
@@ -41,6 +44,20 @@ namespace kxf::DataView
 				m_SubTreeCount = GetSubTreeCount();
 			}
 			void ChangeSubTreeCount(intptr_t num);
+
+			void RefreshChildren();
+			void SortChildren();
+			void OnSortChildren(const DataView::SortMode& sortMode)
+			{
+				if (IsRootNode())
+				{
+					GetDataModel().OnSortChildren(sortMode);
+				}
+				else if (m_Item)
+				{
+					m_Item->OnSortChildren(sortMode);
+				}
+			}
 
 			size_t ToggleNodeExpandState();
 			void DoExpandNodeAncestors();
@@ -59,18 +76,18 @@ namespace kxf::DataView
 			}
 			void OnDetach()
 			{
-				m_Item->OnDetach();
+				m_Item->OnDetach(*this);
 				m_Item = nullptr;
 			}
 
 		protected:
-			bool OnNodeExpand() const
+			bool OnNodeExpand()
 			{
-				return m_Item ? m_Item->OnExpand() : true;
+				return m_Item ? m_Item->OnExpand(*this) : true;
 			}
-			bool OnNodeCollapse() const
+			bool OnNodeCollapse()
 			{
-				return m_Item ? m_Item->OnCollapse() : true;
+				return m_Item ? m_Item->OnCollapse(*this) : true;
 			}
 
 			bool IsNull() const noexcept
@@ -92,7 +109,7 @@ namespace kxf::DataView
 
 		public:
 			Node() = default;
-			Node(const Node&) = default;
+			Node(const Node&) = delete;
 			Node(std::shared_ptr<IDataViewItem> item, Node* parent)
 				:m_Item(std::move(item))
 			{
@@ -145,7 +162,7 @@ namespace kxf::DataView
 
 			bool HasChildren() const
 			{
-				return m_Item ? m_Item->HasChildren() : false;
+				return m_Item ? m_Item->GetChildrenCount() != 0 : false;
 			}
 			size_t GetChildrenCount() const
 			{
@@ -159,47 +176,18 @@ namespace kxf::DataView
 				}
 				return 0;
 			}
-			std::vector<Node> EnumChildren() const
+
+			void ItemChanged()
 			{
-				auto DoEnumerate = [&](auto enumerator)
+				if (m_Children.size() != GetChildrenCount())
 				{
-					std::vector<Node> nodes;
-					if (enumerator)
-					{
-						nodes.reserve(enumerator.GetTotalCount().value_or(0));
-						for (auto& item: enumerator)
-						{
-							nodes.emplace_back(std::move(item), m_ParentNode);
-						}
-
-						for (auto& node: nodes)
-						{
-							node.OnAttach();
-						}
-					}
-					return nodes;
-				};
-
-				if (IsRootNode())
-				{
-					return DoEnumerate(GetDataModel().EnumChildren());
+					RefreshChildren();
 				}
-				else if (m_Item)
-				{
-					return DoEnumerate(m_Item->EnumChildren());
-				}
-				return {};
+				RefreshCell();
 			}
-			void OnSortChildren(const DataView::SortMode& sortMode)
+			void ChildrenChanged()
 			{
-				if (IsRootNode())
-				{
-					GetDataModel().OnSortChildren(sortMode);
-				}
-				else if (m_Item)
-				{
-					m_Item->OnSortChildren(sortMode);
-				}
+				RefreshChildren();
 			}
 
 			size_t GetSubTreeCount() const
@@ -217,10 +205,6 @@ namespace kxf::DataView
 
 			bool IsExpanded() const
 			{
-				if (m_Item)
-				{
-					return m_Item->IsExpanded();
-				}
 				return m_IsExpanded;
 			}
 			void ExpandNode();
@@ -237,7 +221,7 @@ namespace kxf::DataView
 			CellState GetCellState() const;
 			void SelectItem();
 			void UnselectItem();
-			void MakeItemCurrent();
+			void MakeCurrent();
 
 			void EnsureCellVisible()
 			{
@@ -334,7 +318,7 @@ namespace kxf::DataView
 				return IsNull();
 			}
 
-			Node& operator=(const Node&) = default;
+			Node& operator=(const Node&) = delete;
 	};
 
 	class KX_API RootNode final: public Node
@@ -399,15 +383,15 @@ namespace kxf::DataView
 
 namespace kxf::DataView
 {
-	class KX_API NodeOperation_RowToNode final: public NodeOperation
+	class KX_API RowToNodeOperation final: public NodeOperation
 	{
 		private:
 			const intptr_t m_Row = -1;
 			intptr_t m_CurrentRow = -1;
-			Node m_ResultNode;
+			Node* m_ResultNode = nullptr;
 
 		public:
-			NodeOperation_RowToNode(intptr_t row , intptr_t current)
+			RowToNodeOperation(intptr_t row , intptr_t current)
 				:m_Row(row), m_CurrentRow(current)
 			{
 			}
@@ -415,7 +399,7 @@ namespace kxf::DataView
 		public:
 			Result operator()(Node& node) override;
 
-			Node GetResult() const
+			Node* GetResult() const
 			{
 				return m_ResultNode;
 			}

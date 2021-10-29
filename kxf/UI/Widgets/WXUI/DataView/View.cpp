@@ -196,7 +196,7 @@ namespace kxf::WXUI::DataView
 		return displayOrder;
 	}
 
-	void View::MoveColumn(IDataViewColumn& movedColumn, size_t newIndex)
+	void View::MoveColumn(DV::Column& movedColumn, size_t newIndex)
 	{
 		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns
 		// were added, we only display the columns in different order.
@@ -237,7 +237,7 @@ namespace kxf::WXUI::DataView
 			OnColumnCountChanged();
 		}
 	}
-	void View::MoveColumnToPhysicalIndex(IDataViewColumn& movedColumn, size_t newIndex)
+	void View::MoveColumnToPhysicalIndex(DV::Column& movedColumn, size_t newIndex)
 	{
 		if (auto column = GetColumnPhysicallyDisplayedAt(newIndex))
 		{
@@ -532,7 +532,7 @@ namespace kxf::WXUI::DataView
 		m_ClientArea->UpdateDisplay();
 	}
 
-	DV::Node View::GetCurrentItem() const
+	DV::Node* View::GetCurrentItem() const
 	{
 		if (m_Style.Contains(WidgetStyle::MultipleSelection))
 		{
@@ -543,7 +543,7 @@ namespace kxf::WXUI::DataView
 			return GetSelection();
 		}
 	}
-	DV::Node View::GetHotTrackedItem() const
+	DV::Node* View::GetHotTrackedItem() const
 	{
 		return m_ClientArea->GetHotTrackItem();
 	}
@@ -556,7 +556,7 @@ namespace kxf::WXUI::DataView
 	{
 		return m_ClientArea->GetSelections().GetSelectedCount();
 	}
-	DV::Node View::GetSelection() const
+	DV::Node* View::GetSelection() const
 	{
 		const wxSelectionStore& selectionStore = m_ClientArea->GetSelections();
 		if (selectionStore.GetSelectedCount() == 1)
@@ -566,7 +566,7 @@ namespace kxf::WXUI::DataView
 		}
 		return nullptr;
 	}
-	size_t View::GetSelections(std::function<bool(DV::Node)> func) const
+	size_t View::GetSelections(std::function<bool(DV::Node*)> func) const
 	{
 		const wxSelectionStore& selectionStore = m_ClientArea->GetSelections();
 
@@ -574,10 +574,10 @@ namespace kxf::WXUI::DataView
 		wxSelectionStore::IterationState cookie;
 		for (auto row = selectionStore.GetFirstSelectedItem(cookie); row != wxSelectionStore::NO_SELECTION; row = selectionStore.GetNextSelectedItem(cookie))
 		{
-			if (Node* item = m_ClientArea->GetNodeByRow(row))
+			if (DV::Node* item = m_ClientArea->GetNodeByRow(row))
 			{
 				count++;
-				if (!std::invoke(func, *item))
+				if (!std::invoke(func, item))
 				{
 					break;
 				}
@@ -585,17 +585,17 @@ namespace kxf::WXUI::DataView
 		}
 		return count;
 	}
-	void View::SetSelections(const std::vector<DV::Node>& selection)
+	void View::SetSelections(const std::vector<DV::Node*>& selection)
 	{
 		m_ClientArea->ClearSelection();
-		DV::Node lastParent;
+		DV::Node* lastParent = nullptr;
 
 		for (auto& item: selection)
 		{
-			DV::Node parent = item->GetParentNode();
-			if (parent.IsSameAs(lastParent))
+			DV::Node* parent = item->GetParentNode();
+			if (lastParent && parent->IsSameAs(*lastParent))
 			{
-				item.DoExpandNodeAncestors();
+				item->DoExpandNodeAncestors();
 			}
 
 			lastParent = parent;
@@ -608,7 +608,7 @@ namespace kxf::WXUI::DataView
 
 	void View::GenerateSelectionEvent(DV::Node& item, const DV::Column* column)
 	{
-		m_ClientArea->SendSelectionChangedEvent(&item, const_cast<Column*>(column));
+		m_ClientArea->SendSelectionChangedEvent(&item, const_cast<DV::Column*>(column));
 	}
 
 	void View::SelectAll()
@@ -620,7 +620,7 @@ namespace kxf::WXUI::DataView
 		m_ClientArea->UnselectAllRows();
 	}
 
-	void View::HitTest(const Point& point, DV::Node& item, DV::Column*& column) const
+	void View::HitTest(const Point& point, DV::Node*& item, DV::Column*& column) const
 	{
 		m_ClientArea->HitTest(point, item, column);
 	}

@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "SortMode.h"
+#include "Column.h"
 #include "../IDataViewWidget.h"
 
 namespace kxf::DataView
@@ -14,11 +15,10 @@ namespace kxf::DataView
 		{
 			m_SortWhat = SortWhat::SingleColumn;
 			m_SortOrder = column->GetSortOrder();
-			m_SortingColumn = std::move(column);
 		}
 	}
-	SortMode::SortMode(std::shared_ptr<IDataViewColumn> column) noexcept
-		:m_SortingColumn(column), m_SortWhat(SortWhat::SingleColumn), m_SortOrder(column->GetSortOrder())
+	SortMode::SortMode(DataView::Column& column) noexcept
+		:m_SortWhat(SortWhat::SingleColumn), m_SortOrder(column.GetSortOrder())
 	{
 	}
 }

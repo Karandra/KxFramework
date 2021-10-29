@@ -18,50 +18,53 @@ namespace kxf
 			static constexpr auto npos = std::numeric_limits<size_t>::max();
 
 		protected:
-			virtual bool IsSameAs(const IDataViewItem& other) const
-			{
-				return this == &other;
-			}
-
+			// Internal state
 			virtual void OnAttach(DataView::Node& node)
 			{
 			}
-			virtual void OnDetach()
+			virtual void OnDetach(DataView::Node& node)
 			{
 			}
 
-			virtual bool OnExpand() const
+			virtual bool OnExpand(DataView::Node& node)
 			{
 				return true;
 			}
-			virtual bool OnCollapse() const
+			virtual bool OnCollapse(DataView::Node& node)
+			{
+				return true;
+			}
+
+			virtual bool OnSelect(DataView::Node& node)
+			{
+				return true;
+			}
+			virtual bool OnActivate(DataView::Node& node)
 			{
 				return true;
 			}
 
 		public:
+			// Sorting and children
 			virtual void OnSortChildren(const DataView::SortMode& sortMode)
 			{
 			}
-
-			virtual bool HasChildren() const
+			virtual std::partial_ordering Compare(const IDataViewItem& other, const DataView::SortMode& sortMode) const
 			{
-				return GetChildrenCount() != 0;
+				return this <=> &other;
 			}
+
 			virtual size_t GetChildrenCount() const
 			{
-				return EnumChildren().CalcTotalCount();
+				return 0;
 			}
-			virtual Enumerator<std::shared_ptr<IDataViewItem>> EnumChildren() const
+			virtual std::shared_ptr<IDataViewItem> GetChildItem(size_t index) const
 			{
 				return {};
 			}
-			virtual bool IsExpanded() const
-			{
-				return false;
-			}
 
 		public:
+			// Visuals and editing
 			virtual std::shared_ptr<DataView::CellRenderer> GetCellRenderer(const DataView::Column& column) const
 			{
 				return nullptr;
@@ -93,7 +96,11 @@ namespace kxf
 		public:
 			bool operator==(const IDataViewItem& other) const
 			{
-				return IsSameAs(other);
+				return Compare(other, {}) == 0;
+			}
+			auto operator<=>(const IDataViewItem& other) const
+			{
+				return Compare(other, {});
 			}
 	};
 }
