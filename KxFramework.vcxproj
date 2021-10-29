@@ -267,6 +267,7 @@
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\ILibraryInfo.h" />
+    <ClInclude Include="kxf\General\IMemoryAllocator.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\NullVariablesCollection.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
+    <ClInclude Include="kxf\General\StupidMemoryAllocator.h" />
     <ClInclude Include="kxf\General\UniChar.h" />
     <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
@@ -881,6 +883,7 @@
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\StdID.cpp" />
+    <ClCompile Include="kxf\General\StupidMemoryAllocator.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp" />
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />

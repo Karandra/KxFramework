@@ -2313,6 +2313,12 @@
     <ClInclude Include="kxf\UI\Events\ToolBarWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IMemoryAllocator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\StupidMemoryAllocator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
