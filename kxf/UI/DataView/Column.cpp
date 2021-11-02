@@ -1,8 +1,9 @@
 #include "KxfPCH.h"
 #include "Column.h"
 #include "../Widgets/WXUI/DataView/View.h"
-#include "../Widgets/WXUI/DataView/MainWindow.h"
 #include "../Widgets/WXUI/DataView/HeaderCtrl.h"
+#include "../Widgets/WXUI/DataView/MainWindow.h"
+#include "../Events/DataViewWidgetEvent.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::DataView
@@ -42,7 +43,7 @@ namespace kxf::DataView
 		if (m_View)
 		{
 			wxWindow* window = m_View;
-			if (HeaderCtrl* header = m_View->GetHeaderCtrl())
+			if (auto header = m_View->GetHeaderCtrl())
 			{
 				window = header;
 			}
@@ -61,7 +62,7 @@ namespace kxf::DataView
 	}
 	int Column::CalcBestWidth() const
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
+		if (auto mainWindow = GetMainWindow())
 		{
 			return mainWindow->CalcBestColumnWidth(*this);
 		}
@@ -71,8 +72,9 @@ namespace kxf::DataView
 	// IDataViewColumn
 	void Column::OnColumnAttached(IDataViewWidget& widget, size_t index, size_t displayIndex)
 	{
-		if (!m_View)
+		if (!m_Widget)
 		{
+			m_Widget = &widget;
 			m_View = static_cast<WXUI::DataView::View*>(widget.GetWxWindow());
 		}
 		if (m_View)
@@ -84,6 +86,8 @@ namespace kxf::DataView
 	void Column::OnColumnDetached()
 	{
 		m_View = nullptr;
+		m_Widget = nullptr;
+
 		m_Index = npos;
 		m_DisplayIndex = npos;
 	}
@@ -91,10 +95,6 @@ namespace kxf::DataView
 	IDataViewWidget& Column::GetOwningWdget() const
 	{
 		return m_View->m_Widget;
-	}
-	IDataViewModel& Column::GetDataModel() const
-	{
-		return *m_View->m_ClientArea->m_DataModel;
 	}
 
 	size_t Column::GetPhysicalDisplayIndex() const
@@ -107,7 +107,7 @@ namespace kxf::DataView
 			for (size_t i = 0; i < count; i++)
 			{
 				auto column = m_View->GetColumnDisplayedAt(i);
-				if (column.get() == this)
+				if (column == this)
 				{
 					return index;
 				}
@@ -266,14 +266,16 @@ namespace kxf::DataView
 	{
 		if (auto mainWindow = GetMainWindow())
 		{
-			ItemEvent event(ItemEvent::EvtColumnHeaderWidthFit);
-			event.SetWidth(std::max({CalcTitleWidth(), GetBestWidth(), GetMinWidth()}));
+			auto width = std::max({CalcTitleWidth(), GetBestWidth(), GetMinWidth()});
 
-			mainWindow->CreateEventTemplate(event, nullptr, this);
-			m_View->ProcessWindowEvent(event);
+			DataViewWidgetEvent event(*m_Widget);
+			event.SetColumn(this);
+			event.SetSize({width, Geometry::DefaultCoord});
+
+			m_Widget->ProcessEvent(event, DataViewWidgetEvent::EvtColumnHeaderWidthFit);
 			if (event.IsAllowed())
 			{
-				SetWidth(event.GetWidth());
+				SetWidth(event.GetSize().GetWidth());
 				return true;
 			}
 		}

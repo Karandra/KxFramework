@@ -401,7 +401,7 @@ namespace kxf::UI::DataView
 				HitTest(pos, &node);
 				return node;
 			}
-			Column* HitTestColumn(const Point& pos)
+			DV::Column* HitTestColumn(const Point& pos)
 			{
 				Column* column = nullptr;
 				HitTest(pos, nullptr, &column);

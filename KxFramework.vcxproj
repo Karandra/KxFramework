@@ -501,6 +501,7 @@
     <ClInclude Include="kxf\UI\Events\ButtonWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\ComboBoxWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\Common.h" />
+    <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\SearchWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\ToolBarWidgetEvent.h" />
     <ClInclude Include="kxf\UI\Events\WidgetCheckEvent.h" />
@@ -609,6 +610,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\ComboBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Common.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Node.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\View.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h" />
@@ -1055,6 +1057,7 @@
     <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp" />
     <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp" />
+    <ClCompile Include="kxf\UI\Events\DataViewWidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetMouseEvent.cpp" />
@@ -1113,6 +1116,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\Check.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\Node.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\View.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp" />

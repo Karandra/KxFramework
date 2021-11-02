@@ -2370,6 +2370,12 @@
     <ClInclude Include="kxf\UI\DataView\Node.h">
       <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.h">
+      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h">
+      <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3584,6 +3590,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\DataView\Node.cpp">
       <Filter>kxf\UI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.cpp">
+      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Events\DataViewWidgetEvent.cpp">
+      <Filter>kxf\UI\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

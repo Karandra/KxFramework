@@ -1,25 +1,8 @@
 #include "KxfPCH.h"
-#include "Event.h"
-#include "View.h"
-#include "MainWindow.h"
+#include "DataViewWidgetEvent.h"
 
-namespace kxf::UI::DataView
-{
-	View* ItemEvent::GetView() const
-	{
-		return static_cast<View*>(wxNotifyEvent::GetEventObject());
-	}
-	MainWindow* ItemEvent::GetMainWindow() const
-	{
-		if (View* view = GetView())
-		{
-			return view->GetMainWindow();
-		}
-		return nullptr;
-	}
-}
-
-namespace kxf::UI::DataView
+#if 0
+namespace kxf::DataView
 {
 	wxDataObjectSimple* DragDropEvent::GetDragObject(const wxDataFormat& format) const
 	{
@@ -58,3 +41,4 @@ namespace kxf::UI::DataView
 		m_DropResult = wxDragError;
 	}
 }
+#endif

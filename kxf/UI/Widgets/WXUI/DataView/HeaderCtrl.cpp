@@ -2,7 +2,7 @@
 #include "HeaderCtrl.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "Column.h"
+#include "../../../DataView/Column.h"
 #include "kxf/UI/Common.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/IRendererNative.h"
@@ -47,7 +47,7 @@ namespace
 	};
 }
 
-namespace kxf::UI::DataView
+namespace kxf::WXUI::DataView
 {
 	void* HeaderCtrl::GetHeaderCtrlHandle() const
 	{
@@ -64,7 +64,7 @@ namespace kxf::UI::DataView
 		// Instead of scrolling or repainting we simply move the control window
 		// itself. To be precise, offset it by the scroll increment to the left and
 		// increment its width to still extend to the right boundary to compensate
-		// for it (notice that dx is negative when scrolling to the right)
+		// for it (notice that 'dx' is negative when scrolling to the right)
 
 		m_ScrollOffset += dx;
 		wxControl::DoSetSize(GetPosition().x + dx, -1, GetSize().x - dx, -1, wxSIZE_USE_EXISTING);
@@ -74,16 +74,19 @@ namespace kxf::UI::DataView
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(ItemEvent& event, const EventID& type, Column* column, std::optional<Rect> rect)
+	HeaderCtrl::EventResult HeaderCtrl::SendWidgetEvent(DataViewWidgetEvent& event, const EventID& eventID, DV::Column* column, std::optional<Rect> rect)
 	{
-		event.SetEventType(type.AsInt());
 		if (rect)
 		{
 			event.SetRect(*rect);
 		}
-		m_View->GetMainWindow()->CreateEventTemplate(event, nullptr, column);
 
-		return {m_View->ProcessWindowEvent(event), event.IsAllowed()};
+		return {m_View->m_Widget.ProcessEvent(event, eventID), event.IsAllowed()};
+	}
+	HeaderCtrl::EventResult HeaderCtrl::SendWidgetEvent(const EventID& eventID, DV::Column* column, std::optional<Rect> rect)
+	{
+		DataViewWidgetEvent event(m_View->m_Widget);
+		return SendWidgetEvent(event, eventID, column, std::move(rect));
 	}
 
 	void HeaderCtrl::OnCreate(wxWindowCreateEvent& event)
@@ -107,21 +110,21 @@ namespace kxf::UI::DataView
 	{
 		FinishEditing();
 
-		if (Column* column = m_View->GetColumn(event.GetColumn()))
+		if (auto column = m_View->GetColumnAt(event.GetColumn()))
 		{
-			if (SendCtrlEvent(ItemEvent::EvtColumnHeaderClick, column).Processed)
+			if (SendWidgetEvent(DataViewWidgetEvent::EvtColumnHeaderClick, column).Processed)
 			{
 				return;
 			}
 
 			// Default handling for the column click is to sort by this column or  toggle its sort order
-			if (!column->IsSortable())
+			if (!column->GetStyle().Contains(DV::ColumnStyle::Sortable))
 			{
 				// No default handling for non-sortable columns
 				return;
 			}
 
-			if (column->IsSorted())
+			if (column->GetSortOrder() != SortOrder::None)
 			{
 				// Already using this column for sorting, just change the order
 				column->ToggleSortOrder();
@@ -131,22 +134,22 @@ namespace kxf::UI::DataView
 				// Not using this column for sorting yet.
 				// We will sort by this column only now, so reset all the previously used ones.
 				m_View->ResetAllSortColumns();
-				column->SortAscending();
+				column->SetSortOrder(SortOrder::Ascending);
 			}
 
 			m_View->GetMainWindow()->OnShouldResort();
 			m_View->OnColumnChange(*column);
-			SendCtrlEvent(ItemEvent::EvtColumnSorted, column);
+			SendWidgetEvent(DataViewWidgetEvent::EvtColumnSorted, column);
 		}
 	}
 	void HeaderCtrl::OnRClick(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
-		if (Column* column = m_View->GetColumn(event.GetColumn()))
+		if (auto column = m_View->GetColumnAt(event.GetColumn()))
 		{
 			// Event wasn't processed somewhere, use default behavior
-			if (!SendCtrlEvent(ItemEvent::EvtColumnHeaderRClick, column).Processed && m_View)
+			if (!SendWidgetEvent(DataViewWidgetEvent::EvtColumnHeaderRClick, column).Processed && m_View)
 			{
 				/*
 				if (Menu menu; m_View->CreateColumnSelectionMenu(menu))
@@ -162,7 +165,7 @@ namespace kxf::UI::DataView
 		Point pos = Point(event.GetPosition());
 		if (pos.GetX() > m_View->GetMainWindow()->GetRowWidth())
 		{
-			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? ItemEvent::EvtColumnHeaderClick : ItemEvent::EvtColumnHeaderRClick, nullptr);
+			SendWidgetEvent(event.GetEventType() == wxEVT_LEFT_UP ? DataViewWidgetEvent::EvtColumnHeaderClick : DataViewWidgetEvent::EvtColumnHeaderRClick, nullptr);
 		}
 		event.Skip();
 	}
@@ -170,8 +173,8 @@ namespace kxf::UI::DataView
 	{
 		FinishEditing();
 
-		Column* column = m_View->GetColumn(event.GetColumn());
-		if (column && column->IsSizeable())
+		auto column = m_View->GetColumnAt(event.GetColumn());
+		if (column && column->GetStyle().Contains(DV::ColumnStyle::Resizeable))
 		{
 			column->FitContent();
 		}
@@ -181,9 +184,9 @@ namespace kxf::UI::DataView
 	{
 		FinishEditing();
 
-		if (Column* column = m_View->GetColumn(event.GetColumn()))
+		if (auto column = m_View->GetColumnAt(event.GetColumn()))
 		{
-			column->AssignWidth(event.GetWidth());
+			column->m_Width = event.GetWidth();
 			GetMainWindow()->RefreshDisplay();
 		}
 	}
@@ -195,7 +198,7 @@ namespace kxf::UI::DataView
 	{
 		FinishEditing();
 
-		Column* column = m_View->GetColumn(event.GetColumn());
+		auto column = m_View->GetColumnAt(event.GetColumn());
 		if (column)
 		{
 			m_View->MoveColumnToPhysicalIndex(*column, event.GetNewOrder());
@@ -204,13 +207,13 @@ namespace kxf::UI::DataView
 
 	bool HeaderCtrl::UpdateColumnWidthToFit(size_t index)
 	{
-		if (Column* column = m_View->GetColumn(index))
+		if (auto column = m_View->GetColumnAt(index))
 		{
 			return column->FitContent();
 		}
 		return false;
 	}
-	void HeaderCtrl::DoMakeItem(_HD_ITEMW& item, const Column& column)
+	void HeaderCtrl::DoMakeItem(_HD_ITEMW& item, const DV::Column& column)
 	{
 		item.mask |= HDI_FORMAT|HDI_TEXT|HDI_LPARAM;
 		item.lParam = reinterpret_cast<LPARAM>(&column);
@@ -220,14 +223,10 @@ namespace kxf::UI::DataView
 		item.cchTextMax = column.m_Title.length();
 
 		// Bitmap
-		const GDIBitmap& bitmap = column.m_Bitmap;
+		const auto& bitmap = column.m_Icon;
 		if (bitmap)
 		{
 			item.mask |= HDI_IMAGE;
-			if (column.GetStyle().Contains(ColumnStyle::IconOnRight))
-			{
-				item.fmt |= HDF_BITMAP_ON_RIGHT;
-			}
 
 			if (!m_ImageList)
 			{
@@ -270,13 +269,13 @@ namespace kxf::UI::DataView
 		}
 
 		// Sort order
-		if (column.IsSorted())
+		if (auto sortOrder = column.GetSortOrder(); sortOrder != SortOrder::None)
 		{
-			item.fmt |= column.IsSortedAscending() ? HDF_SORTUP : HDF_SORTDOWN;
+			item.fmt |= sortOrder == SortOrder::Ascending ? HDF_SORTUP : HDF_SORTDOWN;
 		}
 
 		// Resizing
-		if (!column.IsSizeable())
+		if (!column.GetStyle().Contains(DV::ColumnStyle::Resizeable))
 		{
 			item.fmt |= HDF_FIXEDWIDTH;
 		}
@@ -290,13 +289,13 @@ namespace kxf::UI::DataView
 		//item.iOrder = column.GetPhysicalDisplayIndex();
 
 		// Dropdown
-		if (column.HasDropdown())
+		if (column.GetStyle().Contains(DV::ColumnStyle::Dropdown))
 		{
 			item.fmt |= HDF_SPLITBUTTON;
 		}
 
-		// Checkbox
-		if (column.HasCheckBox())
+		// Check-box
+		if (column.GetStyle().Contains(DV::ColumnStyle::CheckBox))
 		{
 			item.fmt |= HDF_CHECKBOX;
 			item.fmt |= column.IsChecked() ? HDF_CHECKED : 0;
@@ -320,10 +319,10 @@ namespace kxf::UI::DataView
 				headerItem.mask = HDI_LPARAM;
 				Header_GetItem(reinterpret_cast<HWND>(GetHeaderCtrlHandle()), header->iItem, &headerItem);
 
-				return reinterpret_cast<Column*>(headerItem.lParam);
+				return reinterpret_cast<DV::Column*>(headerItem.lParam);
 			}
 		};
-		auto NewHeaderEvent = [this](wxEventType eventType, Column* column)
+		auto NewHeaderEvent = [this](wxEventType eventType, DV::Column* column)
 		{
 			wxHeaderCtrlEvent event(eventType, GetId());
 			event.SetEventObject(this);
@@ -350,7 +349,7 @@ namespace kxf::UI::DataView
 			case (int)HDN_ITEMDBLCLICK:
 			{
 				m_DraggedColumn = nullptr;
-				if (Column* column = GetColumn())
+				if (auto column = GetColumn())
 				{
 					wxEventType eventType = ::GetClickEventType(notification == static_cast<int>(HDN_ITEMDBLCLICK), static_cast<MouseButtonType>(header->iButton));
 					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
@@ -362,9 +361,9 @@ namespace kxf::UI::DataView
 			}
 			case (int)HDN_DIVIDERDBLCLICK:
 			{
-				if (Column* column = GetColumn())
+				if (auto column = GetColumn())
 				{
-					if (!SendCtrlEvent(ItemEvent::EvtColumnHeaderSeparatorDClick, column).Processed)
+					if (!SendWidgetEvent(DataViewWidgetEvent::EvtColumnHeaderSeparatorDClick, column).Processed)
 					{
 						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
 						SendHeaderEvent(event);
@@ -383,7 +382,7 @@ namespace kxf::UI::DataView
 				// These two messages aren't from Header control and they contain no item index
 				// so we have to use hit-testing to get the column.
 				m_DraggedColumn = nullptr;
-				if (Column* column = GetColumn(true))
+				if (DV::Column* column = GetColumn(true))
 				{
 					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButtonType::Right);
 					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
@@ -402,12 +401,12 @@ namespace kxf::UI::DataView
 				{
 					// These messages are from header control but active area of grabbing column edge
 					// is wider than column rect and hit-testing won't work here.
-					Column* column = GetColumn();
-					if (column && column->IsSizeable())
+					auto column = GetColumn();
+					if (column && column->GetStyle().Contains(DV::ColumnStyle::Resizeable))
 					{
 						m_ResizedColumn = column;
 
-						if (SendCtrlEvent(ItemEvent::EvtColumnBeginResize, m_ResizedColumn).Allowed)
+						if (SendWidgetEvent(DataViewWidgetEvent::EvtColumnBeginResize, m_ResizedColumn).Allowed)
 						{
 							wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_BEGIN_RESIZE, m_ResizedColumn);
 							SendHeaderEvent(event);
@@ -436,15 +435,15 @@ namespace kxf::UI::DataView
 						width = m_ResizedColumn->GetMinWidth();
 					}
 
-					ItemEvent ctrlEvent;
-					if (!SendCtrlEvent(ctrlEvent, ItemEvent::EvtColumnEndResize, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+					DataViewWidgetEvent ctrlEvent(m_View->m_Widget);
+					if (!SendWidgetEvent(ctrlEvent, DataViewWidgetEvent::EvtColumnEndResize, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
 					{
 						*result = TRUE;
 					}
 					else
 					{
 						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_END_RESIZE, m_ResizedColumn);
-						event.SetWidth(ctrlEvent.GetWidth());
+						event.SetWidth(ctrlEvent.GetSize().GetWidth());
 						SendHeaderEvent(event);
 					}
 
@@ -459,7 +458,7 @@ namespace kxf::UI::DataView
 				if (m_ResizedColumn && header->pitem && (header->pitem->mask & HDI_WIDTH))
 				{
 					int& width = header->pitem->cxy;
-					if (m_ResizedColumn->IsSizeable())
+					if (m_ResizedColumn->GetStyle().Contains(DV::ColumnStyle::Resizeable))
 					{
 						const bool isLess = width < m_ResizedColumn->GetMinWidth();
 						if (isLess)
@@ -467,15 +466,15 @@ namespace kxf::UI::DataView
 							width = m_ResizedColumn->GetMinWidth();
 						}
 
-						ItemEvent ctrlEvent;
-						if (!SendCtrlEvent(ctrlEvent, ItemEvent::EvtColumnResize, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+						DataViewWidgetEvent ctrlEvent(m_View->m_Widget);
+						if (!SendWidgetEvent(ctrlEvent, DataViewWidgetEvent::EvtColumnResize, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
 						{
 							*result = TRUE;
 						}
 						else
 						{
 							wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
-							event.SetWidth(ctrlEvent.GetWidth());
+							event.SetWidth(ctrlEvent.GetSize().GetWidth());
 							SendHeaderEvent(event);
 						}
 					}
@@ -494,8 +493,8 @@ namespace kxf::UI::DataView
 			{
 				if (!m_DraggedColumn)
 				{
-					Column* column = GetColumn();
-					if (column && column->IsMoveable())
+					auto column = GetColumn();
+					if (column && column->GetStyle().Contains(DV::ColumnStyle::Moveable))
 					{
 						m_DraggedColumn = column;
 
@@ -512,7 +511,7 @@ namespace kxf::UI::DataView
 				const int order = header->pitem->iOrder;
 				if (m_DraggedColumn && order != -1)
 				{
-					Column* column = m_DraggedColumn;
+					auto column = m_DraggedColumn;
 					m_DraggedColumn = nullptr;
 					m_UpdateColumns = true;
 
@@ -540,12 +539,12 @@ namespace kxf::UI::DataView
 			// Checkbox
 			case (int)HDN_ITEMSTATEICONCLICK:
 			{
-				if (Column* column = GetColumn())
+				if (auto column = GetColumn())
 				{
 					// Send an event, if it wasn't processed, toggle check state ourselves.
 					// In any case update native column state after the event handler returns.
 					const bool isChecked = column->IsChecked();
-					if (!SendCtrlEvent(ItemEvent::EvtColumnToggle, column).Processed)
+					if (!SendWidgetEvent(DataViewWidgetEvent::EvtColumnToggle, column).Processed)
 					{
 						column->SetChecked(!isChecked);
 					}
@@ -558,9 +557,9 @@ namespace kxf::UI::DataView
 			// Dropdown
 			case (int)HDN_DROPDOWN:
 			{
-				if (Column* column = GetColumn())
+				if (auto column = GetColumn())
 				{
-					SendCtrlEvent(ItemEvent::EvtColumnDropdown, column, GetDropdownRect(header->iItem));
+					SendWidgetEvent(DataViewWidgetEvent::EvtColumnDropdown, column, GetDropdownRect(header->iItem));
 					return true;
 				}
 				return false;
@@ -607,7 +606,7 @@ namespace kxf::UI::DataView
 			bool hasResizableColumns = false;
 			bool hasMoveableColumns = false;
 
-			for (const Column* column: m_View->GetColumnsInPhysicalDisplayOrder())
+			for (const auto* column: m_View->GetColumnsInPhysicalDisplayOrder())
 			{
 				HDITEMW item = {};
 				DoMakeItem(item, *column);
@@ -616,11 +615,11 @@ namespace kxf::UI::DataView
 
 				if (!hasResizableColumns)
 				{
-					hasResizableColumns = column->IsSizeable();
+					hasResizableColumns = column->GetStyle().Contains(DV::ColumnStyle::Resizeable);
 				}
 				if (!hasMoveableColumns)
 				{
-					hasMoveableColumns = column->IsMoveable();
+					hasMoveableColumns = column->GetStyle().Contains(DV::ColumnStyle::Moveable);
 				}
 			}
 
@@ -631,7 +630,7 @@ namespace kxf::UI::DataView
 			Utility::SetWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, style);
 		}
 	}
-	void HeaderCtrl::UpdateColumn(const Column& column)
+	void HeaderCtrl::UpdateColumn(const DV::Column& column)
 	{
 		DoUpdate();
 	}
@@ -646,20 +645,20 @@ namespace kxf::UI::DataView
 		Header_GetItemDropDownRect(reinterpret_cast<HWND>(GetHeaderCtrlHandle()), index, &rect);
 		return Utility::FromWindowsRect(rect);
 	}
-	Rect HeaderCtrl::GetDropdownRect(const Column& column) const
+	Rect HeaderCtrl::GetDropdownRect(const DV::Column& column) const
 	{
 		return GetDropdownRect(column.GetPhysicalDisplayIndex());
 	}
 
-	HeaderCtrl::HeaderCtrl(View* parent)
-		:m_View(parent)
+	HeaderCtrl::HeaderCtrl(View& parent)
+		:m_View(&parent)
 	{
 		Bind(wxEVT_CREATE, &HeaderCtrl::OnCreate, this);
 		Bind(wxEVT_DESTROY, &HeaderCtrl::OnDestroy, this);
 
-		if ([this, parent]()
+		if ([&]()
 		{
-			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, "HeaderCtrl"))
+			if (!CreateControl(&parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, "HeaderCtrl"))
 			{
 				return false;
 			}
@@ -673,7 +672,7 @@ namespace kxf::UI::DataView
 			// column width is just about right to show it together with the sort
 			// indicator, so reduce it to a smaller value (in principle we could even
 			// use 0 here but this starts to look ugly)
-			Header_SetBitmapMargin(GetHandle(), System::GetMetric(SystemSizeMetric::Edge, parent).GetWidth());
+			Header_SetBitmapMargin(GetHandle(), System::GetMetric(SystemSizeMetric::Edge, &parent).GetWidth());
 			return true;
 		}())
 		{
@@ -703,43 +702,23 @@ namespace kxf::UI::DataView
 		return m_View ? m_View->GetMainWindow() : nullptr;
 	}
 
-	size_t HeaderCtrl::GetColumnCount() const
-	{
-		return m_View->GetColumnCount();
-	}
-	Column* HeaderCtrl::GetColumnAt(size_t index) const
-	{
-		return m_View->GetColumn(index);
-	}
-	Column* HeaderCtrl::GetColumnDisplayedAt(size_t index) const
-	{
-		return m_View->GetColumnDisplayedAt(index);
-	}
-
 	void HeaderCtrl::ToggleSortByColumn(size_t index)
 	{
-		if (m_View->IsMultiColumnSortAllowed())
+		if (m_View->GetStyle().Contains(DV::WidgetStyle::MultiColumnSort))
 		{
 			return;
 		}
-		else if (Column* column = m_View->GetColumn(index))
+		else if (auto column = m_View->GetColumnAt(index))
 		{
 			ToggleSortByColumn(*column);
 		}
 	}
-	void HeaderCtrl::ToggleSortByColumn(Column& column)
+	void HeaderCtrl::ToggleSortByColumn(DV::Column& column)
 	{
-		if (m_View->IsMultiColumnSortAllowed() && column.IsSortable())
+		if (m_View->GetStyle().Contains(DV::WidgetStyle::MultiColumnSort) && column.GetStyle().Contains(DV::ColumnStyle::Sortable))
 		{
-			if (column.IsSorted())
-			{
-				column.ResetSorting();
-			}
-			else
-			{
-				column.SortAscending();
-			}
-			SendCtrlEvent(ItemEvent::EvtColumnSorted, &column);
+			column.ToggleSortOrder();
+			SendWidgetEvent(DataViewWidgetEvent::EvtColumnSorted, &column);
 		}
 	}
 
