@@ -28,7 +28,6 @@ namespace kxf::DataView
 			static int GetAbsMaxColumnWidth() noexcept;
 
 		private:
-			IDataViewWidget* m_Widget = nullptr;
 			WXUI::DataView::View* m_View = nullptr;
 			std::shared_ptr<CellRenderer> m_Renderer;
 			std::shared_ptr<CellEditor> m_Editor;
@@ -73,7 +72,7 @@ namespace kxf::DataView
 			int CalcBestWidth() const;
 			int CalcTitleWidth() const;
 
-			void OnColumnAttached(IDataViewWidget& widget, size_t index, size_t displayIndex = npos);
+			void OnColumnAttached(WXUI::DataView::View& view, size_t index, size_t displayIndex = npos);
 			void OnColumnDetached();
 
 		public:

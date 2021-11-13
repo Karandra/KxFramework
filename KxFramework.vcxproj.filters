@@ -2334,9 +2334,6 @@
     <ClInclude Include="kxf\General\RecursionGuard.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Node.h">
-      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\IDataViewItem.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
@@ -2361,9 +2358,6 @@
     <ClInclude Include="kxf\UI\DataView\SortMode.h">
       <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Row.h">
-      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\DataView\Column.h">
       <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
@@ -2375,6 +2369,12 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\DataView\Row.h">
+      <Filter>kxf\UI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.h">
+      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3570,9 +3570,6 @@
     <ClCompile Include="kxf\UI\Widgets\DataView.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\Node.cpp">
-      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\DataView\CellState.cpp">
       <Filter>kxf\UI\DataView</Filter>
     </ClCompile>
@@ -3596,6 +3593,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Events\DataViewWidgetEvent.cpp">
       <Filter>kxf\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.cpp">
+      <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "View.h"
 #include "HeaderCtrl.h"
-#include "HeaderCtrl2.h"
 #include "MainWindow.h"
 #include "Renderer.h"
 #include "kxf/General/Format.h"

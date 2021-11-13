@@ -70,24 +70,22 @@ namespace kxf::DataView
 	}
 
 	// IDataViewColumn
-	void Column::OnColumnAttached(IDataViewWidget& widget, size_t index, size_t displayIndex)
+	void Column::OnColumnAttached(WXUI::DataView::View& view, size_t index, size_t displayIndex)
 	{
-		if (!m_Widget)
+		if (!m_View)
 		{
-			m_Widget = &widget;
-			m_View = static_cast<WXUI::DataView::View*>(widget.GetWxWindow());
+			m_View = &view;
 		}
+
 		if (m_View)
 		{
 			m_Index = index;
-			m_DisplayIndex = index < widget.GetColumnCount() ? displayIndex : index;
+			m_DisplayIndex = index < m_View->GetColumnCount() ? displayIndex : index;
 		}
 	}
 	void Column::OnColumnDetached()
 	{
 		m_View = nullptr;
-		m_Widget = nullptr;
-
 		m_Index = npos;
 		m_DisplayIndex = npos;
 	}
@@ -268,11 +266,11 @@ namespace kxf::DataView
 		{
 			auto width = std::max({CalcTitleWidth(), GetBestWidth(), GetMinWidth()});
 
-			DataViewWidgetEvent event(*m_Widget);
+			DataViewWidgetEvent event(*m_View->m_Widget);
 			event.SetColumn(this);
 			event.SetSize({width, Geometry::DefaultCoord});
 
-			m_Widget->ProcessEvent(event, DataViewWidgetEvent::EvtColumnHeaderWidthFit);
+			m_View->m_Widget.ProcessEvent(event, DataViewWidgetEvent::EvtColumnHeaderWidthFit);
 			if (event.IsAllowed())
 			{
 				SetWidth(event.GetSize().GetWidth());

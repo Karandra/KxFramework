@@ -1,16 +1,9 @@
 #include "KxfPCH.h"
 #include "MainWindow.h"
 #include "HeaderCtrl.h"
-#include "Renderer.h"
-#include "SortMode.h"
-#include "ToolTip.h"
-#include "Editor.h"
-#include "Column.h"
-#include "Node.h"
-#include "View.h"
 #include "kxf/System/SystemInformation.h"
-#include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
+#include "kxf/UI/Windows/Frame.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
@@ -30,13 +23,13 @@ namespace
 	};
 }
 
-namespace kxf::UI::DataView
+namespace kxf::WXUI::DataView
 {
 	class MaxWidthCalculator final: public wxMaxWidthCalculatorBase
 	{
 		private:
 			MainWindow& m_MainWindow;
-			Column& m_Column;
+			DV::Column& m_Column;
 
 			bool m_IsExpanderColumn = false;
 			int m_ExpanderSize = 0;
@@ -76,10 +69,8 @@ namespace kxf::UI::DataView
 	};
 }
 
-namespace kxf::UI::DataView
+namespace kxf::WXUI::DataView
 {
-	wxIMPLEMENT_ABSTRACT_CLASS(MainWindow, wxWindow);
-
 	// Events
 	void MainWindow::OnChar(wxKeyEvent& event)
 	{
@@ -1010,14 +1001,14 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	bool MainWindow::SendExpanderEvent(const EventID& type, Node& item)
+	bool MainWindow::SendExpanderEvent(const EventID& type, DV::Node& item)
 	{
 		ItemEvent event(type);
 		CreateEventTemplate(event, &item);
 
 		return !m_View->ProcessWindowEvent(event) || event.IsAllowed();
 	}
-	void MainWindow::SendSelectionChangedEvent(Node* item, Column* column)
+	void MainWindow::SendSelectionChangedEvent(DV::Node* item, DV::Column* column)
 	{
 		if (item)
 		{
@@ -1028,7 +1019,7 @@ namespace kxf::UI::DataView
 		CreateEventTemplate(event, item, column);
 		m_View->ProcessWindowEvent(event);
 	}
-	bool MainWindow::SendEditingStartedEvent(Node& item, Editor* editor)
+	bool MainWindow::SendEditingStartedEvent(DV::Node& item, DV::Editor* editor)
 	{
 		ItemEvent event(EditorEvent::EvtItemEditStarted);
 		CreateEventTemplate(event, &item, editor->GetColumn());
@@ -1036,7 +1027,7 @@ namespace kxf::UI::DataView
 		m_View->ProcessWindowEvent(event);
 		return event.IsAllowed();
 	}
-	bool MainWindow::SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const Any& value)
+	bool MainWindow::SendEditingDoneEvent(DV::Node& item, Editor* editor, bool canceled, const Any& value)
 	{
 		EditorEvent event(EditorEvent::EvtItemEditDone);
 		CreateEventTemplate(event, &item, editor->GetColumn());
@@ -1477,7 +1468,7 @@ namespace kxf::UI::DataView
 			#endif
 		}
 	}
-	CellState MainWindow::GetCellStateForRow(Row row) const
+	DV::CellState MainWindow::GetCellStateForRow(DV::Row row) const
 	{
 		CellState state;
 		if (row)
@@ -1535,7 +1526,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Tooltip
-	bool MainWindow::ShowToolTip(const Node& node, Column& column)
+	bool MainWindow::ShowToolTip(const DV::Node& node, DV::Column& column)
 	{
 		// Get tooltip
 		Renderer& renderer = node.GetCellRenderer(column);
@@ -1590,7 +1581,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Columns
-	void MainWindow::OnDeleteColumn(Column& column)
+	void MainWindow::OnDeleteColumn(DV::Column& column)
 	{
 		if (&column == m_HotTrackColumn)
 		{
@@ -1606,7 +1597,7 @@ namespace kxf::UI::DataView
 		m_UseCellFocus = m_View->GetColumnCount() != 0;
 		UpdateDisplay();
 	}
-	bool MainWindow::IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const
+	bool MainWindow::IsCellInteractible(const DV::Node& node, const DV::Column& column, InteractibleCell action) const
 	{
 		switch (action)
 		{
@@ -1621,7 +1612,7 @@ namespace kxf::UI::DataView
 		};
 		return false;
 	}
-	Column* MainWindow::FindInteractibleColumn(const Node& node, InteractibleCell action)
+	DV::Column* MainWindow::FindInteractibleColumn(const DV::Node& node, InteractibleCell action)
 	{
 		// Edit the current column editable in 'mode'. If no column is focused
 		// (typically because the user has full row selected), try to find the
@@ -1664,7 +1655,7 @@ namespace kxf::UI::DataView
 		}
 		return nullptr;
 	}
-	int MainWindow::CalcBestColumnWidth(Column& column) const
+	int MainWindow::CalcBestColumnWidth(DV::Column& column) const
 	{
 		if (column.HasBestWidth())
 		{
@@ -1771,7 +1762,7 @@ namespace kxf::UI::DataView
 		m_ToolTipTimer.Stop();
 		CancelEdit();
 	}
-	void MainWindow::OnCellChanged(Node& node, Column* column)
+	void MainWindow::OnCellChanged(DV::Node& node, DV::Column* column)
 	{
 		// Move this node to its new correct place after it was updated.
 
@@ -1800,14 +1791,14 @@ namespace kxf::UI::DataView
 		CreateEventTemplate(event, &node, column);
 		m_View->ProcessWindowEvent(event);
 	}
-	void MainWindow::OnNodeAdded(Node& node)
+	void MainWindow::OnNodeAdded(DV::Node& node)
 	{
 		InvalidateItemCount();
 
 		m_View->InvalidateColumnsBestWidth();
 		UpdateDisplay();
 	}
-	void MainWindow::OnNodeRemoved(Node& item, intptr_t removedCount)
+	void MainWindow::OnNodeRemoved(DV::Node& item, intptr_t removedCount)
 	{
 		InvalidateItemCount();
 		m_View->InvalidateColumnsBestWidth();
@@ -1995,7 +1986,7 @@ namespace kxf::UI::DataView
 		DoAssignModel(nullptr);
 	}
 
-	void MainWindow::CreateEventTemplate(ItemEvent& event, Node* node, Column* column)
+	void MainWindow::CreateEventTemplate(DataViewWidgetEvent& event, DV::Node* node, DV::Column* column)
 	{
 		event.SetId(m_View->GetId());
 		event.SetEventObject(m_View);
@@ -2010,7 +2001,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Refreshing
-	void MainWindow::RefreshRows(Row from, Row to)
+	void MainWindow::RefreshRows(DV::Row from, DV::Row to)
 	{
 		Rect rect = GetRowsRect(from, to);
 		m_View->CalcScrolledPosition(rect.GetX(), rect.GetY(), &rect.X(), &rect.Y());
@@ -2023,7 +2014,7 @@ namespace kxf::UI::DataView
 			RefreshRect(intersectRect, true);
 		}
 	}
-	void MainWindow::RefreshRowsAfter(Row firstRow)
+	void MainWindow::RefreshRowsAfter(DV::Row firstRow)
 	{
 		Size clientSize = Size(GetClientSize());
 		int start = GetRowStart(firstRow);
@@ -2035,7 +2026,7 @@ namespace kxf::UI::DataView
 			RefreshRect(rect, true);
 		}
 	}
-	void MainWindow::RefreshColumn(const Column& column)
+	void MainWindow::RefreshColumn(const DV::Column& column)
 	{
 		Size clientSize = Size(GetClientSize());
 
@@ -2058,7 +2049,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Item rect
-	Rect MainWindow::GetRowsRect(Row rowFrom, Row rowTo) const
+	Rect MainWindow::GetRowsRect(DV::Row rowFrom, DV::Row rowTo) const
 	{
 		if (rowFrom > rowTo)
 		{
@@ -2083,11 +2074,11 @@ namespace kxf::UI::DataView
 		}
 		return rect;
 	}
-	Rect MainWindow::GetRowRect(Row row) const
+	Rect MainWindow::GetRowRect(DV::Row row) const
 	{
 		return GetRowsRect(row, row);
 	}
-	int MainWindow::GetRowStart(Row row) const
+	int MainWindow::GetRowStart(DV::Row row) const
 	{
 		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
@@ -2120,7 +2111,7 @@ namespace kxf::UI::DataView
 		}
 		return *row * m_UniformRowHeight;
 	}
-	int MainWindow::GetRowHeight(Row row) const
+	int MainWindow::GetRowHeight(DV::Row row) const
 	{
 		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
@@ -2143,11 +2134,11 @@ namespace kxf::UI::DataView
 		}
 		return m_UniformRowHeight;
 	}
-	int MainWindow::GetVariableRowHeight(const Node& node) const
+	int MainWindow::GetVariableRowHeight(const DV::Node& node) const
 	{
 		return std::max(node.GetItemHeight(), m_UniformRowHeight);
 	}
-	int MainWindow::GetVariableRowHeight(Row row) const
+	int MainWindow::GetVariableRowHeight(DV::Row row) const
 	{
 		const Node* node = GetNodeByRow(row);
 		return node ? GetVariableRowHeight(*node) : m_UniformRowHeight;
@@ -2165,7 +2156,7 @@ namespace kxf::UI::DataView
 		}
 		return width;
 	}
-	Row MainWindow::GetRowAt(int yCoord) const
+	DV::Row MainWindow::GetRowAt(int yCoord) const
 	{
 		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
@@ -2234,7 +2225,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Drag and Drop
-	GDIBitmap MainWindow::CreateItemBitmap(Row row, int& indent)
+	GDIBitmap MainWindow::CreateItemBitmap(DV::Row row, int& indent)
 	{
 		int width = GetRowWidth();
 		int height = GetRowHeight(row);
@@ -2328,7 +2319,7 @@ namespace kxf::UI::DataView
 		return value != Result::OperationRemoved || value == Result::None;
 	}
 
-	std::tuple<Row, Node*> MainWindow::DragDropHitTest(const Point& pos) const
+	std::tuple<DV::Row, DV::Node*> MainWindow::DragDropHitTest(const Point& pos) const
 	{
 		// Get row
 		Point unscrolledPos;
@@ -2449,7 +2440,7 @@ namespace kxf::UI::DataView
 			header->ScrollWidget(dx);
 		}
 	}
-	void MainWindow::ScrollTo(Row row, size_t column)
+	void MainWindow::ScrollTo(DV::Row row, size_t column)
 	{
 		Point pos;
 		m_View->GetScrollPixelsPerUnit(&pos.X(), &pos.Y());
@@ -2485,7 +2476,7 @@ namespace kxf::UI::DataView
 		}
 		m_View->Scroll(scrollPos);
 	}
-	void MainWindow::EnsureVisible(Row row, size_t column)
+	void MainWindow::EnsureVisible(DV::Row row, size_t column)
 	{
 		if (row > GetRowCount())
 		{
@@ -2509,12 +2500,12 @@ namespace kxf::UI::DataView
 	}
 
 	// Current row and column
-	void MainWindow::ChangeCurrentRow(Row row)
+	void MainWindow::ChangeCurrentRow(DV::Row row)
 	{
 		m_CurrentRow = row;
 		// Send event ?
 	}
-	bool MainWindow::TryAdvanceCurrentColumn(Node* node, wxKeyEvent& event, bool moveForward)
+	bool MainWindow::TryAdvanceCurrentColumn(DV::Node* node, wxKeyEvent& event, bool moveForward)
 	{
 		const size_t columnCount = m_View->GetColumnCount();
 		const size_t visibleColumnsCount = m_View->GetVisibleColumnCount();
@@ -2603,7 +2594,7 @@ namespace kxf::UI::DataView
 		return true;
 	}
 
-	Node* MainWindow::GetHotTrackItem() const
+	DV::Node* MainWindow::GetHotTrackItem() const
 	{
 		if (m_HotTrackRow)
 		{
@@ -2611,13 +2602,13 @@ namespace kxf::UI::DataView
 		}
 		return nullptr;
 	}
-	Column* MainWindow::GetHotTrackColumn() const
+	DV::Column* MainWindow::GetHotTrackColumn() const
 	{
 		return m_HotTrackColumn;
 	}
 
 	// Selection
-	bool MainWindow::UnselectAllRows(Row exceptThisRow)
+	bool MainWindow::UnselectAllRows(DV::Row exceptThisRow)
 	{
 		if (!IsSelectionEmpty())
 		{
@@ -2650,39 +2641,29 @@ namespace kxf::UI::DataView
 		// There are no selected items left.
 		return true;
 	}
-	void MainWindow::ReverseRowSelection(Row row)
+	void MainWindow::ReverseRowSelection(DV::Row row)
 	{
 		m_SelectionStore.SelectItem(*row, !IsRowSelected(row));
 		RefreshRow(row);
 	}
-	void MainWindow::SelectRow(Row row, bool select)
+	void MainWindow::SelectRow(DV::Row row, bool select)
 	{
 		if (m_SelectionStore.SelectItem(*row, select))
 		{
 			RefreshRow(row);
 		}
 	}
-	void MainWindow::SelectRows(Row from, Row to)
+	void MainWindow::SelectRows(DV::Row from, DV::Row to)
 	{
 		if (from > to)
 		{
 			std::swap(from, to);
 		}
-		for (Row row = from; row <= to; ++row)
+		for (auto row = from; row <= to; ++row)
 		{
 			m_SelectionStore.SelectItem(*row, true);
 		}
 		RefreshRows(from, to);
-	}
-	void MainWindow::SelectRows(const Row::Vector& selection)
-	{
-		for (const Row& row: selection)
-		{
-			if (m_SelectionStore.SelectItem(*row))
-			{
-				RefreshRow(row);
-			}
-		}
 	}
 
 	// View
@@ -2701,13 +2682,13 @@ namespace kxf::UI::DataView
 		Size size = Size(GetClientSize());
 		return size.GetHeight() / m_UniformRowHeight;
 	}
-	Row MainWindow::GetFirstVisibleRow() const
+	DV::Row MainWindow::GetFirstVisibleRow() const
 	{
 		Point pos(0, 0);
 		m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &pos.X(), &pos.Y());
 		return GetRowAt(pos.GetY());
 	}
-	Row MainWindow::GetLastVisibleRow() const
+	DV::Row MainWindow::GetLastVisibleRow() const
 	{
 		Size size = Size(GetClientSize());
 		m_View->CalcUnscrolledPosition(size.GetWidth(), size.GetHeight(), &size.Width(), &size.Height());
@@ -2717,7 +2698,7 @@ namespace kxf::UI::DataView
 		return std::min(GetRowCount() - 1, row);
 	}
 
-	void MainWindow::HitTest(const Point& pos, Node** nodeOut, Column** columnOut)
+	void MainWindow::HitTest(const Point& pos, DV::Node** nodeOut, DV::Column** columnOut)
 	{
 		Point unscrolledPos = Point::UnspecifiedPosition();
 		if (nodeOut)
@@ -2752,7 +2733,7 @@ namespace kxf::UI::DataView
 			}
 		}
 	}
-	Rect MainWindow::GetItemRect(const Node& item, const Column* column)
+	Rect MainWindow::GetItemRect(const DV::Node& item, const DV::Column* column)
 	{
 		int xpos = 0;
 		int width = 0;
@@ -2813,14 +2794,14 @@ namespace kxf::UI::DataView
 	}
 
 	// Rows
-	void MainWindow::Expand(Row row)
+	void MainWindow::Expand(DV::Row row)
 	{
 		if (Node* node = GetNodeByRow(row))
 		{
 			Expand(*node, row);
 		}
 	}
-	void MainWindow::Expand(Node& node, Row row)
+	void MainWindow::Expand(DV::Node& node, DV::Row row)
 	{
 		if (!node.IsNodeExpanded())
 		{
@@ -2858,7 +2839,7 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	void MainWindow::Collapse(Row row)
+	void MainWindow::Collapse(DV::Row row)
 	{
 		if (!IsListLike())
 		{
@@ -2868,7 +2849,7 @@ namespace kxf::UI::DataView
 			}
 		}
 	}
-	void MainWindow::Collapse(Node& node, Row row)
+	void MainWindow::Collapse(DV::Node& node, DV::Row row)
 	{
 		if (node.IsNodeExpanded())
 		{
@@ -2924,7 +2905,7 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	void MainWindow::ToggleExpand(Row row)
+	void MainWindow::ToggleExpand(DV::Row row)
 	{
 		if (!IsListLike())
 		{
@@ -2941,7 +2922,7 @@ namespace kxf::UI::DataView
 			}
 		}
 	}
-	bool MainWindow::IsExpanded(Row row) const
+	bool MainWindow::IsExpanded(DV::Row row) const
 	{
 		if (!IsListLike())
 		{
@@ -2952,7 +2933,7 @@ namespace kxf::UI::DataView
 		}
 		return false;
 	}
-	bool MainWindow::HasChildren(Row row) const
+	bool MainWindow::HasChildren(DV::Row row) const
 	{
 		if (!IsListLike())
 		{
@@ -2962,7 +2943,7 @@ namespace kxf::UI::DataView
 		return false;
 	}
 
-	Node* MainWindow::GetNodeByRow(Row row) const
+	DV::Node* MainWindow::GetNodeByRow(DV::Row row) const
 	{
 		if (m_TreeRoot && row)
 		{
@@ -2973,7 +2954,7 @@ namespace kxf::UI::DataView
 		}
 		return nullptr;
 	}
-	Row MainWindow::GetRowByNode(const Node& node) const
+	DV::Row MainWindow::GetRowByNode(const DV::Node& node) const
 	{
 		if (m_Model)
 		{
@@ -3010,7 +2991,7 @@ namespace kxf::UI::DataView
 		return Row();
 	}
 
-	bool MainWindow::BeginEdit(Node& node, Column& column)
+	bool MainWindow::BeginEdit(DV::Node& node, DV::Column& column)
 	{
 		// Cancel any previous editing
 		CancelEdit();

@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Row.h"
+#include "../../../DataView/Row.h"
 #include "../../../DataView/Node.h"
 #include "../../../DataView/Column.h"
 #include "../../../DataView/SortMode.h"

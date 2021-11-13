@@ -611,7 +611,7 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Common.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.h" />
-    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Node.h" />
+    <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\View.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\HTMLBox.h" />
     <ClInclude Include="kxf\UI\Widgets\WXUI\ImageComboBox.h" />
@@ -1117,7 +1117,7 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\ClusterMap.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ComboBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.cpp" />
-    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\Node.cpp" />
+    <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\View.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\HTMLBox.cpp" />
     <ClCompile Include="kxf\UI\Widgets\WXUI\ImageComboBox.cpp" />

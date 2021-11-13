@@ -48,5 +48,49 @@ namespace kxf::DataView
 			}
 
 			constexpr auto operator<=>(const Row&) const noexcept = default;
+
+			constexpr Row& operator+=(const Row& other) noexcept
+			{
+				m_Value += other.m_Value;
+				return *this;
+			}
+			constexpr Row& operator-=(const Row& other) noexcept
+			{
+				m_Value -= other.m_Value;
+				return *this;
+			}
+			constexpr Row operator+(const Row& other) const noexcept
+			{
+				return m_Value + other.m_Value;
+			}
+			constexpr Row operator-(const Row& other) const noexcept
+			{
+				return m_Value - other.m_Value;
+			}
+
+			constexpr Row& operator++() noexcept
+			{
+				++m_Value;
+				return *this;
+			}
+			constexpr Row& operator--() noexcept
+			{
+				--m_Value;
+				return *this;
+			}
+			constexpr Row operator++(int) noexcept
+			{
+				auto value = m_Value + 1;
+				++m_Value;
+
+				return value;
+			}
+			constexpr Row operator--(int) noexcept
+			{
+				auto value = m_Value - 1;
+				--m_Value;
+
+				return value;
+			}
 	};
 }
