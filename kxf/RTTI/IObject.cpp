@@ -35,7 +35,7 @@ namespace
 			{
 				g_UnownedRefAllocator.AttachPool(g_UnownedRefStorage.data(), g_UnownedRefStorage.size());
 
-				auto ptr = g_UnownedRefAllocator.Allocate(count * sizeof(T), 0, m_AllocationFlags);
+				auto ptr = g_UnownedRefAllocator.Allocate(count * sizeof(T));
 				if (!ptr)
 				{
 					throw std::bad_alloc();
@@ -43,7 +43,7 @@ namespace
 
 				return static_cast<T*>(ptr);
 			}
-			void deallocate(const T* ptr, size_t count)
+			void deallocate(T* ptr, size_t count)
 			{
 				if (!g_UnownedRefAllocator.Free(ptr))
 				{

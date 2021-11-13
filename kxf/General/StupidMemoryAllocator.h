@@ -37,7 +37,7 @@ namespace kxf
 			std::atomic<size_t> m_PagesUsed = 0;
 			std::atomic<size_t> m_BytesRequested = 0;
 
-			ReadWriteLock m_Lock;
+			mutable ReadWriteLock m_Lock;
 
 		private:
 			bool ConstructPool(void* pool, size_t poolSize, size_t alignment, size_t regionSize, size_t pageCount, FlagSet<MemoryAllocatorFlag> flags) noexcept;
@@ -67,7 +67,7 @@ namespace kxf
 
 				if (auto& regionInfo = pages[pageIndex].RegionInfo)
 				{
-					return static_cast<T>(std::invoke(func, pages, pageIndex, regionInfo));
+					return static_cast<T>(std::invoke(func, pages, pageIndex, *regionInfo));
 				}
 				return nullValue;
 			}
