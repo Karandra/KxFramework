@@ -144,6 +144,7 @@ namespace kxf::NativeAPI
 	}
 	namespace DXGI
 	{
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, CreateDXGIFactory1, const ::IID&, void**);
 		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, CreateDXGIFactory2, UINT, const ::IID&, void**);
 	}
 	namespace DComp

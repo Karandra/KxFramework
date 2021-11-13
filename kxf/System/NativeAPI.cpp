@@ -142,6 +142,7 @@ namespace kxf::NativeAPI::Private
 	{
 		if (IsLibraryLoaded(NativeLibrary::DXGI))
 		{
+			INIT_FUNCTION(DXGI, CreateDXGIFactory1);
 			INIT_FUNCTION(DXGI, CreateDXGIFactory2);
 		}
 	}
@@ -209,6 +210,7 @@ namespace kxf::NativeAPI
 	}
 	namespace DXGI
 	{
+		DEFINE_FUNCTION(CreateDXGIFactory1);
 		DEFINE_FUNCTION(CreateDXGIFactory2);
 	}
 	namespace DComp
