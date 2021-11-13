@@ -573,14 +573,18 @@ namespace kxf::System
 		HResult hr = HResult::Fail();
 
 		// Create DXGI factory
-		COMPtr<IDXGIFactory2> dxgiFactory;
+		COMPtr<IDXGIFactory1> dxgiFactory;
 		if (NativeAPI::DXGI::CreateDXGIFactory2)
 		{
-			hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), dxgiFactory.GetAddress());
+			COMPtr<IDXGIFactory2> dxgiFactory2;
+			if (hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), dxgiFactory2.GetAddress()))
+			{
+				dxgiFactory = std::move(dxgiFactory2);
+			}
 		}
-		else
+		else if (NativeAPI::DXGI::CreateDXGIFactory1)
 		{
-			hr = ::CreateDXGIFactory1(__uuidof(IDXGIFactory2), dxgiFactory.GetAddress());
+			hr = NativeAPI::DXGI::CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&dxgiFactory));
 		}
 
 		if (dxgiFactory && hr)
