@@ -3,10 +3,12 @@
 #include "UndefWindows.h"
 #include <array>
 
-namespace kxf::NativeAPI
+namespace kxf
 {
-	enum class NativeLibrary: size_t
+	enum class NativeAPISet
 	{
+		None = -1,
+
 		NtDLL,
 		Kernel32,
 		KernelBase,
@@ -15,43 +17,74 @@ namespace kxf::NativeAPI
 		DWMAPI,
 		DbgHelp,
 		DXGI,
-		DComp,
-
-		COUNT,
+		DComp
 	};
 }
-
 namespace kxf::NativeAPI::Private
 {
-	class KX_API Loader final
+	class InitializationModule;
+}
+
+namespace kxf
+{
+	class KX_API NativeAPILoader final
 	{
-		friend class InitializationModule;
-		struct LibraryRecord final
-		{
-			void* Handle = nullptr;
-			const wchar_t* Name = nullptr;
-		};
+		friend class NativeAPI::Private::InitializationModule;
 
 		private:
-			std::array<LibraryRecord, static_cast<size_t>(NativeLibrary::COUNT)> m_LoadedLibraries = {};
+			struct LibraryRecord final
+			{
+				public:
+					void* Handle = nullptr;
+					const wchar_t* Name = nullptr;
+					NativeAPISet Type = NativeAPISet::None;
 
-		private:
-			Loader() noexcept;
+				public:
+					bool IsNull() const noexcept
+					{
+						return Handle == nullptr || Name == nullptr || Type == NativeAPISet::None;
+					}
+			};
 
 		public:
-			size_t LoadLibraries() noexcept;
-			size_t UnloadLibraries() noexcept;
-			bool IsLibraryLoaded(NativeLibrary library) const noexcept;
+			static NativeAPILoader& GetInstance();
 
-			void LoadNtDLL() noexcept;
-			void LoadKernel32() noexcept;
-			void LoadKernelBase() noexcept;
-			void LoadUser32() noexcept;
-			void LoadShlWAPI() noexcept;
-			void LoadDWMAPI() noexcept;
-			void LoadDbgHelp() noexcept;
-			void LoadDXGI() noexcept;
-			void LoadDComp() noexcept;
+		private:
+			std::array<LibraryRecord, 16> m_LoadedLibraries = {};
+			size_t m_Count = 0;
+			bool m_IsLoaded = false;
+
+		private:
+			size_t DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept;
+			size_t DoUnloadLibraries() noexcept;
+
+			void InitializeNtDLL() noexcept;
+			void InitializeKernel32() noexcept;
+			void InitializeKernelBase() noexcept;
+			void InitializeUser32() noexcept;
+			void InitializeShlWAPI() noexcept;
+			void InitializeDWMAPI() noexcept;
+			void InitializeDbgHelp() noexcept;
+			void InitializeDXGI() noexcept;
+			void InitializeDComp() noexcept;
+
+		private:
+			NativeAPILoader() noexcept;
+
+		public:
+			size_t LoadLibraries() noexcept
+			{
+				return DoLoadLibraries({});
+			}
+			size_t LoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept
+			{
+				return apiSets.size() != 0 ? DoLoadLibraries(std::move(apiSets)) : 0;
+			}
+			size_t UnloadLibraries() noexcept
+			{
+				return DoUnloadLibraries();
+			}
+			bool IsLibraryLoaded(NativeAPISet library) const noexcept;
 	};
 }
 
