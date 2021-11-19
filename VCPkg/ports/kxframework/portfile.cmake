@@ -41,10 +41,10 @@ endif()
 set(VCPKG_USE_HEAD_VERSION ON)
 vcpkg_from_github(
 	OUT_SOURCE_PATH SOURCE_PATH
-	REPO KerberX/KxFramework
-	REF master
+	REPO Karandra/KxFramework
+	REF develop
 	SHA512 1
-	HEAD_REF master
+	HEAD_REF develop
 )
 
 # # Check if one or more features are a part of a package installation.

@@ -1,9 +1,9 @@
 {
     "name": "kxframework",
-    "version-string": "2.0a",
+    "version-string": "2.0",
     "port-version": 1,
     "supports": "windows",
-    "description": "Support library for Kortex Mod Manager.",
+    "description": "[develop] Support library for Kortex Mod Manager",
     "homepage": "https://github.com/KerberX/KxFramework",
     "license": "LGPL-3.0",
 
