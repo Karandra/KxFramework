@@ -128,6 +128,44 @@ namespace kxf
 		}
 		return {};
 	}
+	uint64_t Version::ToInteger() const
+	{
+		switch (m_Type)
+		{
+			case VersionType::DateTime:
+			{
+				return GetItem<VersionType::DateTime>(m_Value).GetValue();
+			}
+			case VersionType::Default:
+			{
+				uint64_t result = 0;
+
+				auto& value = GetItem<VersionType::Default>(m_Value);
+				for (size_t i = 0; i < m_ComponentCount; i++)
+				{
+					auto& item = value[i];
+					if (item.HasNumeric())
+					{
+						auto magintude = static_cast<uint64_t>(std::pow(10, m_ComponentCount - i));
+						result += static_cast<uint64_t>(item.m_Numeric) * magintude;
+					}
+					if (item.HasString())
+					{
+						const size_t max = (std::size(item.m_String) - 1) * 255;
+						const size_t length = std::char_traits<XChar>::length(item.m_String);
+
+						uint64_t sum = max;
+						for (size_t i = 0; i < length; i++)
+						{
+							sum -= item.m_String[i];
+						}
+						result += sum;
+					}
+				}
+			}
+		};
+		return 0;
+	}
 
 	std::strong_ordering Version::operator<=>(const Version& other) const
 	{

@@ -81,6 +81,7 @@ namespace kxf
 			String ToString() const;
 			wxVersionInfo ToWxVersionInfo(const String& name = {}, const String& description = {}, const String& copyright = {}) const;
 			DateTime ToDateTime() const;
+			uint64_t ToInteger() const;
 
 		public:
 			explicit operator bool() const noexcept
