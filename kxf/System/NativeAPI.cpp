@@ -47,6 +47,8 @@ namespace kxf
 
 	size_t NativeAPILoader::DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept
 	{
+		Log::Info("DoLoadLibraries: m_IsLoaded=[{}], m_Count=[{}]", m_IsLoaded, m_Count);
+
 		if (!m_IsLoaded)
 		{
 			size_t count = 0;
@@ -55,17 +57,19 @@ namespace kxf
 				auto& item = m_LoadedLibraries[i];
 				if (apiSets.size() == 0 || std::find(apiSets.begin(), apiSets.end(), item.Type) != apiSets.end())
 				{
+					Log::Info("Loading library: '{}'", item.Name);
 					if (item.Handle = ::LoadLibraryW(item.Name))
 					{
 						count++;
 					}
 					else
 					{
-						Log::Warning("Couldn't load \"{}\" library", item.Name);
+						Log::Warning("Couldn't load '{}' library", item.Name);
 					}
 				}
 			}
 
+			Log::Info("Loaded {} libraries", count);
 			m_IsLoaded = count != 0;
 			return count;
 		}
@@ -95,6 +99,7 @@ namespace kxf
 
 	void NativeAPILoader::InitializeNtDLL() noexcept
 	{
+		Log::Info("InitializeNtDLL");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::NtDLL))
@@ -112,6 +117,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeKernel32() noexcept
 	{
+		Log::Info("InitializeKernel32");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::Kernel32))
@@ -130,6 +136,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeKernelBase() noexcept
 	{
+		Log::Info("InitializeKernelBase");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::KernelBase))
@@ -139,6 +146,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeUser32() noexcept
 	{
+		Log::Info("InitializeUser32");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::User32))
@@ -151,6 +159,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeShlWAPI() noexcept
 	{
+		Log::Info("InitializeShlWAPI");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::ShlWAPI))
@@ -160,6 +169,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeDWMAPI() noexcept
 	{
+		Log::Info("InitializeDWMAPI");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DWMAPI))
@@ -172,6 +182,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeDbgHelp() noexcept
 	{
+		Log::Info("InitializeDbgHelp");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DbgHelp))
@@ -181,6 +192,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeDXGI() noexcept
 	{
+		Log::Info("InitializeDXGI");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DXGI))
@@ -191,6 +203,7 @@ namespace kxf
 	}
 	void NativeAPILoader::InitializeDComp() noexcept
 	{
+		Log::Info("InitializeDComp");
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DComp))
@@ -284,6 +297,8 @@ namespace kxf::NativeAPI::Private
 		public:
 			bool OnInit() noexcept override
 			{
+				Log::Info("InitializationModule::OnInit");
+
 				if (m_Loader.LoadLibraries() != 0)
 				{
 					m_Loader.InitializeNtDLL();
@@ -296,12 +311,15 @@ namespace kxf::NativeAPI::Private
 					m_Loader.InitializeDXGI();
 					m_Loader.InitializeDComp();
 
+					Log::Info("InitializationModule::OnInit -> Success");
 					return true;
 				}
 				return false;
 			}
 			void OnExit() noexcept override
 			{
+				Log::Info("InitializationModule::OnExit");
+
 				m_Loader.UnloadLibraries();
 			}
 
