@@ -42,9 +42,9 @@ set(VCPKG_USE_HEAD_VERSION ON)
 vcpkg_from_github(
 	OUT_SOURCE_PATH SOURCE_PATH
 	REPO Karandra/KxFramework
-	REF develop
+	REF master
 	SHA512 1
-	HEAD_REF develop
+	HEAD_REF master
 )
 
 # # Check if one or more features are a part of a package installation.

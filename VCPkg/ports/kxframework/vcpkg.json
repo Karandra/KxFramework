@@ -3,14 +3,14 @@
     "version-string": "2.0",
     "port-version": 1,
     "supports": "windows",
-    "description": "[develop] Support library for Kortex Mod Manager",
-    "homepage": "https://github.com/KerberX/KxFramework",
+    "description": "[master] Support library for Kortex Mod Manager",
+    "homepage": "https://github.com/Karandra/KxFramework",
     "license": "LGPL-3.0",
 
     "dependencies":
-	[
+    [
         "wxwidgets",
-        "sciter",
+        "sciter-js",
         "openssl",
         "openssl-windows",
         "websocketpp",
@@ -24,16 +24,15 @@
         "xxhash",
         "7zip",
         "uriparser",
-		
-		{
+        {
             "name": "curl",
             "default-features": false,
             "features":
-			[
-				"non-http",
-				"http2",
-				"openssl"
-			]
+            [
+                "non-http",
+                "http2",
+                "openssl"
+            ]
         }
     ]
 }
