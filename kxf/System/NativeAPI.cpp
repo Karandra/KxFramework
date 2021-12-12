@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "NativeAPI.h"
 #include "kxf/Log/Common.h"
+#include "kxf/FileSystem/FSPath.h"
 #include "kxf/Utility/Common.h"
 #include <Windows.h>
 #include <wx/module.h>
@@ -34,14 +35,40 @@ namespace kxf::NativeAPI::Private
 		size_t count = 0;
 		for (LibraryRecord& library: m_LoadedLibraries)
 		{
-			library.Handle = ::LoadLibraryW(library.Name);
-			if (library.Handle)
+			Log::Info("Lookup directory: '{}'", m_LookupDirectory);
+
+			size_t count = 0;
+			for (size_t i = 0; i < m_Count; i++)
 			{
-				count++;
-			}
-			else
-			{
-				Log::Warning("Couldn't load \"{}\" library", library.Name);
+				auto& item = m_LoadedLibraries[i];
+				if (apiSets.size() == 0 || std::find(apiSets.begin(), apiSets.end(), item.Type) != apiSets.end())
+				{
+					Log::Info("Loading library: '{}'", item.Name);
+
+					if (!m_LookupDirectory.IsEmpty())
+					{
+						FSPath path = m_LookupDirectory;
+						path.Append(item.Name);
+
+						auto fullPath = path.GetFullPathWithNS();
+						Log::Info("Loading library '{}' using a fully qualified path name '{}'", item.Name, fullPath);
+
+						item.Handle = ::LoadLibraryW(fullPath.wc_str());
+					}
+					else
+					{
+						item.Handle = ::LoadLibraryW(item.Name);
+					}
+
+					if (item.Handle)
+					{
+						count++;
+					}
+					else
+					{
+						Log::Warning("Couldn't load '{}' library", item.Name);
+					}
+				}
 			}
 		}
 		return count;
@@ -151,6 +178,21 @@ namespace kxf::NativeAPI::Private
 		{
 			INIT_FUNCTION(DComp, DCompositionCreateDevice);
 		}
+	}
+
+	bool NativeAPILoader::IsLibraryLoaded(NativeAPISet library) const noexcept
+	{
+		if (m_IsLoaded)
+		{
+			const size_t index = static_cast<size_t>(library);
+			return index < m_LoadedLibraries.size() && m_LoadedLibraries[index].Handle;
+		}
+		return false;
+	}
+
+	void NativeAPILoader::SetLookupDirectory(const FSPath& path)
+	{
+		m_LookupDirectory = path.GetFullPathWithNS();
 	}
 }
 
