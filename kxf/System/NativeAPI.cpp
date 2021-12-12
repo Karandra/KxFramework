@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "NativeAPI.h"
 #include "kxf/Log/Common.h"
+#include "kxf/FileSystem/FSPath.h"
 #include "kxf/Utility/Common.h"
 #include <Windows.h>
 #include <wx/module.h>
@@ -51,6 +52,8 @@ namespace kxf
 
 		if (!m_IsLoaded)
 		{
+			Log::Info("Lookup directory: '{}'", m_LookupDirectory);
+
 			size_t count = 0;
 			for (size_t i = 0; i < m_Count; i++)
 			{
@@ -58,7 +61,23 @@ namespace kxf
 				if (apiSets.size() == 0 || std::find(apiSets.begin(), apiSets.end(), item.Type) != apiSets.end())
 				{
 					Log::Info("Loading library: '{}'", item.Name);
-					if (item.Handle = ::LoadLibraryW(item.Name))
+
+					if (!m_LookupDirectory.IsEmpty())
+					{
+						FSPath path = m_LookupDirectory;
+						path.Append(item.Name);
+
+						auto fullPath = path.GetFullPathWithNS();
+						Log::Info("Loading library '{}' using a fully qualified path name '{}'", item.Name, fullPath);
+
+						item.Handle = ::LoadLibraryW(fullPath.wc_str());
+					}
+					else
+					{
+						item.Handle = ::LoadLibraryW(item.Name);
+					}
+
+					if (item.Handle)
 					{
 						count++;
 					}
@@ -220,6 +239,11 @@ namespace kxf
 			return index < m_LoadedLibraries.size() && m_LoadedLibraries[index].Handle;
 		}
 		return false;
+	}
+
+	void NativeAPILoader::SetLookupDirectory(const FSPath& path)
+	{
+		m_LookupDirectory = path.GetFullPathWithNS();
 	}
 }
 

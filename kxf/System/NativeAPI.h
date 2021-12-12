@@ -5,6 +5,8 @@
 
 namespace kxf
 {
+	class FSPath;
+
 	enum class NativeAPISet
 	{
 		None = -1,
@@ -51,6 +53,7 @@ namespace kxf
 
 		private:
 			std::array<LibraryRecord, 16> m_LoadedLibraries = {};
+			String m_LookupDirectory;
 			size_t m_Count = 0;
 			bool m_IsLoaded = false;
 
@@ -85,6 +88,8 @@ namespace kxf
 				return DoUnloadLibraries();
 			}
 			bool IsLibraryLoaded(NativeAPISet library) const noexcept;
+
+			void SetLookupDirectory(const FSPath& path);
 	};
 }
 
