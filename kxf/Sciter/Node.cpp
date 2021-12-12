@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "Node.h"
 #include "Element.h"
-#include "Internal.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "SciterAPI.h"
 
 namespace kxf::Sciter

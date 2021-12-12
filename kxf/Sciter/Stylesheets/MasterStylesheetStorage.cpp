@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "MasterStylesheetStorage.h"
-#include "../SciterAPI.h"
-#include "../Internal.h"
+#include "kxf/Sciter/SciterAPI.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/General/Enumerator.h"
 
 namespace kxf::Sciter

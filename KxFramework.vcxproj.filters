@@ -287,6 +287,9 @@
     <Filter Include="kxf\UI\Private">
       <UniqueIdentifier>{033972eb-2a62-4706-a4e8-26049721ba7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Sciter\Private">
+      <UniqueIdentifier>{b0ab3bd5-4e6f-4296-a285-093c14d4f95b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -347,9 +350,6 @@
       <Filter>kxf\Sciter</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter\SciterAPI.h">
-      <Filter>kxf\Sciter</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Sciter\Internal.h">
       <Filter>kxf\Sciter</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter\Events.h">
@@ -1177,9 +1177,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Serialization\HTML\Private\token_type.h">
       <Filter>kxf\Serialization\HTML\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Serialization\XML\Private\TinyXML2 HTML5 Printer.h">
-      <Filter>kxf\Serialization\XML\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Serialization\XML\Private\Utility.h">
       <Filter>kxf\Serialization\XML\Private</Filter>
@@ -2319,6 +2316,9 @@
     <ClInclude Include="kxf\General\StupidMemoryAllocator.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Sciter\Private\Conversion.h">
+      <Filter>kxf\Sciter\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2343,9 +2343,6 @@
       <Filter>kxf\Sciter</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Sciter\SciterAPI.cpp">
-      <Filter>kxf\Sciter</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Sciter\Internal.cpp">
       <Filter>kxf\Sciter</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Sciter\IWindowRenderer.cpp">
@@ -3509,6 +3506,9 @@
     </ClCompile>
     <ClCompile Include="kxf\General\StupidMemoryAllocator.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Sciter\Private\Conversion.cpp">
+      <Filter>kxf\Sciter\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@ namespace kxf::Sciter
 	KX_API Version GetLibraryVersion();
 
 	KX_API bool IsLibraryLoaded();
-	KX_API bool LoadLibrary(const String& path);
+	KX_API void* LoadLibrary(const FSPath& path);
 	KX_API void FreeLibrary();
 }
 

@@ -3,12 +3,12 @@
 #include "GraphicsContext.h"
 #include "kxf/Sciter/ScriptValue.h"
 #include "kxf/Sciter/SciterAPI.h"
-#include "kxf/Sciter/Internal.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/IO/MemoryStream.h"
 
 namespace kxf::Sciter
 {
-	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(kxf::UniversallyUniqueID encoding)
+	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(const kxf::UniversallyUniqueID& encoding) noexcept
 	{
 		using namespace kxf;
 
@@ -30,7 +30,7 @@ namespace kxf::Sciter
 		}
 		return {};
 	}
-	bool DoGetImageInfo(HIMG image, Size& size, bool& usesAlpha)
+	bool DoGetImageInfo(HIMG image, Size& size, bool& usesAlpha) noexcept
 	{
 		UINT width = 0;
 		UINT height = 0;

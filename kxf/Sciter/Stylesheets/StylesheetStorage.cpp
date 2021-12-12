@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "StylesheetStorage.h"
-#include "../Host.h"
-#include "../SciterAPI.h"
-#include "../Internal.h"
+#include "kxf/Sciter/Host.h"
+#include "kxf/Sciter/SciterAPI.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/Enumerator.h"
 

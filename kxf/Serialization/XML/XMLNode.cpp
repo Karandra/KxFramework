@@ -393,8 +393,7 @@ namespace kxf
 
 	String XMLNode::GetXML(SerializationFormat mode) const
 	{
-		auto node = GetNode();
-		if (node)
+		if (auto node = GetNode())
 		{
 			tinyxml2::XMLDocument subTree;
 			node->DeepClone(&subTree);
