@@ -300,15 +300,15 @@ namespace kxf::DataView
 {
 	void RootNode::Initalize(WXUI::DataView::MainWindow& mainWindow) noexcept
 	{
-		m_DataModel = mainWindow.m_DataModel.get();
-		m_MainWindow = mainWindow;
-		m_View = mainWindow->m_View;
+		m_DataModel = mainWindow.m_Model.get();
+		m_MainWindow = &mainWindow;
+		m_View = mainWindow.m_View;
 	}
 }
 
 namespace kxf::DataView
 {
-	bool NodeOperation::DoWalk(Node& node, NodeOperation& func)
+	bool NodeOperation::DoWalk(const Node& node, NodeOperation& func)
 	{
 		switch (func(node))
 		{
@@ -339,7 +339,7 @@ namespace kxf::DataView
 
 namespace kxf::DataView
 {
-	NodeOperation::Result RowToNodeOperation::operator()(Node& node)
+	NodeOperation::Result RowToNodeOperation::operator()(const Node& node)
 	{
 		m_CurrentRow++;
 		if (m_CurrentRow == m_Row)

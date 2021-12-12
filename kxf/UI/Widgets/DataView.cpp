@@ -2,7 +2,6 @@
 #include "DataView.h"
 #include "WXUI/DataView/View.h"
 #include "WXUI/DataView/MainWindow.h"
-#include "WXUI/DataView/Column.h"
 #include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
@@ -27,18 +26,26 @@ namespace kxf::Widgets
 	}
 
 	// IDataViewWidget
-	FlagSet<IDataViewWidget::Style> DataView::GetStyle() const
+	FlagSet<IDataViewWidget::WidgetStyle> DataView::GetStyle() const
 	{
 		return Get()->GetStyle();
 	}
-	void DataView::SetStyle(FlagSet<Style> style)
+	void DataView::SetStyle(FlagSet<WidgetStyle> style)
 	{
 		Get()->SetStyle(style);
 	}
 
-	std::shared_ptr<IDataViewColumn> DataView::CreateColumn(const String& title, WidgetID id, FlagSet<ColumnStyle> style) const
+	DataView::Column* DataView::InsertColumn(size_t index, const String& title, WidgetID id, FlagSet<ColumnStyle> style)
 	{
-		return std::make_shared<WXUI::DataView::Column>(title, id, style);
+		return nullptr;
+	}
+	void DataView::RemoveColumn(DataView::Column& column)
+	{
+
+	}
+	void DataView::ClearColumns()
+	{
+
 	}
 
 	// IGraphicsRendererAwareWidget

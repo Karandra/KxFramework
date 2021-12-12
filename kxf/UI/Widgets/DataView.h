@@ -3,6 +3,10 @@
 #include "../IDataViewWidget.h"
 #include "../IGraphicsRendererAwareWidget.h"
 
+namespace kxf::DataView
+{
+	class Column;
+}
 namespace kxf::WXUI::DataView
 {
 	class View;
@@ -12,6 +16,9 @@ namespace kxf::Widgets
 {
 	class KX_API DataView: public RTTI::Implementation<DataView, Private::BasicWxWidget<DataView, WXUI::DataView::View, IDataViewWidget>, IGraphicsRendererAwareWidget>
 	{
+		public:
+			using Column = kxf::DataView::Column;
+
 		private:
 			std::shared_ptr<IGraphicsRenderer> m_Renderer;
 
@@ -24,10 +31,12 @@ namespace kxf::Widgets
 			bool CreateWidget(std::shared_ptr<IWidget> parent, const String& label = {}, Point pos = Point::UnspecifiedPosition(), Size size = Size::UnspecifiedSize()) override;
 
 			// IDataViewWidget
-			FlagSet<Style> GetStyle() const override;
-			void SetStyle(FlagSet<Style> style) override;
+			FlagSet<WidgetStyle> GetStyle() const override;
+			void SetStyle(FlagSet<WidgetStyle> style) override;
 
-			std::shared_ptr<IDataViewColumn> CreateColumn(const String& title, WidgetID id = {}, FlagSet<ColumnStyle> style = ColumnStyle::Moveable|ColumnStyle::Resizeable) const override;
+			Column* InsertColumn(size_t index, const String& title, WidgetID id = {}, FlagSet<ColumnStyle> style = ColumnStyle::Moveable|ColumnStyle::Resizeable) override;
+			void RemoveColumn(DataView::Column& column) override;
+			void ClearColumns() override;
 
 			// IGraphicsRendererAwareWidget
 			std::shared_ptr<IGraphicsRenderer> GetActiveGraphicsRenderer() const override;

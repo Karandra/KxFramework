@@ -4,8 +4,8 @@
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/UI/Windows/Frame.h"
-#include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
+#include <wx/popupwin.h>
 #include <wx/minifram.h>
 #include <wx/rawbmp.h>
 #include <wx/sysopt.h>
@@ -31,24 +31,30 @@ namespace kxf::WXUI::DataView
 			MainWindow& m_MainWindow;
 			DV::Column& m_Column;
 
+			std::shared_ptr<IGraphicsRenderer> m_Renderer;
+			std::shared_ptr<IGraphicsContext> m_Context;
+
 			bool m_IsExpanderColumn = false;
 			int m_ExpanderSize = 0;
 
 		protected:
 			void UpdateWithRow(int row) override
 			{
-				if (Node* node = m_MainWindow.GetNodeByRow(row))
+				if (!m_Renderer || row < 0 || static_cast<size_t>(row) > m_MainWindow.m_ItemsCount)
+				{
+					return;
+				}
+
+				if (DV::Node* node = m_MainWindow.GetNodeByRow(row))
 				{
 					int indent = 0;
 					if (m_IsExpanderColumn)
 					{
-						indent = m_MainWindow.m_Indent * node->GetItemIndent() + m_ExpanderSize;
+						indent = m_MainWindow.m_Indent * node->GetIndentLevel() + m_ExpanderSize;
 					}
 
-					auto gc = m_MainWindow.m_GraphicsRenderer->CreateLegacyMeasuringContext(m_MainWindow.GetView());
-
-					Renderer& renderer = node->GetCellRenderer(m_Column);
-					renderer.BeginCellRendering(*node, m_Column, *gc);
+					DV::Renderer& renderer = node->GetCellRenderer(m_Column);
+					renderer.BeginCellRendering(*node, m_Column, *m_Context);
 					renderer.SetupCellDisplayValue();
 					renderer.SetupCellAttributes(m_MainWindow.GetCellStateForRow(row));
 
@@ -61,10 +67,16 @@ namespace kxf::WXUI::DataView
 			}
 
 		public:
-			MaxWidthCalculator(MainWindow& mainWindow, Column& column, int expanderSize)
+			MaxWidthCalculator(MainWindow& mainWindow, DV::Column& column, int expanderSize)
 				:wxMaxWidthCalculatorBase(column.GetDisplayIndex()), m_MainWindow(mainWindow), m_Column(column), m_ExpanderSize(expanderSize)
 			{
-				m_IsExpanderColumn = m_MainWindow.m_View->GetExpanderColumnOrFirstOne() == &m_Column && !m_MainWindow.IsListLike();
+				if (column.IsVisible())
+				{
+					m_Renderer = mainWindow.GetRenderer();
+					m_Context = m_Renderer->CreateLegacyMeasuringContext(mainWindow.GetView());
+
+					m_IsExpanderColumn = m_MainWindow.m_View->GetExpanderColumnOrFirstOne() == &m_Column && !m_MainWindow.IsListLike();
+				}
 			}
 	};
 }
@@ -104,17 +116,19 @@ namespace kxf::WXUI::DataView
 				}
 				else
 				{
-					// Enter activates the item, i.e. sends ItemEvent::EvtItemActivated to it.
+					// Enter activates the item, i.e. sends 'DataViewWidgetEvent::EvtItemActivated' to it.
 					// Only if that event is not handled do we activate column renderer (which
 					// is normally done by Space) or even inline editing.
-					ItemEvent evt(ItemEvent::EvtItemActivated);
-					CreateEventTemplate(evt, GetNodeByRow(m_CurrentRow));
+					auto evt = MakeEvent();
+					evt.SetNode(GetNodeByRow(m_CurrentRow));
 
-					if (m_View->ProcessWindowEvent(evt))
+					if (ProcessEvent(evt, DataViewWidgetEvent::EvtItemActivated))
 					{
 						break;
 					}
+
 					// Else fall through to WXK_SPACE handling
+					[[fallthrough]];
 				}
 			}
 			case WXK_SPACE:
@@ -126,18 +140,18 @@ namespace kxf::WXUI::DataView
 				}
 				else
 				{
-					Node* node = GetNodeByRow(m_CurrentRow);
+					auto node = GetNodeByRow(m_CurrentRow);
 
 					// Activate the current activatable column. If not column is focused (typically
 					// because the user has full row selected), try to find the first activatable
 					// column (this would typically be a checkbox and we don't want to force the user
 					// to set focus on the checkbox column).
-					Column* activatableColumn = FindInteractibleColumn(*node, InteractibleCell::Activator);
+					auto* activatableColumn = FindInteractibleColumn(*node, InteractibleCell::Activator);
 					if (activatableColumn)
 					{
 						const Rect cellRect = node->GetCellRect(*activatableColumn);
 
-						Renderer& renderer = node->GetCellRenderer(*activatableColumn);
+						DV::Renderer& renderer = node->GetCellRenderer(*activatableColumn);
 						renderer.BeginCellSetup(*node, *activatableColumn);
 						renderer.SetupCellAttributes(GetCellStateForRow(m_CurrentRow));
 						renderer.CallOnActivateCell(*node, cellRect, nullptr);
@@ -161,7 +175,7 @@ namespace kxf::WXUI::DataView
 						// Mimic Windows 7 behavior: edit the item that has focus
 						// if it is selected and the first selected item if focus
 						// is out of selection.
-						Row selectedRow;
+						DV::Row selectedRow;
 						if (m_SelectionStore.IsSelected(*m_CurrentRow))
 						{
 							selectedRow = m_CurrentRow;
@@ -172,11 +186,11 @@ namespace kxf::WXUI::DataView
 							wxSelectionStore::IterationState cookie;
 							selectedRow = m_SelectionStore.GetFirstSelectedItem(cookie);
 						}
-						Node* node = GetNodeByRow(selectedRow);
+						auto node = GetNodeByRow(selectedRow);
 
 						// Edit the current column. If no column is focused (typically because the user has full row selected),
 						// try to find the first editable column.
-						if (Column* editableColumn = FindInteractibleColumn(*node, InteractibleCell::Editor))
+						if (auto editableColumn = FindInteractibleColumn(*node, InteractibleCell::Editor))
 						{
 							node->EditCell(*editableColumn);
 						}
@@ -294,8 +308,8 @@ namespace kxf::WXUI::DataView
 			newRow = rowCount - 1;
 		}
 
-		Row oldCurrent = m_CurrentRow;
-		Row newCurrent = newRow;
+		DV::Row oldCurrent = m_CurrentRow;
+		DV::Row newCurrent = newRow;
 		if (newCurrent == oldCurrent)
 		{
 			return;
@@ -353,7 +367,7 @@ namespace kxf::WXUI::DataView
 		}
 		else
 		{
-			Node* node = GetNodeByRow(m_CurrentRow);
+			auto node = GetNodeByRow(m_CurrentRow);
 			if (!node)
 			{
 				return;
@@ -376,23 +390,21 @@ namespace kxf::WXUI::DataView
 			// Because TryAdvanceCurrentColumn() return false, we are at the first
 			// column or using whole-row selection. In this situation, we can use
 			// the standard TreeView handling of the left key.
-			if (node->HasChildren() && node->IsNodeExpanded())
+			if (node->HasChildren() && node->IsExpanded())
 			{
 				Collapse(m_CurrentRow);
 			}
 			else
 			{
 				// If the node is already closed, we move the selection to its parent
-				Node* parentNode = node->GetParentNode();
-				if (parentNode)
+				if (auto parentNode = node->GetParentNode())
 				{
-					Row parent = GetRowByNode(*parentNode);
-					if (parent)
+					if (auto parentRow = GetRowByNode(*parentNode))
 					{
 						SelectRow(m_CurrentRow, false);
-						SelectRow(parent, true);
-						ChangeCurrentRow(parent);
-						EnsureVisible(parent);
+						SelectRow(parentRow, true);
+						ChangeCurrentRow(parentRow);
+						EnsureVisible(parentRow);
 						SendSelectionChangedEvent(parentNode, m_CurrentColumn);
 					}
 				}
@@ -405,11 +417,11 @@ namespace kxf::WXUI::DataView
 		{
 			TryAdvanceCurrentColumn(nullptr, event, true);
 		}
-		else if (Node* node = GetNodeByRow(m_CurrentRow))
+		else if (auto node = GetNodeByRow(m_CurrentRow))
 		{
 			if (node->HasChildren() && m_CurrentColumn && m_CurrentColumn->IsExpander())
 			{
-				if (!node->IsNodeExpanded())
+				if (!node->IsExpanded())
 				{
 					Expand(m_CurrentRow);
 				}
@@ -434,7 +446,7 @@ namespace kxf::WXUI::DataView
 		{
 			if (m_TreeNodeUnderMouse)
 			{
-				Row row = GetRowByNode(*m_TreeNodeUnderMouse);
+				auto row = GetRowByNode(*m_TreeNodeUnderMouse);
 				m_TreeNodeUnderMouse = nullptr;
 				RefreshRow(row);
 			}
@@ -511,13 +523,13 @@ namespace kxf::WXUI::DataView
 		int x = event.GetX();
 		int y = event.GetY();
 		m_View->CalcUnscrolledPosition(x, y, &x, &y);
-		Column* currentColumn = nullptr;
+		DV::Column* currentColumn = nullptr;
 
 		int xpos = 0;
 		const size_t columnsCount = m_View->GetColumnCount();
 		for (size_t i = 0; i < columnsCount; i++)
 		{
-			Column* column = m_View->GetColumnDisplayedAt(i);
+			DV::Column* column = m_View->GetColumnDisplayedAt(i);
 
 			int width = 0;
 			if (column->IsExposed(width))
@@ -531,8 +543,8 @@ namespace kxf::WXUI::DataView
 			}
 		}
 
-		const Row currentRow = GetRowAt(y);
-		Node* const currentNode = GetNodeByRow(currentRow);
+		const auto currentRow = GetRowAt(y);
+		auto const currentNode = GetNodeByRow(currentRow);
 
 		// Hot track
 		if (isMouseInsideWindow)
@@ -556,19 +568,20 @@ namespace kxf::WXUI::DataView
 				}
 
 				// Update new row
-				m_HotTrackRow = currentNode ? currentRow : Row();
+				m_HotTrackRow = currentNode ? currentRow : DV::Row();
 				m_HotTrackRowEnabled = m_HotTrackRow && m_HotTrackColumn;
 				RefreshRow(m_HotTrackRow);
 
-				ItemEvent hoverEvent(ItemEvent::EvtItemHovered);
-				CreateEventTemplate(hoverEvent, currentNode, m_HotTrackColumn);
-				m_View->ProcessWindowEvent(hoverEvent);
+				auto hoverEvent = MakeEvent();
+				hoverEvent.SetNode(currentNode);
+				hoverEvent.SetColumn(m_HotTrackColumn);
+				ProcessEvent(hoverEvent, DataViewWidgetEvent::EvtItemHovered);
 
 				// Show tooltip
 				RemoveTooltip();
 				if (m_HotTrackRow && m_HotTrackColumn)
 				{
-					m_ToolTipTimer.StartOnce(wxSystemSettings::GetMetric(wxSYS_DCLICK_MSEC));
+					m_ToolTipTimer.StartOnce(System::GetMetric(SystemTimeMetric::DClick).GetMilliseconds());
 				}
 			}
 		}
@@ -579,12 +592,16 @@ namespace kxf::WXUI::DataView
 		{
 			CancelEdit();
 
-			ItemEvent evt(ItemEvent::EvtItemContextMenu);
-			CreateEventTemplate(evt, currentNode, currentColumn);
-			m_View->ProcessWindowEvent(evt);
+			auto evt = MakeEvent();
+			evt.SetNode(currentNode);
+			evt.SetColumn(currentColumn);
+
+			ProcessEvent(evt, DataViewWidgetEvent::EvtItemContextMenu);
 			return;
 		}
 
+		// Drag and drop
+		/*
 		if (event.Dragging() || ((m_DragCount > 0) && event.Leaving()))
 		{
 			if (m_DragCount == 0)
@@ -640,6 +657,7 @@ namespace kxf::WXUI::DataView
 		{
 			m_DragCount = 0;
 		}
+		*/
 
 		// Check if we clicked outside the item area.
 		if (currentRow >= GetRowCount() || !currentNode || !currentColumn)
@@ -658,26 +676,25 @@ namespace kxf::WXUI::DataView
 			return;
 		}
 
-		auto TestExpanderButton = [this, xpos, x, y](Row row, int itemOffset = -1, const Node* node = nullptr)
+		auto TestExpanderButton = [this, xpos, x, y](DV::Row row, int itemOffset = -1, const DV::Node* node = nullptr)
 		{
 			if (itemOffset < 0)
 			{
-				itemOffset = m_Indent * node->GetItemIndent();
+				itemOffset = m_Indent * node->GetIndentLevel();
 			}
 
 			Rect rect(xpos + itemOffset, GetRowStart(row) + (GetRowHeight(row) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
 			return rect.Contains(x, y);
 		};
 
-		// Test whether the mouse is hovering over the expander (a.k.a tree "+"
-		// button) and also determine the offset of the real cell start, skipping
-		// the indentation and the expander itself.
-		Column* expander = m_View->GetExpanderColumnOrFirstOne();
+		// Test whether the mouse is hovering over the expander (a.k.a tree "+" button)
+		// and also determine the offset of the real cell start, skipping the indentation and the expander itself.
+		auto expander = m_View->GetExpanderColumnOrFirstOne();
 		bool isHoverOverExpander = false;
 		int itemOffset = 0;
-		if (!IsListLike() && expander == currentColumn)
+		if (expander == currentColumn && !IsListLike())
 		{
-			itemOffset = m_Indent * currentNode->GetItemIndent();
+			itemOffset = m_Indent * currentNode->GetIndentLevel();
 
 			// We make the rectangle we are looking in a bit bigger than the actual
 			// visual expander so the user can hit that little thing reliably.
@@ -704,7 +721,7 @@ namespace kxf::WXUI::DataView
 
 		if (!isHoverOverExpander && m_TreeNodeUnderMouse)
 		{
-			Row row = GetRowByNode(*m_TreeNodeUnderMouse);
+			auto row = GetRowByNode(*m_TreeNodeUnderMouse);
 			m_TreeNodeUnderMouse = nullptr;
 			RefreshRow(row);
 		}
@@ -720,9 +737,10 @@ namespace kxf::WXUI::DataView
 		{
 			if (!isHoverOverExpander && (currentRow == m_RowLastClicked))
 			{
-				ItemEvent evt(ItemEvent::EvtItemActivated);
-				CreateEventTemplate(evt, currentNode, currentColumn);
-				if (m_View->ProcessWindowEvent(evt))
+				auto evt = MakeEvent();
+				evt.SetNode(currentNode);
+				evt.SetColumn(currentColumn);
+				if (ProcessEvent(evt, DataViewWidgetEvent::EvtItemActivated))
 				{
 					// Item activation was handled from the user code.
 					return;
@@ -747,7 +765,7 @@ namespace kxf::WXUI::DataView
 					SelectRow(m_RowSelectSingleOnUp, true);
 					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), currentColumn);
 				}
-				else if (m_View->ContainsWindowStyle(CtrlStyle::CellFocus))
+				else if (m_View->m_Style.Contains(DV::WidgetStyle::CellFocus))
 				{
 					RefreshRow(currentRow);
 				}
@@ -755,15 +773,13 @@ namespace kxf::WXUI::DataView
 			}
 
 			m_LastOnSame = false;
-			m_RowSelectSingleOnUp.MakeNull();
+			m_RowSelectSingleOnUp = {};
 		}
 		else if (!event.LeftUp())
 		{
-			// This is necessary, because after a DnD operation in
-			// from and to ourself, the up event is swallowed by the
-			// DnD code. So on next non-up event (which means here and
-			// now) 'm_RowSelectSingleOnUp' should be reset.
-			m_RowSelectSingleOnUp.MakeNull();
+			// This is necessary, because after a DnD operation in from and to ourself, the up event is swallowed by the
+			// DnD code. So on next non-up event (which means here and now) 'm_RowSelectSingleOnUp' should be reset.
+			m_RowSelectSingleOnUp = {};
 		}
 
 		if (event.RightDown())
@@ -777,7 +793,7 @@ namespace kxf::WXUI::DataView
 			{
 				UnselectAllRows();
 
-				const Row oldCurrent = m_CurrentRow;
+				const auto oldCurrent = m_CurrentRow;
 				ChangeCurrentRow(currentRow);
 				SelectRow(m_CurrentRow, true);
 				RefreshRow(oldCurrent);
@@ -791,9 +807,8 @@ namespace kxf::WXUI::DataView
 
 		if ((event.LeftDown() || simulateClick) && isHoverOverExpander && !event.LeftDClick())
 		{
-			// hoverOverExpander being true tells us that our node must be
-			// valid and have children. So we don't need any extra checks.
-			if (currentNode->IsNodeExpanded())
+			// 'isHoverOverExpander' being true tells us that our node must be valid and have children. So we don't need any extra checks.
+			if (currentNode->IsExpanded())
 			{
 				Collapse(currentRow);
 			}
@@ -807,8 +822,8 @@ namespace kxf::WXUI::DataView
 			m_RowBeforeLastClicked = m_RowLastClicked;
 			m_RowLastClicked = currentRow;
 
-			Row oldCurrentRow = m_CurrentRow;
-			Column* const oldCurrentCol = m_CurrentColumn;
+			auto oldCurrentRow = m_CurrentRow;
+			auto oldCurrentCol = m_CurrentColumn;
 			bool oldWasSelected = IsRowSelected(m_CurrentRow);
 
 			bool cmdModifierDown = event.CmdDown();
@@ -843,8 +858,8 @@ namespace kxf::WXUI::DataView
 				{
 					ChangeCurrentRow(currentRow);
 
-					Row lineFrom = oldCurrentRow;
-					Row lineTo = currentRow;
+					auto lineFrom = oldCurrentRow;
+					auto lineTo = currentRow;
 
 					if (!lineFrom)
 					{
@@ -879,7 +894,7 @@ namespace kxf::WXUI::DataView
 			{
 				RefreshRow(oldCurrentRow);
 			}
-			if (oldCurrentCol != currentColumn && m_View->ContainsWindowStyle(CtrlStyle::CellFocus))
+			if (oldCurrentCol != currentColumn && m_View->m_Style.Contains(DV::WidgetStyle::CellFocus))
 			{
 				RefreshRow(currentRow);
 			}
@@ -905,7 +920,7 @@ namespace kxf::WXUI::DataView
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
 				// SetupCellAttributes() for other items from inside it.
-				Renderer& renderer = currentNode->GetCellRenderer(*currentColumn);
+				DV::Renderer& renderer = currentNode->GetCellRenderer(*currentColumn);
 				renderer.BeginCellSetup(*currentNode, *currentColumn);
 				renderer.SetupCellAttributes(GetCellStateForRow(oldCurrentRow));
 				renderer.SetupCellDisplayValue();
@@ -994,7 +1009,7 @@ namespace kxf::WXUI::DataView
 
 		if (m_HotTrackColumn)
 		{
-			if (const Node* node = GetNodeByRow(m_HotTrackRow))
+			if (auto node = GetNodeByRow(m_HotTrackRow))
 			{
 				ShowToolTip(*node, *m_HotTrackColumn);
 			}
@@ -1003,10 +1018,10 @@ namespace kxf::WXUI::DataView
 
 	bool MainWindow::SendExpanderEvent(const EventID& type, DV::Node& item)
 	{
-		ItemEvent event(type);
-		CreateEventTemplate(event, &item);
+		auto event = MakeEvent();
+		event.SetNode(&item);
 
-		return !m_View->ProcessWindowEvent(event) || event.IsAllowed();
+		return !ProcessEvent(event, type) || event.IsAllowed();
 	}
 	void MainWindow::SendSelectionChangedEvent(DV::Node* item, DV::Column* column)
 	{
@@ -1015,60 +1030,60 @@ namespace kxf::WXUI::DataView
 			RefreshRow(GetRowByNode(*item));
 		}
 
-		ItemEvent event(ItemEvent::EvtItemSelected);
-		CreateEventTemplate(event, item, column);
-		m_View->ProcessWindowEvent(event);
-	}
-	bool MainWindow::SendEditingStartedEvent(DV::Node& item, DV::Editor* editor)
-	{
-		ItemEvent event(EditorEvent::EvtItemEditStarted);
-		CreateEventTemplate(event, &item, editor->GetColumn());
+		auto event = MakeEvent();
+		event.SetNode(item);
+		event.SetColumn(column);
 
-		m_View->ProcessWindowEvent(event);
+		ProcessEvent(event, DataViewWidgetEvent::EvtItemSelected);
+	}
+	bool MainWindow::SendEditingStartedEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor)
+	{
+		auto event = MakeEvent();
+		event.SetNode(&item);
+		event.SetColumn(editor->GetColumn());
+
+		ProcessEvent(event, DataViewWidgetEvent::EvtItemEditStarted);
 		return event.IsAllowed();
 	}
-	bool MainWindow::SendEditingDoneEvent(DV::Node& item, Editor* editor, bool canceled, const Any& value)
+	bool MainWindow::SendEditingDoneEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor, bool canceled, const Any& value)
 	{
-		EditorEvent event(EditorEvent::EvtItemEditDone);
-		CreateEventTemplate(event, &item, editor->GetColumn());
+		auto event = MakeEvent();
+		event.SetNode(&item);
+		event.SetColumn(editor->GetColumn());
 		event.SetEditCanceled(canceled);
 		event.SetValue(value);
 
-		m_View->ProcessWindowEvent(event);
+		ProcessEvent(event, DataViewWidgetEvent::EvtItemEditFinished);
 		return event.IsAllowed();
 	}
 
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
-		auto gc = m_GraphicsRenderer->CreateLegacyWindowPaintContext(*this);
-		gc->SetAntialiasMode(AntialiasMode::None);
-		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
+		auto renderer = GetRenderer();
+		if (!m_PenRuleH)
+		{
+			m_PenRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
+			m_PenRuleV = m_PenRuleH;
+		}
+		if (m_PenExpander)
+		{
+			m_PenExpander = renderer->CreatePen(System::GetColor(SystemColor::ButtonFace), FromDIP(1));
+		}
+
+		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
+		gc->SetAntialiasMode(AntialiasMode::BestAvailable);
+		gc->SetInterpolationQuality(InterpolationQuality::BestAvailable);
 
 		const Size clientSize = Size(GetClientSize());
-		const auto transparentPen = m_GraphicsRenderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
-		const auto transparentBrush = m_GraphicsRenderer->CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
-		const auto backgroundBrush = m_GraphicsRenderer->CreateSolidBrush(m_View->GetBackgroundColour());
+		const auto transparentPen = renderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
+		const auto transparentBrush = renderer->CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
+		const auto backgroundBrush = renderer->CreateSolidBrush(m_View->GetBackgroundColour());
 
 		gc->SetPen(transparentPen);
 		gc->SetBrush(backgroundBrush);
 		gc->Clear(*backgroundBrush);
-
 		gc->OffsetForScrollableArea(*m_View);
-		if (m_BackgroundBitmap)
-		{
-			Point pos;
-			if (m_BackgroundBitmapAlignment & Alignment::Right)
-			{
-				pos.X() = clientSize.GetWidth() - m_BackgroundBitmap.GetSize().GetWidth();
-			}
-			if (m_BackgroundBitmapAlignment & Alignment::Bottom)
-			{
-				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetSize().GetHeight();
-			}
-
-			gc->DrawTexture(m_BackgroundBitmap, {pos, clientSize});
-		}
 
 		const size_t columnCount = m_View->GetColumnCount();
 		if (IsEmpty() || columnCount == 0)
@@ -1078,8 +1093,8 @@ namespace kxf::WXUI::DataView
 				const int y = GetCharHeight() * 2;
 				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
-				gc->SetFontBrush(m_GraphicsRenderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled()));
-				gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont()));
+				gc->SetFontBrush(renderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled()));
+				gc->SetFont(renderer->CreateFont(GetFont()));
 				gc->DrawLabel(m_EmptyControlLabel, rect, Alignment::CenterHorizontal|Alignment::Top);
 			}
 
@@ -1091,16 +1106,15 @@ namespace kxf::WXUI::DataView
 		m_View->CalcUnscrolledPosition(updateRect.GetX(), updateRect.GetY(), &updateRect.X(), &updateRect.Y());
 
 		// Compute which rows needs to be redrawn
-		const Row rowStart = GetRowAt(std::max(0, updateRect.GetY()));
+		const DV::Row rowStart = GetRowAt(std::max(0, updateRect.GetY()));
 		const size_t rowCount = std::min(*GetRowAt(std::max(0, updateRect.GetY() + updateRect.GetHeight())) - *rowStart + 1, GetRowCount() - *rowStart);
-		const Row rowEnd = rowStart + rowCount;
+		const DV::Row rowEnd = rowStart + rowCount;
 
 		// Send the event to the control itself.
 		{
-			ItemEvent cacheEvent(ItemEvent::EvtViewCacheHint);
-			CreateEventTemplate(cacheEvent);
+			DataViewWidgetEvent cacheEvent(m_View->m_Widget);
 			cacheEvent.SetCacheHints(rowStart, rowEnd - 1);
-			m_View->ProcessWindowEvent(cacheEvent);
+			m_View->m_Widget.ProcessEvent(cacheEvent, DataViewWidgetEvent::EvtViewCacheHint);
 		}
 
 		// Compute which columns needs to be redrawn. Calc start of X coordinate.
@@ -1108,7 +1122,7 @@ namespace kxf::WXUI::DataView
 		int xCoordStart = 0;
 		for (coulumnIndexStart = 0; coulumnIndexStart < columnCount; coulumnIndexStart++)
 		{
-			const Column* column = m_View->GetColumnDisplayedAt(coulumnIndexStart);
+			const DV::Column* column = m_View->GetColumnDisplayedAt(coulumnIndexStart);
 
 			int width = 0;
 			if (column->IsExposed(width))
@@ -1129,7 +1143,7 @@ namespace kxf::WXUI::DataView
 
 		for (; coulmnIndexEnd < columnCount; coulmnIndexEnd++)
 		{
-			const Column* column = m_View->GetColumnDisplayedAt(coulmnIndexEnd);
+			const DV::Column* column = m_View->GetColumnDisplayedAt(coulmnIndexEnd);
 
 			int width = 0;
 			if (column->IsExposed(width))
@@ -1150,11 +1164,11 @@ namespace kxf::WXUI::DataView
 		}
 
 		const bool isListLike = IsListLike();
-		const bool isCellFocusEnabled = m_View->ContainsWindowStyle(CtrlStyle::CellFocus);
-		const bool fullRowSelectionEnabled = m_View->ContainsWindowStyle(CtrlStyle::FullRowSelection);
-		const bool alternatingRowColorsEnabled = m_View->ContainsWindowStyle(CtrlStyle::AlternatingRowColors);
-		const bool verticalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::VerticalRules);
-		const bool horizontalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::HorizontalRules);
+		const bool isCellFocusEnabled = m_View->m_Style.Contains(DV::WidgetStyle::CellFocus);
+		const bool fullRowSelectionEnabled = m_View->m_Style.Contains(DV::WidgetStyle::FullRowSelection);
+		const bool alternatingRowColorsEnabled = m_View->m_Style.Contains(DV::WidgetStyle::AlternatingRowColors);
+		const bool verticalRulesEnabled = m_View->m_Style.Contains(DV::WidgetStyle::VerticalRules);
+		const bool horizontalRulesEnabled = m_View->m_Style.Contains(DV::WidgetStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
 		IRendererNative& nativeRenderer = IRendererNative::Get();
@@ -1163,10 +1177,10 @@ namespace kxf::WXUI::DataView
 		std::shared_ptr<IGraphicsPen> altRowPen;
 		std::shared_ptr<IGraphicsSolidBrush> altRowBrush;
 
-		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
-		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
+		const DV::Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
+		for (DV::Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
-			const Node* const node = GetNodeByRow(currentRow);
+			const DV::Node* const node = GetNodeByRow(currentRow);
 			if (!node)
 			{
 				continue;
@@ -1175,7 +1189,7 @@ namespace kxf::WXUI::DataView
 			// Setup some values first
 			const Rect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
 			Rect cellRect = cellInitialRect;
-			const CellState cellState = GetCellStateForRow(currentRow);
+			const DV::CellState cellState = GetCellStateForRow(currentRow);
 
 			bool isCategoryRow = false;
 			int categoryRowOffset = -1;
@@ -1207,16 +1221,11 @@ namespace kxf::WXUI::DataView
 					constexpr auto middlePoint = Drawing::GetStockColor(StockColor::Gray).GetRGBA();
 					Angle alpha = bgColor.GetRGBA() > middlePoint ? Angle::FromNormalized(-0.03f) : Angle::FromNormalized(+0.5f);
 					altRowColor = bgColor.ChangeLightness(alpha);
-
-					if (m_BackgroundBitmap)
-					{
-						altRowColor.SetAlpha8(200);
-					}
 				}
 				if (!altRowPen || !altRowBrush)
 				{
-					altRowPen = m_GraphicsRenderer->CreatePen(altRowColor);
-					altRowBrush = m_GraphicsRenderer->CreateSolidBrush(altRowColor);
+					altRowPen = renderer->CreatePen(altRowColor);
+					altRowBrush = renderer->CreateSolidBrush(altRowColor);
 				}
 
 				// We only need to draw the visible part, so limit the rectangle to it.
@@ -1230,14 +1239,14 @@ namespace kxf::WXUI::DataView
 			class RendererScope final
 			{
 				private:
-					const Node& m_Node;
-					Column& m_Column;
-					Renderer& m_Renderer;
+					const DV::Node& m_Node;
+					DV::Column& m_Column;
+					DV::Renderer& m_Renderer;
 
 					bool m_RenderingCompleted = false;
 
 				public:
-					RendererScope(const Node& node, Column& column, IGraphicsContext& gc)
+					RendererScope(const DV::Node& node, DV::Column& column, IGraphicsContext& gc)
 						:m_Node(node), m_Column(column), m_Renderer(node.GetCellRenderer(column))
 					{
 						m_Renderer.BeginCellRendering(m_Node, m_Column, gc);
@@ -1258,7 +1267,7 @@ namespace kxf::WXUI::DataView
 					}
 
 				public:
-					Renderer* operator->() noexcept
+					DV::Renderer* operator->() noexcept
 					{
 						return &m_Renderer;
 					}
@@ -1266,21 +1275,21 @@ namespace kxf::WXUI::DataView
 
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
-				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
+				DV::Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
 				if (!column->IsExposed(cellRect.Width()))
 				{
 					continue;
 				}
 
 				RendererScope rendererScope(*node, *column, *gc);
-				const CellAttribute& cellAttributes = rendererScope->SetupCellAttributes(cellState);
+				const DV::CellAttributes& cellAttributes = rendererScope->SetupCellAttributes(cellState);
 
 				// Calculate expander button rect and its indent
-				const bool isCategoryRow = cellAttributes.Options().ContainsOption(CellOption::Category);
+				const bool isCategoryRow = cellAttributes.Options().ContainsOption(DV::CellStyle::Category);
 				if (column == expanderColumn && !isListLike)
 				{
 					// Calculate the indent first
-					const int indentOffset = m_Indent * node->GetItemIndent();
+					const int indentOffset = m_Indent * node->GetIndentLevel();
 					expanderIndent = std::min(indentOffset + m_UniformRowHeight, expanderColumn->GetWidth()) + EXPANDER_MARGIN;
 
 					if (node->HasChildren())
@@ -1405,8 +1414,8 @@ namespace kxf::WXUI::DataView
 				{
 					FlagSet<NativeWidgetFlag> flags;
 					flags.Add(NativeWidgetFlag::Current, m_TreeNodeUnderMouse == node);
-					flags.Add(NativeWidgetFlag::Expanded, node->IsNodeExpanded());
-					flags.Add(NativeWidgetFlag::Flat, m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander));
+					flags.Add(NativeWidgetFlag::Expanded, node->IsExpanded());
+					flags.Add(NativeWidgetFlag::Flat, m_View->m_Style.Contains(DV::WidgetStyle::Flat));
 
 					Rect clipRect = cellRect;
 					clipRect.Width() -= FromDIP(EXPANDER_MARGIN);
@@ -1470,7 +1479,7 @@ namespace kxf::WXUI::DataView
 	}
 	DV::CellState MainWindow::GetCellStateForRow(DV::Row row) const
 	{
-		CellState state;
+		DV::CellState state;
 		if (row)
 		{
 			if (m_CurrentRow == row)
@@ -1529,23 +1538,23 @@ namespace kxf::WXUI::DataView
 	bool MainWindow::ShowToolTip(const DV::Node& node, DV::Column& column)
 	{
 		// Get tooltip
-		Renderer& renderer = node.GetCellRenderer(column);
+		DV::Renderer& renderer = node.GetCellRenderer(column);
 		renderer.BeginCellSetup(node, column);
 		renderer.SetupCellDisplayValue();
-		ToolTip tooltip = node.GetCellToolTip(column);
+		DV::ToolTip tooltip = node.GetCellToolTip(column);
 		renderer.EndCellSetup();
 
-		if (tooltip.IsOK())
+		if (tooltip)
 		{
 			// See if we need to display the tooltip at all
 			bool shouldShow = true;
 			if (tooltip.ShouldDisplayOnlyIfClipped())
 			{
 				// Setup renderer to get cell size
-				const Column& clipTestColumn = tooltip.SelectClipTestColumn(column);
+				auto& clipTestColumn = tooltip.SelectClipTestColumn(column);
 
-				Renderer& clipTestRenderer = node.GetCellRenderer(clipTestColumn);
-				clipTestRenderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
+				DV::Renderer& clipTestRenderer = node.GetCellRenderer(clipTestColumn);
+				clipTestRenderer.BeginCellSetup(node, const_cast<DV::Column&>(clipTestColumn));
 				clipTestRenderer.SetupCellDisplayValue();
 				const Size cellSize = clipTestRenderer.GetCellSize();
 				clipTestRenderer.EndCellSetup();
@@ -1776,7 +1785,7 @@ namespace kxf::WXUI::DataView
 
 		if (column)
 		{
-			column->InvalidateBestWidth();
+			column->SetBestWidth(-1);
 		}
 		else
 		{
@@ -1787,9 +1796,10 @@ namespace kxf::WXUI::DataView
 		RefreshRow(GetRowByNode(node));
 
 		// Send event
-		ItemEvent event(ItemEvent::EvtItemValueChanged);
-		CreateEventTemplate(event, &node, column);
-		m_View->ProcessWindowEvent(event);
+		auto event = MakeEvent();
+		event.SetNode(&node);
+		event.SetColumn(column);
+		ProcessEvent(event, DataViewWidgetEvent::EvtItemValueChanged);
 	}
 	void MainWindow::OnNodeAdded(DV::Node& node)
 	{
@@ -1806,7 +1816,7 @@ namespace kxf::WXUI::DataView
 		// Update selection by removing this node and its entire children tree from the selection.
 		if (!m_SelectionStore.IsEmpty())
 		{
-			m_SelectionStore.OnItemsDeleted(*item.GetItemRow(), removedCount);
+			m_SelectionStore.OnItemsDeleted(*item.GetRow(), removedCount);
 		}
 
 		// Change the current row to the last row if the current exceed the max row number
@@ -1822,8 +1832,8 @@ namespace kxf::WXUI::DataView
 	{
 		InvalidateItemCount();
 		m_SelectionStore.Clear();
-		m_CurrentRow.MakeNull();
-		m_HotTrackRow.MakeNull();
+		m_CurrentRow = {};
+		m_HotTrackRow = {};
 		m_CurrentColumn = nullptr;
 		m_HotTrackColumn = nullptr;
 		m_TreeNodeUnderMouse = nullptr;
@@ -1835,44 +1845,24 @@ namespace kxf::WXUI::DataView
 	{
 		if (m_TreeRoot)
 		{
-			m_TreeRoot->OnSortChildren(m_View->GetSortMode());
+			m_TreeRoot.OnSortChildren(m_View->GetSortMode());
 		}
 		UpdateDisplay();
 	}
 
-	void MainWindow::DoAssignModel(std::shared_ptr<Model> model)
-	{
-		if (m_Model)
-		{
-			m_Model->DoOnModelDetached();
-		}
-		m_Model = std::move(model);
-
-		if (m_Model)
-		{
-			m_Model->DoOnModelAttached(*this);
-			m_TreeRoot = &m_Model->GetRootNode();
-		}
-		else
-		{
-			m_TreeRoot = nullptr;
-		}
-
-		ItemsChanged();
-	}
 	bool MainWindow::IsListLike() const
 	{
 		if (m_TreeRoot)
 		{
 			bool isList = true;
-			m_TreeRoot->EnumChildren([&](const Node& node)
+			for (const DV::Node& node: m_TreeRoot.m_Children)
 			{
 				if (node.HasChildren())
 				{
 					isList = false;
+					break;
 				}
-				return isList;
-			});
+			}
 			return isList;
 		}
 		return false;
@@ -1886,7 +1876,7 @@ namespace kxf::WXUI::DataView
 			m_HotTrackRowEnabled = false;
 			RefreshRow(m_HotTrackRow);
 
-			m_HotTrackRow.MakeNull();
+			m_HotTrackRow = {};
 			m_HotTrackColumn = nullptr;
 
 			RemoveTooltip();
@@ -1912,12 +1902,6 @@ namespace kxf::WXUI::DataView
 			m_RedrawNeeded = false;
 		}
 
-		// Change the graphics renderer
-		if (m_View->m_PendingGraphicsRenderer)
-		{
-			m_GraphicsRenderer = std::move(m_View->m_PendingGraphicsRenderer);
-		}
-
 		wxWindow::OnInternalIdle();
 		WindowRefreshScheduler::OnInternalIdle();
 	}
@@ -1928,13 +1912,9 @@ namespace kxf::WXUI::DataView
 		if (wxWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()))
 		{
 			// Setup drawing
-			m_GraphicsRenderer = Drawing::GetDefaultRenderer();
 			SetBackgroundStyle(wxBG_STYLE_PAINT);
 			SetBackgroundColour(System::GetColor(SystemColor::ListBoxBackground));
 
-			m_PenRuleH = m_GraphicsRenderer->CreatePen(System::GetColor(SystemColor::Light3D));
-			m_PenRuleV = m_PenRuleH;
-			m_PenExpander = m_GraphicsRenderer->CreatePen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 			m_UniformRowHeight = GetDefaultRowHeight();
 			m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();
 
@@ -1954,10 +1934,6 @@ namespace kxf::WXUI::DataView
 			Bind(wxEVT_LEFT_UP, &MainWindow::OnMouse, this);
 			Bind(wxEVT_LEFT_DCLICK, &MainWindow::OnMouse, this);
 
-			//Bind(wxEVT_MIDDLE_DOWN, &KxDataViewMainWindow::OnMouse, this);
-			//Bind(wxEVT_MIDDLE_UP, &KxDataViewMainWindow::OnMouse, this);
-			//Bind(wxEVT_MIDDLE_DCLICK, &KxDataViewMainWindow::OnMouse, this);
-
 			Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnMouse, this);
 			Bind(wxEVT_RIGHT_UP, &MainWindow::OnMouse, this);
 			Bind(wxEVT_RIGHT_DCLICK, &MainWindow::OnMouse, this);
@@ -1966,15 +1942,6 @@ namespace kxf::WXUI::DataView
 			Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
 			Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
 			Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_CHILD_FOCUS, &MainWindow::OnMouse, this);
-
-			//Bind(wxEVT_AUX1_DOWN, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_AUX1_UP, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_AUX1_DCLICK, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_AUX2_DOWN, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_AUX2_UP, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_AUX2_DCLICK, &MainWindow::OnMouse, this);
-			//Bind(wxEVT_MAGNIFY, &MainWindow::OnMouse, this);
 
 			// Do update
 			UpdateDisplay();
@@ -1983,15 +1950,15 @@ namespace kxf::WXUI::DataView
 	MainWindow::~MainWindow()
 	{
 		RemoveTooltip();
-		DoAssignModel(nullptr);
+		AssignModel(nullptr);
 	}
 
-	void MainWindow::CreateEventTemplate(DataViewWidgetEvent& event, DV::Node* node, DV::Column* column)
+	void MainWindow::AssignModel(std::shared_ptr<IDataViewModel> model)
 	{
-		event.SetId(m_View->GetId());
-		event.SetEventObject(m_View);
-		event.SetNode(node);
-		event.SetColumn(column);
+		m_Model = std::move(model);
+		m_TreeRoot.Initalize(*this);
+
+		ItemsChanged();
 	}
 	void MainWindow::ItemsChanged()
 	{
@@ -2034,8 +2001,7 @@ namespace kxf::WXUI::DataView
 		int left = 0;
 		for (size_t i = 0; i < m_View->GetColumnCount(); i++)
 		{
-			Column* currentColumn = m_View->GetColumnDisplayedAt(i);
-			if (currentColumn)
+			if (auto currentColumn = m_View->GetColumnDisplayedAt(i))
 			{
 				if (currentColumn == &column)
 				{
@@ -2225,6 +2191,7 @@ namespace kxf::WXUI::DataView
 	}
 
 	// Drag and Drop
+	/*
 	GDIBitmap MainWindow::CreateItemBitmap(DV::Row row, int& indent)
 	{
 		int width = GetRowWidth();
@@ -2430,6 +2397,7 @@ namespace kxf::WXUI::DataView
 	{
 		RemoveDropHint();
 	}
+	*/
 
 	// Scrolling
 	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
@@ -2522,12 +2490,12 @@ namespace kxf::WXUI::DataView
 		{
 			if (moveForward)
 			{
-				if (node->HasChildren() && !node->IsNodeExpanded())
+				if (node->HasChildren() && !node->IsExpanded())
 				{
 					return false;
 				}
 			}
-			else if (node->HasParentNode())
+			else if (node->GetParentNode())
 			{
 				return false;
 			}
@@ -2549,7 +2517,7 @@ namespace kxf::WXUI::DataView
 		}
 
 		size_t nextColumn = std::clamp<intptr_t>((intptr_t)m_CurrentColumn->GetDisplayIndex() + (moveForward ? +1 : -1), 0, visibleColumnsCount);
-		if (nextColumn == (intptr_t)visibleColumnsCount)
+		if (nextColumn == static_cast<intptr_t>(visibleColumnsCount))
 		{
 			if (!wrapAround)
 			{
@@ -2612,7 +2580,7 @@ namespace kxf::WXUI::DataView
 	{
 		if (!IsSelectionEmpty())
 		{
-			for (Row row = GetFirstVisibleRow(); row <= GetLastVisibleRow(); ++row)
+			for (auto row = GetFirstVisibleRow(); row <= GetLastVisibleRow(); ++row)
 			{
 				if (m_SelectionStore.IsSelected(*row) && row != exceptThisRow)
 				{
@@ -2718,7 +2686,7 @@ namespace kxf::WXUI::DataView
 			}
 			for (size_t colnumIndex = 0; colnumIndex < columnCount; colnumIndex++)
 			{
-				Column* column = m_View->GetColumnDisplayedAt(colnumIndex);
+				auto column = m_View->GetColumnDisplayedAt(colnumIndex);
 
 				int width = 0;
 				if (column->IsExposed(width))
@@ -2743,7 +2711,7 @@ namespace kxf::WXUI::DataView
 		// Otherwise, it will compute the x position of the column we are looking for.
 		for (size_t i = 0; i < columnCount; i++)
 		{
-			Column* currentColumn = m_View->GetColumnDisplayedAt(i);
+			auto currentColumn = m_View->GetColumnDisplayedAt(i);
 			if (currentColumn == column)
 			{
 				break;
@@ -2769,7 +2737,7 @@ namespace kxf::WXUI::DataView
 			xpos = 0;
 		}
 
-		Row row = GetRowByNode(item);
+		auto row = GetRowByNode(item);
 		if (!row)
 		{
 			// This means the row is currently not visible at all.
@@ -2779,10 +2747,10 @@ namespace kxf::WXUI::DataView
 		// We have to take an expander column into account and compute its indentation
 		// to get the correct x position where the actual text is.
 		int indent = 0;
-		if (!IsListLike() && (!column || m_View->GetExpanderColumnOrFirstOne() == column))
+		if ((!column || m_View->GetExpanderColumnOrFirstOne() == column) && !IsListLike())
 		{
-			Node* node = GetNodeByRow(row);
-			indent = m_Indent * node->GetItemIndent();
+			auto node = GetNodeByRow(row);
+			indent = m_Indent * node->GetIndentLevel();
 
 			// Use 'm_UniformLineHeight' as the width of the expander
 			indent += m_UniformRowHeight;
@@ -2796,16 +2764,19 @@ namespace kxf::WXUI::DataView
 	// Rows
 	void MainWindow::Expand(DV::Row row)
 	{
-		if (Node* node = GetNodeByRow(row))
+		if (!IsListLike())
 		{
-			Expand(*node, row);
+			if (auto node = GetNodeByRow(row))
+			{
+				Expand(*node, row);
+			}
 		}
 	}
 	void MainWindow::Expand(DV::Node& node, DV::Row row)
 	{
-		if (!node.IsNodeExpanded())
+		if (!node.IsExpanded())
 		{
-			if (!node.OnExpandNode() || !SendExpanderEvent(ItemEvent::EvtItemExpanding, node))
+			if (!node.OnNodeExpand() || !SendExpanderEvent(DataViewWidgetEvent::EvtItemExpanding, node))
 			{
 				// Vetoed by the event handler
 				return;
@@ -2835,7 +2806,7 @@ namespace kxf::WXUI::DataView
 			UpdateDisplay();
 
 			// Send the expanded event
-			SendExpanderEvent(ItemEvent::EvtItemExpanded, node);
+			SendExpanderEvent(DataViewWidgetEvent::EvtItemExpanded, node);
 		}
 	}
 
@@ -2843,7 +2814,7 @@ namespace kxf::WXUI::DataView
 	{
 		if (!IsListLike())
 		{
-			if (Node* node = GetNodeByRow(row))
+			if (auto node = GetNodeByRow(row))
 			{
 				Collapse(*node, row);
 			}
@@ -2851,9 +2822,9 @@ namespace kxf::WXUI::DataView
 	}
 	void MainWindow::Collapse(DV::Node& node, DV::Row row)
 	{
-		if (node.IsNodeExpanded())
+		if (node.IsExpanded())
 		{
-			if (!node.OnCollapseNode() || !SendExpanderEvent(ItemEvent::EvtItemCollapsing, node))
+			if (!node.OnNodeCollapse() || !SendExpanderEvent(DataViewWidgetEvent::EvtItemCollapsing, node))
 			{
 				// Vetoed by the event handler
 				return;
@@ -2901,7 +2872,7 @@ namespace kxf::WXUI::DataView
 			m_View->InvalidateColumnsBestWidth();
 			UpdateDisplay();
 
-			SendExpanderEvent(ItemEvent::EvtItemCollapsed, node);
+			SendExpanderEvent(DataViewWidgetEvent::EvtItemCollapsed, node);
 		}
 	}
 
@@ -2909,9 +2880,9 @@ namespace kxf::WXUI::DataView
 	{
 		if (!IsListLike())
 		{
-			if (Node* node = GetNodeByRow(row))
+			if (auto node = GetNodeByRow(row))
 			{
-				if (node->IsNodeExpanded())
+				if (node->IsExpanded())
 				{
 					node->CollapseNode();
 				}
@@ -2926,9 +2897,9 @@ namespace kxf::WXUI::DataView
 	{
 		if (!IsListLike())
 		{
-			if (Node* node = GetNodeByRow(row))
+			if (auto node = GetNodeByRow(row))
 			{
-				return node->IsNodeExpanded();
+				return node->IsExpanded();
 			}
 		}
 		return false;
@@ -2937,7 +2908,7 @@ namespace kxf::WXUI::DataView
 	{
 		if (!IsListLike())
 		{
-			Node* node = GetNodeByRow(row);
+			auto node = GetNodeByRow(row);
 			return node && node->HasChildren();
 		}
 		return false;
@@ -2947,10 +2918,10 @@ namespace kxf::WXUI::DataView
 	{
 		if (m_TreeRoot && row)
 		{
-			NodeOperation_RowToNode operation(*row, -2);
-			operation.Walk(*m_TreeRoot);
+			DV::RowToNodeOperation operation(*row, -2);
+			operation.Walk(m_TreeRoot);
 
-			return operation.GetResult();
+			return const_cast<DV::Node*>(operation.GetResult());
 		}
 		return nullptr;
 	}
@@ -2958,37 +2929,36 @@ namespace kxf::WXUI::DataView
 	{
 		if (m_Model)
 		{
-			Row row = 0;
-			const Node* currentNode = &node;
+			DV::Row row = 0;
+			auto currentNode = &node;
 			while (currentNode && !currentNode->IsRootNode())
 			{
 				// Add current node sub row index
 				row += currentNode->GetSubTreeIndex() + 1;
 
 				// If this node has parent, add subtree count from all previous siblings
-				if (const Node* parentNode = currentNode->GetParentNode())
+				if (auto parentNode = currentNode->GetParentNode())
 				{
-					parentNode->EnumChildren([&](const Node& childNode)
+					for (const DV::Node& childNode: parentNode->m_Children)
 					{
 						if (&childNode != currentNode)
 						{
 							row += childNode.GetSubTreeCount();
-							return true;
 						}
-						return false;
-					});
+						break;
+					}
 					currentNode = parentNode;
 				}
 			}
 
-			// If we reached root node, consider search successful.
+			// If we reached the root node, consider the search successful.
 			if (currentNode && currentNode->IsRootNode())
 			{
 				// Rows are zero-based, but we calculated it as one-based.
 				return row - 1;
 			}
 		}
-		return Row();
+		return {};
 	}
 
 	bool MainWindow::BeginEdit(DV::Node& node, DV::Column& column)
@@ -2996,7 +2966,7 @@ namespace kxf::WXUI::DataView
 		// Cancel any previous editing
 		CancelEdit();
 
-		if (Editor* editor = node.GetCellEditor(column))
+		if (auto editor = node.GetCellEditor(column))
 		{
 			m_View->SetFocus();
 			node.EnsureCellVisible(column);

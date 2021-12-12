@@ -6,6 +6,7 @@
 #include "../../../DataView/Column.h"
 #include "../../../DataView/SortMode.h"
 #include "../../../DataView/CellState.h"
+#include "../../../DataView/CellAttributes.h"
 #include "../../../Events/DataViewWidgetEvent.h"
 
 #include "Renderers/NullRenderer.h"
@@ -18,6 +19,7 @@ namespace kxf::DataView
 {
 	class Column;
 	class ToolTip;
+	class RootNode;
 }
 namespace kxf::WXUI::DataView
 {
@@ -32,6 +34,7 @@ namespace kxf::WXUI::DataView
 	class KX_API MainWindow: public UI::WindowRefreshScheduler<wxWindow>
 	{
 		friend class DV::Node;
+		friend class DV::RootNode;
 		friend class DV::Column;
 		friend class DV::ToolTip;
 
@@ -70,10 +73,8 @@ namespace kxf::WXUI::DataView
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
 
-			std::shared_ptr<IGraphicsRenderer> m_GraphicsRenderer;
-			NullRenderer m_NullRenderer;
-			Column* m_CurrentColumn = nullptr;
-			Row m_CurrentRow;
+			DV::Column* m_CurrentColumn = nullptr;
+			DV::Row m_CurrentRow;
 			wxSelectionStore m_SelectionStore;
 
 			bool m_LastOnSame = false;
@@ -94,10 +95,12 @@ namespace kxf::WXUI::DataView
 			wxTimer m_ToolTipTimer;
 
 			// Drag and Drop
+			/*
 			DnDInfo m_DragDropInfo;
 			wxDataObjectComposite* m_DragDropDataObject = nullptr;
 			DropTarget* m_DropTarget = nullptr;
 			DropSource* m_DragSource = nullptr;
+			*/
 			size_t m_DragCount = 0;
 
 			Point m_DragStart;
@@ -116,15 +119,10 @@ namespace kxf::WXUI::DataView
 			// The pen used to draw the expander and the lines
 			std::shared_ptr<IGraphicsPen> m_PenExpander;
 
-			// Background bitmap
-			BitmapImage m_BackgroundBitmap;
-			FlagSet<Alignment> m_BackgroundBitmapAlignment = Alignment::Invalid;
-			bool m_FitBackgroundBitmap = false;
-
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
 			size_t m_ItemsCount = INVALID_COUNT;
-			std::shared_ptr<Model> m_Model;
-			DV::RootNode* m_TreeRoot = nullptr;
+			std::shared_ptr<IDataViewModel> m_Model;
+			DV::RootNode m_TreeRoot;
 
 			// String to display when the control is empty
 			String m_EmptyControlLabel;
@@ -133,7 +131,7 @@ namespace kxf::WXUI::DataView
 			DV::Node* m_TreeNodeUnderMouse = nullptr;
 
 			// Current editor
-			Editor* m_CurrentEditor = nullptr;
+			std::shared_ptr<DV::CellEditor> m_CurrentEditor;
 
 		protected:
 			// Events
@@ -154,12 +152,25 @@ namespace kxf::WXUI::DataView
 			void SendSelectionChangedEvent(DV::Node* item, DV::Column* column = nullptr);
 
 			// Will return true if event allowed
-			bool SendEditingStartedEvent(DV::Node& item, Editor* editor);
-			bool SendEditingDoneEvent(DV::Node& item, Editor* editor, bool canceled, const Any& value);
+			bool SendEditingStartedEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor);
+			bool SendEditingDoneEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor, bool canceled, const Any& value);
+
+			DataViewWidgetEvent MakeEvent()
+			{
+				return DataViewWidgetEvent(m_View->m_Widget);
+			}
+			bool ProcessEvent(IEvent& event, const EventID& eventID)
+			{
+				return m_View->m_Widget.ProcessEvent(event, eventID);
+			}
 
 			// Drawing
 			void OnPaint(wxPaintEvent& event);
 			DV::CellState GetCellStateForRow(DV::Row row) const;
+			std::shared_ptr<IGraphicsRenderer> GetRenderer() const
+			{
+				return m_View->m_RendererAware->GetActiveGraphicsRenderer();
+			}
 
 			void UpdateDisplay();
 			void RefreshDisplay();
@@ -193,7 +204,6 @@ namespace kxf::WXUI::DataView
 			void OnItemsCleared();
 			void OnShouldResort();
 
-			void DoAssignModel(std::shared_ptr<Model> model);
 			bool IsListLike() const;
 
 			// Misc
@@ -204,54 +214,18 @@ namespace kxf::WXUI::DataView
 			~MainWindow();
 
 		public:
-			void CreateEventTemplate(DataViewWidgetEvent& event, DV::Node* node = nullptr, DV::Column* column = nullptr);
-
 			// Model and nodes
-			void AssignModel(std::shared_ptr<IDataViewModel> model)
-			{
-				DoAssignModel(std::move(model));
-			}
+			void AssignModel(std::shared_ptr<IDataViewModel> model);
 
 			const DV::RootNode& GetRootNode() const
 			{
-				return *m_TreeRoot;
+				return m_TreeRoot;
 			}
 			DV::RootNode& GetRootNode()
 			{
 				return *m_TreeRoot;
 			}
 			void ItemsChanged();
-
-			// View
-			void SetView(View* owner)
-			{
-				m_View = owner;
-			}
-			View* GetView()
-			{
-				return m_View;
-			}
-			const View* GetView() const
-			{
-				return m_View;
-			}
-
-			Renderer& GetNullRenderer()
-			{
-				return m_NullRenderer;
-			}
-			const BitmapImage& GetBackgroundBitmap() const
-			{
-				return m_BackgroundBitmap;
-			}
-			void SetBackgroundBitmap(const BitmapImage& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
-			{
-				m_BackgroundBitmap = bitmap;
-				m_BackgroundBitmapAlignment = align != Alignment::Invalid ? align : Alignment::None;
-				m_FitBackgroundBitmap = fit;
-
-				Refresh();
-			}
 
 			// Refreshing
 			void RefreshRow(DV::Row row)
@@ -278,9 +252,10 @@ namespace kxf::WXUI::DataView
 				return m_UniformRowHeight;
 			}
 			void SetUniformRowHeight(int height);
-			int GetDefaultRowHeight(UniformHeight type) const;
+			int GetDefaultRowHeight(UniformHeight type = UniformHeight::Default) const;
 
 			// Drag and Drop
+			/*
 			GDIBitmap CreateItemBitmap(DV::Row row, int& indent);
 			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);
 			bool DisableDND(const wxDataFormat& format);
@@ -293,6 +268,7 @@ namespace kxf::WXUI::DataView
 
 			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const Point& pos, wxDragResult dragResult);
 			void OnDragDropLeave();
+			*/
 
 			// Scrolling
 			void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr) override;
@@ -330,7 +306,7 @@ namespace kxf::WXUI::DataView
 			}
 			bool IsMultipleSelection() const
 			{
-				return m_View->ContainsWindowStyle(CtrlStyle::MultipleSelection);
+				return m_View->m_Style.Contains(DV::WidgetStyle::MultipleSelection);
 			}
 			bool IsEmpty()
 			{
@@ -367,19 +343,10 @@ namespace kxf::WXUI::DataView
 			}
 
 			// View
-			IGraphicsRenderer& GetGraphicsRenderer()
+			View* GetView() const
 			{
-				return *m_GraphicsRenderer;
+				return m_View;
 			}
-			void SetRuleHPen(const Color& color, float width = 1.0f)
-			{
-				m_PenRuleH = m_GraphicsRenderer->CreatePen(color, width);
-			}
-			void SetRuleVPen(const Color& color, float width = 1.0f)
-			{
-				m_PenRuleV = m_GraphicsRenderer->CreatePen(color, width);
-			}
-
 			size_t GetRowCount() const;
 			size_t GetCountPerPage() const;
 			DV::Row GetFirstVisibleRow() const;
@@ -389,18 +356,6 @@ namespace kxf::WXUI::DataView
 			void HitTest(const Point& pos, DV::Node*& node, DV::Column*& column)
 			{
 				return HitTest(pos, &node, &column);
-			}
-			DV::Node* HitTestNode(const Point& pos)
-			{
-				Node* node = nullptr;
-				HitTest(pos, &node);
-				return node;
-			}
-			DV::Column* HitTestColumn(const Point& pos)
-			{
-				Column* column = nullptr;
-				HitTest(pos, nullptr, &column);
-				return column;
 			}
 			Rect GetItemRect(const DV::Node& item, const DV::Column* column = nullptr);
 

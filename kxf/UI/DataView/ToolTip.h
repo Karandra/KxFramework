@@ -6,11 +6,17 @@ namespace kxf
 {
 	class IDataViewWidget;
 }
+namespace kxf::WXUI::DataView
+{
+	class MainWindow;
+}
 
 namespace kxf::DataView
 {
 	class KX_API ToolTip final
 	{
+		friend class WXUI::DataView::MainWindow;
+
 		private:
 			String m_Caption;
 			String m_Message;

@@ -335,7 +335,6 @@ namespace kxf::DataView
 			WXUI::DataView::MainWindow* m_MainWindow = nullptr;
 
 		private:
-			void Initalize(WXUI::DataView::MainWindow& mainWindow) noexcept;
 
 		public:
 			RootNode() noexcept
@@ -344,10 +343,9 @@ namespace kxf::DataView
 				m_ParentNode = nullptr;
 				m_IsExpanded = true;
 			}
-			RootNode(WXUI::DataView::MainWindow& mainWindow) noexcept
-			{
-				Initalize(mainWindow);
-			}
+
+		public:
+			void Initalize(WXUI::DataView::MainWindow& mainWindow) noexcept;
 	};
 }
 
@@ -365,16 +363,16 @@ namespace kxf::DataView
 			};
 
 		private:
-			static bool DoWalk(Node& node, NodeOperation& func);
+			static bool DoWalk(const Node& node, NodeOperation& func);
 
 		protected:
-			virtual Result operator()(Node& node) = 0;
+			virtual Result operator()(const Node& node) = 0;
 
 		public:
 			virtual ~NodeOperation() = default;
 
 		public:
-			bool Walk(Node& node)
+			bool Walk(const Node& node)
 			{
 				return DoWalk(node, *this);
 			}
@@ -388,7 +386,7 @@ namespace kxf::DataView
 		private:
 			const intptr_t m_Row = -1;
 			intptr_t m_CurrentRow = -1;
-			Node* m_ResultNode = nullptr;
+			const Node* m_ResultNode = nullptr;
 
 		public:
 			RowToNodeOperation(intptr_t row , intptr_t current)
@@ -397,9 +395,9 @@ namespace kxf::DataView
 			}
 
 		public:
-			Result operator()(Node& node) override;
+			Result operator()(const Node& node) override;
 
-			Node* GetResult() const
+			const Node* GetResult() const
 			{
 				return m_ResultNode;
 			}

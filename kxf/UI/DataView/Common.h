@@ -31,7 +31,8 @@ namespace kxf::DataView
 		FitLastColumn = FlagSetValue<WidgetStyle>(6),
 		VariableRowHeight = FlagSetValue<WidgetStyle>(7),
 		MultiColumnSort = FlagSetValue<WidgetStyle>(8),
-		NoHeader = FlagSetValue<WidgetStyle>(9)
+		NoHeader = FlagSetValue<WidgetStyle>(9),
+		Flat = FlagSetValue<WidgetStyle>(10)
 	};
 	enum class ColumnStyle: uint32_t
 	{

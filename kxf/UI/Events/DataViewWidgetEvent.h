@@ -24,6 +24,10 @@ namespace kxf
 			KxEVENT_MEMBER(DataViewWidgetEvent, ItemContextMenu);
 			KxEVENT_MEMBER(DataViewWidgetEvent, ItemValueChanged);
 
+			KxEVENT_MEMBER(DataViewWidgetEvent, ItemEditStarted);
+			KxEVENT_MEMBER(DataViewWidgetEvent, ItemEditFinished);
+			KxEVENT_MEMBER(DataViewWidgetEvent, ItemEditCanceled);
+
 			KxEVENT_MEMBER(DataViewWidgetEvent, ColumnHeaderClick);
 			KxEVENT_MEMBER(DataViewWidgetEvent, ColumnHeaderRClick);
 			KxEVENT_MEMBER(DataViewWidgetEvent, ColumnHeaderMenuItem);

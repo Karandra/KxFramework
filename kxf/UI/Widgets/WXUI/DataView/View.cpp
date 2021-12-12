@@ -212,7 +212,7 @@ namespace kxf::WXUI::DataView
 					size_t displayIndex = column->GetDisplayIndex();
 					if (displayIndex <= newIndex && displayIndex > oldDisplayIndex)
 					{
-						column->OnColumnAttached(m_Widget, column->GetIndex(), displayIndex - 1);
+						column->OnColumnAttached(*this, column->GetIndex(), displayIndex - 1);
 					}
 				}
 			}
@@ -224,13 +224,13 @@ namespace kxf::WXUI::DataView
 					size_t displayIndex = column->GetDisplayIndex();
 					if (displayIndex >= newIndex && displayIndex < oldDisplayIndex)
 					{
-						column->OnColumnAttached(m_Widget, column->GetIndex(), displayIndex + 1);
+						column->OnColumnAttached(*this, column->GetIndex(), displayIndex + 1);
 					}
 				}
 			}
 
 			// Set the new display position
-			movedColumn.OnColumnAttached(m_Widget, movedColumn.GetIndex(), newIndex);
+			movedColumn.OnColumnAttached(*this, movedColumn.GetIndex(), newIndex);
 
 			// Notify the header control
 			OnColumnCountChanged();
@@ -275,7 +275,7 @@ namespace kxf::WXUI::DataView
 			// keyboard events forwarded to us from 'MainWindow'.
 			DisableKeyboardScrolling();
 
-			if (!m_Style.Contains(CtrlStyle::NoHeader))
+			if (!m_Style.Contains(WidgetStyle::NoHeader))
 			{
 				m_HeaderArea = new HeaderCtrl(this);
 			}
@@ -343,7 +343,7 @@ namespace kxf::WXUI::DataView
 			}
 
 			// Insert
-			column->OnColumnAttached(m_Widget, index);
+			column->OnColumnAttached(*this, index);
 			m_Columns.emplace(m_Columns.begin() + index, std::move(column));
 			OnColumnCountChanged();
 
