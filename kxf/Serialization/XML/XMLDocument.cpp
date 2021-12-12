@@ -154,7 +154,7 @@ namespace kxf
 	}
 	bool XMLDocument::Save(IOutputStream& stream) const
 	{
-		XML::Private::DefaultXMLPrinter buffer;
+		XML::Private::XMLPrinterDefault buffer;
 		m_Document.Print(&buffer);
 		return stream.WriteAll(buffer.CStr(), buffer.CStrSize() - 1);
 	}
