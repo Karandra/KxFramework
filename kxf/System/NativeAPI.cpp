@@ -8,17 +8,33 @@
 #include "UndefWindows.h"
 
 #define DECLARE_LIBRARY(name)	\
-static_assert(static_cast<size_t>(NativeLibrary::##name) < Utility::ArraySize<decltype(m_LoadedLibraries)>::value);	\
-m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##name)].Name = L#name".dll"
+static_assert(static_cast<size_t>(NativeAPISet::##name) < Utility::ArraySize<decltype(m_LoadedLibraries)>::value);	\
+{	\
+	auto& item = m_LoadedLibraries[static_cast<size_t>(NativeAPISet::##name)];	\
+	\
+	item.Name = L#name L".dll";	\
+	item.Type = NativeAPISet::name;	\
+	\
+	m_Count++;	\
+}
 
 #define DEFINE_FUNCTION(name)										T##name name = nullptr
-#define INIT_FUNCTION_AS(dll, name, in_dll_name)					dll##::name = reinterpret_cast<dll##::T##name>(::GetProcAddress(reinterpret_cast<HMODULE>(m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##dll)].Handle), #in_dll_name))
+#define INIT_FUNCTION_AS(dll, name, in_dll_name)					dll##::name = reinterpret_cast<dll##::T##name>(::GetProcAddress(reinterpret_cast<HMODULE>(m_LoadedLibraries[static_cast<size_t>(NativeAPISet::##dll)].Handle), #in_dll_name))
 #define INIT_FUNCTION(dll, name)									INIT_FUNCTION_AS(dll, name, name)
 
-namespace kxf::NativeAPI::Private
+namespace kxf
 {
-	Loader::Loader() noexcept
+	NativeAPILoader& NativeAPILoader::GetInstance()
 	{
+		static NativeAPILoader instance;
+		return instance;
+	}
+
+	NativeAPILoader::NativeAPILoader() noexcept
+	{
+		m_LoadedLibraries.fill({});
+
+		using namespace NativeAPI;
 		DECLARE_LIBRARY(NtDLL);
 		DECLARE_LIBRARY(Kernel32);
 		DECLARE_LIBRARY(KernelBase);
@@ -30,10 +46,11 @@ namespace kxf::NativeAPI::Private
 		DECLARE_LIBRARY(DComp);
 	}
 
-	size_t Loader::LoadLibraries() noexcept
+	size_t NativeAPILoader::DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept
 	{
-		size_t count = 0;
-		for (LibraryRecord& library: m_LoadedLibraries)
+		Log::Info("DoLoadLibraries: m_IsLoaded=[{}], m_Count=[{}]", m_IsLoaded, m_Count);
+
+		if (!m_IsLoaded)
 		{
 			Log::Info("Lookup directory: '{}'", m_LookupDirectory);
 
@@ -70,32 +87,41 @@ namespace kxf::NativeAPI::Private
 					}
 				}
 			}
+
+			Log::Info("Loaded {} libraries", count);
+			m_IsLoaded = count != 0;
+			return count;
 		}
-		return count;
+		return 0;
 	}
-	size_t Loader::UnloadLibraries() noexcept
+	size_t NativeAPILoader::DoUnloadLibraries() noexcept
 	{
-		size_t count = 0;
-		for (LibraryRecord& library: m_LoadedLibraries)
+		if (m_IsLoaded)
 		{
-			if (library.Handle)
+			size_t count = 0;
+			for (size_t i = 0; i < m_Count; i++)
 			{
-				::FreeLibrary(reinterpret_cast<HMODULE>(library.Handle));
-				library.Handle = nullptr;
-				count++;
+				auto& item = m_LoadedLibraries[i];
+				if (item.Handle)
+				{
+					::FreeLibrary(reinterpret_cast<HMODULE>(item.Handle));
+					item.Handle = nullptr;
+					count++;
+				}
 			}
+
+			m_IsLoaded = false;
+			return count;
 		}
-		return count;
-	}
-	bool Loader::IsLibraryLoaded(NativeLibrary library) const noexcept
-	{
-		const size_t index = static_cast<size_t>(library);
-		return index < m_LoadedLibraries.size() && m_LoadedLibraries[index].Handle;
+		return 0;
 	}
 
-	void Loader::LoadNtDLL() noexcept
+	void NativeAPILoader::InitializeNtDLL() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::NtDLL))
+		Log::Info("InitializeNtDLL");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::NtDLL))
 		{
 			INIT_FUNCTION(NtDLL, RtlGetVersion);
 			INIT_FUNCTION(NtDLL, NtQueryInformationProcess);
@@ -108,9 +134,12 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(NtDLL, LdrUnregisterDllNotification);
 		}
 	}
-	void Loader::LoadKernel32() noexcept
+	void NativeAPILoader::InitializeKernel32() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::Kernel32))
+		Log::Info("InitializeKernel32");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::Kernel32))
 		{
 			INIT_FUNCTION(Kernel32, Wow64DisableWow64FsRedirection);
 			INIT_FUNCTION(Kernel32, Wow64RevertWow64FsRedirection);
@@ -124,16 +153,22 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(Kernel32, GetDllDirectoryW);
 		}
 	}
-	void Loader::LoadKernelBase() noexcept
+	void NativeAPILoader::InitializeKernelBase() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::KernelBase))
+		Log::Info("InitializeKernelBase");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::KernelBase))
 		{
 			INIT_FUNCTION(KernelBase, PathCchCanonicalizeEx);
 		}
 	}
-	void Loader::LoadUser32() noexcept
+	void NativeAPILoader::InitializeUser32() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::User32))
+		Log::Info("InitializeUser32");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::User32))
 		{
 			INIT_FUNCTION(User32, EnableNonClientDpiScaling);
 			INIT_FUNCTION(User32, SetThreadDpiAwarenessContext);
@@ -141,16 +176,22 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(User32, GetDpiForWindow);
 		}
 	}
-	void Loader::LoadShlWAPI() noexcept
+	void NativeAPILoader::InitializeShlWAPI() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::ShlWAPI))
+		Log::Info("InitializeShlWAPI");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::ShlWAPI))
 		{
 			INIT_FUNCTION(ShlWAPI, PathCanonicalizeW);
 		}
 	}
-	void Loader::LoadDWMAPI() noexcept
+	void NativeAPILoader::InitializeDWMAPI() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::DWMAPI))
+		Log::Info("InitializeDWMAPI");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::DWMAPI))
 		{
 			INIT_FUNCTION(DWMAPI, DwmIsCompositionEnabled);
 			INIT_FUNCTION(DWMAPI, DwmGetColorizationColor);
@@ -158,23 +199,33 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(DWMAPI, DwmEnableBlurBehindWindow);
 		}
 	}
-	void Loader::LoadDbgHelp() noexcept
+	void NativeAPILoader::InitializeDbgHelp() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::DbgHelp))
+		Log::Info("InitializeDbgHelp");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::DbgHelp))
 		{
 			INIT_FUNCTION(DbgHelp, ImageNtHeader);
 		}
 	}
-	void Loader::LoadDXGI() noexcept
+	void NativeAPILoader::InitializeDXGI() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::DXGI))
+		Log::Info("InitializeDXGI");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::DXGI))
 		{
+			INIT_FUNCTION(DXGI, CreateDXGIFactory1);
 			INIT_FUNCTION(DXGI, CreateDXGIFactory2);
 		}
 	}
-	void Loader::LoadDComp() noexcept
+	void NativeAPILoader::InitializeDComp() noexcept
 	{
-		if (IsLibraryLoaded(NativeLibrary::DComp))
+		Log::Info("InitializeDComp");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::DComp))
 		{
 			INIT_FUNCTION(DComp, DCompositionCreateDevice);
 		}
@@ -251,6 +302,7 @@ namespace kxf::NativeAPI
 	}
 	namespace DXGI
 	{
+		DEFINE_FUNCTION(CreateDXGIFactory1);
 		DEFINE_FUNCTION(CreateDXGIFactory2);
 	}
 	namespace DComp
@@ -264,29 +316,34 @@ namespace kxf::NativeAPI::Private
 	class InitializationModule final: public wxModule
 	{
 		private:
-			Loader m_Loader;
+			NativeAPILoader& m_Loader = NativeAPILoader::GetInstance();
 
 		public:
 			bool OnInit() noexcept override
 			{
+				Log::Info("InitializationModule::OnInit");
+
 				if (m_Loader.LoadLibraries() != 0)
 				{
-					m_Loader.LoadNtDLL();
-					m_Loader.LoadKernel32();
-					m_Loader.LoadKernelBase();
-					m_Loader.LoadUser32();
-					m_Loader.LoadShlWAPI();
-					m_Loader.LoadDWMAPI();
-					m_Loader.LoadDbgHelp();
-					m_Loader.LoadDXGI();
-					m_Loader.LoadDComp();
+					m_Loader.InitializeNtDLL();
+					m_Loader.InitializeKernel32();
+					m_Loader.InitializeKernelBase();
+					m_Loader.InitializeUser32();
+					m_Loader.InitializeShlWAPI();
+					m_Loader.InitializeDWMAPI();
+					m_Loader.InitializeDbgHelp();
+					m_Loader.InitializeDXGI();
+					m_Loader.InitializeDComp();
 
+					Log::Info("InitializationModule::OnInit -> Success");
 					return true;
 				}
 				return false;
 			}
 			void OnExit() noexcept override
 			{
+				Log::Info("InitializationModule::OnExit");
+
 				m_Loader.UnloadLibraries();
 			}
 

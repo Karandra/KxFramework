@@ -3,12 +3,14 @@
 #include "UndefWindows.h"
 #include <array>
 
-namespace kxf::NativeAPI
+namespace kxf
 {
 	class FSPath;
 
 	enum class NativeAPISet
 	{
+		None = -1,
+
 		NtDLL,
 		Kernel32,
 		KernelBase,
@@ -17,15 +19,17 @@ namespace kxf::NativeAPI
 		DWMAPI,
 		DbgHelp,
 		DXGI,
-		DComp,
-
-		COUNT,
+		DComp
 	};
 }
-
 namespace kxf::NativeAPI::Private
 {
-	class KX_API Loader final
+	class InitializationModule;
+}
+
+namespace kxf
+{
+	class KX_API NativeAPILoader final
 	{
 		friend class NativeAPI::Private::InitializationModule;
 
@@ -54,10 +58,21 @@ namespace kxf::NativeAPI::Private
 			bool m_IsLoaded = false;
 
 		private:
-			std::array<LibraryRecord, static_cast<size_t>(NativeLibrary::COUNT)> m_LoadedLibraries = {};
+			size_t DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept;
+			size_t DoUnloadLibraries() noexcept;
+
+			void InitializeNtDLL() noexcept;
+			void InitializeKernel32() noexcept;
+			void InitializeKernelBase() noexcept;
+			void InitializeUser32() noexcept;
+			void InitializeShlWAPI() noexcept;
+			void InitializeDWMAPI() noexcept;
+			void InitializeDbgHelp() noexcept;
+			void InitializeDXGI() noexcept;
+			void InitializeDComp() noexcept;
 
 		private:
-			Loader() noexcept;
+			NativeAPILoader() noexcept;
 
 		public:
 			size_t LoadLibraries() noexcept
@@ -167,6 +182,7 @@ namespace kxf::NativeAPI
 	}
 	namespace DXGI
 	{
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, CreateDXGIFactory1, const ::IID&, void**);
 		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, CreateDXGIFactory2, UINT, const ::IID&, void**);
 	}
 	namespace DComp

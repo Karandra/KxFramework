@@ -1,22 +1,22 @@
 #include "KxfPCH.h"
-#include "Internal.h"
+#include "Conversion.h"
 
 namespace kxf::Sciter
 {
-	std::vector<BYTE> ToSciterUTF8(const String& text)
+	std::vector<uint8_t> ToSciterUTF8(const String& text)
 	{
 		if (!text.IsEmpty())
 		{
 			auto utf8 = text.ToUTF8();
 			constexpr size_t bomLength = 3;
 
-			// Copy to buffer and add BOM sequence to force Sciter recognize UTF-8
-			std::vector<BYTE> buffer;
+			// Copy to buffer and add BOM sequence to force Sciter to recognize the text as UTF-8
+			std::vector<uint8_t> buffer;
 			buffer.resize(utf8.length() + bomLength);
 			buffer[0] = 0xEF;
 			buffer[1] = 0xBB;
 			buffer[2] = 0xBF;
-			memcpy(buffer.data() + bomLength, utf8.data(), utf8.length());
+			std::memcpy(buffer.data() + bomLength, utf8.data(), utf8.length());
 
 			return buffer;
 		}
@@ -25,13 +25,20 @@ namespace kxf::Sciter
 
 	String FSPathToSciterAddress(const FSPath& path)
 	{
-		return path ? String("file://") + path.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator) : "about:blank";
+		if (path)
+		{
+			return String("file://").Append(path.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator));
+		}
+		else
+		{
+			return "about:blank";
+		}
 	}
 	String URIToSciterAddress(const URI& uri)
 	{
 		if (!uri.HasScheme())
 		{
-			return String("file://") + uri.BuildURI();
+			return String("file://").Append(uri.BuildURI());
 		}
 		return uri.BuildURI();
 	}

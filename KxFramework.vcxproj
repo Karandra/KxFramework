@@ -347,6 +347,7 @@
     <ClInclude Include="kxf\RTTI\IID.h" />
     <ClInclude Include="kxf\RTTI\Interface.h" />
     <ClInclude Include="kxf\RTTI\RTTI.h" />
+    <ClInclude Include="kxf\Sciter\Private\Conversion.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Common.h" />
@@ -371,7 +372,6 @@
     <ClInclude Include="kxf\Serialization\TextDocument.h" />
     <ClInclude Include="kxf\Serialization\XDocument.h" />
     <ClInclude Include="kxf\Serialization\XML.h" />
-    <ClInclude Include="kxf\Serialization\XML\Private\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="kxf\Serialization\XML\Private\Utility.h" />
     <ClInclude Include="kxf\Serialization\XML\XMLDocument.h" />
     <ClInclude Include="kxf\System\DynamicLibrary.h" />
@@ -754,7 +754,6 @@
     <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.h" />
     <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.h" />
     <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsText.h" />
-    <ClInclude Include="kxf\Sciter\Internal.h" />
     <ClInclude Include="kxf\Sciter\IWindowRenderer.h" />
     <ClInclude Include="kxf\Sciter\Renderers\DirectX.h" />
     <ClInclude Include="kxf\Sciter\Renderers\FPSCounter.h" />
@@ -943,6 +942,7 @@
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
     <ClCompile Include="kxf\RTTI\IObject.cpp" />
+    <ClCompile Include="kxf\Sciter\Private\Conversion.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
@@ -1218,7 +1218,6 @@
     <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.cpp" />
     <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsText.cpp" />
     <ClCompile Include="kxf\Sciter\Host.cpp" />
-    <ClCompile Include="kxf\Sciter\Internal.cpp" />
     <ClCompile Include="kxf\Sciter\IWindowRenderer.cpp" />
     <ClCompile Include="kxf\Sciter\Node.cpp" />
     <ClCompile Include="kxf\Sciter\Renderers\DirectX.cpp" />
