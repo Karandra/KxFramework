@@ -123,11 +123,17 @@ namespace kxf
 			void* GetExportedFunctionAddress(size_t ordinal) const;
 
 			template<class TFunc, class T>
-			TFunc* GetExportedFunction(T&& name) const
+			requires(std::is_function_v<std::remove_pointer_t<std::remove_reference_t<TFunc>>>)
+			auto GetExportedFunction(T&& name) const
 			{
-				static_assert(std::is_function_v<std::remove_pointer_t<std::remove_reference_t<TFunc>>>, "free function type required");
-
-				return reinterpret_cast<TFunc*>(GetExportedFunctionAddress(std::forward<T>(name)));
+				if constexpr(std::is_pointer_v<std::remove_reference_t<TFunc>>)
+				{
+					return reinterpret_cast<TFunc>(GetExportedFunctionAddress(std::forward<T>(name)));
+				}
+				else
+				{
+					return reinterpret_cast<TFunc*>(GetExportedFunctionAddress(std::forward<T>(name)));
+				}
 			}
 
 			// Dependencies
