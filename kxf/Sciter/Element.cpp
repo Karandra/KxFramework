@@ -6,7 +6,7 @@
 #include "EventDispatcher.h"
 #include "ScriptValue.h"
 #include "SciterAPI.h"
-#include "Internal.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/General/RegEx.h"
 #include "kxf/Utility/Drawing.h"
 #include "kxf/Utility/Enumerator.h"

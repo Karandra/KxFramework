@@ -1,11 +1,11 @@
 #include "KxfPCH.h"
 #include "EventDispatcher.h"
 #include "SciterAPI.h"
-#include "Internal.h"
 #include "Widget.h"
 #include "WidgetFactory.h"
 #include "Host.h"
 #include "ScriptValue.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/Utility/Drawing.h"
 
 namespace kxf::Sciter
@@ -744,7 +744,7 @@ namespace kxf::Sciter
 				break;
 			}
 
-			case BEHAVIOR_EVENTS::VISIUAL_STATUS_CHANGED:
+			case BEHAVIOR_EVENTS::VISUAL_STATUS_CHANGED:
 			{
 				eventID = BehaviorEvent::EvtVisualStatusChanged;
 				break;

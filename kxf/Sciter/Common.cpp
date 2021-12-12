@@ -1,17 +1,20 @@
 #include "KxfPCH.h"
 #include "Common.h"
 #include "SciterAPI.h"
-#include "Internal.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/ExecutableVersionResource.h"
+#include "kxf/Log/Common.h"
+
+namespace
+{
+	void* g_SciterLibrary = nullptr;
+}
 
 namespace kxf::Sciter
 {
-	void* g_SciterLibrary = nullptr;
-
 	String GetLibraryName()
 	{
-		return "Sciter";
+		return "Sciter-JS";
 	}
 	Version GetLibraryVersion()
 	{
@@ -33,18 +36,25 @@ namespace kxf::Sciter
 	{
 		return g_SciterLibrary != nullptr;
 	}
-	bool LoadLibrary(const String& path)
+	void* LoadLibrary(const FSPath& path)
 	{
 		if (!g_SciterLibrary)
 		{
-			g_SciterLibrary = ::LoadLibraryW(path.wc_str());
+			auto fullPath = path.GetFullPathWithNS();
+			Log::Info("Loading Sciter DLL from: '{}'", fullPath);
+
+			g_SciterLibrary = ::LoadLibraryW(fullPath.wc_str());
+			if (!g_SciterLibrary)
+			{
+				Log::Error("Failed to loader Sciter DLL");
+			}
 		}
-		return g_SciterLibrary != nullptr;
+		return g_SciterLibrary;
 	}
 	void FreeLibrary()
 	{
 		// Sciter API includes don't have function to unload its DLL and it causes a crash
-		// if I do unload the DLL. So I'm going to let it loaded itself when process exists.
+		// if we do unload the DLL manually. So we're going to let it loaded itself when process exists.
 		// It seems Sciter does something in its DllMain's 'DLL_PROCESS_DETACH' event.
 		#if 0
 		if (g_SciterLibrary)

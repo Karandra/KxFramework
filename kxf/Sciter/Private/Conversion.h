@@ -1,6 +1,6 @@
 #pragma once
-#include "Common.h"
-#include "SciterAPI.h"
+#include "../Common.h"
+#include "../SciterAPI.h"
 
 namespace kxf::Sciter
 {
@@ -16,7 +16,7 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	std::vector<BYTE> ToSciterUTF8(const String& text);
+	std::vector<uint8_t> ToSciterUTF8(const String& text);
 
 	String FSPathToSciterAddress(const FSPath& path);
 	String URIToSciterAddress(const URI& uri);

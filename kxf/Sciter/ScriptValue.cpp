@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "ScriptValue.h"
-#include "Internal.h"
 #include "SciterAPI.h"
+#include "kxf/Sciter/Private/Conversion.h"
 
 namespace kxf::Sciter
 {

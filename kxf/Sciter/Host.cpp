@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "Host.h"
 #include "SciterAPI.h"
-#include "Internal.h"
 #include "Stylesheets/MasterStylesheetStorage.h"
+#include "kxf/Sciter/Private/Conversion.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
 #include <WindowsX.h>
