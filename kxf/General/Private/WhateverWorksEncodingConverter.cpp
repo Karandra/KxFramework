@@ -26,7 +26,7 @@ namespace kxf
 		}
 
 		// Current locale
-		result = EncodingConverter_ASCII.ToMultiByte(source, destination);
+		result = EncodingConverter_Local.ToMultiByte(source, destination);
 		if (result != 0)
 		{
 			return result;
@@ -46,7 +46,7 @@ namespace kxf
 		}
 
 		// Current locale
-		result = EncodingConverter_ASCII.ToWideChar(source, destination);
+		result = EncodingConverter_Local.ToWideChar(source, destination);
 		if (result != 0)
 		{
 			return result;
