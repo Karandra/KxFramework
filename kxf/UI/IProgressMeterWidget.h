@@ -4,6 +4,16 @@
 
 namespace kxf
 {
+	enum class ProgressMeterState
+	{
+		Normal,
+		Pause,
+		Error
+	};
+}
+
+namespace kxf
+{
 	class KX_API IProgressMeter: public RTTI::Interface<IProgressMeter>
 	{
 		KxRTTI_DeclareIID(IProgressMeter, {0xc2e38cf4, 0x8f60, 0x47fa, {0x8f, 0xf7, 0x9, 0x29, 0x5e, 0x61, 0xa7, 0x43}});
@@ -20,6 +30,9 @@ namespace kxf
 
 			virtual void Pulse() = 0;
 			virtual bool IsPulsing() const = 0;
+
+			virtual ProgressMeterState GetState() const = 0;
+			virtual void SetState(ProgressMeterState state) = 0;
 
 			void StepIt()
 			{

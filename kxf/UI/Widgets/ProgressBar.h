@@ -36,6 +36,9 @@ namespace kxf::Widgets
 			void Pulse() override;
 			bool IsPulsing() const override;
 
+			ProgressMeterState GetState() const override;
+			void SetState(ProgressMeterState state) override;
+
 			// IProgressMeterWidget
 			String GetLabel(FlagSet<WidgetTextFlag> flags = {}) const override;
 			void SetLabel(const String& label, FlagSet<WidgetTextFlag> flags = {}) override;
