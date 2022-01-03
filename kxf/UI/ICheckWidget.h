@@ -10,6 +10,12 @@ namespace kxf
 		Unchecked = 0,
 		Indeterminate = -1
 	};
+	enum class CheckWidgetType
+	{
+		None = -1,
+		Button,
+		Radio
+	};
 }
 
 namespace kxf
