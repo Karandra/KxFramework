@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Row.h"
 #include "CellState.h"
+#include "CellRenderer.h"
 #include "../IDataViewItem.h"
 
 namespace kxf::WXUI::DataView
@@ -147,7 +148,7 @@ namespace kxf::DataView
 			}
 			bool IsRootNode() const noexcept
 			{
-				return this == m_RootNode && m_ParentNode == nullptr;
+				return this == m_RootNode;
 			}
 			bool IsAttached() const noexcept;
 
@@ -212,7 +213,7 @@ namespace kxf::DataView
 
 		public:
 			void RefreshCell();
-			void RefreshCell(const Column& column);
+			void RefreshCell(Column& column);
 			bool EditCell(Column& column);
 
 			Row GetRow() const;
@@ -277,7 +278,7 @@ namespace kxf::DataView
 				return false;
 			}
 
-			std::shared_ptr<DataView::CellRenderer> GetCellRenderer(const Column& column) const
+			DataView::CellRenderer GetCellRenderer(const Column& column) const
 			{
 				return GetDataModel().GetCellRenderer(*this, column);
 			}
@@ -319,87 +320,5 @@ namespace kxf::DataView
 			}
 
 			Node& operator=(const Node&) = delete;
-	};
-
-	class KX_API RootNode final: public Node
-	{
-		KxRTTI_DeclareIID(RootNode, {0xe57d0d6b, 0xdea1, 0x43d9, {0xb3, 0xf2, 0x75, 0xd1, 0xce, 0xc2, 0x32, 0x59}});
-		
-		friend class Node;
-		friend class WXUI::DataView::View;
-		friend class WXUI::DataView::MainWindow;
-
-		private:
-			IDataViewModel* m_DataModel = nullptr;
-			WXUI::DataView::View* m_View = nullptr;
-			WXUI::DataView::MainWindow* m_MainWindow = nullptr;
-
-		private:
-
-		public:
-			RootNode() noexcept
-			{
-				m_RootNode = this;
-				m_ParentNode = nullptr;
-				m_IsExpanded = true;
-			}
-
-		public:
-			void Initalize(WXUI::DataView::MainWindow& mainWindow) noexcept;
-	};
-}
-
-namespace kxf::DataView
-{
-	class KX_API NodeOperation
-	{
-		public:
-			// The return value control how the tree-walker traverse the tree
-			enum class Result
-			{
-				Done, // Done, stop traversing and return
-				SkipSubTree, // Ignore the current node's subtree and continue
-				Continue, // Not done, continue
-			};
-
-		private:
-			static bool DoWalk(const Node& node, NodeOperation& func);
-
-		protected:
-			virtual Result operator()(const Node& node) = 0;
-
-		public:
-			virtual ~NodeOperation() = default;
-
-		public:
-			bool Walk(const Node& node)
-			{
-				return DoWalk(node, *this);
-			}
-	};
-}
-
-namespace kxf::DataView
-{
-	class KX_API RowToNodeOperation final: public NodeOperation
-	{
-		private:
-			const intptr_t m_Row = -1;
-			intptr_t m_CurrentRow = -1;
-			const Node* m_ResultNode = nullptr;
-
-		public:
-			RowToNodeOperation(intptr_t row , intptr_t current)
-				:m_Row(row), m_CurrentRow(current)
-			{
-			}
-
-		public:
-			Result operator()(const Node& node) override;
-
-			const Node* GetResult() const
-			{
-				return m_ResultNode;
-			}
 	};
 }

@@ -1,17 +1,19 @@
 #pragma once
 #include "Common.h"
 #include "View.h"
+#include "Node.h"
 #include "../../../DataView/Row.h"
 #include "../../../DataView/Node.h"
 #include "../../../DataView/Column.h"
 #include "../../../DataView/SortMode.h"
 #include "../../../DataView/CellState.h"
+#include "../../../DataView/CellRenderer.h"
 #include "../../../DataView/CellAttributes.h"
 #include "../../../Events/DataViewWidgetEvent.h"
 
-#include "Renderers/NullRenderer.h"
 #include "kxf/UI/Windows/ToolTipEx.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/EventSystem/Event.h"
 #include <wx/selstore.h>
 
@@ -186,7 +188,7 @@ namespace kxf::WXUI::DataView
 			void OnColumnCountChanged();
 			bool IsCellInteractible(const DV::Node& node, const DV::Column& column, InteractibleCell action) const;
 			DV::Column* FindInteractibleColumn(const DV::Node& node, InteractibleCell action);
-			int CalcBestColumnWidth(DV::Column& column) const;
+			int CalcBestColumnWidth(const DV::Column& column) const;
 			bool FitLastColumn(bool update = true);
 
 			// Items
@@ -223,7 +225,7 @@ namespace kxf::WXUI::DataView
 			}
 			DV::RootNode& GetRootNode()
 			{
-				return *m_TreeRoot;
+				return m_TreeRoot;
 			}
 			void ItemsChanged();
 
@@ -280,9 +282,9 @@ namespace kxf::WXUI::DataView
 			{
 				return m_CurrentRow;
 			}
-			bool HasCurrentRow()
+			bool HasCurrentRow() const
 			{
-				return !m_CurrentRow.IsNull();
+				return static_cast<bool>(m_CurrentRow);
 			}
 			void ChangeCurrentRow(DV::Row row);
 			bool TryAdvanceCurrentColumn(DV::Node* node, wxKeyEvent& event, bool moveForward);
@@ -357,7 +359,7 @@ namespace kxf::WXUI::DataView
 			{
 				return HitTest(pos, &node, &column);
 			}
-			Rect GetItemRect(const DV::Node& item, const DV::Column* column = nullptr);
+			Rect GetItemRect(const DV::Node& item, const DV::Column* column = nullptr) const;
 
 			// Rows
 			void Expand(DV::Row row);

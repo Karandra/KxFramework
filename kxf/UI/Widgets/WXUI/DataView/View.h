@@ -25,6 +25,7 @@ namespace kxf::DataView
 {
 	class Column;
 	class ToolTip;
+	class CellRenderer;
 }
 namespace kxf::WXUI::DataView
 {
@@ -42,6 +43,7 @@ namespace kxf::WXUI::DataView
 		friend class Widgets::DataView;
 		friend class kxf::DataView::Column;
 		friend class kxf::DataView::ToolTip;
+		friend class kxf::DataView::CellRenderer;
 
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;

@@ -65,7 +65,7 @@ namespace kxf
 
 		public:
 			// Visuals and editing
-			virtual std::shared_ptr<DataView::CellRenderer> GetCellRenderer(const DataView::Column& column) const
+			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Column& column) const
 			{
 				return nullptr;
 			}

@@ -32,7 +32,7 @@ namespace kxf
 			virtual std::shared_ptr<IDataViewItem> GetChildItem(size_t index) const = 0;
 
 		public:
-			virtual std::shared_ptr<DataView::CellRenderer> GetCellRenderer(const DataView::Node& node, const DataView::Column& column) const
+			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Node& node, const DataView::Column& column) const
 			{
 				return node.GetItem()->GetCellRenderer(column);
 			}

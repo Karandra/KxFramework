@@ -2,9 +2,8 @@
 #include "View.h"
 #include "HeaderCtrl.h"
 #include "MainWindow.h"
-#include "Renderer.h"
 #include "kxf/General/Format.h"
-#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace
 {
@@ -148,18 +147,18 @@ namespace kxf::WXUI::DataView
 	}
 	void View::OnPaint(wxPaintEvent& event)
 	{
-		IGraphicsRenderer& renderer = *m_ClientArea->m_GraphicsRenderer;
+		auto renderer = m_ClientArea->GetRenderer();
 
-		auto gc = renderer.CreateLegacyWindowPaintContext(*this);
+		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->SetAntialiasMode(AntialiasMode::None);
 		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
 
-		auto brush = renderer.CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
+		auto brush = renderer->CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
 		gc->Clear(*brush);
 
 		if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
 		{
-			brush = renderer.CreateSolidBrush(m_ClientArea->m_PenRuleH->GetColor());
+			brush = renderer->CreateSolidBrush(m_ClientArea->m_PenRuleH->GetColor());
 
 			RectF rect = Rect(m_HeaderAreaSpacerSI->GetRect());
 			rect.SetWidth(GetClientSize().GetWidth());
@@ -277,7 +276,7 @@ namespace kxf::WXUI::DataView
 
 			if (!m_Style.Contains(WidgetStyle::NoHeader))
 			{
-				m_HeaderArea = new HeaderCtrl(this);
+				m_HeaderArea = new HeaderCtrl(*this);
 			}
 			SetTargetWindow(m_ClientArea);
 
@@ -589,16 +588,16 @@ namespace kxf::WXUI::DataView
 		m_ClientArea->ClearSelection();
 		DV::Node* lastParent = nullptr;
 
-		for (auto& item: selection)
+		for (auto& node: selection)
 		{
-			DV::Node* parent = item->GetParentNode();
+			DV::Node* parent = node->GetParentNode();
 			if (lastParent && parent->IsSameAs(*lastParent))
 			{
-				item->DoExpandNodeAncestors();
+				node->DoExpandNodeAncestors();
 			}
 
 			lastParent = parent;
-			if (DV::Row row = m_ClientArea->GetRowByNode(item))
+			if (DV::Row row = m_ClientArea->GetRowByNode(*node))
 			{
 				m_ClientArea->SelectRow(row);
 			}
@@ -636,15 +635,18 @@ namespace kxf::WXUI::DataView
 	// Drag and drop
 	bool View::EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop)
 	{
-		return m_ClientArea->EnableDND(std::move(dataObject), type, isPreferredDrop);
+		//return m_ClientArea->EnableDND(std::move(dataObject), type, isPreferredDrop);
+		return false;
 	}
 	bool View::DisableDND(const wxDataFormat& format)
 	{
-		return m_ClientArea->DisableDND(format);
+		//return m_ClientArea->DisableDND(format);
+		return true;
 	}
 	bool View::DisableDND(const wxDataObjectSimple& dataObject)
 	{
-		return m_ClientArea->DisableDND(dataObject.GetFormat());
+		//return m_ClientArea->DisableDND(dataObject.GetFormat());
+		return true;
 	}
 
 	void View::SetFocus()

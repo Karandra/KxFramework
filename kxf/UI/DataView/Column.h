@@ -19,6 +19,7 @@ namespace kxf::DataView
 		friend class WXUI::DataView::HeaderCtrl;
 		friend class WXUI::DataView::HeaderCtrl2;
 		friend class ToolTip;
+		friend class CellRenderer;
 
 		public:
 			static constexpr auto npos = std::numeric_limits<size_t>::max();
@@ -29,7 +30,7 @@ namespace kxf::DataView
 
 		private:
 			WXUI::DataView::View* m_View = nullptr;
-			std::shared_ptr<CellRenderer> m_Renderer;
+			std::shared_ptr<IDataViewCellRenderer> m_CellRenderer;
 			std::shared_ptr<CellEditor> m_Editor;
 
 			WidgetID m_ID;
@@ -77,21 +78,21 @@ namespace kxf::DataView
 
 		public:
 			Column() = default;
-			Column(String title, WidgetID id, FlagSet<ColumnStyle> style = {}, std::shared_ptr<CellRenderer> renderer = {})
-				:m_Title(std::move(title)), m_Renderer(std::move(renderer)), m_ID(id), m_Style(style)
+			Column(String title, WidgetID id, FlagSet<ColumnStyle> style = {}, std::shared_ptr<IDataViewCellRenderer> cellRenderer = nullptr)
+				:m_Title(std::move(title)), m_CellRenderer(std::move(cellRenderer)), m_ID(id), m_Style(style)
 			{
 			}
 
 		public:
 			IDataViewWidget& GetOwningWdget() const;
 
-			std::shared_ptr<CellRenderer> GetCellRenderer() const
+			std::shared_ptr<IDataViewCellRenderer> GetCellRenderer() const
 			{
-				return m_Renderer;
+				return m_CellRenderer;
 			}
-			void SetCellRenderer(std::shared_ptr<CellRenderer> renderer)
+			void SetCellRenderer(std::shared_ptr<IDataViewCellRenderer> renderer)
 			{
-				m_Renderer = std::move(renderer);
+				m_CellRenderer = std::move(renderer);
 				UpdateDisplay();
 			}
 
@@ -176,7 +177,7 @@ namespace kxf::DataView
 					// Recursion guard for calling from user code
 					if (RecursionGuard guard(m_BestWidthRG); !guard.IsInside())
 					{
-						m_BestWidth = CalcBestWidth();
+						m_BestWidth = std::clamp(CalcBestWidth(), GetAbsMinColumnWidth(), GetAbsMaxColumnWidth());
 					}
 				}
 				return m_BestWidth;

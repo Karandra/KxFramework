@@ -266,7 +266,7 @@ namespace kxf::DataView
 		{
 			auto width = std::max({CalcTitleWidth(), GetBestWidth(), GetMinWidth()});
 
-			DataViewWidgetEvent event(*m_View->m_Widget);
+			DataViewWidgetEvent event(m_View->m_Widget);
 			event.SetColumn(this);
 			event.SetSize({width, Geometry::DefaultCoord});
 

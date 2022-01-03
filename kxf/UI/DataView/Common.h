@@ -5,6 +5,8 @@ namespace kxf
 {
 	class IDataViewWidget;
 	class IDataViewModel;
+	class IDataViewItem;
+	class IDataViewCellRenderer;
 }
 
 namespace kxf::DataView
@@ -12,7 +14,6 @@ namespace kxf::DataView
 	class Node;
 	class Column;
 	class CellEditor;
-	class CellRenderer;
 
 	class ToolTip;
 	class CellState;
@@ -28,11 +29,12 @@ namespace kxf::DataView
 		HorizontalRules = FlagSetValue<WidgetStyle>(3),
 		AlternatingRowColors = FlagSetValue<WidgetStyle>(4),
 		CellFocus = FlagSetValue<WidgetStyle>(5),
-		FitLastColumn = FlagSetValue<WidgetStyle>(6),
-		VariableRowHeight = FlagSetValue<WidgetStyle>(7),
-		MultiColumnSort = FlagSetValue<WidgetStyle>(8),
-		NoHeader = FlagSetValue<WidgetStyle>(9),
-		Flat = FlagSetValue<WidgetStyle>(10)
+		VariableRowHeight = FlagSetValue<WidgetStyle>(6),
+		MultiColumnSort = FlagSetValue<WidgetStyle>(7),
+		NoHeader = FlagSetValue<WidgetStyle>(8),
+		Flat = FlagSetValue<WidgetStyle>(9),
+		FitLastColumn = FlagSetValue<WidgetStyle>(10),
+		FitLastColumnToClient = FlagSetValue<WidgetStyle>(11),
 	};
 	enum class ColumnStyle: uint32_t
 	{
