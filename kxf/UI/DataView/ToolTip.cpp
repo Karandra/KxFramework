@@ -84,7 +84,7 @@ namespace kxf::DataView
 				auto renderer = node.GetCellRenderer(column);
 				if (renderer && renderer.IsMarkupEnabled())
 				{
-					return renderer->StripMarkup(text);
+					return renderer.StripMarkup(text);
 				}
 			}
 		}

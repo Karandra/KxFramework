@@ -112,6 +112,7 @@ namespace kxf::DataView
 		public:
 			Node() = default;
 			Node(const Node&) = delete;
+			Node(Node&&) noexcept = default;
 			Node(std::shared_ptr<IDataViewItem> item, Node* parent)
 				:m_Item(std::move(item))
 			{
@@ -314,5 +315,6 @@ namespace kxf::DataView
 			}
 
 			Node& operator=(const Node&) = delete;
+			Node& operator=(Node&&) noexcept = default;
 	};
 }

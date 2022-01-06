@@ -196,7 +196,7 @@ namespace kxf::DataView
 		private:
 			void OnIdle(IdleEvent& event);
 			void OnChar(WidgetKeyEvent& event);
-			void OnTextCommit(wxCommandEvent& event);
+			void OnTextCommit(WidgetTextEvent& event);
 			void OnKillFocus(WidgetFocusEvent& event);
 			void OnMouseMove(WidgetMouseEvent& event);
 

@@ -214,6 +214,10 @@ namespace kxf::DataView
 				m_Parameters.EllipsizeMode = mode;
 			}
 
+			bool IsMarkupEnabled() const
+			{
+				return m_Parameters.MarkupMode != MarkupMode::Disabled;
+			}
 			void EnableMarkup()
 			{
 				m_Parameters.MarkupMode = IDataViewCellRenderer::MarkupMode::TextOnly;
@@ -226,6 +230,7 @@ namespace kxf::DataView
 			{
 				m_Parameters.MarkupMode = IDataViewCellRenderer::MarkupMode::Disabled;
 			}
+			String StripMarkup(const String& markup) const;
 
 			FlagSet<Alignment> GetEffectiveAlignment() const
 			{

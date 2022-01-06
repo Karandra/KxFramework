@@ -311,7 +311,10 @@ namespace kxf::WXUI::DataView
 		{
 			if (hitTest)
 			{
-				return GetMainWindow()->HitTestColumn(Point(m_View->ScreenToClient(::wxGetMousePosition())));
+				DV::Column* column = nullptr;
+				GetMainWindow()->HitTest(Point(m_View->ScreenToClient(::wxGetMousePosition())), nullptr, &column);
+
+				return column;
 			}
 			else
 			{

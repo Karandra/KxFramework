@@ -1,13 +1,9 @@
 #pragma once
 #include "WidgetEvent.h"
 #include "../IDataViewWidget.h"
-#include <wx/dnd.h>
-
-namespace kxf::DataView
-{
-	class Node;
-	class Column;
-}
+#include "../DataView/Row.h"
+#include "../DataView/Node.h"
+#include "../DataView/Column.h"
 
 namespace kxf
 {

@@ -1,8 +1,13 @@
 #pragma once
 #include "Common.h"
-#include "IDataViewItem.h"
 #include "kxf/General/Any.h"
 
+namespace kxf
+{
+	class IDataViewItem;
+	class IDataViewCellEditor;
+	class IDataViewCellRenderer;
+}
 namespace kxf::DataView
 {
 	class Node;

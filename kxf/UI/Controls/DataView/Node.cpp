@@ -130,7 +130,7 @@ namespace kxf::UI::DataView
 	{
 		if (m_RootNode)
 		{
-			return m_RootNode->IsAttached();
+			return m_RootNode->IsNodeAttached();
 		}
 		return false;
 	}

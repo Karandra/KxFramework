@@ -234,4 +234,8 @@ namespace kxf::DataView
 	{
 		return m_Column->m_View->m_Widget;
 	}
+	String CellRenderer::StripMarkup(const String& markup) const
+	{
+		return CellRendererHelper(GetOwningWidget(), *m_GraphicsContext, CreateParemeters()).StripMarkup(markup);
+	}
 }

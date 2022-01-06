@@ -162,7 +162,7 @@ namespace kxf::DataView
 			}
 		};
 	}
-	void CellEditorWidgetHandler::OnTextCommit(wxCommandEvent& event)
+	void CellEditorWidgetHandler::OnTextCommit(WidgetTextEvent& event)
 	{
 		m_IsFinished = true;
 		m_Editor.EndEdit();
