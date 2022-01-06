@@ -143,10 +143,7 @@ namespace kxf::Application::Private
 			{
 				return m_GUIApp ? m_GUIApp->IsActive() : false;
 			}
-			wxWindow* GetTopWindow() const override
-			{
-				return m_GUIApp ? m_GUIApp->GetTopWindow() : nullptr;
-			}
+			wxWindow* GetTopWindow() const override;
 			
 			wxLayoutDirection GetLayoutDirection() const override
 			{
@@ -171,21 +168,7 @@ namespace kxf::Application::Private
 				return m_GUIApp ? m_GUIApp->SetNativeTheme(themeName) : false;
 			}
 
-			bool SafeYield(wxWindow* window, bool onlyIfNeeded) override
-			{
-				if (m_GUIApp && window)
-				{
-					return m_GUIApp->Yield(*window, FlagSet<EventYieldFlag>().Add(EventYieldFlag::OnlyIfRequired, onlyIfNeeded));
-				}
-				return false;
-			}
-			bool SafeYieldFor(wxWindow* window, long eventsToProcess) override
-			{
-				if (m_GUIApp && window)
-				{
-					return m_GUIApp->YieldFor(*window, static_cast<EventCategory>(eventsToProcess));
-				}
-				return false;
-			}
+			bool SafeYield(wxWindow* window, bool onlyIfNeeded) override;
+			bool SafeYieldFor(wxWindow* window, long eventsToProcess) override;
 	};
 }

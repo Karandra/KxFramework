@@ -11,6 +11,7 @@
 #include "kxf/System/NtStatus.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/DynamicLibraryEvent.h"
+#include "kxf/UI/IWidget.h"
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/wxWidgets/Application.h"
@@ -251,22 +252,27 @@ namespace kxf
 		}
 	}
 
-	void CoreApplication::AddEventFilter(IEventFilter& eventFilter)
+	void CoreApplication::AddEventFilter(std::shared_ptr<IEventFilter> eventFilter)
 	{
 		WriteLockGuard lock(m_EventFiltersLock);
-		m_EventFilters.push_back(&eventFilter);
+
+		m_EventFilters.emplace_back(std::move(eventFilter));
 	}
 	void CoreApplication::RemoveEventFilter(IEventFilter& eventFilter)
 	{
 		WriteLockGuard lock(m_EventFiltersLock);
-		m_EventFilters.remove(&eventFilter);
+
+		m_EventFilters.remove_if([&](auto& item)
+		{
+			return item.get() == &eventFilter;
+		});
 	}
 	IEventFilter::Result CoreApplication::FilterEvent(IEvent& event)
 	{
 		using Result = IEventFilter::Result;
 
 		ReadLockGuard lock(m_EventFiltersLock);
-		for (IEventFilter* eventFilter: m_EventFilters)
+		for (auto& eventFilter: m_EventFilters)
 		{
 			const Result result = eventFilter->FilterEvent(event);
 			if (result != Result::Skip)
@@ -387,9 +393,9 @@ namespace kxf
 	}
 
 	// Application::IMainEoventLoop
-	std::unique_ptr<IEventLoop> CoreApplication::CreateMainLoop()
+	std::shared_ptr<IEventLoop> CoreApplication::CreateMainLoop()
 	{
-		return std::make_unique<kxf::EventSystem::Private::Win32ConsoleEventLoop>();
+		return std::make_shared<kxf::EventSystem::Private::Win32ConsoleEventLoop>();
 	}
 	void CoreApplication::ExitMainLoop(int exitCode)
 	{
@@ -496,12 +502,10 @@ namespace kxf
 		}
 	}
 
-	void CoreApplication::ScheduleForDestruction(std::unique_ptr<IObject> object)
+	void CoreApplication::ScheduleForDestruction(std::shared_ptr<IObject> object)
 	{
-		// We need an active event loop to schedule deletion. If no active loop present
-		// the object is deleted immediately.
-		// TODO: Should we still add it and delete when the application object gets destroyed?
-		if (m_ActiveEventLoop && object)
+		// We need an active event loop to schedule deletion. If no active loop present the object is deleted immediately.
+		if (object)
 		{
 			WriteLockGuard lock(m_ScheduledForDestructionLock);
 
@@ -514,14 +518,6 @@ namespace kxf
 			}
 		}
 	}
-	void CoreApplication::ScheduleForDestruction(std::unique_ptr<wxObject> object)
-	{
-		auto app = wxAppConsole::GetInstance();
-		if (app && m_ActiveEventLoop && object)
-		{
-			app->ScheduleForDestruction(object.release());
-		}
-	}
 	bool CoreApplication::IsScheduledForDestruction(const IObject& object) const
 	{
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
@@ -531,14 +527,6 @@ namespace kxf
 			return item.get() == &object;
 		});
 	}
-	bool CoreApplication::IsScheduledForDestruction(const wxObject& object) const
-	{
-		if (auto app = wxAppConsole::GetInstance())
-		{
-			return app->IsScheduledForDestruction(const_cast<wxObject*>(&object));
-		}
-		return false;
-	}
 	void CoreApplication::FinalizeScheduledForDestruction()
 	{
 		if (auto app = Application::Private::NativeApp::GetInstance())
@@ -546,8 +534,17 @@ namespace kxf
 			app->DeletePendingObjects();
 		}
 
-		WriteLockGuard lock(m_ScheduledForDestructionLock);
-		m_ScheduledForDestruction.clear();
+		if (WriteLockGuard lock(m_ScheduledForDestructionLock); !m_ScheduledForDestruction.empty())
+		{
+			for (auto& item: m_ScheduledForDestruction)
+			{
+				if (auto widget = item->QueryInterface<IWidget>())
+				{
+					widget->DestroyWidget();
+				}
+			}
+			m_ScheduledForDestruction.clear();
+		}
 	}
 
 	void CoreApplication::AddPendingEventHandler(IEvtHandler& evtHandler)
