@@ -87,7 +87,7 @@ namespace kxf::DataView
 			}
 			BitmapImage GetIconBitmap() const
 			{
-				if (const auto& value = std::get_if<GDIBitmap>(&m_Icon))
+				if (const auto& value = std::get_if<BitmapImage>(&m_Icon))
 				{
 					return *value;
 				}

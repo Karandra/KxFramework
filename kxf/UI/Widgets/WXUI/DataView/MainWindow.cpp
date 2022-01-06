@@ -4,7 +4,6 @@
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/UI/Events/WidgetMouseEvent.h"
-#include "kxf/UI/Windows/Frame.h"
 #include <wx/generic/private/widthcalc.h>
 #include <wx/popupwin.h>
 #include <wx/minifram.h>
@@ -1008,20 +1007,20 @@ namespace kxf::WXUI::DataView
 
 		ProcessEvent(event, DataViewWidgetEvent::EvtItemSelected);
 	}
-	bool MainWindow::SendEditingStartedEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor)
+	bool MainWindow::SendEditingStartedEvent(DV::Node& item, DV::Column& column)
 	{
 		auto event = MakeEvent();
 		event.SetNode(&item);
-		event.SetColumn(editor->GetColumn());
+		event.SetColumn(&column);
 
 		ProcessEvent(event, DataViewWidgetEvent::EvtItemEditStarted);
 		return event.IsAllowed();
 	}
-	bool MainWindow::SendEditingDoneEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor, bool canceled, const Any& value)
+	bool MainWindow::SendEditingDoneEvent(DV::Node& item, DV::Column& column, bool canceled, const Any& value)
 	{
 		auto event = MakeEvent();
 		event.SetNode(&item);
-		event.SetColumn(editor->GetColumn());
+		event.SetColumn(&column);
 		event.SetEditCanceled(canceled);
 		event.SetValue(value);
 
@@ -1038,7 +1037,7 @@ namespace kxf::WXUI::DataView
 			m_PenRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
 			m_PenRuleV = m_PenRuleH;
 		}
-		if (m_PenExpander)
+		if (!m_PenExpander)
 		{
 			m_PenExpander = renderer->CreatePen(System::GetColor(SystemColor::ButtonFace), FromDIP(1));
 		}
@@ -2889,10 +2888,10 @@ namespace kxf::WXUI::DataView
 			node.EnsureCellVisible(column);
 
 			const Rect itemRect = node.GetCellClientRect(column);
-			if (editor->BeginEdit(node, column, itemRect))
+			if (editor.BeginEdit(node, column, itemRect))
 			{
 				// Save the renderer to be able to finish/cancel editing it later
-				m_CurrentEditor = editor;
+				m_CurrentEditor = std::move(editor);
 				return true;
 			}
 		}
@@ -2900,18 +2899,12 @@ namespace kxf::WXUI::DataView
 	}
 	void MainWindow::EndEdit()
 	{
-		if (m_CurrentEditor)
-		{
-			m_CurrentEditor->EndEdit();
-			m_CurrentEditor = nullptr;
-		}
+		m_CurrentEditor.EndEdit();
+		m_CurrentEditor = {};
 	}
 	void MainWindow::CancelEdit()
 	{
-		if (m_CurrentEditor)
-		{
-			m_CurrentEditor->CancelEdit();
-			m_CurrentEditor = nullptr;
-		}
+		m_CurrentEditor.CancelEdit();
+		m_CurrentEditor = {};
 	}
 }

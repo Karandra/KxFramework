@@ -19,6 +19,7 @@ namespace kxf::DataView
 		friend class WXUI::DataView::HeaderCtrl;
 		friend class WXUI::DataView::HeaderCtrl2;
 		friend class ToolTip;
+		friend class CellEditor;
 		friend class CellRenderer;
 
 		public:
@@ -31,7 +32,7 @@ namespace kxf::DataView
 		private:
 			WXUI::DataView::View* m_View = nullptr;
 			std::shared_ptr<IDataViewCellRenderer> m_CellRenderer;
-			std::shared_ptr<CellEditor> m_Editor;
+			std::shared_ptr<IDataViewCellEditor> m_Editor;
 
 			WidgetID m_ID;
 			size_t m_Index = npos;
@@ -96,11 +97,11 @@ namespace kxf::DataView
 				UpdateDisplay();
 			}
 
-			std::shared_ptr<CellEditor> GetCellEditor() const
+			std::shared_ptr<IDataViewCellEditor> GetCellEditor() const
 			{
 				return m_Editor;
 			}
-			void SetCellRenderer(std::shared_ptr<CellEditor> editor)
+			void SetCellRenderer(std::shared_ptr<IDataViewCellEditor> editor)
 			{
 				m_Editor = std::move(editor);
 			}

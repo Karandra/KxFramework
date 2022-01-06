@@ -7,6 +7,7 @@
 #include "../../../DataView/Column.h"
 #include "../../../DataView/SortMode.h"
 #include "../../../DataView/CellState.h"
+#include "../../../DataView/CellEditor.h"
 #include "../../../DataView/CellRenderer.h"
 #include "../../../DataView/CellAttributes.h"
 #include "../../../Events/DataViewWidgetEvent.h"
@@ -22,6 +23,7 @@ namespace kxf::DataView
 	class Column;
 	class ToolTip;
 	class RootNode;
+	class CellEditor;
 }
 namespace kxf::WXUI::DataView
 {
@@ -39,9 +41,8 @@ namespace kxf::WXUI::DataView
 		friend class DV::RootNode;
 		friend class DV::Column;
 		friend class DV::ToolTip;
+		friend class DV::CellEditor;
 
-		friend class Renderer;
-		friend class Editor;
 		friend class View;
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;
@@ -133,7 +134,7 @@ namespace kxf::WXUI::DataView
 			DV::Node* m_TreeNodeUnderMouse = nullptr;
 
 			// Current editor
-			std::shared_ptr<DV::CellEditor> m_CurrentEditor;
+			DV::CellEditor m_CurrentEditor;
 
 		protected:
 			// Events
@@ -154,8 +155,8 @@ namespace kxf::WXUI::DataView
 			void SendSelectionChangedEvent(DV::Node* item, DV::Column* column = nullptr);
 
 			// Will return true if event allowed
-			bool SendEditingStartedEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor);
-			bool SendEditingDoneEvent(DV::Node& item, std::shared_ptr<DV::CellEditor> editor, bool canceled, const Any& value);
+			bool SendEditingStartedEvent(DV::Node& item, DV::Column& column);
+			bool SendEditingDoneEvent(DV::Node& item, DV::Column& column, bool canceled, const Any& value);
 
 			DataViewWidgetEvent MakeEvent()
 			{

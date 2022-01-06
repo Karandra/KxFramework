@@ -6,6 +6,7 @@ namespace kxf
 	class IDataViewWidget;
 	class IDataViewModel;
 	class IDataViewItem;
+	class IDataViewCellEditor;
 	class IDataViewCellRenderer;
 }
 
@@ -14,6 +15,7 @@ namespace kxf::DataView
 	class Node;
 	class Column;
 	class CellEditor;
+	class CellRenderer;
 
 	class ToolTip;
 	class CellState;

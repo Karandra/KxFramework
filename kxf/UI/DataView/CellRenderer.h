@@ -38,28 +38,32 @@ namespace kxf
 				WithMnemonics
 			};
 
-			struct DrawInfo final
+			struct RenderInfo final
 			{
-				Rect CellRect;
+				const DataView::Node& Node;
+				const DataView::Column& Column;
+
 				DataView::CellState State;
 				DataView::CellAttributes Attributes;
 				EllipsizeMode EllipsizeMode = EllipsizeMode::End;
 				MarkupMode MarkupMode = MarkupMode::Disabled;
+				Rect CellRect;
+
 				IGraphicsContext* GraphicsContext = nullptr;
 				const WidgetMouseEvent* MouseEvent = nullptr;
 			};
 
 		protected:
-			virtual void DrawBackground(const DataView::Node& node, const DataView::Column& column, const DrawInfo& drawInfo)
+			virtual void DrawBackground(const RenderInfo& renderInfo)
 			{
 			}
-			virtual void DrawContent(const DataView::Node& node, const DataView::Column& column, const DrawInfo& drawInfo) = 0;
+			virtual void DrawContent(const RenderInfo& renderInfo) = 0;
 
-			virtual Any OnActivate(const DataView::Node& node, const DataView::Column& column, const DrawInfo& drawInfo)
+			virtual Any OnActivate(const RenderInfo& renderInfo)
 			{
 				return {};
 			}
-			virtual Size GetCellSize(const DataView::Node& node, const DataView::Column& column, const DrawInfo& drawInfo) const
+			virtual Size GetCellSize(const RenderInfo& renderInfo) const
 			{
 				return {0, 0};
 			}
@@ -72,7 +76,7 @@ namespace kxf
 			{
 				return {};
 			}
-			virtual FlagSet<Alignment> GetEffectiveAlignment(const DataView::Node& node, const DataView::Column& column, FlagSet<Alignment> alignment) const;
+			virtual FlagSet<Alignment> GetEffectiveAlignment(const RenderInfo& renderInfo, FlagSet<Alignment> alignment) const;
 			virtual bool IsActivatable() const
 			{
 				return false;
@@ -88,48 +92,78 @@ namespace kxf::DataView
 		friend class WXUI::DataView::MaxWidthCalculator;
 
 		private:
+			using MarkupMode = IDataViewCellRenderer::MarkupMode;
+			struct RenderParameters final
+			{
+				DataView::CellState State;
+				DataView::CellAttributes Attributes;
+				EllipsizeMode EllipsizeMode = EllipsizeMode::End;
+				MarkupMode MarkupMode = MarkupMode::Disabled;
+				Rect CellRect;
+			};
+
+		private:
 			std::shared_ptr<IDataViewCellRenderer> m_CellRenderer;
 
-			IDataViewCellRenderer::DrawInfo m_DrawInfo;
-			bool m_IsViewEnabled = false;
-			bool m_IsViewFocused = false;
-
+			RenderParameters m_Parameters;
+			IGraphicsContext* m_GraphicsContext = nullptr;
 			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
 			const Node* m_Node = nullptr;
 			const Column* m_Column = nullptr;
+			bool m_IsViewEnabled = false;
+			bool m_IsViewFocused = false;
 
 		private:
-			bool CanDraw() const
+			bool IsNull() const noexcept
 			{
-				return m_CellRenderer && m_DrawInfo.GraphicsContext != nullptr;
+				return m_CellRenderer == nullptr;
+			}
+			bool CanDraw() const noexcept
+			{
+				return m_CellRenderer && m_GraphicsContext != nullptr;
+			}
+			IDataViewCellRenderer::RenderInfo CreateParemeters() const
+			{
+				IDataViewCellRenderer::RenderInfo info = {*m_Node, *m_Column};
+				info.State = m_Parameters.State;
+				info.Attributes = m_Parameters.Attributes;
+				info.EllipsizeMode = m_Parameters.EllipsizeMode;
+				info.MarkupMode = m_Parameters.MarkupMode;
+				info.CellRect = m_Parameters.CellRect;
+
+				return info;
 			}
 
 			bool BeginCellRendering(const Node& node, const Column& column, IGraphicsContext& gc)
 			{
 				m_Node = &node;
 				m_Column = &column;
-				m_DrawInfo.GraphicsContext = &gc;
+				m_GraphicsContext = &gc;
 
 				return CanDraw();
 			}
 			void EndCellRendering()
 			{
-				m_Node = nullptr;
-				m_Column = nullptr;
-				m_DrawInfo.GraphicsContext = nullptr;
+				EndCellSetup();
 			}
 
 			void BeginCellSetup(const Node& node, const Column& column, IGraphicsContext* gc = nullptr)
 			{
+				EndCellSetup();
+
 				m_Node = &node;
 				m_Column = &column;
-				m_DrawInfo.GraphicsContext = gc;
+				m_GraphicsContext = gc;
 			}
 			void EndCellSetup()
 			{
+				m_Parameters = {};
+				m_GraphicsContext = nullptr;
+				m_Alignment = Alignment::Invalid;
 				m_Node = nullptr;
 				m_Column = nullptr;
-				m_DrawInfo.GraphicsContext = nullptr;
+				m_IsViewEnabled = false;
+				m_IsViewFocused = false;
 			}
 
 			void SetupCellDisplayValue();
@@ -141,11 +175,11 @@ namespace kxf::DataView
 
 			const CellAttributes& GetAttributes() const
 			{
-				return m_DrawInfo.Attributes;
+				return m_Parameters.Attributes;
 			}
 			IGraphicsContext& GetGraphicsContext() const
 			{
-				return *m_DrawInfo.GraphicsContext;
+				return *m_GraphicsContext;
 			}
 
 		public:
@@ -156,7 +190,7 @@ namespace kxf::DataView
 			~CellRenderer() = default;
 
 		public:
-			IDataViewWidget& GetOwningWdget() const;
+			IDataViewWidget& GetOwningWidget() const;
 			const Column& GetColumn() const
 			{
 				return *m_Column;
@@ -177,33 +211,47 @@ namespace kxf::DataView
 			}
 			void SetEllipsizeMode(EllipsizeMode mode)
 			{
-				m_DrawInfo.EllipsizeMode = mode;
+				m_Parameters.EllipsizeMode = mode;
 			}
 
-			void EnableMarkup(bool enable = true)
+			void EnableMarkup()
 			{
-				m_DrawInfo.MarkupMode = enable ? IDataViewCellRenderer::MarkupMode::TextOnly : IDataViewCellRenderer::MarkupMode::Disabled;
+				m_Parameters.MarkupMode = IDataViewCellRenderer::MarkupMode::TextOnly;
 			}
-			void EnableMarkupWithMnemonics(bool enable = true)
+			void EnableMarkupWithMnemonics()
 			{
-				m_DrawInfo.MarkupMode = enable ? IDataViewCellRenderer::MarkupMode::WithMnemonics : IDataViewCellRenderer::MarkupMode::Disabled;
+				m_Parameters.MarkupMode = IDataViewCellRenderer::MarkupMode::WithMnemonics;
+			}
+			void DisableMarkup()
+			{
+				m_Parameters.MarkupMode = IDataViewCellRenderer::MarkupMode::Disabled;
 			}
 
 			FlagSet<Alignment> GetEffectiveAlignment() const
 			{
-				if (m_CellRenderer)
+				if (m_CellRenderer && m_Node && m_Column)
 				{
-					return m_CellRenderer->GetEffectiveAlignment(*m_Node, *m_Column, m_Alignment);
+					return m_CellRenderer->GetEffectiveAlignment(CreateParemeters(), m_Alignment);
 				}
 				return m_Alignment;
 			}
 			Size GetEffectiveCellSize() const
 			{
-				if (m_CellRenderer)
+				if (m_CellRenderer && m_Node && m_Column)
 				{
-					return m_CellRenderer->GetCellSize(*m_Node, *m_Column, m_DrawInfo);
+					return m_CellRenderer->GetCellSize(CreateParemeters());
 				}
 				return {0, 0};
+			}
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
 			}
 	};
 }

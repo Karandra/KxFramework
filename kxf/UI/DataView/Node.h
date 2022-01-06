@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Row.h"
 #include "CellState.h"
+#include "CellEditor.h"
 #include "CellRenderer.h"
 #include "../IDataViewItem.h"
 
@@ -146,10 +147,7 @@ namespace kxf::DataView
 			{
 				return this == &other || m_Item == other.m_Item || ((m_Item && other.m_Item) && *m_Item == *other.m_Item);
 			}
-			bool IsRootNode() const noexcept
-			{
-				return this == m_RootNode;
-			}
+			bool IsRootNode() const noexcept;
 			bool IsAttached() const noexcept;
 
 			RootNode& GetRootNode() const
@@ -271,18 +269,14 @@ namespace kxf::DataView
 			}
 			bool IsCellActivatable(const Column& column) const
 			{
-				if (auto renderer = GetCellRenderer(column))
-				{
-					return renderer->IsActivatable();
-				}
-				return false;
+				return GetCellRenderer(column).IsActivatable();
 			}
 
 			DataView::CellRenderer GetCellRenderer(const Column& column) const
 			{
 				return GetDataModel().GetCellRenderer(*this, column);
 			}
-			std::shared_ptr<DataView::CellEditor> GetCellEditor(const Column& column) const
+			DataView::CellEditor GetCellEditor(const Column& column) const
 			{
 				return GetDataModel().GetCellEditor(*this, column);
 			}

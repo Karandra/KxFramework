@@ -2385,6 +2385,9 @@
     <ClInclude Include="kxf\UI\DataView\CellRendererHelper.h">
       <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\DataView\CellEditor.h">
+      <Filter>kxf\UI\DataView</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3614,6 +3617,12 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\DataView\CellRendererHelper.cpp">
       <Filter>kxf\UI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\DataView\CellEditor.cpp">
+      <Filter>kxf\UI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\IDataViewModel.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

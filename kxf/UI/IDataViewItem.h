@@ -49,7 +49,7 @@ namespace kxf
 			virtual void OnSortChildren(const DataView::SortMode& sortMode)
 			{
 			}
-			virtual std::partial_ordering Compare(const IDataViewItem& other, const DataView::SortMode& sortMode) const
+			virtual std::partial_ordering Compare(const IDataViewItem& other) const
 			{
 				return this <=> &other;
 			}
@@ -69,7 +69,7 @@ namespace kxf
 			{
 				return nullptr;
 			}
-			virtual std::shared_ptr<DataView::CellEditor> GetCellEditor(const DataView::Column& column) const
+			virtual std::shared_ptr<IDataViewCellEditor> GetCellEditor(const DataView::Column& column) const
 			{
 				return nullptr;
 			}
@@ -96,11 +96,11 @@ namespace kxf
 		public:
 			bool operator==(const IDataViewItem& other) const
 			{
-				return Compare(other, {}) == 0;
+				return Compare(other) == 0;
 			}
 			auto operator<=>(const IDataViewItem& other) const
 			{
-				return Compare(other, {});
+				return Compare(other);
 			}
 	};
 }

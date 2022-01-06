@@ -25,6 +25,7 @@ namespace kxf::DataView
 {
 	class Column;
 	class ToolTip;
+	class CellEditor;
 	class CellRenderer;
 }
 namespace kxf::WXUI::DataView
@@ -41,15 +42,14 @@ namespace kxf::WXUI::DataView
 	class KX_API View: public EvtHandlerWrapper<View, UI::WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>>
 	{
 		friend class Widgets::DataView;
-		friend class kxf::DataView::Column;
-		friend class kxf::DataView::ToolTip;
-		friend class kxf::DataView::CellRenderer;
+		friend class DV::Column;
+		friend class DV::ToolTip;
+		friend class DV::CellEditor;
+		friend class DV::CellRenderer;
 
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;
 		friend class MainWindow;
-		friend class Renderer;
-		friend class Editor;
 
 		public:
 			using WidgetStyle = kxf::DataView::WidgetStyle;

@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "IDataViewItem.h"
-#include "DataView/Node.h"
 #include "kxf/General/Any.h"
 
 namespace kxf::DataView
@@ -32,35 +31,14 @@ namespace kxf
 			virtual std::shared_ptr<IDataViewItem> GetChildItem(size_t index) const = 0;
 
 		public:
-			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Node& node, const DataView::Column& column) const
-			{
-				return node.GetItem()->GetCellRenderer(column);
-			}
-			virtual std::shared_ptr<DataView::CellEditor> GetCellEditor(const DataView::Node& node, const DataView::Column& column) const
-			{
-				return node.GetItem()->GetCellEditor(column);
-			}
+			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Node& node, const DataView::Column& column) const;
+			virtual std::shared_ptr<IDataViewCellEditor> GetCellEditor(const DataView::Node& node, const DataView::Column& column) const;
 
-			virtual Any GetCellDisplayValue(const DataView::Node& node, const DataView::Column& column) const
-			{
-				return node.GetItem()->GetCellDisplayValue(column);
-			}
-			virtual Any GetCellValue(const DataView::Node& node, const DataView::Column& column) const
-			{
-				return node.GetItem()->GetCellValue(column);
-			}
-			virtual bool SetCellValue(DataView::Node& node, DataView::Column& column, Any value)
-			{
-				return node.GetItem()->SetCellValue(column, std::move(value));
-			}
+			virtual Any GetCellDisplayValue(const DataView::Node& node, const DataView::Column& column) const;
+			virtual Any GetCellValue(const DataView::Node& node, const DataView::Column& column) const;
+			virtual bool SetCellValue(DataView::Node& node, DataView::Column& column, Any value);
 
-			virtual DataView::ToolTip GetCellToolTip(const DataView::Node& node, const DataView::Column& column) const
-			{
-				return node.GetItem()->GetCellToolTip(column);
-			}
-			virtual DataView::CellAttributes GetCellAttributes(const DataView::Node& node, const DataView::Column& column, const DataView::CellState& cellState) const
-			{
-				return node.GetItem()->GetCellAttributes(column, cellState);
-			}
+			virtual DataView::ToolTip GetCellToolTip(const DataView::Node& node, const DataView::Column& column) const;
+			virtual DataView::CellAttributes GetCellAttributes(const DataView::Node& node, const DataView::Column& column, const DataView::CellState& cellState) const;
 	};
 }

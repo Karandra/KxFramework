@@ -28,11 +28,11 @@ namespace kxf::DataView
 		private:
 			IWidget& m_Widget;
 			IGraphicsContext& m_Context;
-			const IDataViewCellRenderer::DrawInfo& m_DrawInfo;
+			const IDataViewCellRenderer::RenderInfo& m_RenderInfo;
 
 		public:
-			CellRendererHelper(IWidget& widget, IGraphicsContext& context, const IDataViewCellRenderer::DrawInfo& drawInfo)
-				:m_Widget(widget), m_Context(context), m_DrawInfo(drawInfo)
+			CellRendererHelper(IWidget& widget, IGraphicsContext& context, const IDataViewCellRenderer::RenderInfo& renderInfo)
+				:m_Widget(widget), m_Context(context), m_RenderInfo(renderInfo)
 			{
 			}
 

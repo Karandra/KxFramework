@@ -143,8 +143,8 @@ namespace kxf::DataView
 	FlagSet<NativeWidgetFlag> CellRendererHelper::GetControlFlags(CellState cellState, const Column* column) const
 	{
 		FlagSet<NativeWidgetFlag> flags;
-		flags.Add(NativeWidgetFlag::Disabled, !m_DrawInfo.Attributes.Options().ContainsOption(CellStyle::Enabled));
-		flags.Add(NativeWidgetFlag::Editable, m_DrawInfo.Attributes.Options().ContainsOption(CellStyle::Editable));
+		flags.Add(NativeWidgetFlag::Disabled, !m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::Enabled));
+		flags.Add(NativeWidgetFlag::Editable, m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::Editable));
 		flags.Add(NativeWidgetFlag::Selected|NativeWidgetFlag::Pressed, cellState.IsSelected());
 		flags.Add(NativeWidgetFlag::Current|NativeWidgetFlag::Focused, column && cellState.IsHotTracked() && column->IsHotTracked());
 
@@ -158,16 +158,16 @@ namespace kxf::DataView
 
 	Size CellRendererHelper::GetTextExtent(const String& string) const
 	{
-		if (m_DrawInfo.MarkupMode != MarkupMode::Disabled)
+		if (m_RenderInfo.MarkupMode != MarkupMode::Disabled)
 		{
 			SizeF extent;
 			m_Context.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
 			{
-				if (!m_DrawInfo.Attributes.FontOptions().IsDefault())
+				if (!m_RenderInfo.Attributes.FontOptions().IsDefault())
 				{
-					dc.SetFont(m_DrawInfo.Attributes.GetEffectiveFont(dc.GetFont()));
+					dc.SetFont(m_RenderInfo.Attributes.GetEffectiveFont(dc.GetFont()));
 				}
-				extent = Markup::GetTextExtent(m_DrawInfo.MarkupMode, dc, string);
+				extent = Markup::GetTextExtent(m_RenderInfo.MarkupMode, dc, string);
 			});
 			return extent;
 		}
@@ -175,15 +175,15 @@ namespace kxf::DataView
 		{
 			auto GetEffectiveFontIfNeeded = [&]() -> Font
 			{
-				if (!m_DrawInfo.Attributes.FontOptions().IsDefault())
+				if (!m_RenderInfo.Attributes.FontOptions().IsDefault())
 				{
 					if (auto font = m_Context.GetFont())
 					{
-						return m_DrawInfo.Attributes.GetEffectiveFont(font->ToFont());
+						return m_RenderInfo.Attributes.GetEffectiveFont(font->ToFont());
 					}
 					else
 					{
-						return m_DrawInfo.Attributes.GetEffectiveFont(m_Widget.GetFont());
+						return m_RenderInfo.Attributes.GetEffectiveFont(m_Widget.GetFont());
 					}
 				}
 				return {};
@@ -221,23 +221,23 @@ namespace kxf::DataView
 			textRect.Width() -= offsetX;
 
 			int flags = 0;
-			if (m_DrawInfo.MarkupMode == MarkupMode::WithMnemonics && m_DrawInfo.Attributes.Options().ContainsOption(CellStyle::ShowAccelerators))
+			if (m_RenderInfo.MarkupMode == MarkupMode::WithMnemonics && m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::ShowAccelerators))
 			{
 				flags |= wxMarkupText::Render_ShowAccels;
 			}
 
-			if (m_DrawInfo.MarkupMode != MarkupMode::Disabled)
+			if (m_RenderInfo.MarkupMode != MarkupMode::Disabled)
 			{
 				m_Context.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
 				{
-					Markup::DrawText(m_DrawInfo.MarkupMode, string, m_Widget.GetWxWindow(), dc, textRect, flags, static_cast<wxEllipsizeMode>(m_DrawInfo.EllipsizeMode));
+					Markup::DrawText(m_RenderInfo.MarkupMode, string, m_Widget.GetWxWindow(), dc, textRect, flags, static_cast<wxEllipsizeMode>(m_RenderInfo.EllipsizeMode));
 				});
 			}
 			else
 			{
 				auto Ellipsize = [&](const String& label)
 				{
-					return m_Context.EllipsizeText(label, textRect.GetWidth(), m_DrawInfo.EllipsizeMode);
+					return m_Context.EllipsizeText(label, textRect.GetWidth(), m_RenderInfo.EllipsizeMode);
 				};
 
 				String firstLine;
@@ -261,7 +261,7 @@ namespace kxf::DataView
 		if (bitmap)
 		{
 			const Rect rect = {cellRect.GetPosition(), bitmap.GetSize()};
-			const bool isEnabled = m_DrawInfo.Attributes.Options().ContainsOption(CellStyle::Enabled);
+			const bool isEnabled = m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::Enabled);
 
 			m_Context.DrawTexture(isEnabled ? bitmap : bitmap.ConvertToDisabled(), rect);
 			return true;

@@ -479,6 +479,7 @@
     <ClInclude Include="kxf\UI\Controls\WebView.h" />
     <ClInclude Include="kxf\UI\DataView\CellAttributes.h" />
     <ClInclude Include="kxf\UI\DataView\CellAttributeOptions.h" />
+    <ClInclude Include="kxf\UI\DataView\CellEditor.h" />
     <ClInclude Include="kxf\UI\DataView\CellRenderer.h" />
     <ClInclude Include="kxf\UI\DataView\CellRendererHelper.h" />
     <ClInclude Include="kxf\UI\DataView\CellState.h" />
@@ -1044,6 +1045,7 @@
     <ClCompile Include="kxf\UI\Controls\ThumbView.cpp" />
     <ClCompile Include="kxf\UI\Controls\WebView.cpp" />
     <ClCompile Include="kxf\UI\DataView\CellAttributes.cpp" />
+    <ClCompile Include="kxf\UI\DataView\CellEditor.cpp" />
     <ClCompile Include="kxf\UI\DataView\CellRenderer.cpp" />
     <ClCompile Include="kxf\UI\DataView\CellRendererHelper.cpp" />
     <ClCompile Include="kxf\UI\DataView\CellState.cpp" />
@@ -1066,6 +1068,7 @@
     <ClCompile Include="kxf\UI\Events\WidgetEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetKeyEvent.cpp" />
     <ClCompile Include="kxf\UI\Events\WidgetMouseEvent.cpp" />
+    <ClCompile Include="kxf\UI\IDataViewModel.cpp" />
     <ClCompile Include="kxf\UI\IMenuWidgetItem.cpp" />
     <ClCompile Include="kxf\UI\INativeWidget.cpp" />
     <ClCompile Include="kxf\UI\IScrollableWidget.cpp" />

@@ -2,6 +2,7 @@
 #include "Node.h"
 #include "SortMode.h"
 #include "CellAttributes.h"
+#include "../Widgets/WXUI/DataView/Node.h"
 #include "../Widgets/WXUI/DataView/View.h"
 #include "../Widgets/WXUI/DataView/MainWindow.h"
 #include "../Widgets/WXUI/DataView/HeaderCtrl.h"
@@ -77,10 +78,19 @@ namespace kxf::DataView
 			m_Children.clear();
 
 			const size_t count = ref.GetChildrenCount();
-			m_Children.reserve(count);
+			if (count != IDataViewItem::npos)
+			{
+				m_Children.reserve(count);
+			}
+
 			for (size_t i = 0; i < count; i++)
 			{
-				m_Children.emplace_back(ref.GetChildItem(i), m_ParentNode);
+				auto& node = m_Children.emplace_back(ref.GetChildItem(i), m_ParentNode);
+				if (node.IsNull())
+				{
+					m_Children.pop_back();
+					break;
+				}
 			}
 
 			for (auto& node: m_Children)
@@ -101,16 +111,23 @@ namespace kxf::DataView
 	}
 	void Node::SortChildren()
 	{
-		auto sortMode = GetView().GetSortMode();
+		const auto sortMode = GetView().GetSortMode();
 		OnSortChildren(sortMode);
 
-		std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right)
+		std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right) -> bool
 		{
-			if (left.m_Item && right.m_Item)
+			switch (sortMode.GetSortOrder())
 			{
-				return left.m_Item->Compare(*right.m_Item, sortMode);
-			}
-			return std::partial_ordering::unordered;
+				case SortOrder::Ascending:
+				{
+					return *left.m_Item < *right.m_Item;
+				}
+				case SortOrder::Descending:
+				{
+					return *left.m_Item > *right.m_Item;
+				}
+			};
+			return false;
 		});
 	}
 
@@ -201,6 +218,10 @@ namespace kxf::DataView
 		return *m_RootNode->m_DataModel;
 	}
 
+	bool Node::IsRootNode() const noexcept
+	{
+		return this == m_RootNode;
+	}
 	bool Node::IsAttached() const noexcept
 	{
 		return m_RootNode && m_RootNode->m_DataModel;

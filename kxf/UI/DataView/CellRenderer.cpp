@@ -10,14 +10,14 @@
 
 namespace kxf
 {
-	FlagSet<Alignment> IDataViewCellRenderer::GetEffectiveAlignment(const DataView::Node& node, const DataView::Column& column, FlagSet<Alignment> alignment) const
+	FlagSet<Alignment> IDataViewCellRenderer::GetEffectiveAlignment(const RenderInfo& renderInfo, FlagSet<Alignment> alignment) const
 	{
 		if (alignment == Alignment::Invalid)
 		{
 			// If we don't have an explicit alignment ourselves, use that of the
 			// column in horizontal direction and default vertical alignment
 
-			FlagSet<Alignment> titleAlignment = column.GetTitleAlignment();
+			FlagSet<Alignment> titleAlignment = renderInfo.Column.GetTitleAlignment();
 			if (titleAlignment == Alignment::Invalid)
 			{
 				titleAlignment = Alignment::Left;
@@ -37,12 +37,12 @@ namespace kxf::DataView
 		m_IsViewFocused = view->HasFocus();
 
 		// Set up the attributes for this item if it's not empty
-		m_DrawInfo.State = cellState;
-		m_DrawInfo.Attributes = m_Node->GetCellAttributes(*m_Column, cellState);
-		m_DrawInfo.Attributes.Options().ModOption(CellStyle::Enabled, m_IsViewEnabled);
-		m_DrawInfo.Attributes.Options().ModOption(CellStyle::Editable, m_IsViewEnabled);
+		m_Parameters.State = cellState;
+		m_Parameters.Attributes = m_Node->GetCellAttributes(*m_Column, cellState);
+		m_Parameters.Attributes.Options().ModOption(CellStyle::Enabled, m_IsViewEnabled);
+		m_Parameters.Attributes.Options().ModOption(CellStyle::Editable, m_IsViewEnabled);
 
-		return m_DrawInfo.Attributes;
+		return m_Parameters.Attributes;
 	}
 	void CellRenderer::SetupCellDisplayValue()
 	{
@@ -57,16 +57,15 @@ namespace kxf::DataView
 	void CellRenderer::DrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
 		auto view = m_Column->GetView();
-		auto& gc = *m_DrawInfo.GraphicsContext;
+		auto& gc = *m_GraphicsContext;
 		auto& renderer = gc.GetRenderer();
 		auto& rendererNative = IRendererNative::Get();
-		const auto& cellOptions = m_DrawInfo.Attributes.Options();
-		const auto& bgOptions = m_DrawInfo.Attributes.BGOptions();
+		const auto& cellOptions = m_Parameters.Attributes.Options();
+		const auto& bgOptions = m_Parameters.Attributes.BGOptions();
 
-		auto drawInfo = m_DrawInfo;
-		drawInfo.State = cellState;
-		drawInfo.CellRect = cellRect;
-		CellRendererHelper renderHelper(GetOwningWdget(), gc, drawInfo);
+		m_Parameters.State = cellState;
+		m_Parameters.CellRect = cellRect;
+		CellRendererHelper renderHelper(GetOwningWidget(), gc, CreateParemeters());
 
 		auto ClipRectIfNeeded = [&](const Rect& rect)
 		{
@@ -97,7 +96,7 @@ namespace kxf::DataView
 				lineColor.SetAlpha8(48);
 
 				auto pen = renderer.CreatePen(lineColor);
-				m_DrawInfo.GraphicsContext->DrawLine(buttonRect.GetLeftBottom(), buttonRect.GetRightBottom(), *pen);
+				gc.DrawLine(buttonRect.GetLeftBottom(), buttonRect.GetRightBottom(), *pen);
 			}
 		}
 		else if (bgOptions.ContainsOption(CellBGStyle::Button))
@@ -120,25 +119,24 @@ namespace kxf::DataView
 		// Call derived class drawing
 		if (m_CellRenderer && !noUserBackground)
 		{
-			m_CellRenderer->DrawBackground(*m_Node, *m_Column, drawInfo);
+			m_CellRenderer->DrawBackground(CreateParemeters());
 		}
 	}
 	std::pair<Size, Rect> CellRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
-		auto& gc = *m_DrawInfo.GraphicsContext;
+		auto& gc = *m_GraphicsContext;
 		auto& renderer = gc.GetRenderer();
 		auto& rendererNative = IRendererNative::Get();
-		const auto& cellOptions = m_DrawInfo.Attributes.Options();
-		const auto& fontOptions = m_DrawInfo.Attributes.FontOptions();
-		const auto& bgOptions = m_DrawInfo.Attributes.BGOptions();
+		const auto& cellOptions = m_Parameters.Attributes.Options();
+		const auto& fontOptions = m_Parameters.Attributes.FontOptions();
+		const auto& bgOptions = m_Parameters.Attributes.BGOptions();
 
 		auto view = m_Column->GetView();
 		const bool isEnabled = cellOptions.ContainsOption(CellStyle::Enabled);
 
-		auto drawInfo = m_DrawInfo;
-		drawInfo.State = cellState;
-		drawInfo.CellRect = cellRect;
-		CellRendererHelper renderHelper(GetOwningWdget(), gc, drawInfo);
+		m_Parameters.State = cellState;
+		m_Parameters.CellRect = cellRect;
+		CellRendererHelper renderHelper(GetOwningWidget(), gc, CreateParemeters());
 
 		// Change text color
 		GraphicsAction::ChangeFontBrush changeFontBrush(gc);
@@ -159,7 +157,7 @@ namespace kxf::DataView
 		GraphicsAction::ChangeFont changeFont(gc);
 		if (!fontOptions.IsDefault())
 		{
-			changeFont.Set(renderer.CreateFont(m_DrawInfo.Attributes.GetEffectiveFont(view->GetFont())));
+			changeFont.Set(renderer.CreateFont(m_Parameters.Attributes.GetEffectiveFont(view->GetFont())));
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment
@@ -210,8 +208,8 @@ namespace kxf::DataView
 		// Call derived class drawing
 		if (m_CellRenderer)
 		{
-			drawInfo.CellRect = adjustedCellRect;
-			m_CellRenderer->DrawContent(*m_Node, *m_Column, drawInfo);
+			m_Parameters.CellRect = adjustedCellRect;
+			m_CellRenderer->DrawContent(CreateParemeters());
 		}
 
 		return {cellSize, adjustedCellRect};
@@ -220,11 +218,11 @@ namespace kxf::DataView
 	{
 		if (m_CellRenderer)
 		{
-			auto drawInfo = m_DrawInfo;
-			drawInfo.CellRect = cellRect;
-			drawInfo.MouseEvent = mouseEvent;
+			auto renderInfo = CreateParemeters();
+			renderInfo.CellRect = cellRect;
+			renderInfo.MouseEvent = mouseEvent;
 
-			Any value = m_CellRenderer->OnActivate(node, *m_Column, drawInfo);
+			Any value = m_CellRenderer->OnActivate(renderInfo);
 			if (!value.IsNull() && node.SetCellValue(const_cast<Column&>(*m_Column), value))
 			{
 				node.RefreshCell(const_cast<Column&>(*m_Column));
@@ -232,7 +230,7 @@ namespace kxf::DataView
 		}
 	}
 
-	IDataViewWidget& CellRenderer::GetOwningWdget() const
+	IDataViewWidget& CellRenderer::GetOwningWidget() const
 	{
 		return m_Column->m_View->m_Widget;
 	}
