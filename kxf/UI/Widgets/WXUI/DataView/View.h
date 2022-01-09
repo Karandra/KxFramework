@@ -111,77 +111,9 @@ namespace kxf::WXUI::DataView
 			// Update after a change to the number of columns
 			void OnColumnCountChanged();
 
-		protected:
 			void DoEnable(bool value) override;
 			void DoInsertColumn(std::unique_ptr<DV::Column> column, size_t position);
 			void ResetAllSortColumns();
-
-			#if 0
-			enum class ICEAction
-			{
-				Append,
-				Prepend,
-				Insert
-			};
-			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
-			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default, size_t index = 0)
-			{
-				auto column = std::make_unique<Column>(value, id, width, style);
-				Column* columnPtr = column.get();
-
-				// Assign renderer and editor if needed
-				TEditor* editorPtr = nullptr;
-				TRenderer* rendererPtr = nullptr;
-				if constexpr(!std::is_void_v<TEditor>)
-				{
-					auto editor = std::make_unique<TEditor>();
-					editorPtr = editor.get();
-					column->AssignEditor(std::move(editor));
-				}
-				if constexpr(!std::is_void_v<TRenderer>)
-				{
-					auto renderer = std::make_unique<TRenderer>();
-					rendererPtr = renderer.get();
-					column->AssignRenderer(std::move(renderer));
-				}
-
-				// Add column
-				if constexpr(action == ICEAction::Append)
-				{
-					AppendColumn(std::move(column));
-				}
-				else if constexpr(action == ICEAction::Prepend)
-				{
-					PrependColumn(std::move(column));
-				}
-				else if constexpr(action == ICEAction::Insert)
-				{
-					InsertColumn(index, std::move(column));
-				}
-				else
-				{
-					static_assert(false, "Invalid ICE action");
-				}
-
-				// Return tuple
-				if constexpr(!std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
-				{
-					return std::make_tuple(std::ref(*columnPtr), std::ref(*rendererPtr), std::ref(*editorPtr));
-				}
-				else if constexpr(std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
-				{
-					return std::make_tuple(std::ref(*columnPtr), std::ref(*editorPtr));
-				}
-				else if constexpr(!std::is_void_v<TRenderer> && std::is_void_v<TEditor>)
-				{
-					return std::make_tuple(std::ref(*columnPtr), std::ref(*rendererPtr));
-				}
-				else
-				{
-					return std::make_tuple(std::ref(*columnPtr));
-				}
-			}
-			#endif
 
 			// We need to return a special WM_GETDLGCODE value to process just the arrows but let the other navigation characters through
 			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
@@ -201,7 +133,6 @@ namespace kxf::WXUI::DataView
 						const Size& size = Size::UnspecifiedSize()
 			);
 
-		public:
 			HeaderCtrl* GetHeaderCtrl()
 			{
 				return m_HeaderArea;
@@ -294,8 +225,6 @@ namespace kxf::WXUI::DataView
 			size_t GetSelections(std::function<bool(DV::Node*)> func) const;
 			void SetSelections(const std::vector<DV::Node*>& selection);
 
-			void GenerateSelectionEvent(DV::Node& node, const DV::Column* column = nullptr);
-
 			void SelectAll();
 			void UnselectAll();
 
@@ -329,10 +258,7 @@ namespace kxf::WXUI::DataView
 			{
 				return m_AlternateRowColor;
 			}
-			void SetAlternateRowColor(const Color& color)
-			{
-				m_AlternateRowColor = color;
-			}
+			void SetAlternateRowColor(const Color& color);
 
 			Color GetBorderColor() const
 			{

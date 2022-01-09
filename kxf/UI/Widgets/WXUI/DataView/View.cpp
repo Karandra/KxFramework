@@ -604,11 +604,6 @@ namespace kxf::WXUI::DataView
 		}
 	}
 
-	void View::GenerateSelectionEvent(DV::Node& item, const DV::Column* column)
-	{
-		m_ClientArea->SendSelectionChangedEvent(&item, const_cast<DV::Column*>(column));
-	}
-
 	void View::SelectAll()
 	{
 		m_ClientArea->SelectAllRows();
@@ -744,6 +739,11 @@ namespace kxf::WXUI::DataView
 		{
 			m_HeaderAreaSI->SetBorder(borderSize);
 		}
+		ScheduleRefresh();
+	}
+	void View::SetAlternateRowColor(const Color& color)
+	{
+		m_AlternateRowColor = color;
 		ScheduleRefresh();
 	}
 

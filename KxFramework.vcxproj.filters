@@ -296,6 +296,9 @@
     <Filter Include="kxf\UI\DataView">
       <UniqueIdentifier>{9ddf748e-69aa-4b36-bf69-59a5c5ba75e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\UI\DataView\Renderers">
+      <UniqueIdentifier>{1df71acb-a783-475f-a3cf-b0e14072aad1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -2388,6 +2391,12 @@
     <ClInclude Include="kxf\UI\DataView\CellEditor.h">
       <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\DataView\Renderers\TextRenderer.h">
+      <Filter>kxf\UI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\DataView\Renderers\Common.h">
+      <Filter>kxf\UI\DataView\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3623,6 +3632,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Private\Conversion.cpp">
       <Filter>kxf\Sciter\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\DataView\Renderers\TextRenderer.cpp">
+      <Filter>kxf\UI\DataView\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

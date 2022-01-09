@@ -6,21 +6,6 @@
 #include "../ICheckWidget.h"
 #include "../IProgressMeterWidget.h"
 
-namespace kxf::UI::DataView
-{
-	class Renderer;
-}
-
-namespace kxf::UI::DataView
-{
-	enum class MarkupMode
-	{
-		Disabled = 0,
-		TextOnly,
-		WithMnemonics
-	};
-}
-
 namespace kxf::DataView
 {
 	class KX_API CellRendererHelper

@@ -141,10 +141,6 @@ namespace kxf::DataView
 		public:
 			IDataViewWidget& GetOwningWidget() const;
 
-			std::shared_ptr<IWidget> GetWidget() const
-			{
-				return m_Widget;
-			}
 			Column& GetColumn() const
 			{
 				return *m_Column;

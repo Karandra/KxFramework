@@ -109,8 +109,8 @@ namespace kxf::DataView
 	}
 	void CellEditor::CancelEdit()
 	{
-		m_IsEditCanceled = true;
 		OnEndEdit();
+		m_IsEditCanceled = true;
 	}
 
 	IDataViewWidget& CellEditor::GetOwningWidget() const
