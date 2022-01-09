@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "CellRendererHelper.h"
 #include "Column.h"
+#include "../IDataViewWidget.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
@@ -9,6 +10,7 @@
 namespace
 {
 	using MarkupMode = kxf::IDataViewCellRenderer::MarkupMode;
+	using MarkupFlags = decltype(wxMarkupText::Render_Default);
 }
 
 namespace kxf::DataView::Markup
@@ -78,19 +80,19 @@ namespace kxf::DataView::Markup
 	}
 
 	template<class T>
-	void DrawText(T& markup, wxWindow* window, GDIContext& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	void DrawText(T& markup, wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<MarkupFlags> flags, wxEllipsizeMode ellipsizeMode)
 	{
 		if constexpr(std::is_same_v<T, WithMnemonics>)
 		{
-			markup.Render(dc.ToWxDC(), rect, flags);
+			markup.Render(dc.ToWxDC(), rect, flags.ToInt());
 		}
 		else
 		{
-			markup.Render(window, dc.ToWxDC(), rect, flags, ellipsizeMode);
+			markup.Render(window, dc.ToWxDC(), rect, flags.ToInt(), ellipsizeMode);
 		}
 	}
 
-	void DrawText(MarkupMode mode, const String& string, wxWindow* window, GDIContext& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	void DrawText(MarkupMode mode, const String& string, wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<MarkupFlags> flags, wxEllipsizeMode ellipsizeMode)
 	{
 		switch (mode)
 		{
@@ -110,6 +112,11 @@ namespace kxf::DataView::Markup
 
 namespace kxf::DataView
 {
+	CellRendererHelper::CellRendererHelper(const IDataViewCellRenderer::RenderInfo& renderInfo)
+		:m_Widget(renderInfo.Column.GetOwningWdget()), m_Context(*renderInfo.GraphicsContext), m_RenderInfo(renderInfo)
+	{
+	}
+
 	float CellRendererHelper::GetInterTextSpacing() const
 	{
 		return 2.0f;
@@ -220,11 +227,8 @@ namespace kxf::DataView
 			textRect.X() += offsetX;
 			textRect.Width() -= offsetX;
 
-			int flags = 0;
-			if (m_RenderInfo.MarkupMode == MarkupMode::WithMnemonics && m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::ShowAccelerators))
-			{
-				flags |= wxMarkupText::Render_ShowAccels;
-			}
+			FlagSet<MarkupFlags> flags;
+			flags.Add(wxMarkupText::Render_ShowAccels, m_RenderInfo.MarkupMode == MarkupMode::WithMnemonics && m_RenderInfo.Attributes.Options().ContainsOption(CellStyle::ShowAccelerators));
 
 			if (m_RenderInfo.MarkupMode != MarkupMode::Disabled)
 			{

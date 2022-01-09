@@ -65,7 +65,7 @@ namespace kxf::DataView
 
 		m_Parameters.State = cellState;
 		m_Parameters.CellRect = cellRect;
-		CellRendererHelper renderHelper(GetOwningWidget(), gc, CreateParemeters());
+		CellRendererHelper renderHelper(CreateParemeters());
 
 		auto ClipRectIfNeeded = [&](const Rect& rect)
 		{
@@ -136,7 +136,7 @@ namespace kxf::DataView
 
 		m_Parameters.State = cellState;
 		m_Parameters.CellRect = cellRect;
-		CellRendererHelper renderHelper(GetOwningWidget(), gc, CreateParemeters());
+		CellRendererHelper renderHelper(CreateParemeters());
 
 		// Change text color
 		GraphicsAction::ChangeFontBrush changeFontBrush(gc);
@@ -236,6 +236,37 @@ namespace kxf::DataView
 	}
 	String CellRenderer::StripMarkup(const String& markup) const
 	{
-		return CellRendererHelper(GetOwningWidget(), *m_GraphicsContext, CreateParemeters()).StripMarkup(markup);
+		return CellRendererHelper(CreateParemeters()).StripMarkup(markup);
+	}
+
+	FlagSet<Alignment> CellRenderer::GetEffectiveAlignment() const
+	{
+		if (m_CellRenderer && m_Node && m_Column)
+		{
+			return m_CellRenderer->GetEffectiveAlignment(CreateParemeters(), m_Alignment);
+		}
+		return m_Alignment;
+	}
+	Size CellRenderer::GetEffectiveCellSize() const
+	{
+		if (m_CellRenderer && m_Node && m_Column)
+		{
+			if (!m_GraphicsContext)
+			{
+				auto view = m_Column->m_View;
+				auto renderer = view->m_ClientArea->GetRenderer();
+				auto gc = renderer->CreateLegacyMeasuringContext(view);
+
+				auto parameters = CreateParemeters();
+				parameters.GraphicsContext = gc.get();
+
+				return m_CellRenderer->GetCellSize(parameters);
+			}
+			else
+			{
+				return m_CellRenderer->GetCellSize(CreateParemeters());
+			}
+		}
+		return {0, 0};
 	}
 }

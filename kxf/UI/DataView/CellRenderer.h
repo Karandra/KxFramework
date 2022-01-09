@@ -232,22 +232,8 @@ namespace kxf::DataView
 			}
 			String StripMarkup(const String& markup) const;
 
-			FlagSet<Alignment> GetEffectiveAlignment() const
-			{
-				if (m_CellRenderer && m_Node && m_Column)
-				{
-					return m_CellRenderer->GetEffectiveAlignment(CreateParemeters(), m_Alignment);
-				}
-				return m_Alignment;
-			}
-			Size GetEffectiveCellSize() const
-			{
-				if (m_CellRenderer && m_Node && m_Column)
-				{
-					return m_CellRenderer->GetCellSize(CreateParemeters());
-				}
-				return {0, 0};
-			}
+			FlagSet<Alignment> GetEffectiveAlignment() const;
+			Size GetEffectiveCellSize() const;
 
 		public:
 			explicit operator bool() const noexcept

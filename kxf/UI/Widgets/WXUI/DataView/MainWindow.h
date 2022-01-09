@@ -37,11 +37,13 @@ namespace kxf::WXUI::DataView
 {
 	class KX_API MainWindow: public UI::WindowRefreshScheduler<wxWindow>
 	{
+		friend class Widgets::DataView;
 		friend class DV::Node;
 		friend class DV::RootNode;
 		friend class DV::Column;
 		friend class DV::ToolTip;
 		friend class DV::CellEditor;
+		friend class DV::CellRenderer;
 
 		friend class View;
 		friend class HeaderCtrl;
@@ -55,8 +57,8 @@ namespace kxf::WXUI::DataView
 			enum: size_t
 			{
 				INVALID_ROW = std::numeric_limits<size_t>::max(),
-				INVALID_COLUMN = std::numeric_limits<size_t>::max(),
-				INVALID_COUNT = std::numeric_limits<size_t>::max(),
+				INVALID_COLUMN = INVALID_ROW,
+				INVALID_COUNT = INVALID_ROW,
 			};
 			enum class InteractibleCell
 			{

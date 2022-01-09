@@ -31,10 +31,7 @@ namespace kxf::DataView
 			const IDataViewCellRenderer::RenderInfo& m_RenderInfo;
 
 		public:
-			CellRendererHelper(IWidget& widget, IGraphicsContext& context, const IDataViewCellRenderer::RenderInfo& renderInfo)
-				:m_Widget(widget), m_Context(context), m_RenderInfo(renderInfo)
-			{
-			}
+			CellRendererHelper(const IDataViewCellRenderer::RenderInfo& renderInfo);
 
 		public:
 			float GetInterTextSpacing() const;
