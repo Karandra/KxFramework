@@ -65,30 +65,30 @@ namespace kxf
 
 		public:
 			// Visuals and editing
-			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Column& column) const
+			virtual std::shared_ptr<IDataViewCellRenderer> GetCellRenderer(const DataView::Node& node, const DataView::Column& column) const
 			{
 				return nullptr;
 			}
-			virtual std::shared_ptr<IDataViewCellEditor> GetCellEditor(const DataView::Column& column) const
+			virtual std::shared_ptr<IDataViewCellEditor> GetCellEditor(const DataView::Node& node, const DataView::Column& column) const
 			{
 				return nullptr;
 			}
 
-			virtual Any GetCellValue(const DataView::Column& column) const = 0;
-			virtual Any GetCellDisplayValue(const DataView::Column& column) const
+			virtual Any GetCellValue(const DataView::Node& node, const DataView::Column& column) const = 0;
+			virtual Any GetCellDisplayValue(const DataView::Node& node, const DataView::Column& column) const
 			{
-				return GetCellValue(column);
+				return GetCellValue(node, column);
 			}
-			virtual bool SetCellValue(DataView::Column& column, Any value)
+			virtual bool SetCellValue(DataView::Node& node, DataView::Column& column, Any value)
 			{
 				return false;
 			}
 
-			virtual DataView::ToolTip GetCellToolTip(const DataView::Column& column) const
+			virtual DataView::ToolTip GetCellToolTip(const DataView::Node& node, const DataView::Column& column) const
 			{
 				return {};
 			}
-			virtual DataView::CellAttributes GetCellAttributes(const DataView::Column& column, const DataView::CellState& cellState) const
+			virtual DataView::CellAttributes GetCellAttributes(const DataView::Node& node, const DataView::Column& column, const DataView::CellState& cellState) const
 			{
 				return {};
 			}

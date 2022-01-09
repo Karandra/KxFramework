@@ -69,66 +69,76 @@ namespace kxf::DataView
 
 	void Node::RefreshChildren()
 	{
-		auto DoEnumerate = [&](auto& ref)
+		if (IsAttached())
 		{
-			for (auto& node: m_Children)
+			auto DoEnumerate = [&](auto& ref)
 			{
-				node.OnDetach();
-			}
-			m_Children.clear();
-
-			const size_t count = ref.GetChildrenCount();
-			if (count != IDataViewItem::npos)
-			{
-				m_Children.reserve(count);
-			}
-
-			for (size_t i = 0; i < count; i++)
-			{
-				auto& node = m_Children.emplace_back(ref.GetChildItem(i), m_ParentNode);
-				if (node.IsNull())
+				for (auto& node: m_Children)
 				{
-					m_Children.pop_back();
-					break;
+					node.OnDetach();
 				}
-			}
+				m_Children.clear();
 
-			for (auto& node: m_Children)
+				const size_t count = ref.GetChildrenCount();
+				if (count != IDataViewItem::npos)
+				{
+					m_Children.reserve(count);
+				}
+
+				for (size_t i = 0; i < count; i++)
+				{
+					auto& node = m_Children.emplace_back(ref.GetChildItem(i), this);
+					if (node.IsNull())
+					{
+						m_Children.pop_back();
+						break;
+					}
+				}
+
+				for (auto& node: m_Children)
+				{
+					node.OnAttach();
+				}
+			};
+
+			if (IsRootNode())
 			{
-				node.OnAttach();
+				DoEnumerate(GetDataModel());
 			}
-		};
-
-		if (IsRootNode())
-		{
-			DoEnumerate(GetDataModel());
+			else if (m_Item)
+			{
+				DoEnumerate(*m_Item);
+			}
 		}
-		else if (m_Item)
+		else
 		{
-			DoEnumerate(*m_Item);
+			m_Children.clear();
 		}
 		m_SubTreeCount = npos;
 	}
 	void Node::SortChildren()
 	{
-		const auto sortMode = GetView().GetSortMode();
-		OnSortChildren(sortMode);
-
-		std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right) -> bool
+		if (!m_Children.empty())
 		{
-			switch (sortMode.GetSortOrder())
+			const auto sortMode = GetView().GetSortMode();
+			OnSortChildren(sortMode);
+
+			std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right) -> bool
 			{
-				case SortOrder::Ascending:
+				switch (sortMode.GetSortOrder())
 				{
-					return *left.m_Item < *right.m_Item;
-				}
-				case SortOrder::Descending:
-				{
-					return *left.m_Item > *right.m_Item;
-				}
-			};
-			return false;
-		});
+					case SortOrder::Ascending:
+					{
+						return *left.m_Item < *right.m_Item;
+					}
+					case SortOrder::Descending:
+					{
+						return *left.m_Item > *right.m_Item;
+					}
+				};
+				return false;
+			});
+		}
 	}
 
 	size_t Node::ToggleNodeExpandState()

@@ -49,7 +49,7 @@ namespace kxf::DataView
 			}
 
 			int width = window->GetTextExtent(m_Title).GetWidth();
-			width += wxRendererNative::Get().GetHeaderButtonMargin(window);
+			width += 2 * wxRendererNative::Get().GetHeaderButtonMargin(window);
 
 			// If a bitmap is used, add space for it and 2px border
 			if (m_Icon)

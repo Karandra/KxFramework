@@ -47,10 +47,10 @@ namespace kxf::WXUI::DataView
 
 				if (DV::Node* node = m_MainWindow.GetNodeByRow(row))
 				{
-					int indent = 0;
+					int indent = 2 * PADDING_RIGHTLEFT;
 					if (m_IsExpanderColumn)
 					{
-						indent = m_MainWindow.m_Indent * node->GetIndentLevel() + m_ExpanderSize;
+						indent += m_MainWindow.m_Indent * node->GetIndentLevel() + m_ExpanderSize;
 					}
 
 					auto renderer = node->GetCellRenderer(m_Column);
@@ -59,7 +59,7 @@ namespace kxf::WXUI::DataView
 					renderer.SetupCellAttributes(m_MainWindow.GetCellStateForRow(row));
 
 					Rect cellRect = m_MainWindow.GetItemRect(*node, &m_Column);
-					auto&& [desiredSize, contentRect] = renderer.DrawCellContent(cellRect.GetSize(), m_MainWindow.GetCellStateForRow(row));
+					auto&& [desiredSize, contentRect] = renderer.DrawCellContent(cellRect.GetSize(), {});
 					UpdateWithWidth(desiredSize.GetWidth() + indent);
 				}
 			}
@@ -1702,33 +1702,33 @@ namespace kxf::WXUI::DataView
 	}
 	void MainWindow::OnCellChanged(DV::Node& node, DV::Column* column)
 	{
-		// Move this node to its new correct place after it was updated.
-
 		// In principle, we could skip the call to 'OnSortChildren' if the modified
 		// column is not the sort column, but in real-world applications it's fully
 		// possible and likely that custom compare uses not only the selected model
 		// column but also falls back to other values for comparison. To ensure consistency
 		// it is better to treat a value change as if it was an item change.
 
-		node.OnSortChildren(m_View->GetSortMode());
-
-		if (column)
+		node.SortChildren();
+		if (!node.IsRootNode())
 		{
-			column->SetBestWidth(-1);
-		}
-		else
-		{
-			m_View->InvalidateColumnsBestWidth();
-		}
+			if (column)
+			{
+				column->SetBestWidth(-1);
+			}
+			else
+			{
+				m_View->InvalidateColumnsBestWidth();
+			}
 
-		// Update the displayed value(s).
-		RefreshRow(GetRowByNode(node));
+			// Update the displayed value(s).
+			RefreshRow(GetRowByNode(node));
 
-		// Send event
-		auto event = MakeEvent();
-		event.SetNode(&node);
-		event.SetColumn(column);
-		ProcessEvent(event, DataViewWidgetEvent::EvtItemValueChanged);
+			// Send event
+			auto event = MakeEvent();
+			event.SetNode(&node);
+			event.SetColumn(column);
+			ProcessEvent(event, DataViewWidgetEvent::EvtItemValueChanged);
+		}
 	}
 	void MainWindow::OnNodeAdded(DV::Node& node)
 	{
@@ -1842,7 +1842,7 @@ namespace kxf::WXUI::DataView
 		{
 			// Setup drawing
 			SetBackgroundStyle(wxBG_STYLE_PAINT);
-			SetBackgroundColour(System::GetColor(SystemColor::ListBoxBackground));
+			SetBackgroundColour(System::GetColor(SystemColor::Window));
 
 			m_UniformRowHeight = GetDefaultRowHeight();
 			m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();
@@ -1884,9 +1884,11 @@ namespace kxf::WXUI::DataView
 
 	void MainWindow::AssignModel(std::shared_ptr<IDataViewModel> model)
 	{
-		m_Model = std::move(model);
-		m_TreeRoot.Initalize(*this);
+		// Keep the old model around unil we've done cleaning the state
+		std::swap(m_Model, model);
 
+		m_TreeRoot.Initalize(*this);
+		m_TreeRoot.RefreshChildren();
 		ItemsChanged();
 	}
 	void MainWindow::ItemsChanged()

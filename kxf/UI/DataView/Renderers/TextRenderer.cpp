@@ -14,7 +14,12 @@ namespace kxf::DataView
 	}
 	Size TextRenderer::GetCellSize(const RenderInfo& renderInfo) const
 	{
-		return renderInfo.GraphicsContext->GetTextExtent(m_Value);
+		if (!m_Value.IsEmpty())
+		{
+			CellRendererHelper renderHelper(renderInfo);
+			return renderHelper.GetTextExtent(m_Value);
+		}
+		return {};
 	}
 
 	String TextRenderer::GetDisplayText(const Any& value) const

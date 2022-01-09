@@ -7,6 +7,8 @@ namespace kxf::DataView
 {
 	void RootNode::Initalize(WXUI::DataView::MainWindow& mainWindow) noexcept
 	{
+		m_Children.clear();
+
 		m_DataModel = mainWindow.m_Model.get();
 		m_MainWindow = &mainWindow;
 		m_View = mainWindow.m_View;

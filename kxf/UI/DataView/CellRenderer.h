@@ -130,6 +130,7 @@ namespace kxf::DataView
 				info.EllipsizeMode = m_Parameters.EllipsizeMode;
 				info.MarkupMode = m_Parameters.MarkupMode;
 				info.CellRect = m_Parameters.CellRect;
+				info.GraphicsContext = m_GraphicsContext;
 
 				return info;
 			}

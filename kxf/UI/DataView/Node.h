@@ -176,18 +176,10 @@ namespace kxf::DataView
 				}
 				return 0;
 			}
-
-			void ItemChanged()
-			{
-				if (m_Children.size() != GetChildrenCount())
-				{
-					RefreshChildren();
-				}
-				RefreshCell();
-			}
 			void ChildrenChanged()
 			{
 				RefreshChildren();
+				RefreshCell();
 			}
 
 			size_t GetSubTreeCount() const

@@ -1,12 +1,14 @@
 #pragma once
 #include "Common.h"
 #include "IWidget.h"
+#include "IDataViewModel.h"
+#include "IDataViewItem.h"
 #include "DataView/Common.h"
+#include "DataView/Column.h"
+#include "DataView/Node.h"
 #include "DataView/CellRenderer.h"
 #include "DataView/Renderers/TextRenderer.h"
 #include "DataView/CellEditor.h"
-#include "IDataViewModel.h"
-#include "IDataViewItem.h"
 
 namespace kxf
 {
