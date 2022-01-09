@@ -39,10 +39,11 @@ namespace kxf
 	{
 		private:
 			RecursionGuardFlag& m_Flag;
+			bool m_IsInside = false;
 
 		public:
 			RecursionGuard(RecursionGuardFlag& flag) noexcept
-				:m_Flag(flag)
+				:m_Flag(flag), m_IsInside(flag.GetLevel() != 0)
 			{
 				flag.OnEnter();
 			}
@@ -54,7 +55,7 @@ namespace kxf
 		public:
 			bool IsInside() const noexcept
 			{
-				return m_Flag.GetLevel() != 0;
+				return m_IsInside;
 			}
 	};
 }
