@@ -34,7 +34,7 @@ namespace kxf::Utility
 			}
 
 		public:
-			template<class T, std::enable_if_t<!std::is_rvalue_reference_v<T> && std::is_class_v<T>, int> = 0>
+			template<class T> requires(!std::is_rvalue_reference_v<T> && std::is_class_v<T>)
 			constexpr decltype(auto) operator()(T&& ptr) const noexcept
 			{
 				return ptr.get();
@@ -82,7 +82,7 @@ namespace kxf::Utility
 			}
 
 		public:
-			template<class T, std::enable_if_t<!std::is_rvalue_reference_v<T>, int> = 0>
+			template<class T> requires(!std::is_rvalue_reference_v<T>)
 			constexpr decltype(auto) operator()(T&& ptr) const noexcept
 			{
 				return *ptr;
@@ -111,6 +111,22 @@ namespace kxf::Utility
 			const T& operator()(const std::shared_ptr<T>& ptr) const noexcept
 			{
 				return *ptr;
+			}
+	};
+
+	struct UnfancyPtr
+	{
+		public:
+			template<class T> requires(std::is_class_v<T>)
+			constexpr auto operator()(T& v) const noexcept
+			{
+				return v.get();
+			}
+
+			template<class T> requires(std::is_class_v<T>)
+			constexpr auto operator()(const T& v) const noexcept
+			{
+				return v.get();
 			}
 	};
 }
