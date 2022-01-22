@@ -36,16 +36,13 @@ namespace kxf::DataView
 			std::vector<Node> m_Children;
 
 			mutable size_t m_SubTreeCount = npos;
+			mutable size_t m_SubTreeIndex = npos;
 			bool m_IsExpanded = false;
 
 		private:
 			size_t CalcSubTreeIndex() const;
-			size_t CalcSubTreeCount() const;
-			void RecalcSubTreeCount()
-			{
-				m_SubTreeCount = GetSubTreeCount();
-			}
-			void ChangeSubTreeCount(intptr_t num);
+			size_t CalcSubTreeCount(bool force = false) const;
+			void ChangeSubTreeCount(intptr_t num, bool force = false);
 
 			void RefreshChildren();
 			void SortChildren();
@@ -192,7 +189,11 @@ namespace kxf::DataView
 			}
 			size_t GetSubTreeIndex() const
 			{
-				return CalcSubTreeIndex();
+				if (m_SubTreeIndex == npos)
+				{
+					m_SubTreeIndex = CalcSubTreeIndex();
+				}
+				return m_SubTreeIndex;
 			}
 
 			bool IsExpanded() const

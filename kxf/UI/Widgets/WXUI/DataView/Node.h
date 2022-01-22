@@ -36,8 +36,8 @@ namespace kxf::DataView
 {
 	class KX_API NodeOperation
 	{
-		public:
-			// The return value control how the tree-walker traverse the tree
+		protected:
+			// The return value control how the tree-walker traverses the tree
 			enum class Result
 			{
 				Done, // Done, stop traversing and return
@@ -72,7 +72,7 @@ namespace kxf::DataView
 			const Node* m_ResultNode = nullptr;
 
 		public:
-			RowToNodeOperation(intptr_t row , intptr_t current)
+			RowToNodeOperation(intptr_t row , intptr_t current = -2)
 				:m_Row(row), m_CurrentRow(current)
 			{
 			}

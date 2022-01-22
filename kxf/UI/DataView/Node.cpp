@@ -28,14 +28,14 @@ namespace kxf::DataView
 		}
 		return npos;
 	}
-	size_t Node::CalcSubTreeCount() const
+	size_t Node::CalcSubTreeCount(bool force) const
 	{
 		// Total count of expanded (i.e. visible with the help of some scrolling) items
 		// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
 		// number of rows the subtree occupies for branch nodes.
 
 		size_t count = 0;
-		if (m_IsExpanded || IsRootNode())
+		if (m_IsExpanded || force || IsRootNode())
 		{
 			for (const Node& node: m_Children)
 			{
@@ -44,24 +44,24 @@ namespace kxf::DataView
 		}
 		return count;
 	}
-	void Node::ChangeSubTreeCount(intptr_t num)
+	void Node::ChangeSubTreeCount(intptr_t num, bool force)
 	{
-		if (m_IsExpanded)
+		if (m_IsExpanded || force)
 		{
 			if (m_SubTreeCount != npos)
 			{
 				m_SubTreeCount += num;
 				if (m_ParentNode)
 				{
-					m_ParentNode->ChangeSubTreeCount(num);
+					m_ParentNode->ChangeSubTreeCount(num, force);
 				}
 			}
 			else
 			{
-				RecalcSubTreeCount();
+				m_SubTreeCount = CalcSubTreeCount(force);
 				if (m_ParentNode)
 				{
-					m_ParentNode->RecalcSubTreeCount();
+					m_ParentNode->m_SubTreeCount = m_ParentNode->CalcSubTreeCount(force);
 				}
 			}
 		}
@@ -138,6 +138,12 @@ namespace kxf::DataView
 				};
 				return false;
 			});
+
+			// Reset cached subtree index
+			for (auto& node: m_Children)
+			{
+				node.m_SubTreeIndex = npos;
+			}
 		}
 	}
 
@@ -146,21 +152,32 @@ namespace kxf::DataView
 		// We do not allow the (invisible) root node to be collapsed because there is no way to expand it again.
 		if (!IsRootNode())
 		{
-			intptr_t count = 0;
-			for (const Node& node: m_Children)
+			// If we're expanding the node, but it has no children enumerated while it the item indicates that it should,
+			// refresh them now.
+			bool refreshed = false;
+			if (!m_IsExpanded && m_Children.empty() && HasChildren())
 			{
-				count += static_cast<intptr_t>(node.GetSubTreeCount()) + 1;
+				RefreshChildren();
+				refreshed = true;
 			}
 
+			auto count = static_cast<intptr_t>(CalcSubTreeCount(true));
 			if (m_IsExpanded)
 			{
-				ChangeSubTreeCount(-count);
 				m_IsExpanded = false;
+				ChangeSubTreeCount(-count, true);
 			}
 			else
 			{
+				// If we've just refreshed this node's children, its initial subtree count is always 0,
+				// let's account for that and avoid redundant calculations here.
+				if (refreshed)
+				{
+					m_SubTreeCount = 0;
+				}
+
 				m_IsExpanded = true;
-				ChangeSubTreeCount(+count);
+				ChangeSubTreeCount(+count, true);
 
 				// Sort the children if needed
 				SortChildren();

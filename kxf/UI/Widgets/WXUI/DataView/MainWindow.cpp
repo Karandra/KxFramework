@@ -2836,10 +2836,11 @@ namespace kxf::WXUI::DataView
 	{
 		if (m_TreeRoot && row)
 		{
-			DV::RowToNodeOperation operation(*row, -2);
-			operation.Walk(m_TreeRoot);
-
-			return const_cast<DV::Node*>(operation.GetResult());
+			DV::RowToNodeOperation operation(*row);
+			if (operation.Walk(m_TreeRoot))
+			{
+				return const_cast<DV::Node*>(operation.GetResult());
+			}
 		}
 		return nullptr;
 	}
