@@ -1842,7 +1842,6 @@ namespace kxf::WXUI::DataView
 		{
 			// Setup drawing
 			SetBackgroundStyle(wxBG_STYLE_PAINT);
-			SetBackgroundColour(System::GetColor(SystemColor::Window));
 
 			m_UniformRowHeight = GetDefaultRowHeight();
 			m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();

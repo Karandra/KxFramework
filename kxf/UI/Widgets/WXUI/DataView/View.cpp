@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "kxf/General/Format.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
+#include "kxf/System/SystemInformation.h"
 
 namespace
 {
@@ -296,6 +297,7 @@ namespace kxf::WXUI::DataView
 
 			EnableSystemTheme();
 			SetBackgroundStyle(wxBG_STYLE_PAINT);
+			SetBackgroundColour(System::GetColor(SystemColor::Window));
 			Bind(wxEVT_SIZE, &View::OnSize, this);
 			Bind(wxEVT_PAINT, &View::OnPaint, this);
 
