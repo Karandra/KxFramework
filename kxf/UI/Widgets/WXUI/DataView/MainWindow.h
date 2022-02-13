@@ -117,13 +117,6 @@ namespace kxf::WXUI::DataView
 			DV::Row m_RowBeforeLastClicked;
 			DV::Row m_RowSelectSingleOnUp;
 
-			// The pen used to draw horizontal/vertical rules
-			std::shared_ptr<IGraphicsPen> m_PenRuleH;
-			std::shared_ptr<IGraphicsPen> m_PenRuleV;
-
-			// The pen used to draw the expander and the lines
-			std::shared_ptr<IGraphicsPen> m_PenExpander;
-
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
 			size_t m_ItemsCount = INVALID_COUNT;
 			std::shared_ptr<IDataViewModel> m_Model;

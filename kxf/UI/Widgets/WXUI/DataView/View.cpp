@@ -148,25 +148,23 @@ namespace kxf::WXUI::DataView
 	}
 	void View::OnPaint(wxPaintEvent& event)
 	{
-		if (auto pen = m_ClientArea->m_PenRuleH)
+		auto renderer = m_ClientArea->GetRenderer();
+
+		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
+		gc->SetAntialiasMode(AntialiasMode::None);
+		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
+
+		auto brush = renderer->CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
+		gc->Clear(*brush);
+
+		if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
 		{
-			auto renderer = m_ClientArea->GetRenderer();
+			auto pen = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
+			brush = renderer->CreateSolidBrush(pen->GetColor());
 
-			auto gc = renderer->CreateLegacyWindowPaintContext(*this);
-			gc->SetAntialiasMode(AntialiasMode::None);
-			gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
-
-			auto brush = renderer->CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
-			gc->Clear(*brush);
-
-			if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
-			{
-				brush = renderer->CreateSolidBrush(pen->GetColor());
-
-				RectF rect = Rect(m_HeaderAreaSpacerSI->GetRect());
-				rect.SetWidth(GetClientSize().GetWidth());
-				gc->DrawRectangle(rect, *brush, *pen);
-			}
+			RectF rect = Rect(m_HeaderAreaSpacerSI->GetRect());
+			rect.SetWidth(GetClientSize().GetWidth());
+			gc->DrawRectangle(rect, *brush, *pen);
 		}
 	}
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)

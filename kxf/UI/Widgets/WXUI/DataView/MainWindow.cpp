@@ -1032,15 +1032,9 @@ namespace kxf::WXUI::DataView
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
 		auto renderer = GetRenderer();
-		if (!m_PenRuleH)
-		{
-			m_PenRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
-			m_PenRuleV = m_PenRuleH;
-		}
-		if (!m_PenExpander)
-		{
-			m_PenExpander = renderer->CreatePen(System::GetColor(SystemColor::ButtonFace), FromDIP(1));
-		}
+		auto penRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
+		auto penRuleV = penRuleH;
+		auto penExpander = renderer->CreatePen(System::GetColor(SystemColor::ButtonFace), FromDIP(1));
 
 		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
 		gc->SetAntialiasMode(AntialiasMode::BestAvailable);
@@ -1297,9 +1291,6 @@ namespace kxf::WXUI::DataView
 				// Draw vertical rules but don't draw the rule for last column is we have only one column
 				if (verticalRulesEnabled && visibleColumnsCount > 1)
 				{
-					GraphicsAction::ChangePen pen(*gc, m_PenRuleV);
-					GraphicsAction::ChangeBrush brush(*gc, transparentBrush);
-
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
 					const int x = cellRect.GetX() + cellRect.GetWidth() - 1;
 					int yAdd = 1;
@@ -1307,16 +1298,13 @@ namespace kxf::WXUI::DataView
 					{
 						yAdd += clientSize.GetHeight();
 					}
-					gc->DrawLine(PointF(x, cellRect.GetTop()), PointF(x, cellRect.GetBottom() + yAdd));
+					gc->DrawLine(PointF(x, cellRect.GetTop()), PointF(x, cellRect.GetBottom() + yAdd), *penRuleV);
 				}
 
 				// Draw horizontal rules
 				if (horizontalRulesEnabled)
 				{
-					GraphicsAction::ChangePen pen(*gc, m_PenRuleV);
-					GraphicsAction::ChangeBrush brush(*gc, transparentBrush);
-
-					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()));
+					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()), *penRuleV);
 				}
 
 				// Draw the cell
@@ -1350,20 +1338,15 @@ namespace kxf::WXUI::DataView
 					flags.Add(NativeWidgetFlag::Expanded, node->IsExpanded());
 					flags.Add(NativeWidgetFlag::Flat, m_View->m_Style.Contains(DV::WidgetStyle::Flat));
 
-					Rect clipRect = cellRect;
-					clipRect.Width() -= FromDIP(EXPANDER_MARGIN);
-					GraphicsAction::Clip cellClip(*gc, clipRect);
-
 					if (isCategoryRow)
 					{
-						Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this));
-						rect = rect.CenterIn(expanderRect);
-
-						nativeRenderer.DrawCollapseButton(this, *gc, rect, flags);
+						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this)).CenterIn(expanderRect);
+						nativeRenderer.DrawCollapseButton(this, *gc, actualExpanderRect, flags);
 					}
 					else
 					{
-						nativeRenderer.DrawExpanderButton(this, *gc, expanderRect, flags);
+						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetExpanderButtonSize(this)).CenterIn(expanderRect);
+						nativeRenderer.DrawExpanderButton(this, *gc, actualExpanderRect, flags);
 					}
 				}
 
