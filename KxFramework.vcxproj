@@ -485,6 +485,8 @@
     <ClInclude Include="kxf\UI\DataView\CellState.h" />
     <ClInclude Include="kxf\UI\DataView\Column.h" />
     <ClInclude Include="kxf\UI\DataView\Common.h" />
+    <ClInclude Include="kxf\UI\DataView\Editors\Common.h" />
+    <ClInclude Include="kxf\UI\DataView\Editors\TextBox.h" />
     <ClInclude Include="kxf\UI\DataView\Node.h" />
     <ClInclude Include="kxf\UI\DataView\Renderers\Common.h" />
     <ClInclude Include="kxf\UI\DataView\Renderers\TextRenderer.h" />
@@ -1052,6 +1054,7 @@
     <ClCompile Include="kxf\UI\DataView\CellRendererHelper.cpp" />
     <ClCompile Include="kxf\UI\DataView\CellState.cpp" />
     <ClCompile Include="kxf\UI\DataView\Column.cpp" />
+    <ClCompile Include="kxf\UI\DataView\Editors\TextBox.cpp" />
     <ClCompile Include="kxf\UI\DataView\Node.cpp" />
     <ClCompile Include="kxf\UI\DataView\Renderers\TextRenderer.cpp" />
     <ClCompile Include="kxf\UI\DataView\SortMode.cpp" />

@@ -239,6 +239,8 @@ namespace kxf::WXUI::DataView
 			bool DisableDND(const wxDataFormat& format);
 
 			// Window
+			wxWindow* GetMainWindowOfCompositeControl() override;
+			bool HasFocus() const override;
 			void SetFocus() override;
 			bool SetFont(const wxFont& font) override;
 

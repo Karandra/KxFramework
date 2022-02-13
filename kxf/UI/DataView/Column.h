@@ -101,7 +101,7 @@ namespace kxf::DataView
 			{
 				return m_Editor;
 			}
-			void SetCellRenderer(std::shared_ptr<IDataViewCellEditor> editor)
+			void SetCellEditor(std::shared_ptr<IDataViewCellEditor> editor)
 			{
 				m_Editor = std::move(editor);
 			}

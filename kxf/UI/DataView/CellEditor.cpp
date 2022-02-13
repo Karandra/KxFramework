@@ -54,6 +54,10 @@ namespace kxf::DataView
 		{
 			if (m_Widget = m_CellEditor->CreateWidget(GetOwningWidget().QueryInterface<IWidget>(), CreateParemeters()))
 			{
+				// We'll use wxWidget's reparenting function here for now
+				m_Widget->GetWxWindow()->Reparent(mainWindow);
+				m_Widget->SetPosition(m_Parameters.CellRect.GetPosition());
+
 				m_WidgetEvtHandler = m_CellEditor->CreateWidgetHandler();
 				if (!m_WidgetEvtHandler)
 				{
@@ -62,7 +66,6 @@ namespace kxf::DataView
 				m_Widget->PushEventHandler(*m_WidgetEvtHandler);
 				m_Widget->SetFocus();
 
-				m_Parameters.Widget = m_Widget.get();
 				if (m_CellEditor->BeginEdit(CreateParemeters(), node.GetCellValue(column)))
 				{
 					return true;
@@ -90,6 +93,7 @@ namespace kxf::DataView
 				// Try to get the value, normally we should succeed but if we fail, don't
 				// return immediately, we still need to destroy the edit control.
 				Any value = m_CellEditor->GetValue(CreateParemeters());
+				m_CellEditor->EndEdit(CreateParemeters());
 				DestroyWidget();
 				view->SetFocus();
 
@@ -109,6 +113,11 @@ namespace kxf::DataView
 	}
 	void CellEditor::CancelEdit()
 	{
+		if (m_Node && m_Column && m_Widget && m_CellEditor)
+		{
+			m_CellEditor->CancelEdit(CreateParemeters());
+		}
+
 		OnEndEdit();
 		m_IsEditCanceled = true;
 	}
@@ -125,7 +134,7 @@ namespace kxf::DataView
 	{
 		event.Skip();
 
-		if (m_SetFocusOnIdle)
+		if (m_SetFocusOnIdle && !m_IsFinished)
 		{
 			if (IWidget::FindFocus().get() != &GetWidget())
 			{
@@ -136,6 +145,11 @@ namespace kxf::DataView
 	}
 	void CellEditorWidgetHandler::OnChar(WidgetKeyEvent& event)
 	{
+		if (m_IsFinished)
+		{
+			event.Skip();
+		}
+
 		switch (event.GetKeyCode())
 		{
 			case KeyCode::Escape:
@@ -164,28 +178,24 @@ namespace kxf::DataView
 	}
 	void CellEditorWidgetHandler::OnTextCommit(WidgetTextEvent& event)
 	{
-		m_IsFinished = true;
-		m_Editor.EndEdit();
-	}
-	void CellEditorWidgetHandler::OnKillFocus(WidgetFocusEvent& event)
-	{
-		event.Skip();
-
 		if (!m_IsFinished)
 		{
 			m_IsFinished = true;
 			m_Editor.EndEdit();
 		}
 	}
+	void CellEditorWidgetHandler::OnFocusLost(WidgetFocusEvent& event)
+	{
+		event.Skip();
+
+		if (!m_IsFinished)
+		{
+			m_IsFinished = true;
+			m_Editor.CancelEdit();
+		}
+	}
 	void CellEditorWidgetHandler::OnMouseMove(WidgetMouseEvent& event)
 	{
-		auto& widget = GetWidget();
-		const auto originalPos = event.GetPosition();
-
-		event.SetPosition(widget.GetPosition());
-		m_Editor.GetOwningWidget().ProcessEvent(event, event.GetEventID());
-		event.SetPosition(originalPos);
-
 		event.Skip();
 	}
 
@@ -197,10 +207,8 @@ namespace kxf::DataView
 
 		Bind(IdleEvent::EvtIdle, &CellEditorWidgetHandler::OnIdle, this);
 		Bind(WidgetKeyEvent::EvtChar, &CellEditorWidgetHandler::OnChar, this);
-		Bind(WidgetFocusEvent::EvtFocusLost, &CellEditorWidgetHandler::OnKillFocus, this);
+		Bind(WidgetFocusEvent::EvtFocusLost, &CellEditorWidgetHandler::OnFocusLost, this);
 		Bind(WidgetTextEvent::EvtCommit, &CellEditorWidgetHandler::OnTextCommit, this);
-
-		// Causes drag events when focus is in editor and such. Disabled for now.
 		//Bind(WidgetMouseEvent::EvtMove, &CellEditorWidgetHandler::OnMouseMove, this);
 	}
 }

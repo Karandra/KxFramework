@@ -188,6 +188,11 @@ namespace kxf::DataView
 				:m_CellRenderer(std::move(cellRenerer))
 			{
 			}
+			CellRenderer(const CellRenderer&) = delete;
+			CellRenderer(CellRenderer&& other) noexcept
+			{
+				*this = std::move(other);
+			}
 			~CellRenderer() = default;
 
 		public:
@@ -244,6 +249,22 @@ namespace kxf::DataView
 			bool operator!() const noexcept
 			{
 				return IsNull();
+			}
+
+			CellRenderer& operator=(const CellRenderer&) = delete;
+			CellRenderer& operator=(CellRenderer&& other) noexcept
+			{
+				m_CellRenderer = std::move(other.m_CellRenderer);
+
+				m_Parameters = std::move(other.m_Parameters);
+				m_GraphicsContext = Utility::ExchangeResetAndReturn(other.m_GraphicsContext, nullptr);
+				m_Alignment = other.m_Alignment;
+				m_Node = Utility::ExchangeResetAndReturn(other.m_Node, nullptr);
+				m_Column = Utility::ExchangeResetAndReturn(other.m_Column, nullptr);
+				m_IsViewEnabled = other.m_IsViewEnabled;
+				m_IsViewFocused = other.m_IsViewFocused;
+
+				return *this;
 			}
 	};
 }

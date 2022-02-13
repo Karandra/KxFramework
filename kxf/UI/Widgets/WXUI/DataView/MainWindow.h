@@ -122,9 +122,6 @@ namespace kxf::WXUI::DataView
 			std::shared_ptr<IDataViewModel> m_Model;
 			DV::RootNode m_TreeRoot;
 
-			// String to display when the control is empty
-			String m_EmptyControlLabel;
-
 			// This is the tree node under the cursor
 			DV::Node* m_TreeNodeUnderMouse = nullptr;
 

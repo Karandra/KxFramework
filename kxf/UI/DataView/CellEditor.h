@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/General/Any.h"
 #include "kxf/EventSystem/EvtHandler.h"
+#include "kxf/Utility/Common.h"
 
 namespace kxf
 {
@@ -36,7 +37,6 @@ namespace kxf
 				DataView::Column& Column;
 
 				Rect CellRect;
-				IWidget* Widget = nullptr;
 				bool IsEditable = true;
 			};
 
@@ -52,8 +52,12 @@ namespace kxf
 
 		public:
 			virtual bool BeginEdit(const EditorInfo& editorInfo, Any value) = 0;
-			virtual void EndEdit(const EditorInfo& editorInfo) = 0;
-			virtual void CancelEdit(const EditorInfo& editorInfo) = 0;
+			virtual void EndEdit(const EditorInfo& editorInfo)
+			{
+			}
+			virtual void CancelEdit(const EditorInfo& editorInfo)
+			{
+			}
 
 			virtual Any GetValue(const EditorInfo& editorInfo) const = 0;
 	};
@@ -70,7 +74,6 @@ namespace kxf::DataView
 			struct EditorParameters final
 			{
 				Rect CellRect;
-				IWidget* Widget = nullptr;
 				bool IsEditable = true;
 			};
 
@@ -121,7 +124,6 @@ namespace kxf::DataView
 			IDataViewCellEditor::EditorInfo CreateParemeters() const
 			{
 				IDataViewCellEditor::EditorInfo info = {*m_Node, *m_Column};
-				info.Widget = m_Parameters.Widget;
 				info.CellRect = m_Parameters.CellRect;
 				info.IsEditable = m_Parameters.IsEditable;
 
@@ -133,9 +135,14 @@ namespace kxf::DataView
 				:m_CellEditor(std::move(cellEditor))
 			{
 			}
+			CellEditor(const CellEditor&) = delete;
+			CellEditor(CellEditor&& other) noexcept
+			{
+				*this = std::move(other);
+			}
 			~CellEditor()
 			{
-				DestroyWidget();
+				OnEndEdit();
 			}
 
 		public:
@@ -176,6 +183,23 @@ namespace kxf::DataView
 			{
 				return IsNull();
 			}
+
+			CellEditor& operator=(const CellEditor&) = delete;
+			CellEditor& operator=(CellEditor&& other) noexcept
+			{
+				OnEndEdit();
+
+				m_CellEditor = std::move(other.m_CellEditor);
+				m_Widget = std::move(other.m_Widget);
+				m_WidgetEvtHandler = std::move(other.m_WidgetEvtHandler);
+
+				m_Node = Utility::ExchangeResetAndReturn(other.m_Node, nullptr);
+				m_Column = Utility::ExchangeResetAndReturn(other.m_Column, nullptr);
+				m_IsEditCanceled = other.m_IsEditCanceled;
+				m_IsEditFinished = other.m_IsEditFinished;
+
+				return *this;
+			}
 	};
 }
 
@@ -193,7 +217,7 @@ namespace kxf::DataView
 			void OnIdle(IdleEvent& event);
 			void OnChar(WidgetKeyEvent& event);
 			void OnTextCommit(WidgetTextEvent& event);
-			void OnKillFocus(WidgetFocusEvent& event);
+			void OnFocusLost(WidgetFocusEvent& event);
 			void OnMouseMove(WidgetMouseEvent& event);
 
 		protected:

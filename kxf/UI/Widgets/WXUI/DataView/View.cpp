@@ -647,6 +647,14 @@ namespace kxf::WXUI::DataView
 		return true;
 	}
 
+	wxWindow* View::GetMainWindowOfCompositeControl()
+	{
+		return m_ClientArea;
+	}
+	bool View::HasFocus() const
+	{
+		return ViewBase::HasFocus() || (m_ClientArea && m_ClientArea->HasFocus());
+	}
 	void View::SetFocus()
 	{
 		if (m_ClientArea)

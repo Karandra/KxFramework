@@ -9,6 +9,7 @@
 #include "DataView/CellRenderer.h"
 #include "DataView/Renderers/TextRenderer.h"
 #include "DataView/CellEditor.h"
+#include "DataView/Editors/TextBox.h"
 
 namespace kxf
 {

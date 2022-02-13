@@ -20,6 +20,8 @@ namespace
 		// Expander space margin
 		EXPANDER_MARGIN = 2,
 		EXPANDER_OFFSET = 2,
+
+		RULER_WIDTH = 1
 	};
 }
 
@@ -45,7 +47,7 @@ namespace kxf::WXUI::DataView
 					return;
 				}
 
-				if (DV::Node* node = m_MainWindow.GetNodeByRow(row))
+				if (auto node = m_MainWindow.GetNodeByRow(row))
 				{
 					int indent = 2 * PADDING_RIGHTLEFT;
 					if (m_IsExpanderColumn)
@@ -1032,13 +1034,13 @@ namespace kxf::WXUI::DataView
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
 		auto renderer = GetRenderer();
-		auto penRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
+		auto penRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), RULER_WIDTH);
 		auto penRuleV = penRuleH;
-		auto penExpander = renderer->CreatePen(System::GetColor(SystemColor::ButtonFace), FromDIP(1));
 
 		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
-		gc->SetAntialiasMode(AntialiasMode::BestAvailable);
-		gc->SetInterpolationQuality(InterpolationQuality::BestAvailable);
+		gc->SetAntialiasMode(AntialiasMode::None);
+		gc->SetTextAntialiasMode(AntialiasMode::Default);
+		gc->SetInterpolationQuality(InterpolationQuality::None);
 
 		const Size clientSize = Size(GetClientSize());
 		const auto transparentPen = renderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
@@ -1053,14 +1055,15 @@ namespace kxf::WXUI::DataView
 		const size_t columnCount = m_View->GetColumnCount();
 		if (IsEmpty() || columnCount == 0)
 		{
-			if (!m_EmptyControlLabel.IsEmpty())
+			auto label = m_View->m_Widget.GetWidgetText();
+			if (!label.IsEmpty())
 			{
 				const int y = GetCharHeight() * 2;
 				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
-				gc->SetFontBrush(renderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled()));
-				gc->SetFont(renderer->CreateFont(GetFont()));
-				gc->DrawLabel(m_EmptyControlLabel, rect, Alignment::CenterHorizontal|Alignment::Top);
+				auto brush = renderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled());
+				auto font = renderer->CreateFont(GetFont());
+				gc->DrawLabel(label, rect, *font, *brush, Alignment::CenterHorizontal|Alignment::Top);
 			}
 
 			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow
@@ -1136,7 +1139,7 @@ namespace kxf::WXUI::DataView
 		const bool horizontalRulesEnabled = m_View->m_Style.Contains(DV::WidgetStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
-		IRendererNative& nativeRenderer = IRendererNative::Get();
+		auto& nativeRenderer = IRendererNative::Get();
 
 		Color altRowColor = m_View->m_AlternateRowColor;
 		std::shared_ptr<IGraphicsPen> altRowPen;
@@ -1337,6 +1340,16 @@ namespace kxf::WXUI::DataView
 					flags.Add(NativeWidgetFlag::Current, m_TreeNodeUnderMouse == node);
 					flags.Add(NativeWidgetFlag::Expanded, node->IsExpanded());
 					flags.Add(NativeWidgetFlag::Flat, m_View->m_Style.Contains(DV::WidgetStyle::Flat));
+
+					// We can skip on clipping if we know that we have enough space
+					GraphicsAction::Clip cellClip(*gc);
+					if (cellRect.GetWidth() <= expanderRect.GetWidth())
+					{
+						Rect clipRect = cellRect;
+						clipRect.Width() -= FromDIP(EXPANDER_MARGIN);
+
+						cellClip.Add(clipRect);
+					}
 
 					if (isCategoryRow)
 					{
@@ -1939,7 +1952,7 @@ namespace kxf::WXUI::DataView
 		rect.X() = 0;
 		rect.Y() = GetRowStart(rowFrom);
 
-		// Don't calculate exact width of the row, because GetEndOfLastCol() is
+		// Don't calculate exact width of the row, because 'GetRowWidth' is
 		// expensive to call, and controls with rows not spanning entire width rare.
 		// It is more efficient to e.g. repaint empty parts of the window needlessly.
 		rect.Width() = std::numeric_limits<decltype(rect.GetWidth())>::max();
@@ -2867,19 +2880,19 @@ namespace kxf::WXUI::DataView
 		// Cancel any previous editing
 		CancelEdit();
 
-		if (auto editor = node.GetCellEditor(column))
+		if (m_CurrentEditor = node.GetCellEditor(column))
 		{
 			m_View->SetFocus();
 			node.EnsureCellVisible(column);
 
-			const Rect itemRect = node.GetCellClientRect(column);
-			if (editor.BeginEdit(node, column, itemRect))
+			auto itemRect = GetItemRect(node, &column);
+			if (m_CurrentEditor.BeginEdit(node, column, itemRect))
 			{
-				// Save the renderer to be able to finish/cancel editing it later
-				m_CurrentEditor = std::move(editor);
 				return true;
 			}
 		}
+
+		m_CurrentEditor = {};
 		return false;
 	}
 	void MainWindow::EndEdit()
