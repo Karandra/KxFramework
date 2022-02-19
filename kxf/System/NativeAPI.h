@@ -54,11 +54,11 @@ namespace kxf
 		private:
 			std::array<LibraryRecord, 16> m_LoadedLibraries = {};
 			String m_LookupDirectory;
-			size_t m_Count = 0;
-			bool m_IsLoaded = false;
+			size_t m_TotalCount = 0;
 
 		private:
-			size_t DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets) noexcept;
+			size_t GetLoadedLibrariesCount() const noexcept;
+			size_t DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets, bool moduleMode = false) noexcept;
 			size_t DoUnloadLibraries() noexcept;
 
 			void InitializeNtDLL() noexcept;
