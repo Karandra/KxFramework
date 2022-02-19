@@ -10,8 +10,40 @@
 
 namespace kxf
 {
+	class CoreApplication;
+}
+namespace kxf::Private
+{
+	class CoreApplicationEvtHandler final: public EvtHandler
+	{
+		private:
+			CoreApplication& m_App;
+
+		protected:
+			// IEvtHandler
+			bool OnDynamicBind(EventItem& eventItem) override;
+			bool OnDynamicUnbind(EventItem& eventItem) override;
+
+		public:
+			CoreApplicationEvtHandler(CoreApplication& app) noexcept
+				:m_App(app)
+			{
+			}
+
+		public:
+			auto Access() noexcept
+			{
+				return EventSystem::EvtHandlerAccessor(*this);
+			}
+	};
+}
+
+namespace kxf
+{
 	class KX_API CoreApplication: public RTTI::Implementation<CoreApplication, ICoreApplication>
 	{
+		friend class Private::CoreApplicationEvtHandler;
+
 		public:
 			static CoreApplication* GetInstance() noexcept
 			{
@@ -24,7 +56,7 @@ namespace kxf
 
 		protected:
 			// IEvtHandler
-			EvtHandler m_EvtHandler;
+			Private::CoreApplicationEvtHandler m_EvtHandler;
 
 			// ICoreApplication
 			mutable RecursiveRWLock m_EventFiltersLock;
@@ -81,23 +113,18 @@ namespace kxf
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override;
 
 		protected:
-			auto AccessEvtHandler()
-			{
-				return EventSystem::EvtHandlerAccessor(m_EvtHandler);
-			}
-
 			// IEvtHandler
 			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override
 			{
-				return AccessEvtHandler().DoBind(eventID, std::move(executor), flags);
+				return m_EvtHandler.Access().DoBind(eventID, std::move(executor), flags);
 			}
 			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override
 			{
-				return AccessEvtHandler().DoUnbind(eventID, executor);
+				return m_EvtHandler.Access().DoUnbind(eventID, executor);
 			}
 			bool DoUnbind(const LocallyUniqueID& bindSlot) override
 			{
-				return AccessEvtHandler().DoUnbind(bindSlot);
+				return m_EvtHandler.Access().DoUnbind(bindSlot);
 			}
 
 			bool OnDynamicBind(EventItem& eventItem) override;
@@ -105,24 +132,27 @@ namespace kxf
 
 			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
 			{
-				return AccessEvtHandler().DoQueueEvent(std::move(event), eventID, uuid, flags);
+				return m_EvtHandler.Access().DoQueueEvent(std::move(event), eventID, uuid, flags);
 			}
 			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
 			{
-				return AccessEvtHandler().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
+				return m_EvtHandler.Access().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
 			}
 
 			bool TryBefore(IEvent& event) override
 			{
-				return AccessEvtHandler().TryBefore(event);
+				return m_EvtHandler.Access().TryBefore(event);
 			}
 			bool TryAfter(IEvent& event) override
 			{
-				return AccessEvtHandler().TryAfter(event);
+				return m_EvtHandler.Access().TryAfter(event);
 			}
 
 		public:
-			CoreApplication() = default;
+			CoreApplication()
+				:m_EvtHandler(*this)
+			{
+			}
 
 		public:
 			// ICoreApplication

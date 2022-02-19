@@ -73,6 +73,18 @@ namespace
 	}
 }
 
+namespace kxf::Private
+{
+	bool CoreApplicationEvtHandler::OnDynamicBind(EventItem& eventItem)
+	{
+		return m_App.CoreApplication::OnDynamicBind(eventItem);
+	}
+	bool CoreApplicationEvtHandler::OnDynamicUnbind(EventItem& eventItem)
+	{
+		return m_App.CoreApplication::OnDynamicUnbind(eventItem);
+	}
+}
+
 namespace kxf
 {
 	bool CoreApplication::InitDLLNotifications()
@@ -140,25 +152,22 @@ namespace kxf
 
 	bool CoreApplication::OnDynamicBind(EventItem& eventItem)
 	{
-		if (AccessEvtHandler().OnDynamicBind(eventItem))
+		if (!m_DLLNotificationsCookie)
 		{
-			if (!m_DLLNotificationsCookie)
+			if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtUnloaded))
 			{
-				if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtUnloaded))
-				{
-					return InitDLLNotifications();
-				}
-			}
-			if (auto app = wxAppConsole::GetInstance())
-			{
-				wxWidgets::ForwardBind(*this, *app, eventItem);
+				return InitDLLNotifications();
 			}
 		}
-		return false;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			wxWidgets::ForwardBind(*this, *app, eventItem);
+		}
+		return true;
 	}
 	bool CoreApplication::OnDynamicUnbind(EventItem& eventItem)
 	{
-		return AccessEvtHandler().OnDynamicUnbind(eventItem);
+		return false;
 	}
 
 	// IObject
