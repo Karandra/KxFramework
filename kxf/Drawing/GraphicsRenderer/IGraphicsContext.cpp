@@ -432,10 +432,8 @@ namespace kxf
 	}
 
 	// Offset management
-	void IGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale)
+	void IGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale, const PointF& origin)
 	{
-		constexpr PointF origin = {0.0f, 0.0f};
-
 		TransformTranslate(origin.GetX() - scrollPos.GetX() * scrollInc.GetX(), origin.GetY() - scrollPos.GetY() * scrollInc.GetY());
 		TransformScale(scale.GetX(), scale.GetY());
 	}

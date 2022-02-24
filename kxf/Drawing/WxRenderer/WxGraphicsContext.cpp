@@ -240,7 +240,10 @@ namespace kxf
 	}
 	void WxGraphicsContext::TransformRotate(Angle angle)
 	{
-		m_Context->Rotate(angle.ToRadians());
+		if (angle.IsValid() && angle.ToNormalized() != 0)
+		{
+			m_Context->Rotate(angle.ToRadians());
+		}
 	}
 	void WxGraphicsContext::TransformScale(float xScale, float yScale)
 	{
@@ -248,7 +251,10 @@ namespace kxf
 	}
 	void WxGraphicsContext::TransformTranslate(float dx, float dy)
 	{
-		m_Context->Translate(dx, dy);
+		if (dx != 0 || dy != 0)
+		{
+			m_Context->Translate(dx, dy);
+		}
 	}
 	void WxGraphicsContext::TransformConcat(const AffineMatrixF& transform)
 	{
