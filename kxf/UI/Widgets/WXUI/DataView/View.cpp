@@ -101,6 +101,7 @@ namespace kxf::WXUI::DataView
 	void View::OnInternalIdle()
 	{
 		ViewBase::OnInternalIdle();
+		m_ClientArea->OnInternalIdle();
 
 		if (m_ColumnsDirty)
 		{
@@ -112,7 +113,6 @@ namespace kxf::WXUI::DataView
 		m_UsingSystemTheme = enable;
 
 		wxSystemThemedControlBase::DoEnableSystemTheme(enable, window);
-		wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_ClientArea);
 		if (m_HeaderArea)
 		{
 			wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_HeaderArea);
@@ -126,55 +126,28 @@ namespace kxf::WXUI::DataView
 			m_ClientArea->FitLastColumn();
 		}
 
-		// We need to override OnSize so that our scrolled window
-		// a) does call Layout() to use sizers for positioning the controls but
-		// b) does not query the sizer for their size and use that for setting
-		// the scrollable area as set that ourselves by calling SetScrollbar() further down.
-
-		AdjustScrollbars();
-		Layout();
-
 		// We must redraw the headers if their height changed. Normally this
 		// shouldn't happen as the control shouldn't let itself be resized beneath
 		// its minimal height but avoid the display artifacts that appear if it
 		// does happen, e.g. because there is really not enough vertical space.
-		if (m_HeaderArea && m_HeaderAreaSI->IsShown())
+		if (m_HeaderArea && m_HeaderArea->IsShown())
 		{
+			// The header size isn't controlled by sizers, so force it here.
+			m_HeaderArea->SetSize(0, 0, event.GetSize().GetWidth(), FromDIPX(m_HeaderArea, m_HeaderHeight));
+
 			if (m_HeaderArea->GetSize().GetY() <= m_HeaderArea->GetBestSize().GetY())
 			{
 				m_HeaderArea->ScheduleRefresh();
 			}
 		}
 	}
-	void View::OnPaint(wxPaintEvent& event)
-	{
-		auto renderer = m_ClientArea->GetRenderer();
-
-		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
-		gc->SetAntialiasMode(AntialiasMode::None);
-		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
-
-		auto brush = renderer->CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
-		gc->Clear(*brush);
-
-		if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
-		{
-			auto pen = renderer->CreatePen(System::GetColor(SystemColor::Light3D), FromDIP(1));
-			brush = renderer->CreateSolidBrush(pen->GetColor());
-
-			RectF rect = Rect(m_HeaderAreaSpacerSI->GetRect());
-			rect.SetWidth(GetClientSize().GetWidth());
-			gc->DrawRectangle(rect, *brush, *pen);
-		}
-	}
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)
 	{
-		Size newSize = Size(size);
-		if (m_HeaderArea)
+		if (m_ClientArea)
 		{
-			newSize.Height() -= m_HeaderArea->GetSize().GetHeight();
+			return {size.GetWidth(), size.GetHeight() - m_ClientArea->GetHeaderOffset()};
 		}
-		return newSize;
+		return size;
 	}
 
 	std::vector<DV::Column*> View::DoGetColumnsInDisplayOrder(bool physicalOrder) const
@@ -262,42 +235,37 @@ namespace kxf::WXUI::DataView
 		m_ClientArea->OnColumnCountChanged();
 	}
 
+	View::View(IDataViewWidget& widget)
+		:EvtHandlerWrapper(widget), m_Widget(widget)
+	{
+	}
+	View::~View() = default;
+
 	bool View::Create(wxWindow* parent,
 					  const String& label,
 					  const Point& pos,
 					  const Size& size)
 	{
-		if (ViewBase::Create(parent, wxID_NONE, pos, size, wxVSCROLL|wxHSCROLL, wxS("kxf::WXUI::DataViewWidget")))
+		if (ViewBase::Create(parent, wxID_NONE, pos, size, wxVSCROLL|wxHSCROLL|wxWANTS_CHARS, "kxf::WXUI::DataViewWidget"))
 		{
-			m_ClientArea = new MainWindow(this, wxID_NONE);
+			m_HeaderHeight = 25;
+			m_HeaderBorder = 1;
 
-			// We use the cursor keys for moving the selection, not scrolling, so call
-			// this method to ensure wxScrollHelperEvtHandler doesn't catch all
-			// keyboard events forwarded to us from 'MainWindow'.
-			DisableKeyboardScrolling();
-
+			m_ClientArea = std::make_unique<MainWindow>(this);
 			if (!m_Style.Contains(WidgetStyle::NoHeader))
 			{
 				m_HeaderArea = new HeaderCtrl(*this);
 			}
-			SetTargetWindow(m_ClientArea);
-
-			m_Sizer = new wxBoxSizer(wxVERTICAL);
-			if (m_HeaderArea)
-			{
-				m_HeaderAreaSI = m_Sizer->Add(m_HeaderArea, 0, wxEXPAND);
-				m_HeaderAreaSI->SetMinSize(m_HeaderArea->FromDIP(wxSize(wxDefaultCoord, 25)));
-
-				m_HeaderAreaSpacerSI = m_Sizer->AddSpacer(1);
-			}
-			m_ClientAreaSI = m_Sizer->Add(m_ClientArea, 1, wxEXPAND|wxLEFT);
-			SetSizer(m_Sizer);
 
 			EnableSystemTheme();
 			SetBackgroundStyle(wxBG_STYLE_PAINT);
 			SetBackgroundColour(System::GetColor(SystemColor::Window));
 			Bind(wxEVT_SIZE, &View::OnSize, this);
-			Bind(wxEVT_PAINT, &View::OnPaint, this);
+
+			// We use the cursor keys for moving the selection, not scrolling, so call
+			// this method to ensure wxScrollHelperEvtHandler doesn't catch all
+			// keyboard events forwarded to us from 'MainWindow'.
+			DisableKeyboardScrolling();
 
 			return m_Widget.QueryInterface(m_RendererAware);
 		}
@@ -310,15 +278,14 @@ namespace kxf::WXUI::DataView
 		m_Style = style;
 		ScheduleRefresh();
 
-		if (m_HeaderAreaSI)
+		if (m_HeaderArea)
 		{
 			bool shouldShow = !m_Style.Contains(WidgetStyle::NoHeader);
-			if (shouldShow && !m_HeaderAreaSI->IsShown())
+			if (shouldShow && !m_HeaderArea->IsShown())
 			{
 				m_HeaderArea->DoUpdate();
 			}
-			m_HeaderAreaSI->Show(shouldShow);
-			m_HeaderAreaSpacerSI->Show(shouldShow);
+			m_HeaderArea->Show(shouldShow);
 		}
 
 		// If disabling, must disable any multiple sort that are active
@@ -647,21 +614,6 @@ namespace kxf::WXUI::DataView
 		return true;
 	}
 
-	wxWindow* View::GetMainWindowOfCompositeControl()
-	{
-		return m_ClientArea;
-	}
-	bool View::HasFocus() const
-	{
-		return ViewBase::HasFocus() || (m_ClientArea && m_ClientArea->HasFocus());
-	}
-	void View::SetFocus()
-	{
-		if (m_ClientArea)
-		{
-			m_ClientArea->SetFocus();
-		}
-	}
 	bool View::SetFont(const wxFont& font)
 	{
 		if (!ViewBase::SetFont(font))
@@ -675,7 +627,6 @@ namespace kxf::WXUI::DataView
 		}
 		if (m_ClientArea)
 		{
-			m_ClientArea->SetFont(font);
 			m_ClientArea->SetUniformRowHeight(m_ClientArea->GetDefaultRowHeight());
 		}
 
@@ -739,19 +690,32 @@ namespace kxf::WXUI::DataView
 	}
 	#endif
 
-	// Control visuals
-	void View::SetBorderColor(const Color& color, int size)
+	void View::DoSetVirtualSize(int x, int y)
 	{
-		m_BorderColor = color;
-		int borderSize = m_BorderColor ? FromDIP(size) : 0;
-
-		m_ClientAreaSI->SetBorder(borderSize);
-		if (m_HeaderAreaSI)
+		if (x != m_virtualSize.GetX() || y != m_virtualSize.GetY())
 		{
-			m_HeaderAreaSI->SetBorder(borderSize);
+			ViewBase::DoSetVirtualSize(x, y);
 		}
-		ScheduleRefresh();
 	}
+	void View::ScrollWindow(int dx, int dy, const wxRect* rect)
+	{
+		if (dx != 0 || dy != 0)
+		{
+			auto updateRect = Rect(rect ? *rect : GetClientRect());
+			if (m_HeaderArea)
+			{
+				m_HeaderArea->ScrollWidget(dx, dy, updateRect);
+			}
+			if (m_ClientArea)
+			{
+				m_ClientArea->ScrollWidget(dx, dy, updateRect);
+			}
+
+			// Don't call the base class function, since we don't want to physically scroll the window.
+		}
+	}
+
+	// Control visuals
 	void View::SetAlternateRowColor(const Color& color)
 	{
 		m_AlternateRowColor = color;
@@ -761,17 +725,15 @@ namespace kxf::WXUI::DataView
 	bool View::SetForegroundColour(const wxColour& color)
 	{
 		const bool b1 = ViewBase::SetForegroundColour(color);
-		const bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
-		const bool b3 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
+		const bool b2 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
 
-		return b1 && b2 && b3;
+		return b1 && b2;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)
 	{
 		const  bool b1 = ViewBase::SetBackgroundColour(color);
-		const  bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
-		const  bool b3 = m_HeaderArea ? m_HeaderArea->SetBackgroundColour(color) : true;
+		const  bool b2 = m_HeaderArea ? m_HeaderArea->SetBackgroundColour(color) : true;
 
-		return b1 && b2 && b3;
+		return b1 && b2;
 	}
 }

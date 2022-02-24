@@ -69,21 +69,18 @@ namespace kxf::WXUI::DataView
 			IDataViewWidget& m_Widget;
 			std::shared_ptr<IGraphicsRendererAwareWidget> m_RendererAware;
 
+			std::unique_ptr<MainWindow> m_ClientArea;
 			HeaderCtrl* m_HeaderArea = nullptr;
-			MainWindow* m_ClientArea = nullptr;
 			DV::Column* m_ExpanderColumn;
 
-			wxBoxSizer* m_Sizer = nullptr;
-			wxSizerItem* m_HeaderAreaSI = nullptr;
-			wxSizerItem* m_HeaderAreaSpacerSI = nullptr;
-			wxSizerItem* m_ClientAreaSI = nullptr;
-
 			FlagSet<WidgetStyle> m_Style = WidgetStyle::VerticalRules|WidgetStyle::FullRowSelection|WidgetStyle::FitLastColumn;
-			Color m_BorderColor;
 			Color m_AlternateRowColor;
 			bool m_UsingSystemTheme = false;
 			std::vector<std::unique_ptr<DV::Column>> m_Columns;
 			UI::ToolTipEx m_ToolTip;
+
+			int m_HeaderHeight = 0;
+			int m_HeaderBorder = 0;
 
 			// This indicates that at least one entry in 'm_Columns' has 'm_Dirty'
 			// flag set. It's cheaper to check one flag in 'OnInternalIdle' than to
@@ -96,7 +93,6 @@ namespace kxf::WXUI::DataView
 			bool HasColumn(const DV::Column& column) const;
 
 			void OnSize(wxSizeEvent& event);
-			void OnPaint(wxPaintEvent& event);
 			wxSize GetSizeAvailableForScrollTarget(const wxSize& size) override;
 
 			std::vector<DV::Column*> DoGetColumnsInDisplayOrder(bool physicalOrder) const;
@@ -121,10 +117,8 @@ namespace kxf::WXUI::DataView
 			void DoEnableSystemTheme(bool enable, wxWindow* window) override;
 
 		public:
-			View(IDataViewWidget& widget)
-				:EvtHandlerWrapper(widget), m_Widget(widget)
-			{
-			}
+			View(IDataViewWidget& widget);
+			~View();
 
 		public:
 			bool Create(wxWindow* parent,
@@ -144,11 +138,11 @@ namespace kxf::WXUI::DataView
 
 			MainWindow* GetMainWindow()
 			{
-				return m_ClientArea;
+				return m_ClientArea.get();
 			}
 			const MainWindow* GetMainWindow() const
 			{
-				return m_ClientArea;
+				return m_ClientArea.get();
 			}
 
 			// Styles
@@ -239,10 +233,10 @@ namespace kxf::WXUI::DataView
 			bool DisableDND(const wxDataFormat& format);
 
 			// Window
-			wxWindow* GetMainWindowOfCompositeControl() override;
-			bool HasFocus() const override;
-			void SetFocus() override;
 			bool SetFont(const wxFont& font) override;
+
+			void DoSetVirtualSize(int x, int y) override;
+			void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr) override;
 
 			//bool CreateColumnSelectionMenu(Menu& menu);
 			//DV::Column* OnColumnSelectionMenu(Menu& menu);
@@ -261,11 +255,5 @@ namespace kxf::WXUI::DataView
 				return m_AlternateRowColor;
 			}
 			void SetAlternateRowColor(const Color& color);
-
-			Color GetBorderColor() const
-			{
-				return m_BorderColor;
-			}
-			void SetBorderColor(const Color& color, int size = 1);
 	};
 }

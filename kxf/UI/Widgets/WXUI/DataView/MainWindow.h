@@ -35,7 +35,7 @@ namespace kxf::WXUI::DataView
 
 namespace kxf::WXUI::DataView
 {
-	class KX_API MainWindow: public UI::WindowRefreshScheduler<wxWindow>
+	class KX_API MainWindow
 	{
 		friend class Widgets::DataView;
 		friend class DV::Node;
@@ -137,8 +137,8 @@ namespace kxf::WXUI::DataView
 			void OnRightKey(wxKeyEvent& event);
 
 			void OnMouse(wxMouseEvent& event);
-			void OnSetFocus(wxFocusEvent& event);
-			void OnKillFocus(wxFocusEvent& event);
+			void OnFocusSet(wxFocusEvent& event);
+			void OnFocusLost(wxFocusEvent& event);
 
 			void OnTooltipEvent(wxTimerEvent& event);
 
@@ -170,7 +170,6 @@ namespace kxf::WXUI::DataView
 			void UpdateDisplay();
 			void RefreshDisplay();
 			void RecalculateDisplay();
-			void DoSetVirtualSize(int x, int y) override;
 
 			// Tooltip
 			bool ShowToolTip(const DV::Node& node, DV::Column& column);
@@ -191,7 +190,7 @@ namespace kxf::WXUI::DataView
 				m_ItemsCount = count;
 				m_SelectionStore.SetItemCount(count);
 			}
-			size_t RecalculateItemCount();
+			size_t RecalculateItemCount() const;
 
 			void OnCellChanged(DV::Node& node, DV::Column* column);
 			void OnNodeAdded(DV::Node& node);
@@ -202,10 +201,10 @@ namespace kxf::WXUI::DataView
 			bool IsListLike() const;
 
 			// Misc
-			void OnInternalIdle() override;
+			void OnInternalIdle();
 
 		public:
-			MainWindow(View* parent, wxWindowID id);
+			MainWindow(View* parent);
 			~MainWindow();
 
 		public:
@@ -225,13 +224,18 @@ namespace kxf::WXUI::DataView
 			// Refreshing
 			void RefreshRow(DV::Row row)
 			{
-				RefreshRows(row, row);
+				if (row)
+				{
+					RefreshRows(row, row);
+				}
 			}
 			void RefreshRows(DV::Row from, DV::Row to);
 			void RefreshRowsAfter(DV::Row firstRow);
 			void RefreshColumn(const DV::Column& column);
 
 			// Item rect
+			int GetHeaderOffset() const;
+			Rect GetClientRect() const;
 			Rect GetRowRect(DV::Row row) const;
 			Rect GetRowsRect(DV::Row rowFrom, DV::Row rowTo) const;
 
@@ -266,7 +270,7 @@ namespace kxf::WXUI::DataView
 			*/
 
 			// Scrolling
-			void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr) override;
+			void ScrollWidget(int dx, int dy, const Rect& rect);
 			void ScrollTo(DV::Row row, size_t column = INVALID_COLUMN);
 			void EnsureVisible(DV::Row row, size_t column = INVALID_COLUMN);
 
@@ -330,7 +334,7 @@ namespace kxf::WXUI::DataView
 			void SelectAllRows()
 			{
 				m_SelectionStore.SelectRange(0, GetRowCount() - 1);
-				Refresh();
+				m_View->Refresh();
 			}
 			bool IsRowSelected(DV::Row row) const
 			{
@@ -342,6 +346,16 @@ namespace kxf::WXUI::DataView
 			{
 				return m_View;
 			}
+			bool IsMouseInWindow() const
+			{
+				auto mouseState = wxGetMouseState();
+				return IsMouseInWindow(Point(m_View->ScreenToClient(mouseState.GetPosition())));
+			}
+			bool IsMouseInWindow(const Point& position) const
+			{
+				return GetClientRect().Contains(position);
+			}
+
 			size_t GetRowCount() const;
 			size_t GetCountPerPage() const;
 			DV::Row GetFirstVisibleRow() const;

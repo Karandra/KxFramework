@@ -46,7 +46,7 @@ namespace kxf::WXUI::DataView
 		private:
 			void* GetHeaderCtrlHandle() const;
 			void DoSetSize(int x, int y, int width, int height, int sizeFlags) override;
-			void ScrollWidget(int dx);
+			void ScrollWidget(int dx, int dy, const Rect& rect);
 
 			void FinishEditing();
 			EventResult SendWidgetEvent(DataViewWidgetEvent& event, const EventID& eventID, DV::Column* column = nullptr, std::optional<Rect> rect = {});

@@ -57,7 +57,7 @@ namespace kxf::WXUI::DataView
 	{
 		wxControl::DoSetSize(x + m_ScrollOffset, y, width - m_ScrollOffset, height, sizeFlags & wxSIZE_FORCE);
 	}
-	void HeaderCtrl::ScrollWidget(int dx)
+	void HeaderCtrl::ScrollWidget(int dx, int dy, const Rect& rect)
 	{
 		// As the native control doesn't support offsetting its contents, we use a
 		// hack here to make it appear correctly when the parent is scrolled.
@@ -67,7 +67,7 @@ namespace kxf::WXUI::DataView
 		// for it (notice that 'dx' is negative when scrolling to the right)
 
 		m_ScrollOffset += dx;
-		wxControl::DoSetSize(GetPosition().x + dx, -1, GetSize().x - dx, -1, wxSIZE_USE_EXISTING);
+		wxControl::DoSetSize(GetPosition().x + dx, 0, GetSize().x - dx, -1, wxSIZE_USE_EXISTING);
 	}
 
 	void HeaderCtrl::FinishEditing()

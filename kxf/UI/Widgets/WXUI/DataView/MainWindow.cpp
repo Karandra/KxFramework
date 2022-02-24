@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "MainWindow.h"
 #include "HeaderCtrl.h"
+#include "kxf/General/Format.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/UI/Events/WidgetMouseEvent.h"
@@ -461,16 +462,8 @@ namespace kxf::WXUI::DataView
 			return;
 		}
 
-		auto IsMouseInsideWindow = [this, &event]()
-		{
-			const int x = event.GetX();
-			const int y = event.GetY();
-			Size size = Size(m_View->GetClientSize());
-
-			return x >= 0 && y >= 0 && x <= size.GetWidth() && y <= size.GetHeight();
-		};
-		const bool isMouseInsideWindow = IsMouseInsideWindow();
-
+		const auto headerOffset = GetHeaderOffset();
+		const bool isMouseInsideWindow = IsMouseInWindow({event.GetX(), event.GetY()});
 		if (eventType == wxEVT_MOUSEWHEEL)
 		{
 			if (isMouseInsideWindow)
@@ -523,6 +516,8 @@ namespace kxf::WXUI::DataView
 		int x = event.GetX();
 		int y = event.GetY();
 		m_View->CalcUnscrolledPosition(x, y, &x, &y);
+		y -= headerOffset;
+
 		DV::Column* currentColumn = nullptr;
 
 		int xpos = 0;
@@ -549,7 +544,7 @@ namespace kxf::WXUI::DataView
 		// Hot track
 		if (isMouseInsideWindow)
 		{
-			const bool rowChnaged = (m_HotTrackRow != currentRow && currentNode) || (m_HotTrackRow && currentNode == nullptr);
+			const bool rowChnaged = (m_HotTrackRow != currentRow && currentNode) || (m_HotTrackRow && !currentNode);
 			const bool columnChanged = m_HotTrackColumn != currentColumn;
 
 			if (rowChnaged || columnChanged)
@@ -562,7 +557,7 @@ namespace kxf::WXUI::DataView
 					m_HotTrackRowEnabled = false;
 					RefreshRow(m_HotTrackRow);
 				}
-				if (currentNode == nullptr)
+				if (!currentNode)
 				{
 					ResetHotTrackedExpander();
 				}
@@ -676,7 +671,7 @@ namespace kxf::WXUI::DataView
 			return;
 		}
 
-		auto TestExpanderButton = [this, xpos, x, y](DV::Row row, int itemOffset = -1, const DV::Node* node = nullptr)
+		auto TestExpanderButton = [&](DV::Row row, int itemOffset = -1, const DV::Node* node = nullptr)
 		{
 			if (itemOffset < 0)
 			{
@@ -909,7 +904,7 @@ namespace kxf::WXUI::DataView
 			// was used for something else already, e.g. selecting the item (so it
 			// must have been already selected) or giving the focus to the control
 			// (so it must have had focus already).
-			m_LastOnSame = !simulateClick && ((currentColumn == oldCurrentCol) &&	(currentRow == oldCurrentRow)) && oldWasSelected && HasFocus();
+			m_LastOnSame = !simulateClick && ((currentColumn == oldCurrentCol) &&	(currentRow == oldCurrentRow)) && oldWasSelected && m_View->HasFocus();
 
 			// Call OnActivateCell() after everything else as under GTK+
 			if (IsCellInteractible(*currentNode, *currentColumn, InteractibleCell::Activator))
@@ -949,7 +944,7 @@ namespace kxf::WXUI::DataView
 			}
 		}
 	}
-	void MainWindow::OnSetFocus(wxFocusEvent& event)
+	void MainWindow::OnFocusSet(wxFocusEvent& event)
 	{
 		m_HasFocus = true;
 
@@ -961,17 +956,17 @@ namespace kxf::WXUI::DataView
 		}
 		if (HasCurrentRow())
 		{
-			ScheduleRefresh();
+			m_View->ScheduleRefresh();
 		}
 		event.Skip();
 	}
-	void MainWindow::OnKillFocus(wxFocusEvent& event)
+	void MainWindow::OnFocusLost(wxFocusEvent& event)
 	{
 		m_HasFocus = false;
 
 		if (HasCurrentRow())
 		{
-			ScheduleRefresh();
+			m_View->ScheduleRefresh();
 		}
 		event.Skip();
 	}
@@ -1037,20 +1032,32 @@ namespace kxf::WXUI::DataView
 		auto penRuleH = renderer->CreatePen(System::GetColor(SystemColor::Light3D), RULER_WIDTH);
 		auto penRuleV = penRuleH;
 
-		auto gc = renderer->CreateLegacyWindowPaintContext(*this);
+		auto gc = renderer->CreateLegacyWindowPaintContext(*m_View);
 		gc->SetAntialiasMode(AntialiasMode::None);
 		gc->SetTextAntialiasMode(AntialiasMode::Default);
 		gc->SetInterpolationQuality(InterpolationQuality::None);
 
-		const Size clientSize = Size(GetClientSize());
+		const auto headerOffset = GetHeaderOffset();
+		const auto clientRect = GetClientRect();
 		const auto transparentPen = renderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
 		const auto transparentBrush = renderer->CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
 		const auto backgroundBrush = renderer->CreateSolidBrush(m_View->GetBackgroundColour());
+		gc->Clear(*backgroundBrush);
+
+		// Draw the top border
+		if (auto header = m_View->m_HeaderArea; header && header->IsShown())
+		{
+			auto brush = renderer->CreateSolidBrush(penRuleH->GetColor());
+
+			auto rect = Rect(header->GetRect());
+			rect.Height() += header->FromDIP(m_View->m_HeaderBorder);
+			gc->DrawRectangle(rect, *brush);
+		}
 
 		gc->SetPen(transparentPen);
 		gc->SetBrush(backgroundBrush);
-		gc->Clear(*backgroundBrush);
 		gc->OffsetForScrollableArea(*m_View);
+		gc->TransformTranslate(0, headerOffset);
 
 		const size_t columnCount = m_View->GetColumnCount();
 		if (IsEmpty() || columnCount == 0)
@@ -1058,27 +1065,30 @@ namespace kxf::WXUI::DataView
 			auto label = m_View->m_Widget.GetWidgetText();
 			if (!label.IsEmpty())
 			{
-				const int y = GetCharHeight() * 2;
-				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
+				const int y = m_View->GetCharHeight() * 2;
+				const Rect rect = {clientRect.GetX(), y, clientRect.GetWidth(), clientRect.GetHeight() - y};
 
 				auto brush = renderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled());
-				auto font = renderer->CreateFont(GetFont());
-				gc->DrawLabel(label, rect, *font, *brush, Alignment::CenterHorizontal|Alignment::Top);
+				auto font = renderer->CreateFont(m_View->GetFont());
+				gc->DrawLabel(label, rect, *font, *brush, Alignment::CenterHorizontal);
 			}
 
 			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow
 			return;
 		}
 
-		Rect updateRect = Rect(GetUpdateRegion().GetBox());
+		Rect updateRect = Rect(m_View->GetUpdateRegion().GetBox());
 		m_View->CalcUnscrolledPosition(updateRect.GetX(), updateRect.GetY(), &updateRect.X(), &updateRect.Y());
+
+		// Undo header offset from update rect
+		updateRect.MoveTopBy(-headerOffset);
 
 		// Compute which rows needs to be redrawn
 		const DV::Row rowStart = GetRowAt(std::max(0, updateRect.GetY()));
-		const size_t rowCount = std::min(*GetRowAt(std::max(0, updateRect.GetY() + updateRect.GetHeight())) - *rowStart + 1, GetRowCount() - *rowStart);
+		const size_t rowCount = std::min(*GetRowAt(std::max(0, updateRect.GetBottom())) - *rowStart + 1, GetRowCount() - *rowStart);
 		const DV::Row rowEnd = rowStart + rowCount;
 
-		// Send the event to the control itself.
+		// Send the event to the control itself
 		{
 			DataViewWidgetEvent cacheEvent(m_View->m_Widget);
 			cacheEvent.SetCacheHints(rowStart, rowEnd - 1);
@@ -1155,7 +1165,7 @@ namespace kxf::WXUI::DataView
 			}
 
 			// Setup some values first
-			const Rect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
+			const Rect cellInitialRect = {xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow)};
 			Rect cellRect = cellInitialRect;
 			const DV::CellState cellState = GetCellStateForRow(currentRow);
 
@@ -1165,7 +1175,7 @@ namespace kxf::WXUI::DataView
 			int expanderIndent = 0;
 			Rect expanderRect;
 
-			auto GetRowRect = [&cellInitialRect, &expanderIndent, xCoordEnd, xCoordStart, expanderColumn](bool offsetByExpander)
+			auto GetRowRect = [&](bool offsetByExpander)
 			{
 				Rect rowRect = cellInitialRect;
 				rowRect.SetWidth(xCoordEnd - xCoordStart);
@@ -1237,7 +1247,7 @@ namespace kxf::WXUI::DataView
 
 						if (isCategoryRow)
 						{
-							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this) - Size(EXPANDER_MARGIN, EXPANDER_MARGIN).Scale(2), EXPANDER_MARGIN);
+							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(m_View) - Size(EXPANDER_MARGIN, EXPANDER_MARGIN).Scale(2), EXPANDER_MARGIN);
 						}
 						else
 						{
@@ -1249,8 +1259,7 @@ namespace kxf::WXUI::DataView
 				// Calc focus rect
 				Rect focusCellRect = [&]()
 				{
-					Rect result;
-					result = cellRect;
+					Rect result = cellRect;
 					result.Width() -= 1;
 					result.Height() -= 1;
 
@@ -1278,7 +1287,7 @@ namespace kxf::WXUI::DataView
 						}
 					}
 
-					return result.Deflate(Size(FromDIP(wxSize(1, 1))));
+					return result.Deflate(Size(m_View->FromDIP(wxSize(1, 1))));
 				}();
 
 				// Adjust cell rectangle
@@ -1299,7 +1308,7 @@ namespace kxf::WXUI::DataView
 					int yAdd = 1;
 					if (currentRow + 1 == rowEnd)
 					{
-						yAdd += clientSize.GetHeight();
+						yAdd += clientRect.GetHeight();
 					}
 					gc->DrawLine(PointF(x, cellRect.GetTop()), PointF(x, cellRect.GetBottom() + yAdd), *penRuleV);
 				}
@@ -1307,7 +1316,7 @@ namespace kxf::WXUI::DataView
 				// Draw horizontal rules
 				if (horizontalRulesEnabled)
 				{
-					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()), *penRuleV);
+					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientRect.GetWidth(), cellInitialRect.GetY()), *penRuleV);
 				}
 
 				// Draw the cell
@@ -1346,20 +1355,20 @@ namespace kxf::WXUI::DataView
 					if (cellRect.GetWidth() <= expanderRect.GetWidth())
 					{
 						Rect clipRect = cellRect;
-						clipRect.Width() -= FromDIP(EXPANDER_MARGIN);
+						clipRect.Width() -= m_View->FromDIP(EXPANDER_MARGIN);
 
 						cellClip.Add(clipRect);
 					}
 
 					if (isCategoryRow)
 					{
-						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this)).CenterIn(expanderRect);
-						nativeRenderer.DrawCollapseButton(this, *gc, actualExpanderRect, flags);
+						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(m_View)).CenterIn(expanderRect);
+						nativeRenderer.DrawCollapseButton(m_View, *gc, actualExpanderRect, flags);
 					}
 					else
 					{
-						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetExpanderButtonSize(this)).CenterIn(expanderRect);
-						nativeRenderer.DrawExpanderButton(this, *gc, actualExpanderRect, flags);
+						auto actualExpanderRect = Rect(expanderRect.GetPosition(), nativeRenderer.GetExpanderButtonSize(m_View)).CenterIn(expanderRect);
+						nativeRenderer.DrawExpanderButton(m_View, *gc, actualExpanderRect, flags);
 					}
 				}
 
@@ -1369,7 +1378,7 @@ namespace kxf::WXUI::DataView
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3 && focusCellRect.GetHeight() > 3)
 					{
-						nativeRenderer.DrawItemFocusRect(this, *gc, focusCellRect, NativeWidgetFlag::Selected);
+						nativeRenderer.DrawItemFocusRect(m_View, *gc, focusCellRect, NativeWidgetFlag::Selected);
 					}
 				}
 
@@ -1377,7 +1386,7 @@ namespace kxf::WXUI::DataView
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect(!fullRowSelectionEnabled);
-					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect.Deflate(Size(FromDIP(wxSize(1, 1)))), NativeWidgetFlag::Selected);
+					nativeRenderer.DrawItemFocusRect(m_View, *gc, rowRect.Deflate(Size(m_View->FromDIP(wxSize(1, 1)))), NativeWidgetFlag::Selected);
 				}
 
 				// Move coordinates to next column
@@ -1387,7 +1396,7 @@ namespace kxf::WXUI::DataView
 			// Draw selection and hot-track indicator after background and cell content
 			if (cellState.IsSelected() || cellState.IsHotTracked())
 			{
-				nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(!fullRowSelectionEnabled), cellState.ToNativeWidgetFlags(m_View->m_Widget));
+				nativeRenderer.DrawItemSelectionRect(m_View, *gc, GetRowRect(!fullRowSelectionEnabled), cellState.ToNativeWidgetFlags(m_View->m_Widget));
 			}
 
 			// This needs more work
@@ -1439,28 +1448,21 @@ namespace kxf::WXUI::DataView
 	{
 		m_RedrawNeeded = true;
 	}
-
 	void MainWindow::RecalculateDisplay()
 	{
+		auto rowWidth = GetRowWidth();
 		if (m_Model)
 		{
-			SetVirtualSize(GetRowWidth(), GetRowStart(GetRowCount()));
+			m_View->SetVirtualSize(rowWidth, GetRowStart(GetRowCount()) + GetHeaderOffset());
 		}
 		else
 		{
 			// When we have no model set, use just total column widths for the virtual size
-			SetVirtualSize(GetRowWidth(), m_virtualSize.GetY());
+			m_View->SetVirtualSize(rowWidth, m_View->m_virtualSize.GetY() + GetHeaderOffset());
 		}
 
-		m_View->SetScrollRate(std::min(GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
-		ScheduleRefresh();
-	}
-	void MainWindow::DoSetVirtualSize(int x, int y)
-	{
-		if (x != m_virtualSize.GetX() || y != m_virtualSize.GetY())
-		{
-			wxWindow::DoSetVirtualSize(x, y);
-		}
+		m_View->SetScrollRate(std::min(m_View->GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
+		m_View->ScheduleRefresh();
 	}
 
 	// Tooltip
@@ -1497,7 +1499,7 @@ namespace kxf::WXUI::DataView
 				shouldShow = shouldShow || CompareWidth(cellRect.GetWidth());
 
 				// If the column scrolled outside of the visible area
-				shouldShow = shouldShow || CompareWidth(GetClientSize().GetWidth() - cellRect.GetX());
+				shouldShow = shouldShow || CompareWidth(m_View->GetClientSize().GetWidth() - cellRect.GetX());
 			}
 
 			// Show it
@@ -1512,7 +1514,7 @@ namespace kxf::WXUI::DataView
 	{
 		m_ToolTipTimer.Stop();
 		m_ToolTip.Dismiss();
-		SetToolTip({});
+		m_View->SetToolTip({});
 	}
 
 	// Columns
@@ -1607,7 +1609,7 @@ namespace kxf::WXUI::DataView
 		}
 
 		const Point origin = Point(m_View->CalcUnscrolledPosition(Point(0, 0)));
-		calculator.ComputeBestColumnWidth(rowCount, *GetRowAt(origin.GetY()), *GetRowAt(origin.GetY() + GetClientSize().GetY()));
+		calculator.ComputeBestColumnWidth(rowCount, *GetRowAt(origin.GetY()), *GetRowAt(origin.GetY() + m_View->GetClientSize().GetY()));
 
 		int maxWidth = calculator.GetMaxWidth();
 		if (maxWidth > 0)
@@ -1641,7 +1643,7 @@ namespace kxf::WXUI::DataView
 					}
 				};
 
-				const int clientWidth = GetClientSize().GetWidth();
+				const int clientWidth = m_View->GetClientSize().GetWidth();
 				const int virtualWidth = GetRowWidth();
 				const int lastColumnLeft = virtualWidth - lastVisibleColumn->GetWidth();
 
@@ -1653,7 +1655,7 @@ namespace kxf::WXUI::DataView
 					if (desiredWidth < lastVisibleColumn->GetBestWidth() && !fitToClient)
 					{
 						SetColumnWidth(lastVisibleColumn->GetWidth());
-						SetVirtualSize(virtualWidth, m_virtualSize.GetY());
+						m_View->SetVirtualSize(virtualWidth, m_View->m_virtualSize.GetY());
 						return true;
 					}
 					SetColumnWidth(desiredWidth);
@@ -1662,8 +1664,8 @@ namespace kxf::WXUI::DataView
 					// To prevent flickering scrollbar when resizing the window to be
 					// narrower, force-set the virtual width to 0 here. It will eventually
 					// be corrected at idle time.
-					SetVirtualSize(0, m_virtualSize.GetY());
-					RefreshRect(Rect(lastColumnLeft, 0, clientWidth - lastColumnLeft, GetSize().GetY()));
+					m_View->SetVirtualSize(0, m_View->m_virtualSize.GetY());
+					m_View->RefreshRect(Rect(lastColumnLeft, 0, clientWidth - lastColumnLeft, m_View->GetSize().GetY()));
 
 					return true;
 				}
@@ -1671,7 +1673,7 @@ namespace kxf::WXUI::DataView
 				{
 					// Don't bother, the columns won't fit anyway
 					SetColumnWidth(lastVisibleColumn->GetWidth());
-					SetVirtualSize(virtualWidth, m_virtualSize.GetY());
+					m_View->SetVirtualSize(virtualWidth, m_View->m_virtualSize.GetY());
 
 					return true;
 				}
@@ -1681,7 +1683,7 @@ namespace kxf::WXUI::DataView
 	}
 
 	// Items
-	size_t MainWindow::RecalculateItemCount()
+	size_t MainWindow::RecalculateItemCount() const
 	{
 		if (m_TreeRoot)
 		{
@@ -1818,7 +1820,7 @@ namespace kxf::WXUI::DataView
 		if (m_RedrawNeeded)
 		{
 			FitLastColumn(false);
-			if (HeaderCtrl* header = m_View->GetHeaderCtrl())
+			if (auto header = m_View->GetHeaderCtrl())
 			{
 				header->DoUpdate();
 			}
@@ -1826,50 +1828,42 @@ namespace kxf::WXUI::DataView
 
 			m_RedrawNeeded = false;
 		}
-
-		wxWindow::OnInternalIdle();
-		WindowRefreshScheduler::OnInternalIdle();
 	}
 
-	MainWindow::MainWindow(View* parent, wxWindowID id)
+	MainWindow::MainWindow(View* parent)
 		:m_View(parent)
 	{
-		if (wxWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()))
-		{
-			// Setup drawing
-			SetBackgroundStyle(wxBG_STYLE_PAINT);
+		// Setup drawing
+		m_UniformRowHeight = GetDefaultRowHeight();
+		m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();
 
-			m_UniformRowHeight = GetDefaultRowHeight();
-			m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();
+		// Tooltip
+		m_ToolTip.Create(m_View);
+		m_ToolTipTimer.SetOwner(m_View, wxID_ANY);
+		m_View->Bind(wxEVT_TIMER, &MainWindow::OnTooltipEvent, this);
 
-			// Tooltip
-			m_ToolTip.Create(this);
-			m_ToolTipTimer.SetOwner(this, wxID_ANY);
-			Bind(wxEVT_TIMER, &MainWindow::OnTooltipEvent, this);
+		// Bind events
+		m_View->Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
+		m_View->Bind(wxEVT_SET_FOCUS, &MainWindow::OnFocusSet, this);
+		m_View->Bind(wxEVT_KILL_FOCUS, &MainWindow::OnFocusLost, this);
+		m_View->Bind(wxEVT_CHAR_HOOK, &MainWindow::OnCharHook, this);
+		m_View->Bind(wxEVT_CHAR, &MainWindow::OnChar, this);
 
-			// Bind events
-			Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
-			Bind(wxEVT_SET_FOCUS, &MainWindow::OnSetFocus, this);
-			Bind(wxEVT_KILL_FOCUS, &MainWindow::OnKillFocus, this);
-			Bind(wxEVT_CHAR_HOOK, &MainWindow::OnCharHook, this);
-			Bind(wxEVT_CHAR, &MainWindow::OnChar, this);
+		m_View->Bind(wxEVT_LEFT_DOWN, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_LEFT_UP, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_LEFT_DCLICK, &MainWindow::OnMouse, this);
 
-			Bind(wxEVT_LEFT_DOWN, &MainWindow::OnMouse, this);
-			Bind(wxEVT_LEFT_UP, &MainWindow::OnMouse, this);
-			Bind(wxEVT_LEFT_DCLICK, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_RIGHT_UP, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_RIGHT_DCLICK, &MainWindow::OnMouse, this);
 
-			Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnMouse, this);
-			Bind(wxEVT_RIGHT_UP, &MainWindow::OnMouse, this);
-			Bind(wxEVT_RIGHT_DCLICK, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_MOTION, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
+		m_View->Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
 
-			Bind(wxEVT_MOTION, &MainWindow::OnMouse, this);
-			Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
-			Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
-			Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
-
-			// Do update
-			UpdateDisplay();
-		}
+		// Do update
+		UpdateDisplay();
 	}
 	MainWindow::~MainWindow()
 	{
@@ -1890,38 +1884,40 @@ namespace kxf::WXUI::DataView
 	{
 		m_ItemsCount = RecalculateItemCount();
 		m_View->InvalidateColumnsBestWidth();
-		ScheduleRefresh();
+		m_View->ScheduleRefresh();
 	}
 
 	// Refreshing
 	void MainWindow::RefreshRows(DV::Row from, DV::Row to)
 	{
-		Rect rect = GetRowsRect(from, to);
-		m_View->CalcScrolledPosition(rect.GetX(), rect.GetY(), &rect.X(), &rect.Y());
+		auto rowsRect = GetRowsRect(from, to);
+		m_View->CalcScrolledPosition(rowsRect.GetX(), rowsRect.GetY(), &rowsRect.X(), &rowsRect.Y());
 
-		Size clientSize = Size(GetClientSize());
-		Rect clientRect(0, 0, clientSize.GetWidth(), clientSize.GetHeight());
-		Rect intersectRect = clientRect.Intersect(rect);
+		auto clientRect = Rect(m_View->GetClientRect());
+		auto intersectRect = clientRect.Intersect(rowsRect);
 		if (!intersectRect.IsEmpty())
 		{
-			RefreshRect(intersectRect, true);
+			intersectRect.MoveTopBy(GetHeaderOffset());
+			m_View->RefreshRect(intersectRect);
 		}
 	}
 	void MainWindow::RefreshRowsAfter(DV::Row firstRow)
 	{
-		Size clientSize = Size(GetClientSize());
+		Size clientSize = Size(m_View->GetClientSize());
 		int start = GetRowStart(firstRow);
 		m_View->CalcScrolledPosition(start, 0, &start, nullptr);
 
 		if (start <= clientSize.GetHeight())
 		{
 			Rect rect(0, start, clientSize.GetWidth(), clientSize.GetHeight() - start);
-			RefreshRect(rect, true);
+			rect.MoveTopBy(GetHeaderOffset());
+
+			m_View->RefreshRect(rect);
 		}
 	}
 	void MainWindow::RefreshColumn(const DV::Column& column)
 	{
-		Size clientSize = Size(GetClientSize());
+		Size clientSize = Size(m_View->GetClientSize());
 
 		// Find X coordinate of this column
 		int left = 0;
@@ -1937,10 +1933,36 @@ namespace kxf::WXUI::DataView
 			}
 		}
 
-		RefreshRect(Rect(left, 0, column.GetWidth(), clientSize.GetHeight()));
+		Rect rect = {left, 0, column.GetWidth(), clientSize.GetHeight()};
+		rect.MoveTopBy(GetHeaderOffset());
+
+		m_View->RefreshRect(rect);
 	}
 
 	// Item rect
+	int MainWindow::GetHeaderOffset() const
+	{
+		if (auto header = m_View->m_HeaderArea)
+		{
+			return header->FromDIP(m_View->m_HeaderHeight + m_View->m_HeaderBorder);
+		}
+		return 0;
+	}
+	Rect MainWindow::GetClientRect() const
+	{
+		const auto headerOffset = GetHeaderOffset();
+
+		auto rect = Rect(m_View->GetClientRect());
+		rect.MoveTopBy(headerOffset);
+		rect.MoveBottomBy(-headerOffset);
+
+		return rect;
+	}
+
+	Rect MainWindow::GetRowRect(DV::Row row) const
+	{
+		return GetRowsRect(row, row);
+	}
 	Rect MainWindow::GetRowsRect(DV::Row rowFrom, DV::Row rowTo) const
 	{
 		if (rowFrom > rowTo)
@@ -1965,10 +1987,6 @@ namespace kxf::WXUI::DataView
 			rect.Height() = GetRowStart(rowTo) - rect.GetY() + GetRowHeight(rowTo);
 		}
 		return rect;
-	}
-	Rect MainWindow::GetRowRect(DV::Row row) const
-	{
-		return GetRowsRect(row, row);
 	}
 	int MainWindow::GetRowStart(DV::Row row) const
 	{
@@ -2069,8 +2087,8 @@ namespace kxf::WXUI::DataView
 	{
 		const Size iconSpacing =
 		{
-			System::GetMetric(SystemSizeMetric::Border, this).GetWidth() * 6,
-			System::GetMetric(SystemSizeMetric::IconSmall, this).GetHeight()
+			System::GetMetric(SystemSizeMetric::Border, m_View).GetWidth() * 6,
+			System::GetMetric(SystemSizeMetric::IconSmall, m_View).GetHeight()
 		};
 
 		int resultHeight = 0;
@@ -2085,18 +2103,18 @@ namespace kxf::WXUI::DataView
 				}
 				else
 				{
-					resultHeight = std::max(iconSpacing.GetHeight() + iconSpacing.GetWidth(), GetCharHeight() + iconSpacing.GetWidth());
+					resultHeight = std::max(iconSpacing.GetHeight() + iconSpacing.GetWidth(), m_View->GetCharHeight() + iconSpacing.GetWidth());
 				}
 				break;
 			}
 			case UniformHeight::ListView:
 			{
-				resultHeight = std::max(m_View->FromDIP(17), GetCharHeight() + iconSpacing.GetWidth());
+				resultHeight = std::max(m_View->FromDIP(17), m_View->GetCharHeight() + iconSpacing.GetWidth());
 				break;
 			}
 			case UniformHeight::Explorer:
 			{
-				resultHeight = std::max(m_View->FromDIP(22), GetCharHeight() + iconSpacing.GetWidth());
+				resultHeight = std::max(m_View->FromDIP(22), m_View->GetCharHeight() + iconSpacing.GetWidth());
 				break;
 			}
 		};
@@ -2313,13 +2331,14 @@ namespace kxf::WXUI::DataView
 	*/
 
 	// Scrolling
-	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
+	void MainWindow::ScrollWidget(int dx, int dy, const Rect& rect)
 	{
-		wxWindow::ScrollWindow(dx, dy, rect);
-		if (auto header = m_View->GetHeaderCtrl())
-		{
-			header->ScrollWidget(dx);
-		}
+		// Immediately refresh the visible client area
+		m_View->RefreshRect(rect);
+
+		// And schedule a single refresh after we're done with the scrolling
+		// to process any pending actions, like mouse position.
+		RefreshDisplay();
 	}
 	void MainWindow::ScrollTo(DV::Row row, size_t column)
 	{
@@ -2329,7 +2348,7 @@ namespace kxf::WXUI::DataView
 
 		if (column != INVALID_COLUMN)
 		{
-			Rect rect = Rect(GetClientRect());
+			Rect rect = Rect(m_View->GetClientRect());
 
 			Point unscrolledPos;
 			m_View->CalcUnscrolledPosition(rect.GetX(), rect.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
@@ -2503,13 +2522,13 @@ namespace kxf::WXUI::DataView
 
 			if (exceptThisRow)
 			{
-				const bool wasSelected = m_SelectionStore.IsSelected(*exceptThisRow);
+				bool wasSelected = m_SelectionStore.IsSelected(*exceptThisRow);
 				ClearSelection();
 				if (wasSelected)
 				{
 					m_SelectionStore.SelectItem(*exceptThisRow);
 
-					// The special item is still selected.
+					// The special item is still selected
 					return false;
 				}
 			}
@@ -2519,7 +2538,7 @@ namespace kxf::WXUI::DataView
 			}
 		}
 
-		// There are no selected items left.
+		// There are no selected items left
 		return true;
 	}
 	void MainWindow::ReverseRowSelection(DV::Row row)
@@ -2553,25 +2572,25 @@ namespace kxf::WXUI::DataView
 		if (m_ItemsCount == INVALID_COUNT)
 		{
 			MainWindow* self = const_cast<MainWindow*>(this);
-			self->UpdateItemCount(const_cast<MainWindow*>(this)->RecalculateItemCount());
+			self->UpdateItemCount(RecalculateItemCount());
 			self->UpdateDisplay();
 		}
 		return m_ItemsCount;
 	}
 	size_t MainWindow::GetCountPerPage() const
 	{
-		Size size = Size(GetClientSize());
-		return size.GetHeight() / m_UniformRowHeight;
+		return GetClientRect().GetHeight() / m_UniformRowHeight;
 	}
 	DV::Row MainWindow::GetFirstVisibleRow() const
 	{
-		Point pos(0, 0);
+		Point pos;
 		m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &pos.X(), &pos.Y());
+
 		return GetRowAt(pos.GetY());
 	}
 	DV::Row MainWindow::GetLastVisibleRow() const
 	{
-		Size size = Size(GetClientSize());
+		Size size = Size(m_View->GetClientSize());
 		m_View->CalcUnscrolledPosition(size.GetWidth(), size.GetHeight(), &size.Width(), &size.Height());
 
 		// We should deal with the pixel here.

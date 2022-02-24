@@ -48,14 +48,14 @@ namespace kxf::DataView
 
 		// Before doing anything we send an event asking if editing of this item is really wanted.
 		auto view = m_Column->m_View;
-		auto mainWindow = view->m_ClientArea;
+		auto mainWindow = view->m_ClientArea.get();
 
 		if (m_CellEditor && mainWindow->SendEditingStartedEvent(node, column))
 		{
 			if (m_Widget = m_CellEditor->CreateWidget(GetOwningWidget().QueryInterface<IWidget>(), CreateParemeters()))
 			{
 				// We'll use wxWidget's reparenting function here for now
-				m_Widget->GetWxWindow()->Reparent(mainWindow);
+				m_Widget->GetWxWindow()->Reparent(view);
 				m_Widget->SetPosition(m_Parameters.CellRect.GetPosition());
 
 				m_WidgetEvtHandler = m_CellEditor->CreateWidgetHandler();
@@ -88,7 +88,7 @@ namespace kxf::DataView
 			if (m_CellEditor)
 			{
 				auto view = m_Column->m_View;
-				auto mainWindow = view->m_ClientArea;
+				auto mainWindow = view->m_ClientArea.get();
 
 				// Try to get the value, normally we should succeed but if we fail, don't
 				// return immediately, we still need to destroy the edit control.

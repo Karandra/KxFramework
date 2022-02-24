@@ -246,7 +246,7 @@ namespace kxf::DataView
 				}
 			}
 
-			const int clientWidth = mainWindow->GetClientSize().GetWidth();
+			const int clientWidth = mainWindow->m_View->GetClientSize().GetWidth();
 			const int virtualWidth = mainWindow->GetRowWidth();
 			if (virtualWidth > clientWidth)
 			{
