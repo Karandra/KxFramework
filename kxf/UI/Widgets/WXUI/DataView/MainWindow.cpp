@@ -2848,7 +2848,7 @@ namespace kxf::WXUI::DataView
 
 	DV::Node* MainWindow::GetNodeByRow(DV::Row row) const
 	{
-		if (m_TreeRoot && row)
+		if (m_Model && row)
 		{
 			DV::RowToNodeOperation operation(*row);
 			if (operation.Walk(m_TreeRoot))
@@ -2860,9 +2860,9 @@ namespace kxf::WXUI::DataView
 	}
 	DV::Row MainWindow::GetRowByNode(const DV::Node& node) const
 	{
-		if (m_Model)
+		if (m_Model && !node.IsRootNode())
 		{
-			DV::Row row = 0;
+			size_t row = 0;
 			auto currentNode = &node;
 			while (currentNode && !currentNode->IsRootNode())
 			{
@@ -2874,17 +2874,17 @@ namespace kxf::WXUI::DataView
 				{
 					for (const DV::Node& childNode: parentNode->m_Children)
 					{
-						if (&childNode != currentNode)
+						if (&childNode == currentNode)
 						{
-							row += childNode.GetSubTreeCount();
+							break;
 						}
-						break;
+						row += childNode.GetSubTreeCount();
 					}
 					currentNode = parentNode;
 				}
 			}
 
-			// If we reached the root node, consider the search successful.
+			// If we reached the root node, consider the search successful
 			if (currentNode && currentNode->IsRootNode())
 			{
 				// Rows are zero-based, but we calculated it as one-based.
