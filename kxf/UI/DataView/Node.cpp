@@ -166,6 +166,20 @@ namespace kxf::DataView
 			{
 				m_IsExpanded = false;
 				ChangeSubTreeCount(-count, true);
+
+				// If the entire subtree is collapsed, we can purge it to free the memory.
+				if (m_SubTreeCount == 0)
+				{
+					size_t subTreeCount = 0;
+					for (const auto& node: m_Children)
+					{
+						subTreeCount += node.GetSubTreeCount();
+					}
+					if (subTreeCount == 0)
+					{
+						m_Children.clear();
+					}
+				}
 			}
 			else
 			{
