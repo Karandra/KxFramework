@@ -20,7 +20,7 @@ namespace kxf::Private
 
 		try
 		{
-			return std::format(format, std::forward<Args>(arg)...);
+			return std::vformat(format, std::make_wformat_args(std::forward<Args>(arg)...));
 		}
 		catch (const std::format_error& e)
 		{
