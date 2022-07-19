@@ -88,6 +88,8 @@ namespace kxf::DataView
 				for (size_t i = 0; i < count; i++)
 				{
 					auto& node = m_Children.emplace_back(ref.GetChildItem(i), this);
+					node.m_SubTreeIndex = i;
+
 					if (node.IsNull())
 					{
 						m_Children.pop_back();
@@ -116,33 +118,74 @@ namespace kxf::DataView
 		}
 		m_SubTreeCount = npos;
 	}
-	void Node::SortChildren()
+	void Node::SortChildren(const DataView::SortMode& sortMode)
 	{
-		if (!m_Children.empty())
+		if (!m_Children.empty() && sortMode.GetSortOrder() != SortOrder::None)
 		{
-			const auto sortMode = GetView().GetSortMode();
-			OnSortChildren(sortMode);
+			DoSortChildren(sortMode);
 
-			std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right) -> bool
+			// Sort the subtree
+			auto CollectNodes = [](std::vector<Node*>& subNodes, auto& children)
 			{
-				switch (sortMode.GetSortOrder())
+				subNodes.reserve(children.size());
+				for (auto& node: children)
 				{
-					case SortOrder::Ascending:
+					if (!node.m_Children.empty())
 					{
-						return *left.m_Item < *right.m_Item;
+						subNodes.emplace_back(&node);
 					}
-					case SortOrder::Descending:
-					{
-						return *left.m_Item > *right.m_Item;
-					}
-				};
-				return false;
-			});
+				}
+			};
 
-			// Reset cached subtree index
-			for (auto& node: m_Children)
+			std::vector<Node*> nodes;
+			CollectNodes(nodes, m_Children);
+
+			while (!nodes.empty())
 			{
-				node.m_SubTreeIndex = npos;
+				std::vector<Node*> subNodes;
+				for (auto& node: nodes)
+				{
+					if (node->IsExpanded())
+					{
+						node->DoSortChildren(sortMode);
+						CollectNodes(subNodes, node->m_Children);
+					}
+				}
+
+				nodes = std::move(subNodes);
+			}
+		}
+	}
+	void Node::DoSortChildren(const DataView::SortMode& sortMode)
+	{
+		OnSortChildren(sortMode);
+
+		std::sort(m_Children.begin(), m_Children.end(), [&](const Node& left, const Node& right) -> bool
+		{
+			switch (sortMode.GetSortOrder())
+			{
+				case SortOrder::Ascending:
+				{
+					return *left.m_Item < *right.m_Item;
+				}
+				case SortOrder::Descending:
+				{
+					return *left.m_Item > *right.m_Item;
+				}
+			};
+			return false;
+		});
+
+		// Recalculate subtree indices
+		size_t index = 0;
+		for (auto& node: m_Children)
+		{
+			node.m_SubTreeIndex = index++;
+
+			// Update parent node pointer
+			for (auto& subNode: node.m_Children)
+			{
+				subNode.m_ParentNode = &node;
 			}
 		}
 	}
@@ -194,7 +237,7 @@ namespace kxf::DataView
 				ChangeSubTreeCount(+count, true);
 
 				// Sort the children if needed
-				SortChildren();
+				SortChildren(GetView().GetSortMode());
 			}
 		}
 		return m_SubTreeCount;

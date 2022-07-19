@@ -45,7 +45,8 @@ namespace kxf::DataView
 			void ChangeSubTreeCount(intptr_t num, bool force = false);
 
 			void RefreshChildren();
-			void SortChildren();
+			void SortChildren(const DataView::SortMode& sortMode);
+			void DoSortChildren(const DataView::SortMode& sortMode);
 			void OnSortChildren(const DataView::SortMode& sortMode)
 			{
 				if (IsRootNode())

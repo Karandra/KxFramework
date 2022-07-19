@@ -1706,7 +1706,7 @@ namespace kxf::WXUI::DataView
 		// column but also falls back to other values for comparison. To ensure consistency
 		// it is better to treat a value change as if it was an item change.
 
-		node.SortChildren();
+		node.SortChildren(m_View->GetSortMode());
 		if (!node.IsRootNode())
 		{
 			if (column)
@@ -1772,7 +1772,7 @@ namespace kxf::WXUI::DataView
 	{
 		if (m_TreeRoot)
 		{
-			m_TreeRoot.OnSortChildren(m_View->GetSortMode());
+			m_TreeRoot.SortChildren(m_View->GetSortMode());
 		}
 		UpdateDisplay();
 	}
