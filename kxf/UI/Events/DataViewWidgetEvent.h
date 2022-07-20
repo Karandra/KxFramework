@@ -1,9 +1,9 @@
 #pragma once
 #include "WidgetEvent.h"
 #include "../IDataViewWidget.h"
-#include "../DataView/Row.h"
-#include "../DataView/Node.h"
-#include "../DataView/Column.h"
+#include "../Widgets/DataView/Row.h"
+#include "../Widgets/DataView/Node.h"
+#include "../Widgets/DataView/Column.h"
 
 namespace kxf
 {

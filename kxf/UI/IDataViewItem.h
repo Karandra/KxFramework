@@ -1,9 +1,9 @@
 #pragma once
 #include "Common.h"
 #include "IDataViewModel.h"
-#include "DataView/Common.h"
-#include "DataView/ToolTip.h"
-#include "DataView/CellAttributes.h"
+#include "Widgets/DataView/Common.h"
+#include "Widgets/DataView/ToolTip.h"
+#include "Widgets/DataView/CellAttributes.h"
 #include "kxf/General/Enumerator.h"
 
 namespace kxf

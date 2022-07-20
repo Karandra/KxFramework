@@ -2,10 +2,10 @@
 #include "Node.h"
 #include "SortMode.h"
 #include "CellAttributes.h"
-#include "../Widgets/WXUI/DataView/Node.h"
-#include "../Widgets/WXUI/DataView/View.h"
-#include "../Widgets/WXUI/DataView/MainWindow.h"
-#include "../Widgets/WXUI/DataView/HeaderCtrl.h"
+#include "../../Widgets/WXUI/DataView/Node.h"
+#include "../../Widgets/WXUI/DataView/View.h"
+#include "../../Widgets/WXUI/DataView/MainWindow.h"
+#include "../../Widgets/WXUI/DataView/HeaderCtrl.h"
 
 namespace kxf::DataView
 {

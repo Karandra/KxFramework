@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "IDataViewModel.h"
-#include "DataView/Node.h"
-#include "DataView/Column.h"
+#include "Widgets/DataView/Node.h"
+#include "Widgets/DataView/Column.h"
 
 namespace kxf
 {

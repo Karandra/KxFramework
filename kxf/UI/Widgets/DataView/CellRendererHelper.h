@@ -3,8 +3,8 @@
 #include "CellState.h"
 #include "CellAttributes.h"
 #include "CellRenderer.h"
-#include "../ICheckWidget.h"
-#include "../IProgressMeterWidget.h"
+#include "../../ICheckWidget.h"
+#include "../../IProgressMeterWidget.h"
 
 namespace kxf::DataView
 {

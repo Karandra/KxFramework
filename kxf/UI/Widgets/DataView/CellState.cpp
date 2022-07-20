@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "CellState.h"
-#include "../IWidget.h"
+#include "../../IWidget.h"
 
 namespace kxf::DataView
 {

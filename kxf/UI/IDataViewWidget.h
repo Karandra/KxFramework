@@ -3,13 +3,13 @@
 #include "IWidget.h"
 #include "IDataViewModel.h"
 #include "IDataViewItem.h"
-#include "DataView/Common.h"
-#include "DataView/Column.h"
-#include "DataView/Node.h"
-#include "DataView/CellRenderer.h"
-#include "DataView/Renderers/TextRenderer.h"
-#include "DataView/CellEditor.h"
-#include "DataView/Editors/TextBox.h"
+#include "Widgets/DataView/Common.h"
+#include "Widgets/DataView/Column.h"
+#include "Widgets/DataView/Node.h"
+#include "Widgets/DataView/CellRenderer.h"
+#include "Widgets/DataView/Renderers/TextRenderer.h"
+#include "Widgets/DataView/CellEditor.h"
+#include "Widgets/DataView/Editors/TextBox.h"
 
 namespace kxf
 {

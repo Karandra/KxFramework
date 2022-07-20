@@ -1,9 +1,9 @@
 #include "KxfPCH.h"
 #include "Column.h"
-#include "../Widgets/WXUI/DataView/View.h"
-#include "../Widgets/WXUI/DataView/HeaderCtrl.h"
-#include "../Widgets/WXUI/DataView/MainWindow.h"
-#include "../Events/DataViewWidgetEvent.h"
+#include "../../Widgets/WXUI/DataView/View.h"
+#include "../../Widgets/WXUI/DataView/HeaderCtrl.h"
+#include "../../Widgets/WXUI/DataView/MainWindow.h"
+#include "../../Events/DataViewWidgetEvent.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::DataView

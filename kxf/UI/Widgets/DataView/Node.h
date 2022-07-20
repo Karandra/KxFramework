@@ -4,7 +4,7 @@
 #include "CellState.h"
 #include "CellEditor.h"
 #include "CellRenderer.h"
-#include "../IDataViewItem.h"
+#include "../../IDataViewItem.h"
 
 namespace kxf::WXUI::DataView
 {

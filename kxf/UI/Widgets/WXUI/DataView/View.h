@@ -1,9 +1,9 @@
 #pragma once
 #include "Common.h"
-#include "../../../DataView/Row.h"
-#include "../../../DataView/Node.h"
-#include "../../../DataView/Column.h"
-#include "../../../DataView/SortMode.h"
+#include "../../DataView/Row.h"
+#include "../../DataView/Node.h"
+#include "../../DataView/Column.h"
+#include "../../DataView/SortMode.h"
 
 #include "../../../IDataViewWidget.h"
 #include "../../../IGraphicsRendererAwareWidget.h"

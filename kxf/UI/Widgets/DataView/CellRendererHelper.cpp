@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "CellRendererHelper.h"
 #include "Column.h"
-#include "../IDataViewWidget.h"
+#include "../../IDataViewWidget.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"

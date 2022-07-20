@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "SortMode.h"
 #include "Column.h"
-#include "../IDataViewWidget.h"
+#include "../../IDataViewWidget.h"
 
 namespace kxf::DataView
 {

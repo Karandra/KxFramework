@@ -293,13 +293,13 @@
     <Filter Include="kxf\UI\Widgets\WXUI\DataView">
       <UniqueIdentifier>{281218eb-fa59-41b4-a3f6-efd6ff75528d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\UI\DataView">
+    <Filter Include="kxf\UI\Widgets\DataView">
       <UniqueIdentifier>{9ddf748e-69aa-4b36-bf69-59a5c5ba75e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\UI\DataView\Renderers">
+    <Filter Include="kxf\UI\Widgets\DataView\Renderers">
       <UniqueIdentifier>{1df71acb-a783-475f-a3cf-b0e14072aad1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\UI\DataView\Editors">
+    <Filter Include="kxf\UI\Widgets\DataView\Editors">
       <UniqueIdentifier>{e4e18639-5e2f-4e27-b95d-dfd0be9a48a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -2346,38 +2346,11 @@
     <ClInclude Include="kxf\UI\IDataViewModel.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellAttributes.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellAttributeOptions.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellState.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\ToolTip.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Common.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\SortMode.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Column.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Node.h">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.h">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Row.h">
-      <Filter>kxf\UI\DataView</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.h">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
@@ -2385,26 +2358,53 @@
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\Node.h">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellRenderer.h">
-      <Filter>kxf\UI\DataView</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellAttributes.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellRendererHelper.h">
-      <Filter>kxf\UI\DataView</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellEditor.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\CellEditor.h">
-      <Filter>kxf\UI\DataView</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellRenderer.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Renderers\TextRenderer.h">
-      <Filter>kxf\UI\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellRendererHelper.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Renderers\Common.h">
-      <Filter>kxf\UI\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellState.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Editors\Common.h">
-      <Filter>kxf\UI\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Column.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\DataView\Editors\TextBox.h">
-      <Filter>kxf\UI\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Common.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Node.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Row.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\SortMode.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\ToolTip.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\CellAttributeOptions.h">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Renderers\Common.h">
+      <Filter>kxf\UI\Widgets\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Renderers\TextRenderer.h">
+      <Filter>kxf\UI\Widgets\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Editors\TextBox.h">
+      <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Widgets\DataView\Editors\Common.h">
+      <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3597,24 +3597,6 @@
     <ClCompile Include="kxf\UI\Widgets\DataView.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\CellState.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\ToolTip.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\CellAttributes.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\SortMode.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\Column.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\Node.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\HeaderCtrl.cpp">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClCompile>
@@ -3627,26 +3609,44 @@
     <ClCompile Include="kxf\UI\Widgets\WXUI\DataView\Node.cpp">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\CellRenderer.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\CellRendererHelper.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\CellEditor.cpp">
-      <Filter>kxf\UI\DataView</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\IDataViewModel.cpp">
       <Filter>kxf\UI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Private\Conversion.cpp">
       <Filter>kxf\Sciter\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\Renderers\TextRenderer.cpp">
-      <Filter>kxf\UI\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Widgets\DataView\CellEditor.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\DataView\Editors\TextBox.cpp">
-      <Filter>kxf\UI\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Widgets\DataView\CellRenderer.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\CellRendererHelper.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\CellState.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\Column.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\Node.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\SortMode.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\ToolTip.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\CellAttributes.cpp">
+      <Filter>kxf\UI\Widgets\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\Renderers\TextRenderer.cpp">
+      <Filter>kxf\UI\Widgets\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Widgets\DataView\Editors\TextBox.cpp">
+      <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

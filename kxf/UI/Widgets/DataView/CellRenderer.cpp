@@ -3,8 +3,8 @@
 #include "CellRendererHelper.h"
 #include "Column.h"
 #include "Node.h"
-#include "../Widgets/WXUI/DataView/View.h"
-#include "../Widgets/WXUI/DataView/MainWindow.h"
+#include "../../Widgets/WXUI/DataView/View.h"
+#include "../../Widgets/WXUI/DataView/MainWindow.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/System/SystemInformation.h"
 

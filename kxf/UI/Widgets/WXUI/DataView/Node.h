@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "../../../DataView/Node.h"
+#include "../../DataView/Node.h"
 
 namespace kxf::DataView
 {

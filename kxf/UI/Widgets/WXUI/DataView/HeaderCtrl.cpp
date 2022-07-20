@@ -2,7 +2,7 @@
 #include "HeaderCtrl.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "../../../DataView/Column.h"
+#include "../../DataView/Column.h"
 #include "kxf/UI/Common.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/IRendererNative.h"
