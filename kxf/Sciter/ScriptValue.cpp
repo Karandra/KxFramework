@@ -22,6 +22,7 @@ namespace kxf::Sciter
 				return ScriptValueType::Bool;
 			}
 			case VALUE_TYPE::T_INT:
+			case VALUE_TYPE::T_BIG_INT:
 			{
 				return ScriptValueType::Int;
 			}
@@ -36,10 +37,6 @@ namespace kxf::Sciter
 			case VALUE_TYPE::T_DATE:
 			{
 				return ScriptValueType::DateTime;
-			}
-			case VALUE_TYPE::T_CURRENCY:
-			{
-				return ScriptValueType::Currency;
 			}
 			case VALUE_TYPE::T_LENGTH:
 			{
@@ -259,14 +256,6 @@ namespace kxf::Sciter
 		size = 0;
 		return nullptr;
 	}
-	std::optional<int64_t> ScriptValue::GetCurrency() const
-	{
-		if (auto value = GetInt64(); value && GetType() == ScriptValueType::Currency)
-		{
-			return value;
-		}
-		return std::nullopt;
-	}
 
 	// Assignment
 	ScriptValue& ScriptValue::operator=(int value)
@@ -279,7 +268,7 @@ namespace kxf::Sciter
 	ScriptValue& ScriptValue::operator=(int64_t value)
 	{
 		Clear();
-		GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), value, T_INT, 0);
+		GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), value, T_BIG_INT, 0);
 
 		return *this;
 	}
@@ -338,13 +327,6 @@ namespace kxf::Sciter
 	{
 		Clear();
 		GetSciterAPI()->ValueBinaryDataSet(ToSciterScriptValue(m_Value), reinterpret_cast<const BYTE*>(data), size, T_BYTES, 0);
-
-		return *this;
-	}
-	ScriptValue& ScriptValue::SetCurrency(int64_t value)
-	{
-		Clear();
-		GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), value, T_CURRENCY, 0);
 
 		return *this;
 	}

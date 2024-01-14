@@ -12,7 +12,6 @@ namespace kxf::Sciter
 		Float,
 		String,
 		DateTime,
-		Currency,
 		Length,
 		Array,
 		Map,
@@ -109,7 +108,6 @@ namespace kxf::Sciter
 			Color GetColor() const;
 			Angle GetAngle() const;
 			const void* GetBytes(size_t& size) const;
-			std::optional<int64_t> GetCurrency() const;
 
 			// Assignment
 			ScriptValue& operator=(int value);
@@ -151,7 +149,6 @@ namespace kxf::Sciter
 				AssingString(StringView(value.wc_str(), value.length()), type);
 				return *this;
 			}
-			ScriptValue& SetCurrency(int64_t value);
 
 			ScriptValue& operator=(const ScriptValue& other)
 			{
