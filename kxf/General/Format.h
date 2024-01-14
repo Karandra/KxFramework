@@ -150,7 +150,7 @@ namespace std
 	struct formatter<kxf::String, char>: std::formatter<std::string_view, char>
 	{
 		template<class TFormatContext>
-		auto format(const kxf::String& value, TFormatContext& formatContext)
+		auto format(const kxf::String& value, TFormatContext& formatContext) const
 		{
 			auto utf8 = value.ToUTF8();
 			return std::formatter<std::string_view, char>::format(utf8, formatContext);
@@ -161,7 +161,7 @@ namespace std
 	struct formatter<kxf::String, wchar_t>: std::formatter<std::wstring_view, wchar_t>
 	{
 		template<class TFormatContext>
-		auto format(const kxf::String& value, TFormatContext& formatContext)
+		auto format(const kxf::String& value, TFormatContext& formatContext) const
 		{
 			return std::formatter<std::wstring_view, wchar_t>::format(value.xc_view(), formatContext);
 		}
@@ -172,7 +172,7 @@ namespace std
 	struct formatter<wxString, char>: std::formatter<std::string_view, char>
 	{
 		template<class TFormatContext>
-		auto format(const wxString& value, TFormatContext& formatContext)
+		auto format(const wxString& value, TFormatContext& formatContext) const
 		{
 			auto utf8 = value.ToUTF8();
 			return std::formatter<std::string_view, char>::format(std::string_view(utf8.data(), utf8.length()), formatContext);
@@ -183,7 +183,7 @@ namespace std
 	struct formatter<wxString, wchar_t>: std::formatter<std::wstring_view, wchar_t>
 	{
 		template<class TFormatContext>
-		auto format(const wxString& value, TFormatContext& formatContext)
+		auto format(const wxString& value, TFormatContext& formatContext) const
 		{
 			return std::formatter<std::wstring_view, wchar_t>::format(std::wstring_view(value.wx_str(), value.length()), formatContext);
 		}
@@ -194,7 +194,7 @@ namespace std
 	struct formatter<char[N], wchar_t>: std::formatter<std::wstring_view, wchar_t>
 	{
 		template<class T, class TFormatContext>
-		auto format(const T& value, TFormatContext& formatContext)
+		auto format(const T& value, TFormatContext& formatContext) const
 		{
 			auto converted = kxf::String::FromUTF8(value, N != 0 ? N - 1 : 0);
 			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
@@ -205,7 +205,7 @@ namespace std
 	struct formatter<wchar_t[N], char>: std::formatter<std::string_view, char>
 	{
 		template<class T, class TFormatContext>
-		auto format(const T& value, TFormatContext& formatContext)
+		auto format(const T& value, TFormatContext& formatContext) const
 		{
 			auto utf8 = kxf::String(value, N != 0 ? N - 1 : 0).ToUTF8();
 			return std::formatter<std::string_view, char>::format(utf8, formatContext);
@@ -217,7 +217,7 @@ namespace std
 	struct formatter<const char*, wchar_t>: std::formatter<std::wstring_view, wchar_t>
 	{
 		template<class TFormatContext>
-		auto format(const char* value, TFormatContext& formatContext)
+		auto format(const char* value, TFormatContext& formatContext) const
 		{
 			auto converted = kxf::String::FromUTF8(value);
 			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
@@ -228,7 +228,7 @@ namespace std
 	struct formatter<const wchar_t*, char>: std::formatter<std::string_view, char>
 	{
 		template<class TFormatContext>
-		auto format(const wchar_t* value, TFormatContext& formatContext)
+		auto format(const wchar_t* value, TFormatContext& formatContext) const
 		{
 			auto utf8 = kxf::String(value).ToUTF8();
 			return std::formatter<std::string_view, char>::format(utf8, formatContext);
@@ -240,7 +240,7 @@ namespace std
 	struct formatter<std::string_view, wchar_t>: std::formatter<std::wstring_view, wchar_t>
 	{
 		template<class TFormatContext>
-		auto format(std::string_view value, TFormatContext& formatContext)
+		auto format(std::string_view value, TFormatContext& formatContext) const
 		{
 			auto converted = kxf::String::FromUTF8(value);
 			return std::formatter<std::wstring_view, wchar_t>::format(converted.xc_view(), formatContext);
@@ -251,7 +251,7 @@ namespace std
 	struct formatter<std::wstring_view, char>: std::formatter<std::string_view, char>
 	{
 		template<class TFormatContext>
-		auto format(std::wstring_view value, TFormatContext& formatContext)
+		auto format(std::wstring_view value, TFormatContext& formatContext) const
 		{
 			auto utf8 = kxf::String::FromView(value).ToUTF8();
 			return std::formatter<std::string_view, char>::format(utf8, formatContext);
@@ -263,7 +263,7 @@ namespace std
 	struct formatter<std::string, wchar_t>: formatter<std::string_view, wchar_t>
 	{
 		template<class TFormatContext>
-		auto format(const std::string& value, TFormatContext& formatContext)
+		auto format(const std::string& value, TFormatContext& formatContext) const
 		{
 			return formatter<std::string_view, wchar_t>::format(value, formatContext);
 		}
@@ -273,7 +273,7 @@ namespace std
 	struct formatter<std::wstring, char>: formatter<std::wstring_view, char>
 	{
 		template<class TFormatContext>
-		auto format(const std::wstring& value, TFormatContext& formatContext)
+		auto format(const std::wstring& value, TFormatContext& formatContext) const
 		{
 			return formatter<std::wstring_view, char>::format(value, formatContext);
 		}
@@ -284,7 +284,7 @@ namespace std
 	struct formatter<TEnum, TChar>: formatter<std::underlying_type_t<TEnum>, TChar>
 	{
 		template<class TFormatContext>
-		auto format(TEnum value, TFormatContext& formatContext)
+		auto format(TEnum value, TFormatContext& formatContext) const
 		{
 			using Tx = std::underlying_type_t<TEnum>;
 			return formatter<Tx, TChar>::format(static_cast<Tx>(value), formatContext);
