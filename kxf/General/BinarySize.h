@@ -90,21 +90,16 @@ namespace kxf
 			int64_t m_Value = -1;
 
 		private:
-			template<class T>
+			template<class T> requires(std::is_integral_v<T>)
 			constexpr T GetAs(int64_t value) const noexcept
 			{
-				if constexpr(std::is_floating_point_v<T>)
-				{
-					return static_cast<T>(value / 1024.0);
-				}
-				else if constexpr(std::is_integral_v<T>)
-				{
-					return static_cast<T>(value / 1024);
-				}
-				else
-				{
-					static_assert(false, "invalid numeric type");
-				}
+				return static_cast<T>(value / 1024);
+			}
+
+			template<class T> requires(std::is_floating_point_v<T>)
+			constexpr T GetAs(int64_t value) const noexcept
+			{
+				return static_cast<T>(value / 1024.0);
 			}
 
 		public:

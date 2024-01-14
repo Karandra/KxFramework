@@ -144,7 +144,7 @@ namespace kxf::UI::DataView
 				}
 				else
 				{
-					static_assert(false, "Invalid ICE action");
+					static_assert(sizeof(TValue*) == 0, "Invalid ICE action");
 				}
 
 				// Return tuple
