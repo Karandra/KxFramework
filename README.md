@@ -9,7 +9,7 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 - Build **VCPkg** using its instructions (run `bootstrap-vcpkg.bat`, wait for build to complete and run `vcpkg.exe` from the terminal).
 - Copy `VCPkg` folder contents to your VCPkg installation.
 - Download and build following packages for both x86 (`kxf-default-x86`) and x64 (`kxf-default-x64`) targets.
-	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets`
+	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets[fonts,media,sound,webview]`
 	- [Sciter-JS](https://github.com/c-smile/sciter-js-sdk) - `sciter-js` (see notes).
 	- [libcurl](https://curl.haxx.se) - `curl[non-http,http2,openssl]`
 	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for libcurl but it's used directly as well.
@@ -17,9 +17,11 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 	- [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser) - `gumbo`
 	- [libffi](https://github.com/libffi/libffi) - `libffi`
 	- [LZ4](https://github.com/lz4/lz4) - `lz4`
+	- [7-Zip SDK](https://www.7-zip.org) - `7zip`
 	- [JSON for Modern C++](https://github.com/nlohmann/json) - `nlohmann-json`
 	- [SimpleINI](https://github.com/brofield/simpleini) - `simpleini`
 	- [TinyXML2](https://github.com/leethomason/tinyxml2) - `tinyxml2`
+	- [xxHash ](https://github.com/Cyan4973/xxHash) - `xxhash`
 	- [URIParser](https://github.com/uriparser/uriparser) - `uriparser`
 	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's already built-in into wxWidgets but KxFramework uses its headers directly and they're not available from wxWidgets includes.
 
@@ -43,7 +45,7 @@ If you're using precompiled headers in your project don't forget to include `kxf
 ```
 
 ### Build notes
-Sciter-JS can't be built using the default `windows-static-md` triplet because it's a dynamic library but KxFramework itself is static. Modified triplet configuration is provided in `VCPkg\triplets\community` folder.
+Sciter-JS can't be built using the default `windows-static-md` triplet because it's a dynamic library but KxFramework itself is static. Modified triplet configuration is provided in `VCPkg\triplets\community` folder. The old Sciter isn't used anymore.
 
 # Configuration
 

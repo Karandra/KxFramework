@@ -1,38 +1,44 @@
 {
-    "name": "kxframework",
-    "version-string": "2.0",
-    "port-version": 1,
-    "supports": "windows",
-    "description": "[master] Support library for Kortex Mod Manager",
-    "homepage": "https://github.com/Karandra/KxFramework",
-    "license": "LGPL-3.0",
-
-    "dependencies":
-    [
-        "wxwidgets",
-        "sciter-js",
-        "openssl",
-        "openssl-windows",
-        "websocketpp",
-        "gumbo",
-        "libffi",
-        "lz4",
-        "nlohmann-json",
-        "simpleini",
-        "tinyxml2",
-        "scintilla",
-        "xxhash",
-        "7zip",
-        "uriparser",
-        {
-            "name": "curl",
-            "default-features": false,
-            "features":
-            [
-                "non-http",
-                "http2",
-                "openssl"
-            ]
-        }
-    ]
+	"name": "kxframework",
+	"version-string": "2.0",
+	"port-version": 1,
+	"supports": "windows",
+	"description": "[master] Support library for Kortex Mod Manager",
+	"homepage": "https://github.com/Karandra/KxFramework",
+	"license": "LGPL-3.0",
+	"dependencies": [
+		{
+			"name": "wxwidgets",
+			"default-features": false,
+			"features": [
+				"fonts",
+				"media",
+				"sound",
+				"webview"
+			]
+		},
+		{
+			"name": "curl",
+			"default-features": false,
+			"features": [
+				"non-http",
+				"http2",
+				"openssl"
+			]
+		},
+		"sciter-js",
+		"openssl",
+		"openssl-windows",
+		"websocketpp",
+		"gumbo",
+		"libffi",
+		"lz4",
+		"nlohmann-json",
+		"simpleini",
+		"tinyxml2",
+		"scintilla",
+		"xxhash",
+		"7zip",
+		"uriparser"
+	]
 }
