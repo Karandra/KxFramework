@@ -182,9 +182,8 @@ namespace kxf::Crypto
 		return count;
 	}
 
-	HashValue<32> CRC32(IInputStream& stream) noexcept
+	HashValue<32> CRC32(IInputStream& stream, uint32_t initialValue) noexcept
 	{
-		constexpr uint32_t initialValue = 0xFFFFFFFFu;
 		constexpr uint32_t table[] =
 		{
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F,
