@@ -4,7 +4,7 @@
 
 namespace kxf::Crypto::Private
 {
-	template<size_t bitLength, class T>
+	template<size_t bitLength, class T = uint8_t>
 	constexpr bool IsHashConvertibleToInteger() noexcept
 	{
 		return std::is_unsigned_v<T> && (sizeof(T) <= bitLength / 8) && (bitLength == 8 || bitLength == 16 || bitLength == 32 || bitLength == 64);
@@ -46,7 +46,7 @@ namespace kxf::Crypto
 				}
 			}
 
-			template<class T, class = std::enable_if_t<Private::IsHashConvertibleToInteger<bitLength, T>()>>
+			template<class T> requires(Private::IsHashConvertibleToInteger<bitLength, T>())
 			constexpr HashValue(T intValue) noexcept
 				:HashValue(&intValue, sizeof(intValue))
 			{
@@ -63,6 +63,10 @@ namespace kxf::Crypto
 					}
 				}
 				return true;
+			}
+			constexpr bool IsConvertibleToInteger() const noexcept
+			{
+				return Private::IsHashConvertibleToInteger<bitLength>();
 			}
 
 			constexpr size_t length() const noexcept
@@ -83,7 +87,7 @@ namespace kxf::Crypto
 				return Private::HashValueToString({m_Hash.data(), m_Hash.size()});
 			}
 
-			template<class = std::enable_if_t<Private::IsHashConvertibleToInteger<bitLength, uint8_t>()>>
+			template<class = void> requires(Private::IsHashConvertibleToInteger<bitLength>())
 			auto ToInt() const noexcept
 			{
 				auto Convert = [](auto& value)
@@ -111,10 +115,6 @@ namespace kxf::Crypto
 				{
 					uint64_t value = 0;
 					return Convert(value);
-				}
-				else
-				{
-					static_assert(false, "unsupported bit length");
 				}
 			}
 

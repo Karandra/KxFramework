@@ -1374,7 +1374,7 @@ namespace std
 		}
 		else
 		{
-			static_assert(false, "Index out of bounds for kxf::Geometry::BasicPoint<TValue>");
+			static_assert(sizeof(TValue*) == 0, "Index out of bounds for kxf::Geometry::BasicPoint<TValue>");
 		}
 	}
 
@@ -1401,7 +1401,7 @@ namespace std
 		}
 		else
 		{
-			static_assert(false, "Index out of bounds for kxf::Geometry::BasicSize<TValue>");
+			static_assert(sizeof(TValue*) == 0, "Index out of bounds for kxf::Geometry::BasicSize<TValue>");
 		}
 	}
 
@@ -1436,7 +1436,7 @@ namespace std
 		}
 		else
 		{
-			static_assert(false, "Index out of bounds for kxf::Geometry::BasicRect<TValue>");
+			static_assert(sizeof(TValue*) == 0, "Index out of bounds for kxf::Geometry::BasicRect<TValue>");
 		}
 	}
 }

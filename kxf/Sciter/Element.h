@@ -288,7 +288,7 @@ namespace kxf::Sciter
 				else
 				{
 					size_t count = 0;
-					SelectWidgets(query, [&](Widget& widget)
+					SelectWidgets(query, [&](auto& widget)
 					{
 						if (auto desiredWidget = widget.QueryInterface<TWidget>())
 						{

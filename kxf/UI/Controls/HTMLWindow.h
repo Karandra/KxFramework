@@ -108,15 +108,19 @@ namespace kxf::UI
 			{
 				return m_BackgroundBitmap;
 			}
-			void SetHTMLBackgroundImage(const wxBitmap& bitmap) override
+			void SetHTMLBackgroundImage(const wxBitmapBundle& bitmapBundle) override
 			{
-				m_BackgroundBitmap = bitmap;
-				wxHtmlWindow::SetHTMLBackgroundImage(bitmap);
+				m_BackgroundBitmap = bitmapBundle.GetBitmap(wxDefaultSize);
+				wxHtmlWindow::SetHTMLBackgroundImage(bitmapBundle);
 				ScheduleRefresh();
 			}
 			void SetHTMLBackgroundImage(const GDIBitmap& bitmap)
 			{
-				HTMLWindow::SetHTMLBackgroundImage(bitmap.ToWxBitmap());
+				m_BackgroundBitmap = bitmap;
+
+				wxBitmapBundle bitmapBundle(bitmap.ToWxBitmap());
+				HTMLWindow::SetHTMLBackgroundImage(bitmapBundle);
+				ScheduleRefresh();
 			}
 
 			wxColour GetHTMLBackgroundColour() const override

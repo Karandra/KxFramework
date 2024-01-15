@@ -139,7 +139,7 @@ namespace kxf::FFI::Private
 		}
 		else
 		{
-			static_assert(false, "this type is not supported");
+			static_assert(sizeof(T*) == 0, "this type is not supported");
 		}
 	}
 }

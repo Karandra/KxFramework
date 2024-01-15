@@ -48,16 +48,16 @@ namespace kxf::CURL::Private
 			bool SetOption(int option, uint64_t value);
 			bool SetOption(int option, const void* value);
 
-			template<class T, std::enable_if_t<std::is_function_v<std::remove_pointer_t<T>> && !std::is_member_function_pointer_v<T>, int> = 0>
+			template<class T> requires(std::is_function_v<std::remove_pointer_t<T>> && !std::is_member_function_pointer_v<T>)
 			bool SetOption(int option, T value)
 			{
 				return SetOption(option, reinterpret_cast<const void*>(value));
 			}
 
-			template<class T, std::enable_if_t<std::is_member_function_pointer_v<T>, int> = 0>
+			template<class T> requires(std::is_member_function_pointer_v<T>)
 			bool SetOption(int option, T value)
 			{
-				static_assert(false, "member function pointers aren't allowed here");
+				static_assert(sizeof(T*) == 0, "member function pointers aren't allowed here");
 				return false;
 			}
 

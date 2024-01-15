@@ -26,11 +26,12 @@
     <OverrideVcpkgTriplet>false</OverrideVcpkgTriplet>
     <OverrideVcpkgTripletName>none</OverrideVcpkgTripletName>
     <ProjectName>kxf</ProjectName>
+	<EnableStdModules>false</EnableStdModules>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>

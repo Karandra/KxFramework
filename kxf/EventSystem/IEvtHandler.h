@@ -64,7 +64,7 @@ namespace kxf
 				}
 				else
 				{
-					static_assert(false, "Unsupported callable type or the type is not invocable");
+					static_assert(sizeof(TCallable*) == 0, "Unsupported callable type or the type is not invocable");
 				}
 			}
 
