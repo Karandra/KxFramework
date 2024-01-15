@@ -68,6 +68,12 @@ namespace kxf::FFI::Private
 		return GetFFIType(type)->size;
 	}
 
+	template<class T1, class T2>
+	constexpr bool TestType() noexcept
+	{
+		return sizeof(T1) == sizeof(T2) && alignof(T1) == alignof(T2);
+	}
+
 	struct CClosure final
 	{
 		uint8_t m_Trampoline[FFI_TRAMPOLINE_SIZE] = {};
@@ -84,37 +90,38 @@ namespace kxf::FFI
 		using namespace Private;
 
 		// Layout
-		static_assert(sizeof(CInterface) == sizeof(ffi_cif), "[CFunctionCompiler] CInterface invalid layout");
-		static_assert(sizeof(CType) == sizeof(ffi_type), "[CFunctionCompiler] CType invalid layout");
-		static_assert(sizeof(CStatus) == sizeof(ffi_status), "[CFunctionCompiler] CStatus invalid layout");
-		static_assert(sizeof(CClosure) == sizeof(CClosure), "[CFunctionCompiler] CClosure invalid layout");
+		static_assert(TestType<CInterface, ffi_cif>(), "[CFunctionCompiler] CInterface invalid layout");
+		static_assert(TestType<CType, ffi_type>(), "[CFunctionCompiler] CType invalid layout");
+		static_assert(TestType<CStatus, ffi_status>(), "[CFunctionCompiler] CStatus invalid layout");
+		static_assert(TestType<CClosure, CClosure>(), "[CFunctionCompiler] CClosure invalid layout");
 
 		// Types
-		static_assert((int)TypeID::Void == FFI_TYPE_VOID);
-		static_assert((int)TypeID::Float32 == FFI_TYPE_FLOAT);
-		static_assert((int)TypeID::Float64 == FFI_TYPE_DOUBLE);
-		static_assert((int)TypeID::Int8 == FFI_TYPE_SINT8);
-		static_assert((int)TypeID::UInt8 == FFI_TYPE_UINT8);
-		static_assert((int)TypeID::Int16 == FFI_TYPE_SINT16);
-		static_assert((int)TypeID::UInt16 == FFI_TYPE_UINT16);
-		static_assert((int)TypeID::Int32 == FFI_TYPE_SINT32);
-		static_assert((int)TypeID::UInt32 == FFI_TYPE_UINT32);
-		static_assert((int)TypeID::Int64 == FFI_TYPE_SINT64);
-		static_assert((int)TypeID::UInt64 == FFI_TYPE_UINT64);
-		static_assert((int)TypeID::Pointer == FFI_TYPE_POINTER);
+		static_assert(ToInt(TypeID::Void) == FFI_TYPE_VOID);
+		static_assert(ToInt(TypeID::Float32) == FFI_TYPE_FLOAT);
+		static_assert(ToInt(TypeID::Float64) == FFI_TYPE_DOUBLE);
+		static_assert(ToInt(TypeID::Int8) == FFI_TYPE_SINT8);
+		static_assert(ToInt(TypeID::UInt8) == FFI_TYPE_UINT8);
+		static_assert(ToInt(TypeID::Int16) == FFI_TYPE_SINT16);
+		static_assert(ToInt(TypeID::UInt16) == FFI_TYPE_UINT16);
+		static_assert(ToInt(TypeID::Int32) == FFI_TYPE_SINT32);
+		static_assert(ToInt(TypeID::UInt32) == FFI_TYPE_UINT32);
+		static_assert(ToInt(TypeID::Int64) == FFI_TYPE_SINT64);
+		static_assert(ToInt(TypeID::UInt64) == FFI_TYPE_UINT64);
+		static_assert(ToInt(TypeID::Pointer) == FFI_TYPE_POINTER);
 
 		// ABI
-		static_assert((int)ABI::Default == FFI_DEFAULT_ABI);
+		static_assert(ToInt(ABI::Default) == FFI_DEFAULT_ABI);
 		#if _WIN64
-		static_assert((int)ABI::X64 == FFI_WIN64);
+		static_assert(ToInt(ABI::Win64) == FFI_WIN64);
+		static_assert(ToInt(ABI::GNU64) == FFI_GNUW64);
 		#else
-		static_assert((int)ABI::SysV == FFI_SYSV);
-		static_assert((int)ABI::StdCall == FFI_STDCALL);
-		static_assert((int)ABI::ThisCall == FFI_THISCALL);
-		static_assert((int)ABI::FastCall == FFI_FASTCALL);
-		static_assert((int)ABI::CDecl == FFI_MS_CDECL);
-		static_assert((int)ABI::Pascal == FFI_PASCAL);
-		static_assert((int)ABI::Register == FFI_REGISTER);
+		static_assert(ToInt(ABI::SysV) == FFI_SYSV);
+		static_assert(ToInt(ABI::StdCall) == FFI_STDCALL);
+		static_assert(ToInt(ABI::ThisCall) == FFI_THISCALL);
+		static_assert(ToInt(ABI::FastCall) == FFI_FASTCALL);
+		static_assert(ToInt(ABI::CDecl) == FFI_MS_CDECL);
+		static_assert(ToInt(ABI::Pascal) == FFI_PASCAL);
+		static_assert(ToInt(ABI::Register) == FFI_REGISTER);
 		#endif
 
 		return m_Closure && m_Code && m_CInterface.m_ReturnType && m_Status == CStatus::Success;
@@ -128,11 +135,11 @@ namespace kxf::FFI
 			m_Closure = reinterpret_cast<CClosure*>(ffi_closure_alloc(sizeof(ffi_closure), &m_Code));
 			if (m_Closure)
 			{
-				ffi_cif* cif = reinterpret_cast<ffi_cif*>(&m_CInterface);
-				ffi_closure* closure = reinterpret_cast<ffi_closure*>(m_Closure);
-				ffi_type** argumentTypes = const_cast<ffi_type**>(reinterpret_cast<const ffi_type**>(m_ArgumentTypes.data()));
-				ffi_type* returnType = const_cast<ffi_type*>(reinterpret_cast<const ffi_type*>(m_CInterface.m_ReturnType));
-				ffi_abi abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
+				auto cif = reinterpret_cast<ffi_cif*>(&m_CInterface);
+				auto closure = reinterpret_cast<ffi_closure*>(m_Closure);
+				auto argumentTypes = const_cast<ffi_type**>(reinterpret_cast<const ffi_type**>(m_ArgumentTypes.data()));
+				auto returnType = const_cast<ffi_type*>(reinterpret_cast<const ffi_type*>(m_CInterface.m_ReturnType));
+				auto abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
 
 				m_Status = static_cast<CStatus>(ffi_prep_cif(cif, abi, m_CInterface.m_ArgumentCount, returnType, argumentTypes));
 				if (m_Status == CStatus::Success)
@@ -161,12 +168,20 @@ namespace kxf::FFI
 		m_ArgumentTypes.fill(nullptr);
 		m_Closure = nullptr;
 		m_Code = nullptr;
-		m_Status = CStatus::Success;
+		m_Status = CStatus::Unknown;
 	}
 
+	void CFunctionCompiler::ClearParameters() noexcept
+	{
+		for (auto& argType: m_ArgumentTypes)
+		{
+			argType = nullptr;
+		}
+		m_CInterface.m_ArgumentCount = 0;
+	}
 	bool CFunctionCompiler::AddParameter(TypeID type) noexcept
 	{
-		if (SetParameter(m_CInterface.m_ArgumentCount + 1, type))
+		if (SetParameter(m_CInterface.m_ArgumentCount, type))
 		{
 			m_CInterface.m_ArgumentCount++;
 			return true;
@@ -203,15 +218,23 @@ namespace kxf::FFI
 		m_CInterface.m_ReturnType = reinterpret_cast<const CType*>(GetFFIType(type));
 	}
 
-	CFunctionCompiler& CFunctionCompiler::operator=(CFunctionCompiler&& other)  noexcept
+	CFunctionCompiler& CFunctionCompiler::operator=(CFunctionCompiler&& other) noexcept
 	{
+		// Move CInterface and update its parameters array
 		m_CInterface = std::move(other.m_CInterface);
 		m_ArgumentTypes = std::move(other.m_ArgumentTypes);
-		m_Closure = std::move(other.m_Closure);
+		m_CInterface.m_ArgumentTypes = m_ArgumentTypes.data();
+
+		// Move Closure and update its CInterface and context pointers
+		m_Closure = other.m_Closure;
+		m_Closure->m_CInterface = &m_CInterface;
+		m_Closure->m_Context = this;
+		other.m_Closure = nullptr;
+
 		m_Code = std::move(other.m_Code);
 		m_Status = std::move(other.m_Status);
 
-		other.m_Closure = nullptr;
+		// Reset the other object to its default state
 		other.Destroy();
 
 		return *this;

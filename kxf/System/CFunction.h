@@ -5,16 +5,16 @@
 
 namespace kxf
 {
-	template<class TSignature, FFI::ABI t_ABI>
-	class CFunction: public FFI::Private::CompiledCallableWrapper<t_ABI, TSignature>::TCompiledCallable
+	template<class TSignature, FFI::ABI ABI_ = FFI::ABI::Default>
+	class CFunction: public FFI::Private::CompiledCallableWrapper<ABI_, TSignature>::TCompiledCallable
 	{
 		private:
-			using TBase = typename FFI::Private::CompiledCallableWrapper<t_ABI, TSignature>::TCompiledCallable;
+			using TBase = typename FFI::Private::CompiledCallableWrapper<ABI_, TSignature>::TCompiledCallable;
 
 		public:
 			CFunction() noexcept = default;
 
-			template<class TFunc>
+			template<class TFunc> requires(std::is_constructible_v<TBase, TFunc>)
 			CFunction(TFunc&& func)
 				:TBase(std::forward<TFunc>(func))
 			{
@@ -24,11 +24,10 @@ namespace kxf
 			CFunction(CFunction&&) noexcept = default;
 
 		public:
-			template<class TFunc>
-			CFunction& operator=(TFunc&& func)
+			template<class TFunc> requires(std::is_constructible_v<TBase, TFunc>)
+			void SetCallable(TFunc&& func)
 			{
-				this->m_Functor = std::forward<TFunc>(func);
-				return *this;
+				TBase::SetCallable(std::forward<TFunc>(func));
 			}
 
 			CFunction& operator=(const CFunction&) = default;

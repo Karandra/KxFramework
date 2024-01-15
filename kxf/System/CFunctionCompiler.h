@@ -12,7 +12,7 @@ namespace kxf::FFI
 			std::array<const Private::CType*, 16> m_ArgumentTypes;
 			Private::CClosure* m_Closure = nullptr;
 			void* m_Code = nullptr;
-			Private::CStatus m_Status = Private::CStatus::Success;
+			Private::CStatus m_Status = Private::CStatus::Unknown;
 
 		protected:
 			virtual void Execute(void** arguments, void* returnValue) noexcept = 0;
@@ -43,14 +43,13 @@ namespace kxf::FFI
 				return m_CInterface.m_CodeSize;
 			}
 			
-			template<class T>
+			template<class T> requires(std::is_function_v<std::remove_pointer_t<T>>)
 			T* GetFunctionPointer() const noexcept
 			{
-				static_assert(std::is_function_v<std::remove_pointer_t<T>>, "free function type is required");
-
 				return reinterpret_cast<T*>(m_Code);
 			}
 
+			void ClearParameters() noexcept;
 			size_t GetParametersCount() const noexcept
 			{
 				return m_CInterface.m_ArgumentCount;

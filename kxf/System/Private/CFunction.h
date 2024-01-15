@@ -2,17 +2,18 @@
 #include "../Common.h"
 #include "kxf/System/CFunctionCompiler.h"
 #include <limits>
+#include <functional>
 
 namespace kxf::FFI::Private
 {
-	template<ABI t_ABI, class t_Ret, class... t_Types>
+	template<ABI ABI_, class TResult_, class... TArgTypes_>
 	class CompiledCallable: protected CFunctionCompiler
 	{
 		public:
-			using TCallable = typename std::function<t_Ret(t_Types...)>;
-			using TCallableResult = typename t_Ret;
-			using TCallableSignature = typename t_Ret(t_Types...);
-			using TFuncPtr = typename std::conditional_t<t_ABI == ABI::StdCall, t_Ret(__stdcall *)(t_Types...), t_Ret(__cdecl *)(t_Types...)>;
+			using TCallable = typename std::move_only_function<TResult_(TArgTypes_...)>;
+			using TCallableResult = typename TResult_;
+			using TCallableSignature = typename TResult_(TArgTypes_...);
+			using TFuncPtr = typename std::conditional_t<ABI_ == ABI::StdCall, TResult_(__stdcall *)(TArgTypes_...), TResult_(__cdecl *)(TArgTypes_...)>;
 
 		protected:
 			TCallable m_Callable;
@@ -20,9 +21,9 @@ namespace kxf::FFI::Private
 		private:
 			void Init() noexcept
 			{
-				SetABI(t_ABI);
+				SetABI(ABI_);
 				SetReturnType(GetTypeID<TCallableResult>());
-				SetParameters({GetTypeID<t_Types>()...});
+				SetParameters({GetTypeID<TArgTypes_>()...});
 				Create();
 			}
 			void SetParameters(std::initializer_list<TypeID> types) noexcept
@@ -33,16 +34,16 @@ namespace kxf::FFI::Private
 				}
 			}
 			
-			template<size_t... t_Sequence>
-			static std::tuple<t_Types...> ConvertToTuple(void** arguments, std::index_sequence<t_Sequence...>) noexcept
+			template<size_t... sequence>
+			static std::tuple<TArgTypes_...> ConvertToTuple(void** arguments, std::index_sequence<sequence...>) noexcept
 			{
-				return std::make_tuple(t_Types {*reinterpret_cast<t_Types*>(arguments[t_Sequence])}...);
+				return std::make_tuple(TArgTypes_ {*reinterpret_cast<TArgTypes_*>(arguments[sequence])}...);
 			}
 			
 			void Execute(void** arguments, void* returnValue) noexcept override
 			{
-				constexpr size_t argsCount = sizeof...(t_Types);
-				std::tuple<t_Types...> args = ConvertToTuple(arguments, std::make_index_sequence<argsCount>());
+				constexpr size_t argsCount = sizeof...(TArgTypes_);
+				std::tuple<TArgTypes_...> args = ConvertToTuple(arguments, std::make_index_sequence<argsCount>());
 				
 				if constexpr(std::is_void_v<TCallableResult>)
 				{
@@ -50,17 +51,14 @@ namespace kxf::FFI::Private
 				}
 				else
 				{
-					*(reinterpret_cast<TCallableResult*>(returnValue)) = std::apply(m_Callable, args);
+					*(reinterpret_cast<TCallableResult*>(returnValue)) = static_cast<TCallableResult>(std::apply(m_Callable, std::move(args)));
 				}
 			}
 
 		public:
-			CompiledCallable() noexcept
-			{
-				Init();
-			}
+			CompiledCallable() noexcept = default;
 
-			template<class TFunc>
+			template<class TFunc> requires(std::is_invocable_r_v<TCallableResult, TFunc, TArgTypes_...>)
 			CompiledCallable(TFunc&& func)
 				:m_Callable(std::forward<TFunc>(func))
 			{
@@ -85,10 +83,20 @@ namespace kxf::FFI::Private
 				return reinterpret_cast<TFuncPtr>(GetCode());
 			}
 
-		public:
-			TCallableResult operator()(t_Types&&... arg)
+			template<class TFunc> requires(std::is_invocable_r_v<TCallableResult, TFunc, TArgTypes_...>)
+			void SetCallable(TFunc&& func)
 			{
-				return std::invoke(m_Callable, std::forward<t_Types>(arg)...);
+				m_Callable = std::forward<TFunc>(func);
+				if (!IsCreated())
+				{
+					Init();
+				}
+			}
+
+		public:
+			TCallableResult operator()(TArgTypes_&&... arg)
+			{
+				return std::invoke(m_Callable, std::forward<TArgTypes_>(arg)...);
 			}
 			operator TFuncPtr() const noexcept
 			{
@@ -108,12 +116,12 @@ namespace kxf::FFI::Private
 			CompiledCallable& operator=(CompiledCallable&&) noexcept = default;
 	};
 
-	template<ABI t_ABI, class>
+	template<ABI ABI_, class>
 	struct CompiledCallableWrapper;
 	
-	template<ABI t_ABI, class t_Ret, class... t_Types>
-	struct CompiledCallableWrapper<t_ABI, t_Ret(t_Types...)>
+	template<ABI ABI_, class TResult_, class... TArgTypes_>
+	struct CompiledCallableWrapper<ABI_, TResult_(TArgTypes_...)>
 	{
-		using TCompiledCallable = CompiledCallable<t_ABI, t_Ret, t_Types...>;
+		using TCompiledCallable = CompiledCallable<ABI_, TResult_, TArgTypes_...>;
 	};
 }

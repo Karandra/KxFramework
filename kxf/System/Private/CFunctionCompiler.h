@@ -31,15 +31,17 @@ namespace kxf::FFI
 
 		#if _WIN64
 
-		X64 = 1,
-		SysV = X64,
-		StdCall = X64,
-		ThisCall = X64,
-		FastCall = X64,
-		CDecl = X64,
-		Pascal = X64,
-		Register = X64,
-		Default = X64,
+		Win64 = 1,
+		GNU64 = 2,
+		Default = Win64,
+
+		SysV = Default,
+		StdCall = Default,
+		ThisCall = Default,
+		FastCall = Default,
+		CDecl = Default,
+		Pascal = Default,
+		Register = Default,
 
 		#else
 
@@ -61,6 +63,8 @@ namespace kxf::FFI::Private
 	// Layout of these types must be the same as their corresponding 'ffi_*' counterparts.
 	enum class CStatus
 	{
+		Unknown = -1,
+
 		Success = 0,
 		BadTypedef,
 		BadABI
