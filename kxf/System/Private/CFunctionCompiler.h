@@ -56,6 +56,63 @@ namespace kxf::FFI
 
 		#endif
 	};
+
+	template<class T>
+	constexpr TypeID GetTypeID() noexcept
+	{
+		if constexpr (std::is_pointer_v<T>)
+		{
+			return TypeID::Pointer;
+		}
+		else if constexpr (std::is_void_v<T>)
+		{
+			return TypeID::Void;
+		}
+		else if constexpr (std::is_same_v<T, int8_t>)
+		{
+			return TypeID::Int8;
+		}
+		else if constexpr (std::is_same_v<T, int16_t>)
+		{
+			return TypeID::Int16;
+		}
+		else if constexpr (std::is_same_v<T, int32_t>)
+		{
+			return TypeID::Int32;
+		}
+		else if constexpr (std::is_same_v<T, int64_t>)
+		{
+			return TypeID::Int64;
+		}
+		else if constexpr (std::is_same_v<T, uint8_t>)
+		{
+			return TypeID::UInt8;
+		}
+		else if constexpr (std::is_same_v<T, uint16_t>)
+		{
+			return TypeID::UInt16;
+		}
+		else if constexpr (std::is_same_v<T, uint32_t>)
+		{
+			return TypeID::UInt32;
+		}
+		else if constexpr (std::is_same_v<T, uint64_t>)
+		{
+			return TypeID::UInt64;
+		}
+		else if constexpr (std::is_same_v<T, float>)
+		{
+			return TypeID::Float32;
+		}
+		else if constexpr (std::is_same_v<T, double>)
+		{
+			return TypeID::Float64;
+		}
+		else
+		{
+			static_assert(sizeof(T*) == 0, "this type is not supported");
+		}
+	}
 }
 
 namespace kxf::FFI::Private
@@ -67,7 +124,8 @@ namespace kxf::FFI::Private
 
 		Success = 0,
 		BadTypedef,
-		BadABI
+		BadABI,
+		BadArgType,
 	};
 
 	struct CType final
@@ -79,8 +137,6 @@ namespace kxf::FFI::Private
 	};
 	struct CInterface final
 	{
-		using OnCall = void(*)(CInterface*, void*, void**, CFunctionCompiler*);
-
 		ABI m_ABI = ABI::None;
 		uint32_t m_ArgumentCount = 0;
 		const CType** m_ArgumentTypes = nullptr;
@@ -89,61 +145,4 @@ namespace kxf::FFI::Private
 		uint32_t m_Flags = 0;
 	};
 	struct CClosure;
-
-	template<class T>
-	constexpr TypeID GetTypeID() noexcept
-	{
-		if constexpr(std::is_pointer_v<T>)
-		{
-			return TypeID::Pointer;
-		}
-		else if constexpr(std::is_void_v<T>)
-		{
-			return TypeID::Void;
-		}
-		else if constexpr(std::is_same_v<T, int8_t>)
-		{
-			return TypeID::Int8;
-		}
-		else if constexpr(std::is_same_v<T, int16_t>)
-		{
-			return TypeID::Int16;
-		}
-		else if constexpr(std::is_same_v<T, int32_t>)
-		{
-			return TypeID::Int32;
-		}
-		else if constexpr(std::is_same_v<T, int64_t>)
-		{
-			return TypeID::Int64;
-		}
-		else if constexpr(std::is_same_v<T, uint8_t>)
-		{
-			return TypeID::UInt8;
-		}
-		else if constexpr(std::is_same_v<T, uint16_t>)
-		{
-			return TypeID::UInt16;
-		}
-		else if constexpr(std::is_same_v<T, uint32_t>)
-		{
-			return TypeID::UInt32;
-		}
-		else if constexpr(std::is_same_v<T, uint64_t>)
-		{
-			return TypeID::UInt64;
-		}
-		else if constexpr(std::is_same_v<T, float>)
-		{
-			return TypeID::Float32;
-		}
-		else if constexpr(std::is_same_v<T, double>)
-		{
-			return TypeID::Float64;
-		}
-		else
-		{
-			static_assert(sizeof(T*) == 0, "this type is not supported");
-		}
-	}
 }

@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
-#include "CFunction.h"
+#include "CFunctionCompiler.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <ffi.h>
 
 namespace kxf::FFI::Private
@@ -74,11 +75,12 @@ namespace kxf::FFI::Private
 		return sizeof(T1) == sizeof(T2) && alignof(T1) == alignof(T2);
 	}
 
+	using TClosureCall = void(*)(CInterface*, void*, void**, CFunctionCompiler*);
 	struct CClosure final
 	{
 		uint8_t m_Trampoline[FFI_TRAMPOLINE_SIZE] = {};
 		CInterface* m_CInterface = nullptr;
-		CInterface::OnCall m_Function = nullptr;
+		TClosureCall m_Callback = nullptr;
 		CFunctionCompiler* m_Context = nullptr;
 	};
 }
@@ -126,29 +128,79 @@ namespace kxf::FFI
 
 		return m_Closure && m_Code && m_CInterface.m_ReturnType && m_Status == CStatus::Success;
 	}
-	bool CFunctionCompiler::Create() noexcept
+	bool CFunctionCompiler::SetParameterAt(size_t index, TypeID type) noexcept
 	{
 		using namespace Private;
 
-		if (!IsCreated())
+		if (type != TypeID::Void && index < m_ArgumentTypes.size())
 		{
-			m_Closure = reinterpret_cast<CClosure*>(ffi_closure_alloc(sizeof(ffi_closure), &m_Code));
+			if (type == TypeID::None)
+			{
+				m_ArgumentTypes[index] = nullptr;
+				return true;
+			}
+			else if (auto ffiType = GetFFIType(type))
+			{
+				m_ArgumentTypes[index] = reinterpret_cast<const CType*>(ffiType);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool CFunctionCompiler::Create() noexcept
+	{
+		if (IsCreated())
+		{
+			return true;
+		}
+
+		Utility::ScopeGuard guard = [&]()
+		{
 			if (m_Closure)
 			{
-				auto cif = reinterpret_cast<ffi_cif*>(&m_CInterface);
-				auto closure = reinterpret_cast<ffi_closure*>(m_Closure);
-				auto argumentTypes = const_cast<ffi_type**>(reinterpret_cast<const ffi_type**>(m_ArgumentTypes.data()));
-				auto returnType = const_cast<ffi_type*>(reinterpret_cast<const ffi_type*>(m_CInterface.m_ReturnType));
-				auto abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
+				ffi_closure_free(m_Closure);
+				m_Closure = nullptr;
+			}
+		};
 
-				m_Status = static_cast<CStatus>(ffi_prep_cif(cif, abi, m_CInterface.m_ArgumentCount, returnType, argumentTypes));
+		// Check for the return type, as nullptr here causes access violation exception later
+		if (!m_CInterface.m_ReturnType)
+		{
+			return false;
+		}
+
+		// Check for holes in the arguments type list, causes access violation exception as well
+		// Shouldn't be necessary with the push/pop functions now, but just in case
+		for (size_t i = 0; i < m_CInterface.m_ArgumentCount; i++)
+		{
+			if (!m_ArgumentTypes[i])
+			{
+				return false;
+			}
+		}
+
+		using namespace Private;
+		if (m_Closure = reinterpret_cast<CClosure*>(ffi_closure_alloc(sizeof(ffi_closure), &m_Code)))
+		{
+			auto cif = reinterpret_cast<ffi_cif*>(&m_CInterface);
+			auto closure = reinterpret_cast<ffi_closure*>(m_Closure);
+			auto argumentTypes = const_cast<ffi_type**>(reinterpret_cast<const ffi_type**>(m_ArgumentTypes.data()));
+			auto returnType = const_cast<ffi_type*>(reinterpret_cast<const ffi_type*>(m_CInterface.m_ReturnType));
+			auto abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
+
+			m_Status = static_cast<CStatus>(ffi_prep_cif(cif, abi, m_CInterface.m_ArgumentCount, returnType, argumentTypes));
+			if (m_Status == CStatus::Success)
+			{
+				m_Status = static_cast<CStatus>(ffi_prep_closure_loc(closure, cif, [](ffi_cif* cif, void* returnValue, void** arguments, void* context)
+				{
+					reinterpret_cast<CFunctionCompiler*>(context)->Execute(arguments, returnValue);
+				}, this, m_Code));
+
 				if (m_Status == CStatus::Success)
 				{
-					m_Status = static_cast<CStatus>(ffi_prep_closure_loc(closure, cif, [](ffi_cif* cif, void* returnValue, void** arguments, void* context)
-					{
-						reinterpret_cast<CFunctionCompiler*>(context)->Execute(arguments, returnValue);
-					}, this, m_Code));
-					return m_Status == CStatus::Success;
+					guard.Dismiss();
+					return true;
 				}
 			}
 		}
@@ -173,38 +225,60 @@ namespace kxf::FFI
 
 	void CFunctionCompiler::ClearParameters() noexcept
 	{
-		for (auto& argType: m_ArgumentTypes)
-		{
-			argType = nullptr;
-		}
+		m_ArgumentTypes.fill(nullptr);
 		m_CInterface.m_ArgumentCount = 0;
 	}
-	bool CFunctionCompiler::AddParameter(TypeID type) noexcept
+	bool CFunctionCompiler::SetParameters(std::initializer_list<TypeID> types) noexcept
 	{
-		if (SetParameter(m_CInterface.m_ArgumentCount, type))
+		for (TypeID type: types)
+		{
+			if (type == TypeID::None || type == TypeID::Void)
+			{
+				return false;
+			}
+		}
+
+		ClearParameters();
+		for (TypeID type: types)
+		{
+			PushParameter(type);
+		}
+		return true;
+	}
+	bool CFunctionCompiler::PushParameter(TypeID type) noexcept
+	{
+		if (m_CInterface.m_ArgumentCount >= m_ArgumentTypes.size())
+		{
+			return false;
+		}
+
+		if (SetParameterAt(m_CInterface.m_ArgumentCount, type))
 		{
 			m_CInterface.m_ArgumentCount++;
 			return true;
 		}
 		return false;
 	}
-	bool CFunctionCompiler::SetParameter(size_t index, TypeID type) noexcept
+	TypeID CFunctionCompiler::PopParameter() noexcept
 	{
-		using namespace Private;
-
-		if (type != TypeID::Void && index < m_ArgumentTypes.size())
+		if (m_CInterface.m_ArgumentCount != 0)
 		{
-			if (const ffi_type* ffiType = GetFFIType(type))
-			{
-				m_ArgumentTypes[index] = reinterpret_cast<const CType*>(ffiType);
-				return true;
-			}
+			auto& lastArg = m_ArgumentTypes[m_CInterface.m_ArgumentCount - 1];
+			TypeID type = lastArg->m_Type;
+			lastArg = nullptr;
+
+			m_CInterface.m_ArgumentCount--;
+			return type;
 		}
-		return false;
+		return TypeID::None;
 	}
-	TypeID CFunctionCompiler::GetParameterType(size_t index) const noexcept
+	TypeID CFunctionCompiler::GetParameterAt(size_t index) const noexcept
 	{
-		return m_ArgumentTypes[index]->m_Type;
+		if (index < m_CInterface.m_ArgumentCount)
+		{
+			return m_ArgumentTypes[index]->m_Type;
+		}
+		return TypeID::None;
 	}
 
 	TypeID CFunctionCompiler::GetReturnType() const noexcept
