@@ -26,7 +26,7 @@
     <OverrideVcpkgTriplet>false</OverrideVcpkgTriplet>
     <OverrideVcpkgTripletName>none</OverrideVcpkgTripletName>
     <ProjectName>kxf</ProjectName>
-	<EnableStdModules>false</EnableStdModules>
+    <EnableStdModules>false</EnableStdModules>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Configuration">
@@ -752,7 +752,6 @@
     <ClInclude Include="kxf\System\Common.h" />
     <ClInclude Include="kxf\System\DPIAwareness.h" />
     <ClInclude Include="kxf\System\Private\BeginIncludeCOM.h" />
-    <ClInclude Include="kxf\System\Private\CFunction.h" />
     <ClInclude Include="kxf\System\Private\CFunctionCompiler.h" />
     <ClInclude Include="kxf\System\Private\EndIncludeCOM.h" />
     <ClInclude Include="kxf\System\Private\IncludeNtStatus.h" />

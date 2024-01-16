@@ -565,9 +565,6 @@
     <ClInclude Include="kxf\System\CFunction.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\Private\CFunction.h">
-      <Filter>kxf\System\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\CFunctionCompiler.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
