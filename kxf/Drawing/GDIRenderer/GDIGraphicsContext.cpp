@@ -200,7 +200,7 @@ namespace kxf
 	}
 	void GDIGraphicsContext::TransformRotate(Angle angle)
 	{
-		if (m_DC.CanUseTransformMatrix())
+		if (m_DC.CanUseTransformMatrix() && angle.IsValid() && angle.ToNormalized() != 0)
 		{
 			auto matrix = m_DC.GetTransformMatrix();
 			matrix.Rotate(angle);
@@ -218,7 +218,7 @@ namespace kxf
 	}
 	void GDIGraphicsContext::TransformTranslate(float dx, float dy)
 	{
-		if (m_DC.CanUseTransformMatrix())
+		if (m_DC.CanUseTransformMatrix() && (dx != 0 || dy != 0))
 		{
 			auto matrix = m_DC.GetTransformMatrix();
 			matrix.Translate(static_cast<int>(dx), static_cast<int>(dy));
@@ -641,10 +641,8 @@ namespace kxf
 	}
 
 	// Offset management
-	void GDIGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale)
+	void GDIGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale, const PointF& origin)
 	{
-		const PointF origin = m_DC.GetDeviceOrigin();
-
 		m_DC.SetDeviceOrigin(Point(origin.GetX() - scrollPos.GetX() * scrollInc.GetX(), origin.GetY() - scrollPos.GetY() * scrollInc.GetY()));
 		m_DC.SetUserScale(SizeD(scale.GetX(), scale.GetY()));
 	}

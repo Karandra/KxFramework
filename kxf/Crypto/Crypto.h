@@ -13,7 +13,7 @@ namespace kxf::Crypto
 	KX_API size_t Rot13(String& source) noexcept;
 	KX_API size_t UwUize(String& source) noexcept;
 
-	KX_API HashValue<32> CRC32(IInputStream& stream) noexcept;
+	KX_API HashValue<32> CRC32(IInputStream& stream, uint32_t initialValue = 0xFFFFFFFFu) noexcept;
 	KX_API HashValue<128> MD5(IInputStream& stream) noexcept;
 
 	KX_API HashValue<160> SHA1(IInputStream& stream) noexcept;

@@ -47,7 +47,7 @@ namespace
 		}
 		else
 		{
-			static_assert(false, "cURL::SetOptionInt: Unknown type");
+			static_assert(sizeof(T*) == 0, "cURL::SetOptionInt: Unknown type");
 			if constexpr(easy)
 			{
 				return CURL_LAST;

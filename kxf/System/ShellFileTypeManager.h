@@ -52,7 +52,7 @@ namespace kxf
 					}
 					else
 					{
-						static_assert(false, "invalid return type");
+						static_assert(sizeof(TFunc*) == 0, "invalid return type");
 					}
 				}
 				return counter;

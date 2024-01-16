@@ -31,15 +31,17 @@ namespace kxf::FFI
 
 		#if _WIN64
 
-		X64 = 1,
-		SysV = X64,
-		StdCall = X64,
-		ThisCall = X64,
-		FastCall = X64,
-		CDecl = X64,
-		Pascal = X64,
-		Register = X64,
-		Default = X64,
+		Win64 = 1,
+		GNU64 = 2,
+		Default = Win64,
+
+		SysV = Default,
+		StdCall = Default,
+		ThisCall = Default,
+		FastCall = Default,
+		CDecl = Default,
+		Pascal = Default,
+		Register = Default,
 
 		#else
 
@@ -54,6 +56,63 @@ namespace kxf::FFI
 
 		#endif
 	};
+
+	template<class T>
+	constexpr TypeID GetTypeID() noexcept
+	{
+		if constexpr (std::is_pointer_v<T>)
+		{
+			return TypeID::Pointer;
+		}
+		else if constexpr (std::is_void_v<T>)
+		{
+			return TypeID::Void;
+		}
+		else if constexpr (std::is_same_v<T, int8_t>)
+		{
+			return TypeID::Int8;
+		}
+		else if constexpr (std::is_same_v<T, int16_t>)
+		{
+			return TypeID::Int16;
+		}
+		else if constexpr (std::is_same_v<T, int32_t>)
+		{
+			return TypeID::Int32;
+		}
+		else if constexpr (std::is_same_v<T, int64_t>)
+		{
+			return TypeID::Int64;
+		}
+		else if constexpr (std::is_same_v<T, uint8_t>)
+		{
+			return TypeID::UInt8;
+		}
+		else if constexpr (std::is_same_v<T, uint16_t>)
+		{
+			return TypeID::UInt16;
+		}
+		else if constexpr (std::is_same_v<T, uint32_t>)
+		{
+			return TypeID::UInt32;
+		}
+		else if constexpr (std::is_same_v<T, uint64_t>)
+		{
+			return TypeID::UInt64;
+		}
+		else if constexpr (std::is_same_v<T, float>)
+		{
+			return TypeID::Float32;
+		}
+		else if constexpr (std::is_same_v<T, double>)
+		{
+			return TypeID::Float64;
+		}
+		else
+		{
+			static_assert(sizeof(T*) == 0, "this type is not supported");
+		}
+	}
 }
 
 namespace kxf::FFI::Private
@@ -61,9 +120,12 @@ namespace kxf::FFI::Private
 	// Layout of these types must be the same as their corresponding 'ffi_*' counterparts.
 	enum class CStatus
 	{
+		Unknown = -1,
+
 		Success = 0,
 		BadTypedef,
-		BadABI
+		BadABI,
+		BadArgType,
 	};
 
 	struct CType final
@@ -75,8 +137,6 @@ namespace kxf::FFI::Private
 	};
 	struct CInterface final
 	{
-		using OnCall = void(*)(CInterface*, void*, void**, CFunctionCompiler*);
-
 		ABI m_ABI = ABI::None;
 		uint32_t m_ArgumentCount = 0;
 		const CType** m_ArgumentTypes = nullptr;
@@ -85,61 +145,4 @@ namespace kxf::FFI::Private
 		uint32_t m_Flags = 0;
 	};
 	struct CClosure;
-
-	template<class T>
-	constexpr TypeID GetTypeID() noexcept
-	{
-		if constexpr(std::is_pointer_v<T>)
-		{
-			return TypeID::Pointer;
-		}
-		else if constexpr(std::is_void_v<T>)
-		{
-			return TypeID::Void;
-		}
-		else if constexpr(std::is_same_v<T, int8_t>)
-		{
-			return TypeID::Int8;
-		}
-		else if constexpr(std::is_same_v<T, int16_t>)
-		{
-			return TypeID::Int16;
-		}
-		else if constexpr(std::is_same_v<T, int32_t>)
-		{
-			return TypeID::Int32;
-		}
-		else if constexpr(std::is_same_v<T, int64_t>)
-		{
-			return TypeID::Int64;
-		}
-		else if constexpr(std::is_same_v<T, uint8_t>)
-		{
-			return TypeID::UInt8;
-		}
-		else if constexpr(std::is_same_v<T, uint16_t>)
-		{
-			return TypeID::UInt16;
-		}
-		else if constexpr(std::is_same_v<T, uint32_t>)
-		{
-			return TypeID::UInt32;
-		}
-		else if constexpr(std::is_same_v<T, uint64_t>)
-		{
-			return TypeID::UInt64;
-		}
-		else if constexpr(std::is_same_v<T, float>)
-		{
-			return TypeID::Float32;
-		}
-		else if constexpr(std::is_same_v<T, double>)
-		{
-			return TypeID::Float64;
-		}
-		else
-		{
-			static_assert(false, "this type is not supported");
-		}
-	}
 }

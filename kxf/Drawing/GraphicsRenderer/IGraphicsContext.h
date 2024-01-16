@@ -263,7 +263,7 @@ namespace kxf
 			virtual bool ShouldOffset() const = 0;
 			virtual void EnableOffset(bool enable = true) = 0;
 
-			virtual void OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale = {});
+			virtual void OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale = {}, const PointF& origin = {});
 			void OffsetForScrollableArea(const wxScrollHelper& scrollableWidget);
 	};
 }

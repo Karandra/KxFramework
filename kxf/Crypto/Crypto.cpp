@@ -84,7 +84,8 @@ namespace
 
 				HashValue<bitLength> hash;
 				unsigned int length = EVP_MD_size(algorithm);
-				if (EVP_DigestFinal_ex(context, reinterpret_cast<TValue*>(hash.data()), &length) == 1 && length <= hash.length())
+
+				if (EVP_DigestFinal_ex(context, reinterpret_cast<unsigned char*>(hash.data()), &length) == 1 && length <= hash.length())
 				{
 					return hash;
 				}
@@ -181,9 +182,8 @@ namespace kxf::Crypto
 		return count;
 	}
 
-	HashValue<32> CRC32(IInputStream& stream) noexcept
+	HashValue<32> CRC32(IInputStream& stream, uint32_t initialValue) noexcept
 	{
-		constexpr uint32_t initialValue = 0xFFFFFFFFu;
 		constexpr uint32_t table[] =
 		{
 			0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F,
@@ -246,29 +246,29 @@ namespace kxf::Crypto
 	}
 	HashValue<128> MD5(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<MD5_CTX, MD5_DIGEST_LENGTH>(stream, MD5_Init, MD5_Update, MD5_Final);
+		return DoCalcHash2<MD5_DIGEST_LENGTH * 8>(stream, EVP_md5);
 	}
 
 	HashValue<160> SHA1(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<SHA_CTX, SHA_DIGEST_LENGTH>(stream, SHA1_Init, SHA1_Update, SHA1_Final);
+		return DoCalcHash2<SHA_DIGEST_LENGTH * 8>(stream, EVP_sha1);
 	}
 
 	HashValue<224> SHA2_224(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<SHA256_CTX, SHA224_DIGEST_LENGTH>(stream, SHA224_Init, SHA224_Update, SHA224_Final);
+		return DoCalcHash2<SHA224_DIGEST_LENGTH * 8>(stream, EVP_sha224);
 	}
 	HashValue<256> SHA2_256(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<SHA256_CTX, SHA256_DIGEST_LENGTH>(stream, SHA256_Init, SHA256_Update, SHA256_Final);
+		return DoCalcHash2<SHA256_DIGEST_LENGTH * 8>(stream, EVP_sha256);
 	}
 	HashValue<384> SHA2_384(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<SHA512_CTX, SHA384_DIGEST_LENGTH>(stream, SHA384_Init, SHA384_Update, SHA384_Final);
+		return DoCalcHash2<SHA384_DIGEST_LENGTH * 8>(stream, EVP_sha384);
 	}
 	HashValue<512> SHA2_512(IInputStream& stream) noexcept
 	{
-		return DoCalcHash1<SHA512_CTX, SHA512_DIGEST_LENGTH>(stream, SHA512_Init, SHA512_Update, SHA512_Final);
+		return DoCalcHash2<SHA512_DIGEST_LENGTH * 8>(stream, EVP_sha512);
 	}
 
 	HashValue<224> SHA3_224(IInputStream& stream) noexcept
