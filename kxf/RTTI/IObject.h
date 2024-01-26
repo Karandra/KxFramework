@@ -23,6 +23,7 @@ namespace kxf::RTTI
 		private:
 			void* m_Ref = nullptr;
 			std::shared_ptr<void> m_Lock;
+			const std::type_info* m_TypeInfo = nullptr;
 
 		public:
 			QueryInfo() noexcept = default;
@@ -32,6 +33,7 @@ namespace kxf::RTTI
 
 			template<std::derived_from<IObject> T>
 			QueryInfo(T& ref) noexcept
+				:m_TypeInfo(&typeid(T))
 			{
 				if (auto weak = ref.weak_from_this(); weak.expired())
 				{
@@ -47,7 +49,7 @@ namespace kxf::RTTI
 
 			template<std::derived_from<IObject> T>
 			QueryInfo(std::shared_ptr<T> ptr) noexcept
-				:m_Ref(m_Lock.get()), m_Lock(std::move(ptr))
+				:m_Ref(m_Lock.get()), m_Lock(std::move(ptr)), m_TypeInfo(&typeid(T))
 			{
 			}
 
@@ -59,6 +61,10 @@ namespace kxf::RTTI
 			bool IsNull() const noexcept
 			{
 				return m_Ref == nullptr || m_Lock == nullptr;
+			}
+			const char* GetTypeName() const noexcept
+			{
+				return m_TypeInfo ? m_TypeInfo->name() : nullptr;
 			}
 
 			template<std::derived_from<IObject> T>
@@ -95,6 +101,44 @@ namespace kxf::RTTI
 			QueryInfo& operator=(const QueryInfo&) = delete;
 			QueryInfo& operator=(QueryInfo&&) noexcept = default;
 	};
+
+	void DebugPrint(const char* str) noexcept;
+
+	template<class T>
+	RTTI::QueryInfo Cast(T& object, const IID& iid) noexcept
+	{
+		static_assert((std::is_base_of_v<IObject, T>), "T must inherit from 'IObject'");
+		DebugPrint("Enter: " __FUNCSIG__);
+
+		if (iid.IsOfType<T>())
+		{
+			DebugPrint("Cast -> success");
+			DebugPrint("Leave: " __FUNCSIG__);
+			return object;
+		}
+
+		DebugPrint("Leave: " __FUNCSIG__);
+		return nullptr;
+	}
+
+	template<class... Args>
+	RTTI::QueryInfo UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
+	{
+		DebugPrint("Enter: " __FUNCSIG__);
+
+		RTTI::QueryInfo query;
+		if (((query = Cast<Args>(arg, iid), !query.IsNull()) || ...))
+		{
+			DebugPrint("UseAnyOf -> success");
+			DebugPrint(query.GetTypeName());
+			DebugPrint("Leave: " __FUNCSIG__);
+
+			return query;
+		}
+
+		DebugPrint("Leave: " __FUNCSIG__);
+		return nullptr;
+	}
 }
 
 namespace kxf
@@ -116,44 +160,6 @@ namespace kxf
 			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
 			static const RTTI::ClassInfo& ms_ClassInfo;
 			static std::shared_ptr<IObject>& ms_UnownedRef;
-
-		protected:
-			template<class T>
-			static RTTI::QueryInfo Cast(T& object, const IID& iid) noexcept
-			{
-				static_assert((std::is_base_of_v<IObject, T>), "T must inherit from 'IObject'");
-
-				if (iid.IsOfType<T>())
-				{
-					return object;
-				}
-				return nullptr;
-			}
-
-			template<class... Args, class TSelf>
-			static RTTI::QueryInfo QuerySelf(const IID& iid, TSelf& self) noexcept
-			{
-				if (iid.IsOfType<TSelf>())
-				{
-					return self;
-				}
-				else if (RTTI::QueryInfo query; ((query = static_cast<Args&>(self).Args::DoQueryInterface(iid), !query.IsNull()) || ...))
-				{
-					return query;
-				}
-				return self.IObject::DoQueryInterface(iid);
-			}
-
-			template<class... Args>
-			static RTTI::QueryInfo UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
-			{
-				RTTI::QueryInfo query;
-				if (((query = Cast<Args>(arg, iid), !query.IsNull()) || ...))
-				{
-					return query;
-				}
-				return nullptr;
-			}
 
 		protected:
 			virtual RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept = 0;
