@@ -17,6 +17,7 @@
 // Standard library
 #include <cstdint>
 #include <cstddef>
+#include <cstdlib>
 #include <memory>
 #include <optional>
 #include <functional>

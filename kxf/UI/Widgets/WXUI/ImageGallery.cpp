@@ -82,7 +82,7 @@ namespace kxf::WXUI
 			return m_Widget.ProcessEvent(event, eventType);
 		};
 
-		const int itemsInRow = CalcItemsPerRow();
+		const size_t itemsInRow = CalcItemsPerRow();
 		const Point pos = Point(event.GetPosition());
 		const int row = VirtualHitTest(pos.GetY());
 

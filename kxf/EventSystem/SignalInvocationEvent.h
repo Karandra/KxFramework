@@ -46,7 +46,7 @@ namespace kxf::EventSystem
 				}
 				else
 				{
-					static_assert(false, "incorrect 'SignalParametersSemantics' option");
+					static_assert(sizeof(TSignal_*) == 0, "incorrect 'SignalParametersSemantics' option");
 				}
 			}
 

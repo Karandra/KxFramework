@@ -343,10 +343,7 @@ namespace kxf
 				// Set brush (solid only for now)
 				if (auto brush = GetBrush())
 				{
-					if (auto solidBrush = brush->QueryInterface<IGraphicsSolidBrush>())
-					{
-						dc.SetBrush(solidBrush->GetColor());
-					}
+					dc.SetBrush(brush->GetColor());
 				}
 
 				// Set pen (solid only for now)
@@ -418,7 +415,7 @@ namespace kxf
 				else if (flags.Contains(EllipsizeFlag::ExpandTabs) && *it == '\t')
 				{
 					// We need also to expand tabs to properly calc their size.
-					// Windows natively expands the TABs to 6 spaces. Do the same
+					// Windows natively expands the TABs to 6 spaces. Do the same.
 					currentLine += "      ";
 				}
 				else

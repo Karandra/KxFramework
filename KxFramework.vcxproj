@@ -26,11 +26,12 @@
     <OverrideVcpkgTriplet>false</OverrideVcpkgTriplet>
     <OverrideVcpkgTripletName>none</OverrideVcpkgTripletName>
     <ProjectName>kxf</ProjectName>
+    <EnableStdModules>false</EnableStdModules>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
@@ -267,6 +268,7 @@
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\ILibraryInfo.h" />
+    <ClInclude Include="kxf\General\IMemoryAllocator.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\NullVariablesCollection.h" />
@@ -278,6 +280,7 @@
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
+    <ClInclude Include="kxf\General\StupidMemoryAllocator.h" />
     <ClInclude Include="kxf\General\UniChar.h" />
     <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
@@ -776,7 +779,6 @@
     <ClInclude Include="kxf\System\Common.h" />
     <ClInclude Include="kxf\System\DPIAwareness.h" />
     <ClInclude Include="kxf\System\Private\BeginIncludeCOM.h" />
-    <ClInclude Include="kxf\System\Private\CFunction.h" />
     <ClInclude Include="kxf\System\Private\CFunctionCompiler.h" />
     <ClInclude Include="kxf\System\Private\EndIncludeCOM.h" />
     <ClInclude Include="kxf\System\Private\IncludeNtStatus.h" />
@@ -907,6 +909,7 @@
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\StdID.cpp" />
+    <ClCompile Include="kxf\General\StupidMemoryAllocator.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp" />
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />

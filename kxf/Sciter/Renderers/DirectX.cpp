@@ -66,11 +66,7 @@ namespace kxf::Sciter
 		HResult hr = HResult::Fail();
 		if (NativeAPI::DXGI::CreateDXGIFactory2)
 		{
-			hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_DXGIFactory));
-		}
-		else
-		{
-			hr = CreateDXGIFactory1(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_DXGIFactory));
+			hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), m_DXGIFactory.GetAddress());
 		}
 		if (!hr)
 		{

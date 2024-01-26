@@ -12,13 +12,7 @@ namespace kxf::RTTI
 	template<std::derived_from<IObject> T>
 	std::shared_ptr<T> assume_non_owned(T& value) noexcept
 	{
-		struct OwnerlessDeleter final
-		{
-			void operator()(T*) noexcept
-			{
-			}
-		};
-		return {&value, OwnerlessDeleter()};
+		return {IObject::ms_UnownedRef, &value};
 	}
 }
 
@@ -27,8 +21,8 @@ namespace kxf::RTTI
 	class QueryInfo final
 	{
 		private:
-			std::shared_ptr<void> m_Lock;
 			void* m_Ref = nullptr;
+			std::shared_ptr<void> m_Lock;
 
 		public:
 			QueryInfo() noexcept = default;
@@ -53,7 +47,7 @@ namespace kxf::RTTI
 
 			template<std::derived_from<IObject> T>
 			QueryInfo(std::shared_ptr<T> ptr) noexcept
-				:m_Lock(std::move(ptr)), m_Ref(m_Lock.get())
+				:m_Ref(m_Lock.get()), m_Lock(std::move(ptr))
 			{
 			}
 
@@ -113,11 +107,15 @@ namespace kxf
 		template<class T>
 		friend const RTTI::ClassInfo& RTTI::GetClassInfo() noexcept;
 
+		template<std::derived_from<IObject> T>
+		friend std::shared_ptr<T> RTTI::assume_non_owned(T&) noexcept;
+
 		friend class RTTI::QueryInfo;
 
 		private:
 			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
 			static const RTTI::ClassInfo& ms_ClassInfo;
+			static std::shared_ptr<IObject>& ms_UnownedRef;
 
 		protected:
 			template<class T>

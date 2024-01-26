@@ -577,9 +577,6 @@
     <ClInclude Include="kxf\System\CFunction.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\Private\CFunction.h">
-      <Filter>kxf\System\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\CFunctionCompiler.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
@@ -2352,6 +2349,15 @@
     <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IMemoryAllocator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\StupidMemoryAllocator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Sciter\Private\Conversion.h">
+      <Filter>kxf\Sciter\Private</Filter>
+    </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\WXUI\DataView\MainWindow.h">
       <Filter>kxf\UI\Widgets\WXUI\DataView</Filter>
     </ClInclude>
@@ -3588,6 +3594,9 @@
     <ClCompile Include="kxf\UI\Widgets\ToolBarItem.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\General\StupidMemoryAllocator.cpp">
+      <Filter>kxf\General</Filter>
+	</ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WebView.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>

@@ -743,7 +743,7 @@ namespace kxf
 				}
 				else
 				{
-					static_assert(false, "invalid argument types");
+					static_assert(sizeof(T1*) == 0, "invalid argument types");
 				}
 			}
 
@@ -1114,7 +1114,7 @@ namespace kxf
 		}
 		else
 		{
-			static_assert(false, "Unsupported char type");
+			static_assert(sizeof(T*) == 0, "Unsupported char type");
 		}
 	}
 
