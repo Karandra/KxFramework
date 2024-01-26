@@ -18,11 +18,29 @@ namespace kxf::RTTI
 		protected:
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
+				RTTI::DebugPrint("Enter: " __FUNCSIG__);
+
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
+					RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
-				return IObject::QuerySelf(iid, static_cast<T&>(*this));
+				else if (iid.IsOfType<T>())
+				{
+					RTTI::DebugPrint("Requested T -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
+					return static_cast<T&>(*this);
+				}
+
+				RTTI::DebugPrint("Requesting base");
+				auto query = IObject::DoQueryInterface(iid);
+				RTTI::DebugPrint(query.GetTypeName());
+				RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
+				return query;
 			}
 
 		public:
@@ -45,12 +63,33 @@ namespace kxf::RTTI
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+				RTTI::DebugPrint("Enter: " __FUNCSIG__);
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
+					RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
-				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
+				else if (iid.IsOfType<TDerived>())
+				{
+					RTTI::DebugPrint("Requested TDerived -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
+					return static_cast<TDerived&>(*this);
+				}
+				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
+				{
+					RTTI::DebugPrint("Requested TBase -> success");
+					RTTI::DebugPrint(query.GetTypeName());
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
+					return query;
+				}
+
+				RTTI::DebugPrint("Leave: " __FUNCSIG__);
+				return nullptr;
 			}
 
 		public:
@@ -73,15 +112,25 @@ namespace kxf::RTTI
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+				RTTI::DebugPrint("Enter: " __FUNCSIG__);
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
+					RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
+					RTTI::DebugPrint("Requested TBase -> success");
+					RTTI::DebugPrint(query.GetTypeName());
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return query;
 				}
+
+				RTTI::DebugPrint("Leave: " __FUNCSIG__);
 				return nullptr;
 			}
 
@@ -109,19 +158,32 @@ namespace kxf::RTTI
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+				RTTI::DebugPrint("Enter: " __FUNCSIG__);
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
+					RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				else if (iid.IsOfType<TDerived>())
 				{
+					RTTI::DebugPrint("Requested TDerived -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<TDerived&>(*this);
 				}
 				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
+					RTTI::DebugPrint("Requested TBase -> success");
+					RTTI::DebugPrint(query.GetTypeName());
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return query;
 				}
+
+				RTTI::DebugPrint("Leave: " __FUNCSIG__);
 				return nullptr;
 			}
 
@@ -145,15 +207,25 @@ namespace kxf::RTTI
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+				RTTI::DebugPrint("Enter: " __FUNCSIG__);
 
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
+					RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return static_cast<ClassInfo&>(ms_ClassInfo);
 				}
 				else if (RTTI::QueryInfo query; ((query = TBase::DoQueryInterface(iid), !query.IsNull()) || ...))
 				{
+					RTTI::DebugPrint("Requested TBase -> success");
+					RTTI::DebugPrint(query.GetTypeName());
+					RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 					return query;
 				}
+
+				RTTI::DebugPrint("Leave: " __FUNCSIG__);
 				return nullptr;
 			}
 
@@ -162,19 +234,34 @@ namespace kxf::RTTI
 	};
 }
 
-#define KxRTTI_QueryInterface_Extend(T, ...)	\
+#define KxRTTI_QueryInterface_Extend(T, TBase)	\
 \
 private:	\
-	static inline kxf::RTTI::InterfaceClassInfo<T, __VA_ARGS__> ms_ClassInfo; \
+	static inline kxf::RTTI::InterfaceClassInfo<T, TBase> ms_ClassInfo; \
 	\
 public:	\
 	kxf::RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override	\
 	{	\
+		RTTI::DebugPrint("Enter: " __FUNCSIG__);	\
+		\
 		if (iid.IsOfType<kxf::RTTI::ClassInfo>())	\
 		{	\
+			RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");	\
+			RTTI::DebugPrint("Leave: " __FUNCSIG__);	\
+			\
 			return static_cast<kxf::RTTI::ClassInfo&>(ms_ClassInfo);	\
 		}	\
-		return kxf::IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
+		else if (auto query = TBase::DoQueryInterface(iid))	\
+		{	\
+			RTTI::DebugPrint("Requested TBase -> success");	\
+			RTTI::DebugPrint(query.GetTypeName());	\
+			RTTI::DebugPrint("Leave: " __FUNCSIG__);	\
+			\
+			return query;	\
+		}	\
+		\
+		RTTI::DebugPrint("Leave: " __FUNCSIG__);	\
+		return nullptr;	\
 	}
 
 #define KxRTTI_QueryInterface_Base(T)	KxRTTI_QueryInterface_Extend(T)

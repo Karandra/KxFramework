@@ -84,7 +84,11 @@ namespace kxf
 			static XMLDocumentLibraryInfo libraryInfo;
 			return static_cast<ILibraryInfo&>(libraryInfo);
 		}
-		return IObject::QuerySelf(iid, *this);
+		else if (iid.IsOfType<XMLDocument>())
+		{
+			return *this;
+		}
+		return IObject::DoQueryInterface(iid);
 	}
 
 	XMLNode XMLDocument::CreateElement(const String& name)

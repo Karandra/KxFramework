@@ -64,6 +64,44 @@ namespace
 
 	std::shared_ptr<kxf::IObject> g_UnownedRef = {nullptr, OwnerlessDeleter(), FixedAllocator<kxf::IObject>()};
 	kxf::RTTI::InterfaceClassInfo<kxf::IObject> g_ClassInfo;
+
+	//#define RTTI_DEBUG 1
+	#ifdef RTTI_DEBUG
+	thread_local std::atomic<size_t> g_DbgPrintIndent = 0;
+	#endif
+}
+
+namespace kxf::RTTI
+{
+	void DebugPrint(const char* str) noexcept
+	{
+		#ifdef RTTI_DEBUG
+		auto Indent = [](size_t indent)
+		{
+			for (size_t i = 0; i < indent; i++)
+			{
+				::OutputDebugStringA("\t");
+			}
+		};
+
+		std::string_view out = str ? str : "<null>";
+		if (out.starts_with("Enter:"))
+		{
+			Indent(g_DbgPrintIndent++);
+		}
+		else if (out.starts_with("Leave:"))
+		{
+			Indent(--g_DbgPrintIndent);
+		}
+		else
+		{
+			Indent(g_DbgPrintIndent);
+		}
+
+		::OutputDebugStringA(out.data());
+		::OutputDebugStringA("\n");
+		#endif
+	}
 }
 
 namespace kxf
@@ -73,14 +111,24 @@ namespace kxf
 
 	RTTI::QueryInfo IObject::DoQueryInterface(const IID& iid) noexcept
 	{
+		RTTI::DebugPrint("Enter: " __FUNCSIG__);
+
 		if (iid.IsOfType<IObject>())
 		{
+			RTTI::DebugPrint("Requested IObject -> success");
+			RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 			return *this;
 		}
 		else if (iid.IsOfType<RTTI::ClassInfo>())
 		{
+			RTTI::DebugPrint("Requested RTTI::ClassInfo -> success");
+			RTTI::DebugPrint("Leave: " __FUNCSIG__);
+
 			return static_cast<RTTI::ClassInfo&>(g_ClassInfo);
 		}
+
+		RTTI::DebugPrint("Leave: " __FUNCSIG__);
 		return nullptr;
 	}
 }
