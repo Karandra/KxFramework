@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/RTTI/RTTI.h"
-#include "kxf/General/DateTime/TimeSpan.h"
+#include "kxf/Core/DateTime/TimeSpan.h"
 class wxEventLoopBase;
 
 /*

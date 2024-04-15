@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "URI.h"
-#include "kxf/General/ResourceID.h"
+#include "kxf/Core/ResourceID.h"
 #include "kxf/FileSystem/FSPath.h"
 #include <uriparser/Uri.h>
 #include <wx/uri.h>

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "LockGuard.h"
-#include "kxf/General/AlignedStorage.h"
+#include "kxf/Core/AlignedStorage.h"
 struct _RTL_CRITICAL_SECTION;
 
 namespace kxf

@@ -1,10 +1,10 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
-#include "kxf/General/String.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/BinarySize.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/DateTime.h"
+#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf

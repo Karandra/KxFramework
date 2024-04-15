@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/FileSystem/FSPath.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/RTTI/RTTI.h"
 
 namespace kxf

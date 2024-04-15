@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "../IWidget.h"
 #include "../INativeWidget.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
 #include "kxf/EventSystem/EventHandlerStack.h"

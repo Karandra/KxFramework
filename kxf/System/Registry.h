@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/System/Win32Error.h"
 

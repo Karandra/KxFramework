@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "FileBrowseDialog.h"
 #include "Private/FileBrowseDialogEvents.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
 

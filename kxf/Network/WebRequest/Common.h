@@ -4,11 +4,11 @@
 #include "../HTTPStatus.h"
 #include "kxf/RTTI/RTTI.h"
 #include "kxf/IO/Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/FlagSet.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/BinarySize.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/FlagSet.h"
+#include "kxf/Core/DateTime.h"
+#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf
 {

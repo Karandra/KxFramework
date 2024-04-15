@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "WebRequestHeader.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 
 namespace kxf
 {

@@ -2,7 +2,7 @@
 #include "ShellFileType.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
-#include "kxf/General/RegEx.h"
+#include "kxf/Core/RegEx.h"
 #include <wx/regex.h>
 
 namespace kxf

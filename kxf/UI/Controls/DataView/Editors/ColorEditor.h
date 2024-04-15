@@ -1,6 +1,6 @@
 #pragma once
 #include "../Editor.h"
-#include "kxf/General/WithOptions.h"
+#include "kxf/Core/WithOptions.h"
 #include <wx/colourdata.h>
 class wxGenericColourDialog;
 

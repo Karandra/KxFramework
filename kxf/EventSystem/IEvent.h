@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "EventID.h"
 #include "kxf/RTTI/RTTI.h"
-#include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/General/DateTime/TimeSpan.h"
+#include "kxf/Core/UniversallyUniqueID.h"
+#include "kxf/Core/DateTime/TimeSpan.h"
 #include "kxf/UI/WidgetID.h"
 
 namespace kxf

@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/AlignedObjectStorage.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/DateTime.h"
+#include "kxf/Core/AlignedObjectStorage.h"
 class wxCmdLineParser;
 
 namespace kxf

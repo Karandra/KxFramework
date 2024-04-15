@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/String.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Version.h"
 
 namespace kxf::Crypto
 {

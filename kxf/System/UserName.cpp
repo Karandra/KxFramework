@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "UserName.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 
 namespace
 {

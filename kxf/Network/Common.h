@@ -1,8 +1,8 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/String.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/BinarySize.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/DateTime.h"
+#include "kxf/Core/BinarySize.h"
 #include "kxf/Utility/Literals.h"
 
 namespace kxf

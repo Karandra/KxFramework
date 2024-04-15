@@ -1,7 +1,7 @@
 // This file is based on the following file from the LZMA SDK (http://www.7-zip.org/sdk.html):
 // ./CPP/7zip/Guid.txt
 #pragma once
-#include "kxf/General/NativeUUID.h"
+#include "kxf/Core/NativeUUID.h"
 
 namespace kxf::SevenZip::GUID
 {

@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "Validator.h"
 #include <wx/spinctrl.h>
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace

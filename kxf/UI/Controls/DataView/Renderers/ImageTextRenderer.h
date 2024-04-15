@@ -1,6 +1,6 @@
 #pragma once
 #include "../Renderer.h"
-#include "kxf/General/WithOptions.h"
+#include "kxf/Core/WithOptions.h"
 #include "TextRenderer.h"
 #include "ImageRenderer.h"
 

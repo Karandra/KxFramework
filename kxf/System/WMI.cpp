@@ -2,7 +2,7 @@
 #include "WMI.h"
 #include "SafeArray.h"
 #include "VariantProperty.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include "kxf/Utility/Enumerator.h"
 #include <Windows.h>
 #include <wbemcli.h>

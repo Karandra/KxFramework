@@ -3,8 +3,8 @@
 #include "FSPath.h"
 #include "FileItem.h"
 #include "LegacyVolume.h"
-#include "kxf/General/BinarySize.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/Enumerator.h"
 class wxWindow;
 
 namespace kxf

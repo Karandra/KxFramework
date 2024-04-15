@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "FileOperations.h"
-#include "kxf/General/RegEx.h"
+#include "kxf/Core/RegEx.h"
 #include "kxf/Utility/String.h"
 #include <wx/filename.h>
 #include <shlwapi.h>

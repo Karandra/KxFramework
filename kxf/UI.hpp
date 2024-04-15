@@ -5,7 +5,6 @@
 #include "kxf/UI/StdButton.h"
 #include "kxf/UI/Validator.h"
 #include "kxf/UI/StdDialogButtonSizer.h"
-#include "kxf/UI/HiDPIEnabledWindow.h"
 #include "kxf/UI/WindowUpdateLocker.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 
@@ -52,10 +51,10 @@
 #include "kxf/UI/Dialogs/TextBoxDialog.h"
 
 // Menus
-#include "kxf/UI/Menus/Menu.h"
-#include "kxf/UI/Menus/MenuItem.h"
-#include "kxf/UI/Menus/ShellMenu.h"
-#include "kxf/UI/Menus/MenuEvent.h"
+#include "kxf/UI/Menus/MenuWidget.h"
+#include "kxf/UI/Menus/MenuWidgetItem.h"
+#include "kxf/UI/Menus/ShellMenuWidget.h"
+#include "kxf/UI/Events/MenuWidgetEvent.h"
 
 // Windows
 #include "kxf/UI/Windows/Frame.h"

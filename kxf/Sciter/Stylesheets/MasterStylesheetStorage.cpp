@@ -3,7 +3,7 @@
 #include "kxf/Sciter/SciterAPI.h"
 #include "kxf/Sciter/Widget.h"
 #include "kxf/Sciter/Private/Conversion.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf::Sciter
 {

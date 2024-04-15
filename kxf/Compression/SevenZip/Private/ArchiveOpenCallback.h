@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include "WithEvtHandler.h"
 #include "PasswordHandler.h"
-#include "kxf/General/ErrorCode.h"
+#include "kxf/Core/ErrorCode.h"
 #include "kxf/System/COM.h"
 #include <7zip/CPP/7zip/Archive/IArchive.h>
 #include <7zip/CPP/7zip/IPassword.h>

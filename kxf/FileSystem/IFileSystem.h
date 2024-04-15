@@ -2,9 +2,9 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "StorageVolume.h"
-#include "kxf/General/BinarySize.h"
-#include "kxf/General/LocallyUniqueID.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/LocallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/RTTI/RTTI.h"
 #include "kxf/Utility/Common.h"
 

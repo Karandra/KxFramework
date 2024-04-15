@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "EventBroadcastProcessor.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/UI/IWidgetEvent.h"
 
 namespace kxf::EventSystem

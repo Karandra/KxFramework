@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "Color.h"
-#include "kxf/General/RegEx.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/RegEx.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Format.h"
 #include "wx/window.h"
 #include <wx/colour.h>
 #include <wx/brush.h>

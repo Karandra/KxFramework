@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "Angle.h"
 #include "Geometry.h"
-#include "kxf/General/Common.h"
-#include "kxf/General/FlagSet.h"
+#include "kxf/Core/Common.h"
+#include "kxf/Core/FlagSet.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
 #include <cmath>

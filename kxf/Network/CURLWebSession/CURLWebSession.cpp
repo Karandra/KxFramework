@@ -2,7 +2,7 @@
 #include "CURLWebSession.h"
 #include "CURLWebRequest.h"
 #include "LibCURL.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include "kxf/FileSystem/IFileSystem.h"
 
 namespace

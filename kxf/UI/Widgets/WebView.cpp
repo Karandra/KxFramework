@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "WebView.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/Version.h"
 #include "kxf/Network/URI.h"
 #include "kxf/Utility/Enumerator.h"
 #include <wx/webview.h>

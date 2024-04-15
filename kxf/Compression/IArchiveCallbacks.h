@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/RTTI/RTTI.h"
-#include "kxf/General/UniqueFunction.h"
+#include "kxf/Core/UniqueFunction.h"
 
 namespace kxf
 {

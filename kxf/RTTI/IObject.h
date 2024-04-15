@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IID.h"
-#include "kxf/General/FlagSet.h"
+#include "kxf/Core/FlagSet.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/TypeTraits.h>
 

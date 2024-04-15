@@ -1,6 +1,6 @@
 #pragma once
 #include "WidgetEvent.h"
-#include "kxf/General/UniChar.h"
+#include "kxf/Core/UniChar.h"
 class wxKeyEvent;
 
 namespace kxf

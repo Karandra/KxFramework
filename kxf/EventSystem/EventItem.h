@@ -2,9 +2,9 @@
 #include "EventID.h"
 #include "IEvent.h"
 #include "IEventExecutor.h"
-#include "kxf/General/LocallyUniqueID.h"
+#include "kxf/Core/LocallyUniqueID.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf::EventSystem
 {

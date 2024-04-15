@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "LocallyUniqueID.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include <cwchar>
 
 namespace

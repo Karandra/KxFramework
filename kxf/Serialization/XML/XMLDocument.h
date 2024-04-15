@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include "../XDocument.h"
 #include "../BinarySerializer.h"
-#include "kxf/General/ILibraryInfo.h"
+#include "kxf/Core/ILibraryInfo.h"
 #include "kxf/IO/IStream.h"
 #include "TinyXML2.h"
 #include <wx/stream.h>

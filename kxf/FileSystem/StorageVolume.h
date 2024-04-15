@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
-#include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/General/BinarySize.h"
+#include "kxf/Core/UniversallyUniqueID.h"
+#include "kxf/Core/BinarySize.h"
 
 namespace kxf
 {

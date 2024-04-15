@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Utility/Memory.h"
 #include <type_traits>

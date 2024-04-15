@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "NativeEncodingConverter.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include <Windows.h>
 
 namespace kxf

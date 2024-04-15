@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "MainWindow.h"
 #include "HeaderCtrl.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/UI/Events/WidgetMouseEvent.h"

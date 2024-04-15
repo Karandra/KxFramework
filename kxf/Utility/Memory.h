@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/NativeUUID.h"
+#include "kxf/Core/NativeUUID.h"
 #include <memory>
 #include <new>
 #include "kxf/System/UndefWindows.h"

@@ -1,6 +1,7 @@
 #pragma once
 #include "kxf/Serialization/Common.h"
 
+#include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Serialization/XDocument.h"
 #include "kxf/Serialization/XML.h"
 #include "kxf/Serialization/INI.h"

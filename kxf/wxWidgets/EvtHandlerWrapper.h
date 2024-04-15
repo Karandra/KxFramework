@@ -2,7 +2,7 @@
 #include "EventWrapper.h"
 #include "ClientObject.h"
 #include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include <wx/event.h>
 
 namespace kxf::wxWidgets

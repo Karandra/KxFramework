@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/String.h"
-#include "kxf/General/ResourceID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/ResourceID.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/FileSystem/FileItem.h"
 #include "kxf/FileSystem/IFileSystem.h"

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/General/IndexedEnum.h"
+#include "kxf/Core/IndexedEnum.h"
 #include "kxf/System/KnownDirectoryID.h"
 
 namespace kxf::Shell::Private

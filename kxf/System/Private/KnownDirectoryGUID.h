@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/General/NativeUUID.h"
+#include "kxf/Core/NativeUUID.h"
 #include "kxf/System/KnownDirectoryID.h"
 #include <Windows.h>
 #include <KnownFolders.h>

@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "Common.h"
-#include "kxf/General/RegEx.h"
+#include "kxf/Core/RegEx.h"
 #include "OpenSSL/opensslv.h"
 
 namespace kxf::Crypto

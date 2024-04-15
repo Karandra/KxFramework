@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/Common.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Version.h"
 #include "kxf/RTTI/RTTI.h"
 #include "BitmapImage.h"
 #include "Font.h"

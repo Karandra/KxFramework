@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "WxGraphicsRenderer.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include "../GDIRenderer/GDIContext.h"
 #include "../GDIRenderer/GDIFont.h"
 #include "../GraphicsRenderer/IGraphicsContext.h"

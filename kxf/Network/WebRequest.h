@@ -11,7 +11,7 @@
 #include "WebRequest/IWebRequestProxyOptions.h"
 #include "WebRequest/IWebRequestSecurityOptions.h"
 
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf
 {

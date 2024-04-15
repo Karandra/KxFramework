@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../XDocument.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/Version.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf::HTML

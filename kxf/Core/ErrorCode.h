@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/IErrorCode.h"
+#include "kxf/Core/IErrorCode.h"
 
 namespace kxf
 {

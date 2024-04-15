@@ -20,7 +20,5 @@
 #include "kxf/Sciter/GraphicsRenderer/GraphicsPath.h"
 #include "kxf/Sciter/GraphicsRenderer/GraphicsText.h"
 
-// Windows
-
-// Controls
+// Widgets
 #include "kxf/Sciter/Controls/Label.h"

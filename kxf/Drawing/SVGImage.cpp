@@ -3,7 +3,7 @@
 #include "BitmapImage.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/StreamReaderWriter.h"
-#include "kxf/General/DateTime.h"
+#include "kxf/Core/DateTime.h"
 #include <lunasvg/svgdocument.h>
 
 namespace

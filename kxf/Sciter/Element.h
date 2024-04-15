@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Format.h"
 
 namespace kxf
 {

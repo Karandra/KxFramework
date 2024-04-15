@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "IEvtHandler.h"
 #include "EvtHandlerAccessor.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf
 {

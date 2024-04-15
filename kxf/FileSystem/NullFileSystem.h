@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "IFileSystem.h"
 #include "FileItem.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf::FileSystem
 {

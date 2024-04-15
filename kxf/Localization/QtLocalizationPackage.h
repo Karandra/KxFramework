@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ILocalizationPackage.h"
 #include "Private/LocalizationPackageHelper.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/Version.h"
 
 namespace kxf
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf::Sciter
 {

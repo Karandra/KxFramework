@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "kxf/EventSystem/Event.h"
-#include "kxf/General/String.h"
-#include "kxf/General/BinarySize.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/BinarySize.h"
 
 namespace kxf
 {

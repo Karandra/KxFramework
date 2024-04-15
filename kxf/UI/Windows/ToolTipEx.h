@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
-#include "kxf/General/WithOptions.h"
+#include "kxf/Core/WithOptions.h"
 #include <wx/nativewin.h>
 #include <variant>
 struct tagNMHDR;

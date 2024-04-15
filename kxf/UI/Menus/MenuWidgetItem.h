@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "../IMenuWidget.h"
 #include "../IMenuWidgetItem.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/Drawing/IRendererNative.h"
 #include "kxf/EventSystem/BasicEvtHandler.h"
 #include "kxf/EventSystem/EventHandlerStack.h"

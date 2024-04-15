@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "IObject.h"
 #include "ClassInfo.h"
-#include "kxf/General/String.h"
-#include "kxf/General/StupidMemoryAllocator.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/StupidMemoryAllocator.h"
 
 namespace
 {

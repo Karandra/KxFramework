@@ -52,7 +52,7 @@
     <Filter Include="kxf\FileSystem">
       <UniqueIdentifier>{a95e1a0b-7728-4fee-bdea-a3a34c440c70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General">
+    <Filter Include="kxf\Core">
       <UniqueIdentifier>{7777f244-e0e6-49ac-b259-199b1aed7a28}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\Compression">
@@ -67,7 +67,7 @@
     <Filter Include="kxf\FileSystem\Private">
       <UniqueIdentifier>{8d4abda0-ae07-4c67-8215-582952c35bd2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\Private">
+    <Filter Include="kxf\Core\Private">
       <UniqueIdentifier>{9bddb8ad-b98d-4558-90ae-2b5b7048b860}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\wxWidgets">
@@ -139,10 +139,10 @@
     <Filter Include="kxf\UI\&lt;UI&gt;">
       <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\DateTime">
+    <Filter Include="kxf\Core\DateTime">
       <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\DateTime\Private">
+    <Filter Include="kxf\Core\DateTime\Private">
       <UniqueIdentifier>{1927ba84-01dd-4b98-90dd-7496ee4a3211}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\Compression\SevenZip">
@@ -236,7 +236,7 @@
     <Filter Include="kxf\Drawing\WxRenderer">
       <UniqueIdentifier>{a2fbc745-d4d0-4f41-87a4-f00f4ec82b32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\&lt;VariablesCollection&gt;">
+    <Filter Include="kxf\Core\&lt;VariablesCollection&gt;">
       <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\Network\CURLWebSession">
@@ -439,11 +439,11 @@
     <ClInclude Include="kxf\FileSystem\Common.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Common.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Common.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\NativeUUID.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\NativeUUID.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Async\Coroutine\YieldInstruction.h">
       <Filter>kxf\Async\Coroutine</Filter>
@@ -460,14 +460,14 @@
     <ClInclude Include="kxf\FileSystem\FileOperations.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\BinarySize.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\BinarySize.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\FileItem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\ExtraData.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\ExtraData.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\IFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
@@ -475,8 +475,8 @@
     <ClInclude Include="kxf\FileSystem\NativeFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Singleton.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Singleton.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\LegacyVolume.h">
       <Filter>kxf\FileSystem</Filter>
@@ -514,8 +514,8 @@
     <ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h">
       <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Private\ExtraData.h">
-      <Filter>kxf\General\Private</Filter>
+    <ClInclude Include="kxf\Core\Private\ExtraData.h">
+      <Filter>kxf\Core\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\Private\IncludeNtStatus.h">
       <Filter>kxf\System\Private</Filter>
@@ -523,23 +523,23 @@
     <ClInclude Include="kxf\System\Private\EndIncludeCOM.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Version.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Version.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Private\VersionImpl.h">
-      <Filter>kxf\General\Private</Filter>
+    <ClInclude Include="kxf\Core\Private\VersionImpl.h">
+      <Filter>kxf\Core\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Any.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Any.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Numeric.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\UniversallyUniqueID.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\UniversallyUniqueID.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\String.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\String.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\String.h">
       <Filter>kxf\Utility</Filter>
@@ -598,8 +598,8 @@
     <ClInclude Include="kxf\Utility\System.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IndexedEnum.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\IndexedEnum.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Memory.h">
       <Filter>kxf\Utility</Filter>
@@ -616,11 +616,11 @@
     <ClInclude Include="kxf\Drawing\WithImageList.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Math.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Math.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\WithOptions.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\WithOptions.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\DPIAwareness.h">
       <Filter>kxf\System</Filter>
@@ -640,8 +640,8 @@
     <ClInclude Include="kxf\Localization\Private\LocaleOptions.h">
       <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StdID.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\StdID.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Async.hpp">
       <Filter>kxf/Modules</Filter>
@@ -661,7 +661,7 @@
     <ClInclude Include="kxf\FileSystem.hpp">
       <Filter>kxf/Modules</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General.hpp">
+    <ClInclude Include="kxf\Core.hpp">
       <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Localization.hpp">
@@ -998,38 +998,38 @@
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\TimeClock.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\TimeClock.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\TimeSpan.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\TimeSpan.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\ITimeClock.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\ITimeClock.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\DateTime.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\Common.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\Common.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\DateTime.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\DateTime.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\TimeZone.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\TimeZone.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\Private\Mapping.h">
-      <Filter>kxf\General\DateTime\Private</Filter>
+    <ClInclude Include="kxf\Core\DateTime\Private\Mapping.h">
+      <Filter>kxf\Core\DateTime\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\pch.hpp">
       <Filter>kxf</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DateTime\DateSpan.h">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClInclude Include="kxf\Core\DateTime\DateSpan.h">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\RegEx.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\RegEx.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Crypto\UserCredentials.h">
       <Filter>kxf\Crypto</Filter>
@@ -1064,8 +1064,8 @@
     <ClInclude Include="kxf\UI\Common.h">
       <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\FlagSet.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\FlagSet.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\WindowWithStyles.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
@@ -1079,8 +1079,8 @@
     <ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h">
       <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\LocallyUniqueID.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\LocallyUniqueID.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Compression\SevenZip\Common.h">
       <Filter>kxf\Compression\SevenZip</Filter>
@@ -1118,8 +1118,8 @@
     <ClInclude Include="kxf\Compression\SevenZip\Archive.h">
       <Filter>kxf\Compression\SevenZip</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\AlignedStorage.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\AlignedStorage.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Threading\CriticalSection.h">
       <Filter>kxf\Threading</Filter>
@@ -1334,8 +1334,8 @@
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\ResourceID.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\ResourceID.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Localization\LocalizationItem.h">
       <Filter>kxf\Localization</Filter>
@@ -1364,8 +1364,8 @@
     <ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\OptionalPtr.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\OptionalPtr.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
@@ -1406,8 +1406,8 @@
     <ClInclude Include="kxf\IO\NativeFileStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IErrorCode.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\IErrorCode.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\Win32Error.h">
       <Filter>kxf\System</Filter>
@@ -1673,23 +1673,23 @@
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\ErrorCode.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\ErrorCode.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\CombinedVariablesCollection.h">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\CombinedVariablesCollection.h">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\DynamicVariablesCollection.h">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\DynamicVariablesCollection.h">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StaticVariablesCollection.h">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\StaticVariablesCollection.h">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IVariablesCollection.h">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\IVariablesCollection.h">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\NullVariablesCollection.h">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\NullVariablesCollection.h">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\RTTI\ClassInfo.h">
       <Filter>kxf\RTTI</Filter>
@@ -1703,14 +1703,14 @@
     <ClInclude Include="kxf\RTTI\Interface.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IEnumerator.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\IEnumerator.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Literals.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Enumerator.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Enumerator.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Enumerator.h">
       <Filter>kxf\Utility</Filter>
@@ -1718,17 +1718,17 @@
     <ClInclude Include="kxf\Utility\Functional.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\OptionalRef.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\OptionalRef.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\HandlePtr.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\AlignedBuffer.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\AlignedBuffer.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\AlignedObjectStorage.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\AlignedObjectStorage.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBitmap.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
@@ -1742,8 +1742,8 @@
     <ClInclude Include="kxf\wxWidgets\EventTagRef.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\UniqueFunction.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\UniqueFunction.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\WMI.h">
       <Filter>kxf\System</Filter>
@@ -1755,8 +1755,8 @@
       <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxfResources.h" />
-    <ClInclude Include="kxf\General\ILibraryInfo.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\ILibraryInfo.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IO\NullStream.h">
       <Filter>kxf\IO</Filter>
@@ -1899,20 +1899,20 @@
     <ClInclude Include="kxf\IO\MemoryStreamBuffer.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Format.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\Format.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\UniChar.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\UniChar.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IEncodingConverter.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\IEncodingConverter.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Private\NativeEncodingConverter.h">
-      <Filter>kxf\General\Private</Filter>
+    <ClInclude Include="kxf\Core\Private\NativeEncodingConverter.h">
+      <Filter>kxf\Core\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Private\WhateverWorksEncodingConverter.h">
-      <Filter>kxf\General\Private</Filter>
+    <ClInclude Include="kxf\Core\Private\WhateverWorksEncodingConverter.h">
+      <Filter>kxf\Core\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Application\CommandLineParser.h">
       <Filter>kxf\Application</Filter>
@@ -2331,8 +2331,8 @@
     <ClInclude Include="kxf\UI\Widgets\DataView.h">
       <Filter>kxf\UI\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\RecursionGuard.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\RecursionGuard.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter\Private\Conversion.h">
       <Filter>kxf\Sciter\Private</Filter>
@@ -2349,11 +2349,11 @@
     <ClInclude Include="kxf\UI\Events\DataViewWidgetEvent.h">
       <Filter>kxf\UI\Events</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IMemoryAllocator.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\IMemoryAllocator.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StupidMemoryAllocator.h">
-      <Filter>kxf\General</Filter>
+    <ClInclude Include="kxf\Core\StupidMemoryAllocator.h">
+      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter\Private\Conversion.h">
       <Filter>kxf\Sciter\Private</Filter>
@@ -2495,8 +2495,8 @@
     <ClCompile Include="kxf\FileSystem\FileOperations.cpp">
       <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\BinarySize.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\BinarySize.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\FileItem.cpp">
       <Filter>kxf\FileSystem</Filter>
@@ -2525,20 +2525,20 @@
     <ClCompile Include="kxf\Compression\LZ4Stream.cpp">
       <Filter>kxf\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Version.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\Version.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Private\VersionImpl.cpp">
-      <Filter>kxf\General\Private</Filter>
+    <ClCompile Include="kxf\Core\Private\VersionImpl.cpp">
+      <Filter>kxf\Core\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Any.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\Any.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\UniversallyUniqueID.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\UniversallyUniqueID.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\String.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\String.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\NativeAPI.cpp">
       <Filter>kxf\System</Filter>
@@ -2579,8 +2579,8 @@
     <ClCompile Include="kxf\Drawing\Common.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Math.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\Math.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\DPIAwareness.cpp">
       <Filter>kxf\System</Filter>
@@ -2862,20 +2862,20 @@
     <ClCompile Include="kxf\Utility\Drawing.cpp">
       <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClCompile Include="kxf\Core\DateTime\TimeSpan.cpp">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DateTime\TimeClock.cpp">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClCompile Include="kxf\Core\DateTime\TimeClock.cpp">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DateTime\DateTime.cpp">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClCompile Include="kxf\Core\DateTime\DateTime.cpp">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DateTime\TimeZone.cpp">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClCompile Include="kxf\Core\DateTime\TimeZone.cpp">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DateTime\DateSpan.cpp">
-      <Filter>kxf\General\DateTime</Filter>
+    <ClCompile Include="kxf\Core\DateTime\DateSpan.cpp">
+      <Filter>kxf\Core\DateTime</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\UserName.cpp">
       <Filter>kxf\System</Filter>
@@ -2895,8 +2895,8 @@
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp">
       <Filter>kxf\FileSystem\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\LocallyUniqueID.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\LocallyUniqueID.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp">
       <Filter>kxf\Compression\SevenZip</Filter>
@@ -3195,20 +3195,20 @@
     <ClCompile Include="kxf\UI\Controls\DataView\SortMode.cpp">
       <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\ErrorCode.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\ErrorCode.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\CombinedVariablesCollection.cpp">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\DynamicVariablesCollection.cpp">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\StaticVariablesCollection.cpp">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\IVariablesCollection.cpp">
-      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\IVariablesCollection.cpp">
+      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp">
       <Filter>kxf\RTTI</Filter>
@@ -3240,8 +3240,8 @@
     <ClCompile Include="kxf\System\SafeArray.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\ResourceID.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\ResourceID.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\IO\NullStream.cpp">
       <Filter>kxf\IO</Filter>
@@ -3294,8 +3294,8 @@
     <ClCompile Include="kxf\Serialization\BinarySerializer.cpp">
       <Filter>kxf\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\NativeUUID.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\NativeUUID.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\IPC\SharedMemory.cpp">
       <Filter>kxf\IPC</Filter>
@@ -3321,26 +3321,26 @@
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Format.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\Format.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Crypto\HashValue.cpp">
       <Filter>kxf\Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\RegEx.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\RegEx.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\IO\StreamReaderWriter.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\IEncodingConverter.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\IEncodingConverter.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Private\NativeEncodingConverter.cpp">
-      <Filter>kxf\General\Private</Filter>
+    <ClCompile Include="kxf\Core\Private\NativeEncodingConverter.cpp">
+      <Filter>kxf\Core\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Private\WhateverWorksEncodingConverter.cpp">
-      <Filter>kxf\General\Private</Filter>
+    <ClCompile Include="kxf\Core\Private\WhateverWorksEncodingConverter.cpp">
+      <Filter>kxf\Core\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Application\CommandLineParser.cpp">
       <Filter>kxf\Application</Filter>
@@ -3366,14 +3366,14 @@
     <ClCompile Include="kxf\Network\WebRequest.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\StdID.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\StdID.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Geometry.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Common.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\Common.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\IWidget.cpp">
       <Filter>kxf\UI</Filter>
@@ -3594,8 +3594,8 @@
     <ClCompile Include="kxf\UI\Widgets\ToolBarItem.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\StupidMemoryAllocator.cpp">
-      <Filter>kxf\General</Filter>
+    <ClCompile Include="kxf\Core\StupidMemoryAllocator.cpp">
+      <Filter>kxf\Core</Filter>
 	</ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WebView.cpp">
       <Filter>kxf\UI\Widgets</Filter>

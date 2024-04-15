@@ -2,7 +2,7 @@
 #include "VariantProperty.h"
 #include "COM.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/General/Any.h"
+#include "kxf/Core/Any.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <propvarutil.h>
 #include <propidlbase.h>

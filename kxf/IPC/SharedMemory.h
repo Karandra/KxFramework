@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/IO/MemoryStream.h"
 
 namespace kxf::IPC

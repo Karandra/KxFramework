@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IObject.h"
-#include "kxf/General/FlagSet.h"
+#include "kxf/Core/FlagSet.h"
 #include <variant>
 
 namespace kxf::RTTI::Private

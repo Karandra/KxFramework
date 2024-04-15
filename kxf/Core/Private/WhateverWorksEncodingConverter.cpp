@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "WhateverWorksEncodingConverter.h"
 #include "NativeEncodingConverter.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include <Windows.h>
 
 namespace

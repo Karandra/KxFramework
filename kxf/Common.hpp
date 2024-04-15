@@ -30,8 +30,8 @@
 
 // Essential headers
 #include "kxf/wxWidgets/Setup.h"
-#include "kxf/General/FlagSet.h"
-#include "kxf/General/StdID.h"
+#include "kxf/Core/FlagSet.h"
+#include "kxf/Core/StdID.h"
 #include "kxf/System/UndefWindows.h"
 #include "kxf/wxWidgets/Setup.h"
 

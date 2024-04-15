@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/IO/MemoryStream.h"
 #include "kxf/EventSystem/EventID.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf::IPC::Private

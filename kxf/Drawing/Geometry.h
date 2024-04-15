@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Angle.h"
-#include "kxf/General/Common.h"
+#include "kxf/Core/Common.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/Numeric.h>

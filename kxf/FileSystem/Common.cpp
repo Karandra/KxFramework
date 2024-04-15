@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "Common.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "Private/NamespacePrefix.h"
 
 namespace kxf::FileSystem

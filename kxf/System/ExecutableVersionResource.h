@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Version.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Version.h"
 #include "kxf/FileSystem/FSPath.h"
 
 namespace kxf

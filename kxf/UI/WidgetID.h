@@ -1,5 +1,5 @@
 #pragma once
-#include "kxf/General/StdID.h"
+#include "kxf/Core/StdID.h"
 #include "kxf/Utility/Numeric.h"
 
 namespace kxf

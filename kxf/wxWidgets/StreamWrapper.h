@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include "kxf/IO/IStream.h"
 #include <wx/stream.h>
 

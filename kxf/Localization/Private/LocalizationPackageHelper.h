@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../ILocalizationPackage.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf
 {

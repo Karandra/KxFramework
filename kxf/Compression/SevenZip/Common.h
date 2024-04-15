@@ -1,9 +1,9 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Version.h"
-#include "kxf/General/NativeUUID.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Version.h"
+#include "kxf/Core/NativeUUID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerDelegate.h"
 #include "kxf/FileSystem/IFileSystem.h"

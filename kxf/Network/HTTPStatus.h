@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/IErrorCode.h"
-#include "kxf/General/IndexedEnum.h"
+#include "kxf/Core/IErrorCode.h"
+#include "kxf/Core/IndexedEnum.h"
 
 namespace kxf
 {

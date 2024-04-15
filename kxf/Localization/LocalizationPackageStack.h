@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ILocalizationPackage.h"
 #include "kxf/Utility/Container.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf
 {

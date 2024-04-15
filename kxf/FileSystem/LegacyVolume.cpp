@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/Utility/Common.h"
 
 namespace

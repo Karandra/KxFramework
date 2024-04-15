@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/General/ILibraryInfo.h"
+#include "kxf/Core/ILibraryInfo.h"
 #include <nlohmann/json.hpp>
 
 namespace kxf

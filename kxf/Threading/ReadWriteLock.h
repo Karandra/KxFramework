@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/AlignedStorage.h"
+#include "kxf/Core/AlignedStorage.h"
 struct _RTL_SRWLOCK;
 
 namespace kxf

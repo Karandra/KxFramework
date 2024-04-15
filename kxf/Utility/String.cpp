@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "String.h"
-#include "kxf/General/IEncodingConverter.h"
+#include "kxf/Core/IEncodingConverter.h"
 
 namespace kxf::Utility
 {

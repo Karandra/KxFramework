@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "COM.h"
-#include "kxf/General/DateTime.h"
+#include "kxf/Core/DateTime.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Crypto/SecretValue.h"
 #include "kxf/Crypto/UserCredentials.h"

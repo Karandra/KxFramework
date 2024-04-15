@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "EventHandlerStack.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf
 {

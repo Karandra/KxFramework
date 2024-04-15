@@ -3,7 +3,7 @@
 #include "kxf/EventSystem/IWithEvtHandler.h"
 #include "Private/WithEvtHandler.h"
 #include "kxf/System/COM.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 struct IInArchive;
 
 namespace kxf::SevenZip::Private::Callback

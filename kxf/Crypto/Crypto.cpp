@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "Crypto.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/General/String.h"
-#include "kxf/General/BinarySize.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/BinarySize.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 #include <wx/base64.h> 

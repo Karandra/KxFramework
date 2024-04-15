@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include "kxf/General/AlignedStorage.h"
+#include "kxf/Core/AlignedStorage.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Memory.h"
 

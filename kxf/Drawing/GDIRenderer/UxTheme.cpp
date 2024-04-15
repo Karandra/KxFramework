@@ -5,7 +5,7 @@
 #include "GDIRegion.h"
 #include "GDIBitmap.h"
 #include "GDIIcon.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"

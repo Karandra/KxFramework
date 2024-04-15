@@ -4,7 +4,7 @@
 #include "kxf/EventSystem/IEvent.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/Private/EventWaitInfo.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include <wx/object.h>
 #include <wx/event.h>
 

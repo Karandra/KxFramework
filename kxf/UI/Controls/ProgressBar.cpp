@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "ProgressBar.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
-#include "kxf/General/Format.h"
+#include "kxf/Core/Format.h"
 
 namespace kxf::UI
 {

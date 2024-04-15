@@ -4,7 +4,7 @@
 #include "Widgets/DataView/Common.h"
 #include "Widgets/DataView/ToolTip.h"
 #include "Widgets/DataView/CellAttributes.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf
 {

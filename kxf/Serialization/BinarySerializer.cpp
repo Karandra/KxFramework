@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "BinarySerializer.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/IO/IStream.h"
 
 namespace

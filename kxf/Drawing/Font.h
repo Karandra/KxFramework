@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/Serialization/BinarySerializer.h"
 class wxFont;
 

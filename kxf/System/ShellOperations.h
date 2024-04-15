@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "KnownDirectoryID.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/System/HResult.h"
 #include "kxf/FileSystem/FSPath.h"
 class wxWindow;

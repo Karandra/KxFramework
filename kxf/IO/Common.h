@@ -1,7 +1,7 @@
 #pragma once
 #include <kxf/Common.hpp>
-#include "kxf/General/String.h"
-#include "kxf/General/BinarySize.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/BinarySize.h"
 enum wxSeekMode: int;
 enum wxStreamError: int;
 

@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "IWebResponse.h"
 #include "WebRequestHeader.h"
-#include "kxf/General/RegEx.h"
+#include "kxf/Core/RegEx.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/FileSystem/FSPath.h"

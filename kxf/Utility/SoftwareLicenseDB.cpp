@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "SoftwareLicenseDB.h"
 #include "System.h"
-#include "kxf/General/Format.h"
-#include "kxf/General/IEncodingConverter.h"
+#include "kxf/Core/Format.h"
+#include "kxf/Core/IEncodingConverter.h"
 #include "kxf/System/DynamicLibrary.h"
 
 #if !defined(KXF_DYNAMIC_LIBRARY)

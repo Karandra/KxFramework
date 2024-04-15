@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "ComboPopup.h"
-#include "kxf/General/WithOptions.h"
+#include "kxf/Core/WithOptions.h"
 #include "kxf/UI/Controls/ComboBox.h"
 #include "kxf/UI/Controls/DataView.h"
 

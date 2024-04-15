@@ -3,7 +3,7 @@
 #include "Locale.h"
 #include "ILocalizationPackage.h"
 #include "kxf/UI/WidgetID.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "Private/StandardLocalization.h"
 #include "Private/LocalizationResources.h"

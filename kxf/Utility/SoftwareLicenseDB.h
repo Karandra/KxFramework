@@ -1,5 +1,5 @@
 #pragma once
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 
 namespace kxf
 {

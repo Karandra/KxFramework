@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/Common.h"
+#include "kxf/Core/Common.h"
 
 namespace kxf
 {

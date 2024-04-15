@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
-#include "kxf/General/ResourceID.h"
+#include "kxf/Core/ResourceID.h"
 
 namespace kxf
 {

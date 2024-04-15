@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/Drawing/Color.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include <wx/sysopt.h>
 
 namespace kxf::wxWidgets::SystemOption

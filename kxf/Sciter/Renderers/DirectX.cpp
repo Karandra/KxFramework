@@ -2,7 +2,7 @@
 #include "DirectX.h"
 #include "kxf/Sciter/SciterAPI.h"
 #include "kxf/Sciter/Host.h"
-#include "kxf/General/ErrorCode.h"
+#include "kxf/Core/ErrorCode.h"
 #include "kxf/System/NativeAPI.h"
 #include <thread>
 #include <chrono>

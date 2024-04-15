@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IEvtHandler.h"
-#include "kxf/General/DateTime.h"
+#include "kxf/Core/DateTime.h"
 
 namespace kxf
 {

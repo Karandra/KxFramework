@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include <wx/defs.h>
 #include <wx/font.h>
 #include <wx/peninfobase.h>

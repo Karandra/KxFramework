@@ -1,7 +1,7 @@
 #pragma once
-#include "kxf/General/String.h"
-#include "kxf/General/Format.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Format.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Threading/Mutex.h"
 #include "kxf/EventSystem/EventID.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include "kxf/Threading/IThreadPool.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"

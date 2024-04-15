@@ -3,7 +3,7 @@
 #include "Utility.h"
 #include "WithEvtHandler.h"
 #include "kxf/System/COM.h"
-#include "kxf/General/ErrorCode.h"
+#include "kxf/Core/ErrorCode.h"
 #include <7zip/CPP/7zip/IStream.h>
 
 namespace kxf::SevenZip::Private

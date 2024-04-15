@@ -3,7 +3,7 @@
 #include "TypeTraits.h"
 #include "Functional.h"
 #include "Literals.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 
 namespace kxf::Utility
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "../Private/BasicWebSession.h"
-#include "kxf/General/ILibraryInfo.h"
+#include "kxf/Core/ILibraryInfo.h"
 
 namespace kxf
 {

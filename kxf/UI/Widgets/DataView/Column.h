@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/RecursionGuard.h"
+#include "kxf/Core/RecursionGuard.h"
 
 namespace kxf::WXUI::DataView
 {

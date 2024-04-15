@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IStream.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 
 namespace kxf::Private
 {

@@ -1,9 +1,9 @@
 #pragma once
 #include "Common.h"
 #include "COM.h"
-#include "kxf/General/Any.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Any.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/Crypto/UserCredentials.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Localization/Locale.h"

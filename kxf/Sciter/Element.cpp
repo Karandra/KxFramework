@@ -7,7 +7,7 @@
 #include "ScriptValue.h"
 #include "SciterAPI.h"
 #include "kxf/Sciter/Private/Conversion.h"
-#include "kxf/General/RegEx.h"
+#include "kxf/Core/RegEx.h"
 #include "kxf/Utility/Drawing.h"
 #include "kxf/Utility/Enumerator.h"
 

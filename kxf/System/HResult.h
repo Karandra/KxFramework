@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/IErrorCode.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/IErrorCode.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 struct IErrorInfo;
 

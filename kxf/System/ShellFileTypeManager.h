@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ShellFileType.h"
 #include "ShellFileTypeInfo.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/FileSystem/FSPath.h"
 #include <wx/mimetype.h>
 

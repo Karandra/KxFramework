@@ -1,9 +1,9 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/NativeUUID.h"
-#include "kxf/General/DateTime.h"
-#include "kxf/General/AlignedObjectStorage.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/NativeUUID.h"
+#include "kxf/Core/DateTime.h"
+#include "kxf/Core/AlignedObjectStorage.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include "HResult.h"
 struct tagVARIANT;

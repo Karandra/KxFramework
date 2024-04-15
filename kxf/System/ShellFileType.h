@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 #include "kxf/FileSystem/FSPath.h"
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>

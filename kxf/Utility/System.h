@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/String.h"
-#include "kxf/General/FlagSet.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/FlagSet.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::Utility

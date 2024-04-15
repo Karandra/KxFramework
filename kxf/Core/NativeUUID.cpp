@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "NativeUUID.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Core/UniversallyUniqueID.h"
 #include <guiddef.h>
 
 namespace kxf

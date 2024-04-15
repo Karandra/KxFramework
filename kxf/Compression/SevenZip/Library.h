@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/System/DynamicLibrary.h"
-#include "kxf/General/Singleton.h"
+#include "kxf/Core/Singleton.h"
 #include "kxf/System/COM.h"
 
 namespace kxf::SevenZip

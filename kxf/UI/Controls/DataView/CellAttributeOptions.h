@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/WithOptions.h"
+#include "kxf/Core/WithOptions.h"
 
 namespace kxf::UI::DataView
 {

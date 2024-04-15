@@ -4,7 +4,7 @@
 #include "../IGraphicsRendererAwareWidget.h"
 #include "../Private/WidgetFreezeHandler.h"
 #include "../Private/AnonymousNativeWindow.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/EventSystem/BasicEvtHandler.h"
 #include "kxf/EventSystem/EventHandlerStack.h"
 class wxMenu;

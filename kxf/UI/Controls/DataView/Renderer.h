@@ -4,7 +4,7 @@
 #include "CellAttributes.h"
 #include "RenderEngine.h"
 #include "ToolTip.h"
-#include "kxf/General/Any.h"
+#include "kxf/Core/Any.h"
 
 namespace kxf::UI::DataView
 {

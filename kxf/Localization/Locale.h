@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/String.h"
-#include "kxf/General/DateTime.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/DateTime.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::Localization

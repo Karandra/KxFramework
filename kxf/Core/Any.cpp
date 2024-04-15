@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "Any.h"
-#include "kxf/General/String.h"
+#include "kxf/Core/String.h"
 
 namespace kxf
 {

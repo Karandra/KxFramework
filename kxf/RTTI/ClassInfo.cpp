@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "ClassInfo.h"
-#include "kxf/General/String.h"
-#include "kxf/General/Enumerator.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/Enumerator.h"
 #include "kxf/Utility/Enumerator.h"
 #include "kxf/Utility/RecursiveCollectionEnumerator.h"
 

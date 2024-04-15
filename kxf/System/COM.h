@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "HResult.h"
-#include "kxf/General/String.h"
-#include "kxf/General/NativeUUID.h"
+#include "kxf/Core/String.h"
+#include "kxf/Core/NativeUUID.h"
 #include "kxf/Utility/Memory.h"
 #include "kxf/Utility/ExceptionScopeGuard.h"
 #include "Private/COM.h"

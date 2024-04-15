@@ -2,7 +2,7 @@
 #include "kxf/EventSystem/IEventLoop.h"
 #include "kxf/RTTI/RTTI.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/General/OptionalPtr.h"
+#include "kxf/Core/OptionalPtr.h"
 #include <wx/evtloop.h>
 
 namespace kxf::wxWidgets
