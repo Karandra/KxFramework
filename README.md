@@ -21,9 +21,10 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 	- [JSON for Modern C++](https://github.com/nlohmann/json) - `nlohmann-json`
 	- [SimpleINI](https://github.com/brofield/simpleini) - `simpleini`
 	- [TinyXML2](https://github.com/leethomason/tinyxml2) - `tinyxml2`
-	- [xxHash ](https://github.com/Cyan4973/xxHash) - `xxhash`
+	- [xxHash](https://github.com/Cyan4973/xxHash) - `xxhash`
 	- [URIParser](https://github.com/uriparser/uriparser) - `uriparser`
 	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's already built-in into wxWidgets but KxFramework uses its headers directly and they're not available from wxWidgets includes.
+	- [lunasvg](https://github.com/sammycage/lunasvg) - `lunasvg`. Use the v1.4.2 VCPkg port provided in this repository for it. The new version has a different API and is not compatible at the time.
 
 - Set this instance of VCPkg as the default (`vcpkg integrate install`) or use project-specific linking (a NuGet package generated from a VCPkg installation: `vcpkg integrate project`).
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. You can build **Debug** configuration as well but it's not used most of the time.
