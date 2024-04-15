@@ -1,7 +1,10 @@
 #include "KxfPCH.h"
 #include "ProgressBar.h"
+#include "../../INativeWidget.h"
 #include "kxf/General/Format.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
+#include <Windows.h>
+#include <Commctrl.h>
 
 namespace kxf::WXUI
 {
@@ -53,5 +56,48 @@ namespace kxf::WXUI
 
 		ScheduleRefresh();
 		wxGauge::SetLabel(label);
+	}
+
+	ProgressMeterState ProgressBar::GetState() const
+	{
+		if (auto native = m_Widget.QueryInterface<INativeWidget>())
+		{
+			switch (native->SendMessage(PBM_GETSTATE))
+			{
+				case PBST_PAUSED:
+				{
+					return ProgressMeterState::Pause;
+				}
+				case PBST_ERROR:
+				{
+					return ProgressMeterState::Error;
+				}
+			};
+		}
+		return ProgressMeterState::Normal;
+	}
+	void ProgressBar::SetState(ProgressMeterState state)
+	{
+		if (auto native = m_Widget.QueryInterface<INativeWidget>())
+		{
+			switch (state)
+			{
+				case ProgressMeterState::Pause:
+				{
+					native->SendMessage(PBM_SETSTATE, PBST_PAUSED);
+					break;
+				}
+				case ProgressMeterState::Error:
+				{
+					native->SendMessage(PBM_SETSTATE, PBST_ERROR);
+					break;
+				}
+				default:
+				{
+					native->SendMessage(PBM_SETSTATE, PBST_NORMAL);
+					break;
+				}
+			};
+		}
 	}
 }

@@ -8,7 +8,7 @@ namespace kxf
 	class KX_API GUIApplication: public RTTI::Implementation<GUIApplication, CoreApplication, IGUIApplication>
 	{
 		private:
-			enum class ExitOnLastFrameDelete
+			enum class ExitWhenLastWidgetDestroyed
 			{
 				Never,
 				Always,
@@ -16,9 +16,9 @@ namespace kxf
 			};
 
 		private:
-			wxWindow* m_TopWindow = nullptr;
+			std::shared_ptr<ITopLevelWidget> m_TopWidget;
 			LayoutDirection m_LayoutDirection = LayoutDirection::Default;
-			ExitOnLastFrameDelete m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Later;
+			ExitWhenLastWidgetDestroyed m_ExitWhenLastWidgetDestroyed = ExitWhenLastWidgetDestroyed::Later;
 			bool m_IsActive = true;
 
 		protected:
@@ -34,7 +34,7 @@ namespace kxf
 			int OnRun() override;
 
 			// Application::IMainEventLoop
-			std::unique_ptr<IEventLoop> CreateMainLoop() override;
+			std::shared_ptr<IEventLoop> CreateMainLoop() override;
 
 			// Application::IActiveEventLoop
 			bool DispatchIdle() override;
@@ -43,14 +43,14 @@ namespace kxf
 			bool OnMainLoopException() override;
 
 			// IGUIApplication
-			wxWindow* GetTopWindow() const override;
-			void SetTopWindow(wxWindow* window) override;
+			std::shared_ptr<ITopLevelWidget> GetTopWidget() const override;
+			void SetTopWidget(std::shared_ptr<ITopLevelWidget> widget) override;
 
-			bool ShoudExitOnLastFrameDelete() const override;
-			void ExitOnLastFrameDelete(bool enable = true) override;
+			bool ShoudExitWhenLastWidgetDestroyed() const override;
+			void ExitWhenLastWidgetDestroyed(bool enable = true) override;
 
 			bool IsActive() const override;
-			void SetActive(bool active = true, wxWindow* window = nullptr) override;
+			void SetActive(bool active = true, std::shared_ptr<IWidget> widget = nullptr) override;
 
 			LayoutDirection GetLayoutDirection() const override;
 			void SetLayoutDirection(LayoutDirection direction) override;
@@ -59,7 +59,7 @@ namespace kxf
 			bool SetNativeTheme(const String& themeName) override;
 
 			using CoreApplication::Yield;
-			bool Yield(wxWindow& window, FlagSet<EventYieldFlag> flags) override;
-			bool YieldFor(wxWindow& window, FlagSet<EventCategory> toProcess) override;
+			bool Yield(IWidget& widget, FlagSet<EventYieldFlag> flags) override;
+			bool YieldFor(IWidget& widget, FlagSet<EventCategory> toProcess) override;
 	};
 }

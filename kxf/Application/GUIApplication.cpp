@@ -6,6 +6,8 @@
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/SystemAppearance.h"
 #include "kxf/wxWidgets/Application.h"
+#include "kxf/UI/ITopLevelWidget.h"
+#include "kxf/UI/Private/Common.h"
 #include "kxf/Utility/Container.h"
 #include <uxtheme.h>
 
@@ -54,9 +56,9 @@ namespace kxf
 	int GUIApplication::OnRun()
 	{
 		// If the initial value hasn't been changed, use the default 'ExitOnLastFrameDelete::Always' from now on.
-		if (m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Later)
+		if (m_ExitWhenLastWidgetDestroyed == ExitWhenLastWidgetDestroyed::Later)
 		{
-			m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Always;
+			m_ExitWhenLastWidgetDestroyed = ExitWhenLastWidgetDestroyed::Always;
 
 			// Notify the wxWidgets application
 			if (auto app = Application::Private::NativeApp::GetInstance())
@@ -70,9 +72,9 @@ namespace kxf
 	}
 
 	// Application::IMainEventLoop
-	std::unique_ptr<IEventLoop> GUIApplication::CreateMainLoop()
+	std::shared_ptr<IEventLoop> GUIApplication::CreateMainLoop()
 	{
-		return std::make_unique<EventSystem::Private::Win32GUIEventLoop>();
+		return std::make_shared<EventSystem::Private::Win32GUIEventLoop>();
 	}
 
 	// Application::IActiveEventLoop
@@ -93,7 +95,7 @@ namespace kxf
 		{
 			// Don't send idle events to the windows that are about to be destroyed anyhow, this is wasteful and unexpected.
 			wxIdleEvent event;
-			if (window && !IsScheduledForDestruction(*window) && window->SendIdleEvents(event))
+			if (window && !wxTheApp->IsScheduledForDestruction(window) && window->SendIdleEvents(event))
 			{
 				needMore = true;
 			}
@@ -110,43 +112,44 @@ namespace kxf
 	}
 
 	// IGUIApplication
-	wxWindow* GUIApplication::GetTopWindow() const
+	std::shared_ptr<ITopLevelWidget> GUIApplication::GetTopWidget() const
 	{
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 
 		// If there is no top window or it is about to be destroyed, we need to search for the first TLW which is not pending delete.
-		if (m_TopWindow && !IsScheduledForDestruction(*m_TopWindow))
+		if (m_TopWidget && !IsScheduledForDestruction(*m_TopWidget))
 		{
-			return m_TopWindow;
+			return m_TopWidget;
 		}
 		else
 		{
 			for (wxWindow* window: wxTopLevelWindows)
 			{
-				if (window && !IsScheduledForDestruction(*window))
+				if (window && !wxTheApp->IsScheduledForDestruction(window))
 				{
-					return window;
+					return Private::FindByWXObject<ITopLevelWidget>(*window);
 				}
 			}
 		}
 		return nullptr;
 	}
-	void GUIApplication::SetTopWindow(wxWindow* window)
+	void GUIApplication::SetTopWidget(std::shared_ptr<ITopLevelWidget> widget)
 	{
-		m_TopWindow = window;
+		m_TopWidget = widget;
+
 		if (auto app = Application::Private::NativeApp::GetInstance())
 		{
-			app->SetTopWindow(window);
+			app->SetTopWindow(widget ? widget->GetWxWindow() : nullptr);
 		}
 	}
 
-	bool GUIApplication::ShoudExitOnLastFrameDelete() const
+	bool GUIApplication::ShoudExitWhenLastWidgetDestroyed() const
 	{
-		return m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Always;
+		return m_ExitWhenLastWidgetDestroyed == ExitWhenLastWidgetDestroyed::Always;
 	}
-	void GUIApplication::ExitOnLastFrameDelete(bool enable)
+	void GUIApplication::ExitWhenLastWidgetDestroyed(bool enable)
 	{
-		m_ExitOnLastFrameDelete = enable ? ExitOnLastFrameDelete::Always : ExitOnLastFrameDelete::Never;
+		m_ExitWhenLastWidgetDestroyed = enable ? ExitWhenLastWidgetDestroyed::Always : ExitWhenLastWidgetDestroyed::Never;
 		if (auto app = Application::Private::NativeApp::GetInstance())
 		{
 			app->SetExitOnFrameDelete(enable);
@@ -157,7 +160,7 @@ namespace kxf
 	{
 		return m_IsActive;
 	}
-	void GUIApplication::SetActive(bool active, wxWindow* window)
+	void GUIApplication::SetActive(bool active, std::shared_ptr<IWidget> widget)
 	{
 		if (m_IsActive != active)
 		{
@@ -233,16 +236,16 @@ namespace kxf
 		return false;
 	}
 
-	bool GUIApplication::Yield(wxWindow& window, FlagSet<EventYieldFlag> flags)
+	bool GUIApplication::Yield(IWidget& widget, FlagSet<EventYieldFlag> flags)
 	{
-		wxWindowDisabler windowDisabler(&window);
+		wxWindowDisabler windowDisabler(widget.GetWxWindow());
 
 		IEventLoop* activeLoop = GetActiveEventLoop();
 		return activeLoop && activeLoop->Yield(flags);
 	}
-	bool GUIApplication::YieldFor(wxWindow& window, FlagSet<EventCategory> toProcess)
+	bool GUIApplication::YieldFor(IWidget& widget, FlagSet<EventCategory> toProcess)
 	{
-		wxWindowDisabler windowDisabler(&window);
+		wxWindowDisabler windowDisabler(widget.GetWxWindow());
 
 		IEventLoop* activeLoop = GetActiveEventLoop();
 		return activeLoop && activeLoop->YieldFor(toProcess);

@@ -4,6 +4,7 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Application/IGUIApplication.h"
+#include "kxf/UI/ITopLevelWidget.h"
 #include <wx/iconbndl.h>
 
 namespace
@@ -113,22 +114,22 @@ namespace kxf
 			Size systemSmallIcon;
 			if (sizeFallback.Contains(ImageBundleFlag::SystemSize) || sizeFallback.Contains(ImageBundleFlag::SystemSizeSmall))
 			{
-				const wxWindow* window = nullptr;
+				std::shared_ptr<IWidget> topWidget;
 				if (auto app = IGUIApplication::GetInstance())
 				{
-					window = app->GetTopWindow();
+					topWidget = app->GetTopWidget();
 				}
 
 				// Get the system icon size
 				if (sizeFallback.Contains(ImageBundleFlag::SystemSize))
 				{
-					systemIcon = System::GetMetric(SystemSizeMetric::Icon, window);
+					systemIcon = System::GetMetric(SystemSizeMetric::Icon, topWidget ? topWidget->GetWxWindow() : nullptr);
 					sizeFallback.Add(ImageBundleFlag::NearestLarger, !systemSmallIcon.IsFullySpecified());
 					systemIcon.SetDefaults(g_DefaultIconSize);
 				}
 				if (sizeFallback.Contains(ImageBundleFlag::SystemSizeSmall))
 				{
-					systemSmallIcon = System::GetMetric(SystemSizeMetric::IconSmall, window);
+					systemSmallIcon = System::GetMetric(SystemSizeMetric::IconSmall, topWidget ? topWidget->GetWxWindow() : nullptr);
 					sizeFallback.Add(ImageBundleFlag::NearestLarger, !systemSmallIcon.IsFullySpecified());
 					systemIcon.SetDefaults(g_DefaultIconSizeSmall);
 				}

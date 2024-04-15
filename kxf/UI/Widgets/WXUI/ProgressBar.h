@@ -80,5 +80,8 @@ namespace kxf::WXUI
 			{
 				return m_InPulseMode;
 			}
+
+			ProgressMeterState GetState() const;
+			void SetState(ProgressMeterState state);
 	};
 }

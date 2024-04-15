@@ -73,9 +73,14 @@ namespace kxf
 			{
 				return m_KeyboardState;
 			}
+
 			Point GetPosition() const noexcept
 			{
 				return m_MouseState.GetPosition();
+			}
+			void SetPosition(const Point& pos) noexcept
+			{
+				m_MouseState.SetPosition(pos);
 			}
 
 			// Was it a up event from this (or any) button?

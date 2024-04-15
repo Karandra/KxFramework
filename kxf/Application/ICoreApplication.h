@@ -53,7 +53,7 @@ namespace kxf::Application
 			virtual ~IMainEventLoop() = default;
 
 		public:
-			virtual std::unique_ptr<IEventLoop> CreateMainLoop() = 0;
+			virtual std::shared_ptr<IEventLoop> CreateMainLoop() = 0;
 			virtual IEventLoop* GetMainLoop() = 0;
 			virtual void ExitMainLoop(int exitCode = 0) = 0;
 
@@ -102,9 +102,7 @@ namespace kxf::Application
 			virtual size_t DiscardPendingEventHandlers() = 0;
 
 			virtual bool IsScheduledForDestruction(const IObject& object) const = 0;
-			virtual bool IsScheduledForDestruction(const wxObject& object) const = 0;
-			virtual void ScheduleForDestruction(std::unique_ptr<IObject> object) = 0;
-			virtual void ScheduleForDestruction(std::unique_ptr<wxObject> object) = 0;
+			virtual void ScheduleForDestruction(std::shared_ptr<IObject> object) = 0;
 			virtual void FinalizeScheduledForDestruction() = 0;
 	};
 
@@ -197,7 +195,7 @@ namespace kxf
 			virtual void Exit(int exitCode) = 0;
 			virtual std::optional<int> GetExitCode() const = 0;
 
-			virtual void AddEventFilter(IEventFilter& eventFilter) = 0;
+			virtual void AddEventFilter(std::shared_ptr<IEventFilter> eventFilter) = 0;
 			virtual void RemoveEventFilter(IEventFilter& eventFilter) = 0;
 			virtual IEventFilter::Result FilterEvent(IEvent& event) = 0;
 

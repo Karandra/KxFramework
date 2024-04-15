@@ -237,5 +237,8 @@ namespace kxf::Widgets
 			{
 				m_TextCtrlWrapper.SetWrapMode(wrapMode);
 			}
+
+			Size GetTextExtent() const override;
+			Size GetTextExtent(const String& text) const override;
 	};
 }

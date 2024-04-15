@@ -3,6 +3,8 @@
 #include "IWidget.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/Application/IGUIApplication.h"
+#include "kxf/UI/IWidget.h"
+#include "kxf/UI/ITopLevelWidget.h"
 
 namespace kxf
 {
@@ -28,15 +30,20 @@ namespace kxf::Widgets
 	}
 	void* GetAnyTopLevelNativeHandle(const IWidget* widget) noexcept
 	{
-		if (auto window = widget ? ::wxGetTopLevelParent(widget->GetWxWindow()) : nullptr)
+		wxWindow* window = nullptr;
+		if (window = widget ? ::wxGetTopLevelParent(widget->GetWxWindow()) : nullptr)
 		{
 			return window->GetHandle();
 		}
-		else if (auto app = IGUIApplication::GetInstance(); window = app ? app->GetTopWindow() : nullptr)
+		else if (auto app = IGUIApplication::GetInstance())
 		{
-			return window->GetHandle();
+			if (auto widget = app->GetTopWidget())
+			{
+				window = widget->GetWxWindow();
+			}
 		}
-		else if (window = ::wxGetTopLevelParent(::wxGetActiveWindow()))
+
+		if (window = window ? window : ::wxGetTopLevelParent(::wxGetActiveWindow()))
 		{
 			return window->GetHandle();
 		}

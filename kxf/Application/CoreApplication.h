@@ -60,7 +60,7 @@ namespace kxf
 
 			// ICoreApplication
 			mutable RecursiveRWLock m_EventFiltersLock;
-			std::list<IEventFilter*> m_EventFilters;
+			std::list<std::shared_ptr<IEventFilter>> m_EventFilters;
 
 			ThreadPool m_ThreadPool;
 
@@ -77,7 +77,7 @@ namespace kxf
 			Version m_Version;
 
 			// Application::IMainEventLoop
-			std::unique_ptr<IEventLoop> m_MainLoop;
+			std::shared_ptr<IEventLoop> m_MainLoop;
 
 			// Application::IActiveEventLoop
 			IEventLoop* m_ActiveEventLoop = nullptr;
@@ -86,7 +86,7 @@ namespace kxf
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
 
 			mutable RecursiveRWLock m_ScheduledForDestructionLock;
-			std::vector<std::unique_ptr<IObject>> m_ScheduledForDestruction;
+			std::vector<std::shared_ptr<IObject>> m_ScheduledForDestruction;
 
 			mutable RecursiveRWLock m_PendingEvtHandlersLock;
 			std::list<IEvtHandler*> m_PendingEvtHandlers;
@@ -169,7 +169,7 @@ namespace kxf
 				return m_ExitCode;
 			}
 
-			void AddEventFilter(IEventFilter& eventFilter) override;
+			void AddEventFilter(std::shared_ptr<IEventFilter> eventFilter) override;
 			void RemoveEventFilter(IEventFilter& eventFilter) override;
 			IEventFilter::Result FilterEvent(IEvent& event) override;
 
@@ -248,7 +248,7 @@ namespace kxf
 			void SetClassName(const String& name) override;
 
 			// Application::IMainEventLoop
-			std::unique_ptr<IEventLoop> CreateMainLoop() override;
+			std::shared_ptr<IEventLoop> CreateMainLoop() override;
 			IEventLoop* GetMainLoop() override
 			{
 				return m_MainLoop.get();
@@ -286,9 +286,7 @@ namespace kxf
 			size_t DiscardPendingEventHandlers() override;
 
 			bool IsScheduledForDestruction(const IObject& object) const override;
-			bool IsScheduledForDestruction(const wxObject& object) const override;
-			void ScheduleForDestruction(std::unique_ptr<IObject> object) override;
-			void ScheduleForDestruction(std::unique_ptr<wxObject> object) override;
+			void ScheduleForDestruction(std::shared_ptr<IObject> object) override;
 			void FinalizeScheduledForDestruction() override;
 
 			// Application::IExceptionHandler

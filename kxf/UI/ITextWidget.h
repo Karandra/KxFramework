@@ -137,5 +137,8 @@ namespace kxf
 
 			virtual TextWrapMode GetWrapMode() const = 0;
 			virtual void SetWrapMode(TextWrapMode wrapMode) = 0;
+
+			virtual Size GetTextExtent() const = 0;
+			virtual Size GetTextExtent(const String& text) const = 0;
 	};
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "CellState.h"
-#include "CellAttribute.h"
+#include "CellAttributes.h"
 #include "RenderEngine.h"
 #include "ToolTip.h"
 #include "kxf/General/Any.h"

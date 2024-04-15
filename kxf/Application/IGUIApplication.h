@@ -1,7 +1,12 @@
 #pragma once
 #include "Common.h"
 #include "ICoreApplication.h"
-#include <wx/window.h>
+
+namespace kxf
+{
+	class IWidget;
+	class ITopLevelWidget;
+}
 
 namespace kxf
 {
@@ -27,14 +32,14 @@ namespace kxf
 			virtual ~IGUIApplication() = default;
 
 		public:
-			virtual wxWindow* GetTopWindow() const = 0;
-			virtual void SetTopWindow(wxWindow* window) = 0;
+			virtual std::shared_ptr<ITopLevelWidget> GetTopWidget() const = 0;
+			virtual void SetTopWidget(std::shared_ptr<ITopLevelWidget> widget) = 0;
 
-			virtual bool ShoudExitOnLastFrameDelete() const = 0;
-			virtual void ExitOnLastFrameDelete(bool enable = true) = 0;
+			virtual bool ShoudExitWhenLastWidgetDestroyed() const = 0;
+			virtual void ExitWhenLastWidgetDestroyed(bool enable = true) = 0;
 
 			virtual bool IsActive() const = 0;
-			virtual void SetActive(bool active = true, wxWindow* window = nullptr) = 0;
+			virtual void SetActive(bool active = true, std::shared_ptr<IWidget> widget = nullptr) = 0;
 
 			virtual LayoutDirection GetLayoutDirection() const = 0;
 			virtual void SetLayoutDirection(LayoutDirection direction) = 0;
@@ -42,7 +47,7 @@ namespace kxf
 			virtual String GetNativeTheme() const = 0;
 			virtual bool SetNativeTheme(const String& themeName) = 0;
 
-			virtual bool Yield(wxWindow& window, FlagSet<EventYieldFlag> flags) = 0;
-			virtual bool YieldFor(wxWindow& window, FlagSet<EventCategory> toProcess) = 0;
+			virtual bool Yield(IWidget& widget, FlagSet<EventYieldFlag> flags) = 0;
+			virtual bool YieldFor(IWidget& widget, FlagSet<EventCategory> toProcess) = 0;
 	};
 }

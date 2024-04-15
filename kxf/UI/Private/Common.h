@@ -22,4 +22,14 @@ namespace kxf::Private
 	std::shared_ptr<IWidget> FindByWXObject(const wxObject& object) noexcept;
 	std::shared_ptr<IWidget> FindByWXObject(const wxWindow& window) noexcept;
 	std::shared_ptr<IWidget> FindByWXObject(const wxEvtHandler& evtHandler) noexcept;
+
+	template<class TWidget, class T> requires(!std::is_same_v<TWidget, IWidget>)
+	std::shared_ptr<TWidget> FindByWXObject(const T& object) noexcept
+	{
+		if (auto result = FindByWXObject(object))
+		{
+			return result->QueryInterface<TWidget>();
+		}
+		return nullptr;
+	}
 }

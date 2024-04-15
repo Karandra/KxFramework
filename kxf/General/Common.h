@@ -135,6 +135,13 @@ namespace kxf
 		Local,
 		Global
 	};
+
+	enum class SortOrder
+	{
+		None = -1,
+		Ascending,
+		Descending
+	};
 }
 
 namespace kxf::Private

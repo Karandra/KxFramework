@@ -64,17 +64,22 @@ namespace kxf::Private
 {
 	void BasicWxWidgetBase::OnWindowCreate(wxWindowCreateEvent& event)
 	{
+		// Look for comment inside 'BasicWxWidgetBase::OnWindowDestroy'
+		event.Skip(false);
+		event.StopPropagation();
+
 		m_RefLock = m_Widget.shared_from_this();
-		event.Skip();
 	}
 	void BasicWxWidgetBase::OnWindowDestroy(wxWindowDestroyEvent& event)
 	{
-		DissociateWXObject(*m_Window);
-		m_Window = nullptr;
-		m_RefLock = nullptr;
-		m_ShouldDelete = false;
+		// We must neither skip nor propagate this event to parent widgets. If we do this,
+		// the parent widget is going to assume it's being destroyed and the entire widget
+		// chain is going to get deleted instead of just a single widget.
+		event.Skip(false);
+		event.StopPropagation();
 
-		event.Skip();
+		m_ShouldDelete = false;
+		Uninitialize();
 	}
 
 	void BasicWxWidgetBase::Initialize(std::unique_ptr<wxWindow> window)
@@ -100,7 +105,6 @@ namespace kxf::Private
 			if (m_ShouldDelete)
 			{
 				window->Destroy();
-				delete window;
 			}
 		}
 		m_RefLock = nullptr;
@@ -130,6 +134,7 @@ namespace kxf::Private
 	{
 		if (m_Window)
 		{
+			m_ShouldDelete = false;
 			return m_Window->Destroy();
 		}
 		return false;
@@ -462,7 +467,7 @@ namespace kxf::Private
 	}
 
 	// Sibling and parent management functions
-	std::shared_ptr<kxf::IWidget> BasicWxWidgetBase::GetParentWidget() const
+	std::shared_ptr<IWidget> BasicWxWidgetBase::GetParentWidget() const
 	{
 		if (auto window = m_Window->GetParent())
 		{

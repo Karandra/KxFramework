@@ -59,6 +59,15 @@ namespace kxf::Widgets
 		return Get()->IsPulsing();
 	}
 
+	ProgressMeterState ProgressBar::GetState() const
+	{
+		return Get()->GetState();
+	}
+	void ProgressBar::SetState(ProgressMeterState state)
+	{
+		Get()->SetState(state);
+	}
+
 	// IProgressMeterWidget
 	String ProgressBar::GetLabel(FlagSet<WidgetTextFlag> flags) const
 	{

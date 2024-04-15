@@ -21,4 +21,13 @@ namespace kxf::Widgets
 		}
 		return false;
 	}
+
+	Size TextBox::GetTextExtent() const
+	{
+		return Size(Get()->GetTextExtent(Get()->GetValue()));
+	}
+	Size TextBox::GetTextExtent(const String& text) const
+	{
+		return Size(Get()->GetTextExtent(text));
+	}
 }

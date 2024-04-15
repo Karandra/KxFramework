@@ -1,26 +1,26 @@
 #include "KxfPCH.h"
-#include "CellAttribute.h"
+#include "CellAttributes.h"
 
-namespace kxf::UI::DataView
+namespace kxf::DataView
 {
-	Font CellAttribute::GetEffectiveFont(const Font& baseFont) const
+	Font CellAttributes::GetEffectiveFont(const Font& baseFont) const
 	{
 		if (!m_FontOptions.IsDefault())
 		{
 			Font font = baseFont;
-			if (m_FontOptions.ContainsOption(CellFontOption::Bold))
+			if (m_FontOptions.ContainsOption(CellFontStyle::Bold))
 			{
 				font.SetWeight(FontWeight::Bold);
 			}
-			if (m_FontOptions.ContainsOption(CellFontOption::Italic))
+			if (m_FontOptions.ContainsOption(CellFontStyle::Italic))
 			{
 				font.AddStyle(FontStyle::Italic);
 			}
-			if (m_FontOptions.ContainsOption(CellFontOption::Underlined))
+			if (m_FontOptions.ContainsOption(CellFontStyle::Underlined))
 			{
 				font.AddStyle(FontStyle::Underline);
 			}
-			if (m_FontOptions.ContainsOption(CellFontOption::Strikethrough))
+			if (m_FontOptions.ContainsOption(CellFontStyle::Strikethrough))
 			{
 				font.AddStyle(FontStyle::Strikethrough);
 			}
