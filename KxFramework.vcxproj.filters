@@ -460,7 +460,7 @@
     <ClInclude Include="kxf\FileSystem\FileOperations.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\BinarySize.h">
+    <ClInclude Include="kxf\Core\DataSize.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\FileItem.h">
@@ -2492,7 +2492,7 @@
     <ClCompile Include="kxf\FileSystem\FileOperations.cpp">
       <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\BinarySize.cpp">
+    <ClCompile Include="kxf\Core\DataSize.cpp">
       <Filter>kxf\Core</Filter>
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\FileItem.cpp">

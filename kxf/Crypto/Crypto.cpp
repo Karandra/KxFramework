@@ -2,7 +2,7 @@
 #include "Crypto.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/Core/String.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 #include <wx/base64.h> 
@@ -20,7 +20,7 @@ namespace
 	using namespace kxf;
 	using namespace kxf::Crypto;
 
-	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).ToBytes();
+	constexpr size_t g_StreamBlockSize = DataSize::FromKB(64).ToBytes();
 
 	template<class THashContext, size_t hashLength, class TInitFunc, class TUpdateFunc, class TFinalFunc, class TValue = uint8_t>
 	HashValue<hashLength * 8> DoCalcHash1(IInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept

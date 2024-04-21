@@ -55,11 +55,11 @@ namespace kxf
 		m_Window = wxGetTopLevelParent(window);
 	}
 
-	BinarySize RecycleBin::GetSize() const
+	DataSize RecycleBin::GetSize() const
 	{
 		if (auto queryInfo = QueryRecycleBin(m_Path))
 		{
-			return BinarySize::FromBytes(queryInfo->i64Size);
+			return DataSize::FromBytes(queryInfo->i64Size);
 		}
 		return {};
 	}

@@ -46,7 +46,7 @@ namespace kxf::IO
 				return m_Stream.SeekI(Utility::SizeOfParameterPackValues<T...>(), IOStreamSeek::FromCurrent).IsValid();
 			}
 
-			bool Skip(BinarySize count)
+			bool Skip(DataSize count)
 			{
 				return m_Stream.SeekI(count, IOStreamSeek::FromCurrent).IsValid();
 			}
@@ -60,11 +60,11 @@ namespace kxf::IO
 				return m_Stream.SeekI(0, IOStreamSeek::FromEnd).IsValid();
 			}
 
-			bool SeekFromStart(BinarySize offset)
+			bool SeekFromStart(DataSize offset)
 			{
 				return m_Stream.SeekI(offset, IOStreamSeek::FromStart).IsValid();
 			}
-			bool SeekFromEnd(BinarySize offset)
+			bool SeekFromEnd(DataSize offset)
 			{
 				return m_Stream.SeekI(offset, IOStreamSeek::FromEnd).IsValid();
 			}
@@ -250,11 +250,11 @@ namespace kxf::IO
 				return m_Stream.SeekO(0, IOStreamSeek::FromEnd).IsValid();
 			}
 
-			bool SeekFromStart(BinarySize offset)
+			bool SeekFromStart(DataSize offset)
 			{
 				return m_Stream.SeekO(offset, IOStreamSeek::FromStart).IsValid();
 			}
-			bool SeekFromEnd(BinarySize offset)
+			bool SeekFromEnd(DataSize offset)
 			{
 				return m_Stream.SeekO(offset, IOStreamSeek::FromEnd).IsValid();
 			}

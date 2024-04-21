@@ -712,7 +712,7 @@
     <ClInclude Include="kxf\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="kxf\Core.hpp" />
     <ClInclude Include="kxf\Core\Any.h" />
-    <ClInclude Include="kxf\Core\BinarySize.h" />
+    <ClInclude Include="kxf\Core\DataSize.h" />
     <ClInclude Include="kxf\Core\Common.h" />
     <ClInclude Include="kxf\Core\FlagSet.h" />
     <ClInclude Include="kxf\Core\ExtraData.h" />
@@ -1213,7 +1213,7 @@
     <ClCompile Include="kxf\FileSystem\RecycleBin.cpp" />
     <ClCompile Include="kxf\FileSystem\StorageVolume.cpp" />
     <ClCompile Include="kxf\FileSystem\NativeFileSystem.cpp" />
-    <ClCompile Include="kxf\Core\BinarySize.cpp" />
+    <ClCompile Include="kxf\Core\DataSize.cpp" />
     <ClCompile Include="kxf\Core\UniversallyUniqueID.cpp" />
     <ClCompile Include="kxf\Sciter\Common.cpp" />
     <ClCompile Include="kxf\Sciter\Controls\Label.cpp" />

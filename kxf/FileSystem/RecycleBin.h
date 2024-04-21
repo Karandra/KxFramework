@@ -3,7 +3,7 @@
 #include "FSPath.h"
 #include "FileItem.h"
 #include "LegacyVolume.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/Enumerator.h"
 class wxWindow;
 
@@ -30,7 +30,7 @@ namespace kxf
 			bool IsEnabled() const;
 			void SetWindow(wxWindow* window);
 
-			BinarySize GetSize() const;
+			DataSize GetSize() const;
 			size_t GetItemCount() const;
 			bool ClearItems(FlagSet<FSActionFlag> flags = {});
 

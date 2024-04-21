@@ -458,7 +458,7 @@ namespace kxf
 		});
 	}
 
-	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{
@@ -491,7 +491,7 @@ namespace kxf
 					using T = std::remove_reference_t<decltype(func)>;
 					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
 
-					if (std::invoke(callback, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
+					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)))
 					{
 						return PROGRESS_CONTINUE;
 					}
@@ -504,7 +504,7 @@ namespace kxf
 			}
 		});
 	}
-	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{
@@ -535,7 +535,7 @@ namespace kxf
 					using T = std::remove_reference_t<decltype(func)>;
 					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
 
-					if (std::invoke(callback, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
+					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)))
 					{
 						return PROGRESS_CONTINUE;
 					}
@@ -807,7 +807,7 @@ namespace kxf
 
 		return path.IsAbsolute() && NativeFileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
 	}
-	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<bool(String, BinarySize)> func) const
+	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<bool(String, DataSize)> func) const
 	{
 		if (IsNull())
 		{
@@ -832,7 +832,7 @@ namespace kxf
 				{
 					// Fetch the file info and invoke the callback
 					counter++;
-					if (!std::invoke(func, streamInfo.cStreamName, BinarySize::FromBytes(streamInfo.StreamSize.QuadPart)))
+					if (!std::invoke(func, streamInfo.cStreamName, DataSize::FromBytes(streamInfo.StreamSize.QuadPart)))
 					{
 						break;
 					}
@@ -844,7 +844,7 @@ namespace kxf
 		return 0;
 	}
 
-	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags) const
+	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags) const
 	{
 		if (IsNull())
 		{
@@ -857,7 +857,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{

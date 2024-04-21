@@ -11,7 +11,7 @@
 #include "kxf/Core/DateTime.h"
 #include "kxf/Core/Singleton.h"
 #include "kxf/Core/IndexedEnum.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/ExtraData.h"
 #include "kxf/Core/Singleton.h"
 #include "kxf/Core/NativeUUID.h"

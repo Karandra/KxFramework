@@ -179,7 +179,7 @@ namespace kxf
 		// Preallocate data for the response if possible
 		if (m_ReceiveStream && bytesExpectedToReceive > 0)
 		{
-			m_ReceiveStream->SetAllocationSize(BinarySize::FromBytes(bytesExpectedToReceive));
+			m_ReceiveStream->SetAllocationSize(DataSize::FromBytes(bytesExpectedToReceive));
 		}
 
 		// Handle pause and cancellation
@@ -721,7 +721,7 @@ namespace kxf
 	{
 		return m_Handle.SetOption(CURLOPT_REDIR_PROTOCOLS, MapProtocolSet(protocols));
 	}
-	bool CURLWebRequest::SetResumeOffset(StreamOffset offset)
+	bool CURLWebRequest::SetResumeOffset(DataSize offset)
 	{
 		return offset.IsValid() && m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, offset.ToBytes());
 	}

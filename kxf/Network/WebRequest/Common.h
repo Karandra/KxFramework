@@ -7,7 +7,7 @@
 #include "kxf/Core/String.h"
 #include "kxf/Core/FlagSet.h"
 #include "kxf/Core/DateTime.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/Enumerator.h"
 
 namespace kxf

@@ -22,7 +22,7 @@ namespace kxf
 			virtual std::optional<uint16_t> GetPrimaryPort() const = 0;
 			virtual WebRequestHTTPVersion GetHTTPVersion() const = 0;
 			virtual WebRequestProtocol GetProtocol() const = 0;
-			virtual BinarySize GetContentLength() const = 0;
+			virtual DataSize GetContentLength() const = 0;
 			virtual String GetContentType() const = 0;
 
 			virtual std::optional<int> GetStatusCode() const = 0;
@@ -73,7 +73,7 @@ namespace kxf
 			{
 				return WebRequestHTTPVersion::None;
 			}
-			BinarySize GetContentLength() const override
+			DataSize GetContentLength() const override
 			{
 				return {};
 			}

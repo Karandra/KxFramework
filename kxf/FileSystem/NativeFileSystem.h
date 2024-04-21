@@ -81,8 +81,8 @@ namespace kxf
 			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
-			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
 			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
 			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
@@ -124,11 +124,11 @@ namespace kxf
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -171,10 +171,10 @@ namespace kxf
 			}
 
 			bool IsInUse(const FSPath& path) const;
-			size_t EnumStreams(const FSPath& path, std::function<bool(String, BinarySize)> func) const;
+			size_t EnumStreams(const FSPath& path, std::function<bool(String, DataSize)> func) const;
 
-			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
-			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {});
+			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
+			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
 
 		public:
 			explicit operator bool() const noexcept

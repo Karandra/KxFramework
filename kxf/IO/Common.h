@@ -1,14 +1,12 @@
 #pragma once
 #include <kxf/Common.hpp>
 #include "kxf/Core/String.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 enum wxSeekMode: int;
 enum wxStreamError: int;
 
 namespace kxf
 {
-	using StreamOffset = BinarySize;
-
 	enum class IOStreamAccess: uint32_t
 	{
 		None = 0,

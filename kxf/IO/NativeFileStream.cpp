@@ -9,7 +9,7 @@ namespace
 {
 	using namespace kxf;
 
-	int64_t SeekByHandle(HANDLE handle, BinarySize offset, IOStreamSeek seekMode) noexcept
+	int64_t SeekByHandle(HANDLE handle, DataSize offset, IOStreamSeek seekMode) noexcept
 	{
 		DWORD seekModeWin = std::numeric_limits<DWORD>::max();
 		switch (seekMode)
@@ -181,7 +181,7 @@ namespace kxf
 	{
 		return ::GetFileType(m_Handle) == FILE_TYPE_DISK;
 	}
-	BinarySize NativeFileStream::GetSize() const
+	DataSize NativeFileStream::GetSize() const
 	{
 		return GetSizeByHandle(m_Handle);
 	}
@@ -234,11 +234,11 @@ namespace kxf
 		return *this;
 	}
 
-	StreamOffset NativeFileStream::TellI() const
+	DataSize NativeFileStream::TellI() const
 	{
 		return GetOffsetByHandle(m_Handle);
 	}
-	StreamOffset NativeFileStream::SeekI(StreamOffset offset, IOStreamSeek seek)
+	DataSize NativeFileStream::SeekI(DataSize offset, IOStreamSeek seek)
 	{
 		m_StreamOffset = SeekByHandle(m_Handle, offset, seek);
 		return m_StreamOffset;
@@ -269,11 +269,11 @@ namespace kxf
 		}
 		return *this;
 	}
-	StreamOffset NativeFileStream::TellO() const
+	DataSize NativeFileStream::TellO() const
 	{
 		return GetOffsetByHandle(m_Handle);
 	}
-	StreamOffset NativeFileStream::SeekO(StreamOffset offset, IOStreamSeek seek)
+	DataSize NativeFileStream::SeekO(DataSize offset, IOStreamSeek seek)
 	{
 		m_StreamOffset = SeekByHandle(m_Handle, offset, seek);
 		return m_StreamOffset;
@@ -283,7 +283,7 @@ namespace kxf
 	{
 		return ::FlushFileBuffers(m_Handle);
 	}
-	bool NativeFileStream::SetAllocationSize(BinarySize allocationSize)
+	bool NativeFileStream::SetAllocationSize(DataSize allocationSize)
 	{
 		if (allocationSize)
 		{

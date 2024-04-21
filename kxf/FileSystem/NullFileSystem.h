@@ -79,11 +79,11 @@ namespace kxf::FileSystem
 				return false;
 			}
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -155,11 +155,11 @@ namespace kxf::FileSystem
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}

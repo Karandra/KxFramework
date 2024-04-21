@@ -115,8 +115,8 @@ namespace kxf::SevenZip
 			}
 			FileItem GetItem(size_t index) const override;
 			
-			BinarySize GetOriginalSize() const override;
-			BinarySize GetCompressedSize() const override;
+			DataSize GetOriginalSize() const override;
+			DataSize GetCompressedSize() const override;
 
 		public:
 			// IArchiveProperties
@@ -289,11 +289,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -345,11 +345,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}

@@ -26,7 +26,7 @@ namespace kxf
 			virtual void SetLastError(StreamError lastError) = 0;
 
 			virtual bool IsSeekable() const = 0;
-			virtual BinarySize GetSize() const = 0;
+			virtual DataSize GetSize() const = 0;
 
 		public:
 			explicit operator bool() const
@@ -52,17 +52,17 @@ namespace kxf
 		public:
 			virtual bool CanRead() const = 0;
 
-			virtual BinarySize LastRead() const = 0;
-			virtual void SetLastRead(BinarySize lastRead) = 0;
+			virtual DataSize LastRead() const = 0;
+			virtual void SetLastRead(DataSize lastRead) = 0;
 
 			virtual std::optional<uint8_t> Peek() = 0;
 			virtual IInputStream& Read(void* buffer, size_t size) = 0;
 			virtual IInputStream& Read(IOutputStream& other);
 			virtual bool ReadAll(void* buffer, size_t size);
 
-			virtual StreamOffset TellI() const = 0;
-			virtual StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) = 0;
-			StreamOffset RewindI()
+			virtual DataSize TellI() const = 0;
+			virtual DataSize SeekI(DataSize offset, IOStreamSeek seek) = 0;
+			DataSize RewindI()
 			{
 				return SeekI(0, IOStreamSeek::FromStart);
 			}
@@ -79,22 +79,22 @@ namespace kxf
 			IOutputStream() noexcept = default;
 
 		public:
-			virtual BinarySize LastWrite() const = 0;
-			virtual void SetLastWrite(BinarySize lastWrite) = 0;
+			virtual DataSize LastWrite() const = 0;
+			virtual void SetLastWrite(DataSize lastWrite) = 0;
 
 			virtual IOutputStream& Write(const void* buffer, size_t size) = 0;
 			virtual IOutputStream& Write(IInputStream& other);
 			virtual bool WriteAll(const void* buffer, size_t size);
 
-			virtual StreamOffset TellO() const = 0;
-			virtual StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) = 0;
-			StreamOffset RewindO()
+			virtual DataSize TellO() const = 0;
+			virtual DataSize SeekO(DataSize offset, IOStreamSeek seek) = 0;
+			DataSize RewindO()
 			{
 				return SeekO(0, IOStreamSeek::FromStart);
 			}
 
 			virtual bool Flush() = 0;
-			virtual bool SetAllocationSize(BinarySize allocationSize) = 0;
+			virtual bool SetAllocationSize(DataSize allocationSize) = 0;
 	};
 }
 

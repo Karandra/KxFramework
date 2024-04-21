@@ -57,12 +57,12 @@ namespace kxf
 			// Progress
 			virtual WebRequestState GetState() const = 0;
 
-			virtual BinarySize GetBytesSent() const = 0;
-			virtual BinarySize GetBytesExpectedToSend() const = 0;
+			virtual DataSize GetBytesSent() const = 0;
+			virtual DataSize GetBytesExpectedToSend() const = 0;
 			virtual TransferRate GetSendRate() const = 0;
 
-			virtual BinarySize GetBytesReceived() const = 0;
-			virtual BinarySize GetBytesExpectedToReceive() const = 0;
+			virtual DataSize GetBytesReceived() const = 0;
+			virtual DataSize GetBytesExpectedToReceive() const = 0;
 			virtual TransferRate GetReceiveRate() const = 0;
 	};
 }

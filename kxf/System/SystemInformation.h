@@ -4,7 +4,7 @@
 #include "UserName.h"
 #include "kxf/Core/String.h"
 #include "kxf/Core/Version.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/DateTime.h"
 #include "kxf/Core/LocallyUniqueID.h"
 #include "kxf/Core/Enumerator.h"
@@ -59,12 +59,12 @@ namespace kxf::System
 
 	struct MemoryStatus final
 	{
-		BinarySize TotalRAM;
-		BinarySize TotalVirtual;
-		BinarySize TotalPageFile;
-		BinarySize AvailableRAM;
-		BinarySize AvailableVirtual;
-		BinarySize AvailablePageFile;
+		DataSize TotalRAM;
+		DataSize TotalVirtual;
+		DataSize TotalPageFile;
+		DataSize AvailableRAM;
+		DataSize AvailableVirtual;
+		DataSize AvailablePageFile;
 		float MemoryLoad = 0.0f;
 	};
 	struct UserInfo final
@@ -103,16 +103,16 @@ namespace kxf::System
 		uint32_t Revision = 0;
 		LocallyUniqueID UniqueID;
 		FlagSet<DisplayAdapterFlag> Flags;
-		BinarySize DedicatedVideoMemory;
-		BinarySize DedicatedSystemMemory;
-		BinarySize SharedSystemMemory;
+		DataSize DedicatedVideoMemory;
+		DataSize DedicatedSystemMemory;
+		DataSize SharedSystemMemory;
 	};
 }
 
 namespace kxf::System
 {
 	KX_API bool Is64Bit() noexcept;
-	KX_API void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept;
+	KX_API void GetRegistryQuota(DataSize& used, DataSize& allowed) noexcept;
 
 	KX_API String GetProductName();
 	KX_API String GetProductName(const VersionInfo& versionInfo, bool is64Bit);
@@ -120,7 +120,7 @@ namespace kxf::System
 	KX_API std::optional<KernelVersion> GetKernelVersion() noexcept;
 	KX_API std::optional<VersionInfo> GetVersionInfo() noexcept;
 	KX_API std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept;
-	KX_API BinarySize GetPhysicallyInstalledMemory() noexcept;
+	KX_API DataSize GetPhysicallyInstalledMemory() noexcept;
 
 	KX_API std::optional<UserInfo> GetUserInfo();
 	KX_API String GetUserSID();

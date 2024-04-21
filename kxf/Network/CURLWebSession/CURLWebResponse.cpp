@@ -188,11 +188,11 @@ namespace kxf
 		};
 		return WebRequestHTTPVersion::None;
 	}
-	BinarySize CURLWebResponse::GetContentLength() const
+	DataSize CURLWebResponse::GetContentLength() const
 	{
 		if (auto value = GetRequestHandle().GetOptionUInt64(CURLINFO_CONTENT_LENGTH_DOWNLOAD_T))
 		{
-			return BinarySize::FromBytes(*value);
+			return DataSize::FromBytes(*value);
 		}
 		return {};
 	}

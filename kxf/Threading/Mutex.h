@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/System/Common.h"
 #include "kxf/Core/String.h"
 #include "kxf/Core/DateTime/TimeSpan.h"
 

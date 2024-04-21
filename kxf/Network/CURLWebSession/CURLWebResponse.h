@@ -38,7 +38,7 @@ namespace kxf
 			std::optional<uint16_t> GetPrimaryPort() const override;
 			WebRequestProtocol GetProtocol() const override;
 			WebRequestHTTPVersion GetHTTPVersion() const override;
-			BinarySize GetContentLength() const override;
+			DataSize GetContentLength() const override;
 			String GetContentType() const override;
 
 			std::optional<int> GetStatusCode() const override

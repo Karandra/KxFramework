@@ -58,11 +58,11 @@ namespace kxf
 	{
 		return WebRequestHTTPVersion::None;
 	}
-	BinarySize WSPPWebResponse::GetContentLength() const
+	DataSize WSPPWebResponse::GetContentLength() const
 	{
 		if (auto value = GetHeader("Content-Length").ToInteger<int64_t>())
 		{
-			return BinarySize::FromBytes(*value);
+			return DataSize::FromBytes(*value);
 		}
 		return {};
 	}

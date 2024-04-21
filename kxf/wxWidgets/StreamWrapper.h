@@ -10,7 +10,7 @@ namespace kxf::wxWidgets
 	{
 		protected:
 			optional_ptr<wxInputStream> m_Stream;
-			BinarySize m_LastRead;
+			DataSize m_LastRead;
 			std::optional<StreamError> m_LastError;
 
 		protected:
@@ -47,9 +47,9 @@ namespace kxf::wxWidgets
 			{
 				return m_Stream->IsSeekable();
 			}
-			BinarySize GetSize() const override
+			DataSize GetSize() const override
 			{
-				BinarySize size = m_Stream->GetLength();
+				DataSize size = m_Stream->GetLength();
 				if (!size)
 				{
 					size = m_Stream->GetSize();
@@ -63,11 +63,11 @@ namespace kxf::wxWidgets
 			{
 				return m_Stream->CanRead();
 			}
-			BinarySize LastRead() const override
+			DataSize LastRead() const override
 			{
 				return m_LastRead ? m_LastRead : m_Stream->LastRead();
 			}
-			void SetLastRead(BinarySize lastRead) override
+			void SetLastRead(DataSize lastRead) override
 			{
 				m_LastRead = lastRead;
 			}
@@ -85,11 +85,11 @@ namespace kxf::wxWidgets
 			}
 			using IInputStream::Read;
 
-			StreamOffset TellI() const override
+			DataSize TellI() const override
 			{
 				return m_Stream->TellI();
 			}
-			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override
+			DataSize SeekI(DataSize offset, IOStreamSeek seek) override
 			{
 				InvalidateInputCache();
 
@@ -115,7 +115,7 @@ namespace kxf::wxWidgets
 	{
 		private:
 			optional_ptr<wxOutputStream> m_Stream;
-			BinarySize m_LastWrite;
+			DataSize m_LastWrite;
 			std::optional<StreamError> m_LastError;
 
 		protected:
@@ -152,9 +152,9 @@ namespace kxf::wxWidgets
 			{
 				return m_Stream->IsSeekable();
 			}
-			BinarySize GetSize() const override
+			DataSize GetSize() const override
 			{
-				BinarySize size = m_Stream->GetLength();
+				DataSize size = m_Stream->GetLength();
 				if (!size)
 				{
 					size = m_Stream->GetSize();
@@ -164,11 +164,11 @@ namespace kxf::wxWidgets
 			}
 
 			// IOutputStream
-			BinarySize LastWrite() const override
+			DataSize LastWrite() const override
 			{
 				return m_LastWrite ? m_LastWrite : m_Stream->LastWrite();
 			}
-			void SetLastWrite(BinarySize lastWrite) override
+			void SetLastWrite(DataSize lastWrite) override
 			{
 				m_LastWrite = lastWrite;
 			}
@@ -181,11 +181,11 @@ namespace kxf::wxWidgets
 			}
 			using IOutputStream::Write;
 
-			StreamOffset TellO() const override
+			DataSize TellO() const override
 			{
 				return m_Stream->TellO();
 			}
-			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override
+			DataSize SeekO(DataSize offset, IOStreamSeek seek) override
 			{
 				InvalidateOutputCache();
 
@@ -200,7 +200,7 @@ namespace kxf::wxWidgets
 			{
 				return false;
 			}
-			bool SetAllocationSize(BinarySize allocationSize) override
+			bool SetAllocationSize(DataSize allocationSize) override
 			{
 				return false;
 			}

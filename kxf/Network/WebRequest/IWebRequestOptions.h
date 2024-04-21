@@ -20,7 +20,7 @@ namespace kxf
 			virtual bool SetServiceName(const String& name) = 0;
 			virtual bool SetAllowRedirection(WebRequestOption2 option) = 0;
 			virtual bool SetRedirectionProtocols(FlagSet<WebRequestProtocol> protocols) = 0;
-			virtual bool SetResumeOffset(StreamOffset offset) = 0;
+			virtual bool SetResumeOffset(DataSize offset) = 0;
 
 			virtual bool SetRequestTimeout(const TimeSpan& timeout) = 0;
 			virtual bool SetConnectionTimeout(const TimeSpan& timeout) = 0;

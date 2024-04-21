@@ -3,7 +3,7 @@
 #include "FSPath.h"
 #include "kxf/EventSystem/Event.h"
 #include "kxf/Core/String.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 
 namespace kxf
 {
@@ -20,9 +20,9 @@ namespace kxf
 			String m_String;
 			FSPath m_Source;
 			FSPath m_Destination;
-			BinarySize m_Completed = 0;
-			BinarySize m_Total = 0;
-			BinarySize m_Speed = 0;
+			DataSize m_Completed = 0;
+			DataSize m_Total = 0;
+			DataSize m_Speed = 0;
 
 		public:
 			FSActionEvent() = default;
@@ -62,24 +62,24 @@ namespace kxf
 			}
 
 			// Size status
-			BinarySize GetTotal() const
+			DataSize GetTotal() const
 			{
 				return m_Total;
 			}
-			BinarySize GetCompleted() const
+			DataSize GetCompleted() const
 			{
 				return m_Completed;
 			}
 			
-			void SetTotal(BinarySize value)
+			void SetTotal(DataSize value)
 			{
 				m_Total = value;
 			}
-			void SetCompleted(BinarySize value)
+			void SetCompleted(DataSize value)
 			{
 				m_Completed = value;
 			}
-			void SetProgress(BinarySize completed, BinarySize total)
+			void SetProgress(DataSize completed, DataSize total)
 			{
 				m_Completed = completed;
 				m_Total = total;
@@ -107,11 +107,11 @@ namespace kxf
 			{
 				return m_Speed.IsValid();
 			}
-			BinarySize GetSpeed() const noexcept
+			DataSize GetSpeed() const noexcept
 			{
 				return m_Speed;
 			}
-			void SetSpeed(BinarySize value) noexcept
+			void SetSpeed(DataSize value) noexcept
 			{
 				m_Speed = value;
 			}

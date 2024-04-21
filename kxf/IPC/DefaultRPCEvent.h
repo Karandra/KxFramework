@@ -22,7 +22,7 @@ namespace kxf
 			DefaultRPCClient* m_Client = nullptr;
 
 			IInputStream* m_ParametersStream = nullptr;
-			StreamOffset m_ParametersStreamOffset;
+			DataSize m_ParametersStreamOffset;
 			MemoryOutputStream m_ResultStream;
 
 		private:

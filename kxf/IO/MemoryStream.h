@@ -16,7 +16,7 @@ namespace kxf
 	{
 		private:
 			MemoryStreamBuffer m_StreamBuffer;
-			BinarySize m_LastRead;
+			DataSize m_LastRead;
 			StreamError m_LastError = StreamErrorCode::Success;
 
 		private:
@@ -54,7 +54,7 @@ namespace kxf
 			{
 				m_StreamBuffer.Rewind();
 			}
-			MemoryInputStream(IInputStream& stream, BinarySize size = {})
+			MemoryInputStream(IInputStream& stream, DataSize size = {})
 			{
 				m_StreamBuffer.CreateStorage(stream, size ? size.ToBytes() : 0);
 				m_StreamBuffer.SetStorageFixed();
@@ -82,7 +82,7 @@ namespace kxf
 			{
 				return true;
 			}
-			BinarySize GetSize() const noexcept override
+			DataSize GetSize() const noexcept override
 			{
 				return m_StreamBuffer.GetBufferSize();
 			}
@@ -93,11 +93,11 @@ namespace kxf
 				return !m_StreamBuffer.IsNull() && !m_StreamBuffer.IsEndOfStream();
 			}
 
-			BinarySize LastRead() const noexcept override
+			DataSize LastRead() const noexcept override
 			{
 				return m_LastRead;
 			}
-			void SetLastRead(BinarySize lastRead) noexcept override
+			void SetLastRead(DataSize lastRead) noexcept override
 			{
 				m_LastRead = lastRead;
 			}
@@ -120,11 +120,11 @@ namespace kxf
 			}
 			using IInputStream::Read;
 
-			StreamOffset TellI() const noexcept override
+			DataSize TellI() const noexcept override
 			{
 				return m_StreamBuffer.Tell();
 			}
-			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) noexcept override
+			DataSize SeekI(DataSize offset, IOStreamSeek seek) noexcept override
 			{
 				return m_StreamBuffer.Seek(static_cast<intptr_t>(offset.ToBytes()), seek);
 			}
@@ -176,7 +176,7 @@ namespace kxf
 	{
 		private:
 			MemoryStreamBuffer m_StreamBuffer;
-			BinarySize m_LastWrite;
+			DataSize m_LastWrite;
 			StreamError m_LastError = StreamErrorCode::Success;
 
 		private:
@@ -237,17 +237,17 @@ namespace kxf
 			{
 				return true;
 			}
-			BinarySize GetSize() const noexcept override
+			DataSize GetSize() const noexcept override
 			{
 				return m_StreamBuffer.GetBufferSize();
 			}
 
 			// IOutputStream
-			BinarySize LastWrite() const noexcept override
+			DataSize LastWrite() const noexcept override
 			{
 				return m_LastWrite;
 			}
-			void SetLastWrite(BinarySize lastWrite) noexcept override
+			void SetLastWrite(DataSize lastWrite) noexcept override
 			{
 				m_LastWrite = lastWrite;
 			}
@@ -259,11 +259,11 @@ namespace kxf
 			}
 			using IOutputStream::Write;
 
-			StreamOffset TellO() const noexcept override
+			DataSize TellO() const noexcept override
 			{
 				return m_StreamBuffer.Tell();
 			}
-			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) noexcept override
+			DataSize SeekO(DataSize offset, IOStreamSeek seek) noexcept override
 			{
 				return m_StreamBuffer.Seek(static_cast<intptr_t>(offset.ToBytes()), seek);
 			}
@@ -272,7 +272,7 @@ namespace kxf
 			{
 				return false;
 			}
-			bool SetAllocationSize(BinarySize offset) override
+			bool SetAllocationSize(DataSize offset) override
 			{
 				return m_StreamBuffer.ReserveStorage(offset.ToBytes());
 			}

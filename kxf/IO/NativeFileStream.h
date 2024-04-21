@@ -13,11 +13,11 @@ namespace kxf
 		private:
 			void* m_Handle = nullptr;
 			Win32Error m_LastError = Win32Error::Fail();
-			BinarySize m_LastRead;
-			BinarySize m_LastWrite;
+			DataSize m_LastRead;
+			DataSize m_LastWrite;
 
 			// These variables aren't directly used, they're mostly for debug purposes
-			StreamOffset m_StreamOffset;
+			DataSize m_StreamOffset;
 			FlagSet<IOStreamAccess> m_AccessMode;
 			FlagSet<IOStreamShare> m_ShareMode;
 			FlagSet<IOStreamFlag> m_Flags;
@@ -60,7 +60,7 @@ namespace kxf
 			void SetLastError(StreamError lastError) override;
 
 			bool IsSeekable() const override;
-			BinarySize GetSize() const override;
+			DataSize GetSize() const override;
 
 			// IInputStream
 			bool CanRead() const override
@@ -68,11 +68,11 @@ namespace kxf
 				return m_LastError.IsSuccess() && !DoIsEndOfStream();
 			}
 			
-			BinarySize LastRead() const override
+			DataSize LastRead() const override
 			{
 				return m_LastRead;
 			}
-			void SetLastRead(BinarySize lastRead) override
+			void SetLastRead(DataSize lastRead) override
 			{
 				m_LastRead = lastRead;
 			}
@@ -80,26 +80,26 @@ namespace kxf
 			std::optional<uint8_t> Peek() override;
 			IInputStream& Read(void* buffer, size_t size) override;
 
-			StreamOffset TellI() const override;
-			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override;
+			DataSize TellI() const override;
+			DataSize SeekI(DataSize offset, IOStreamSeek seek) override;
 
 			// IOutputStream
-			BinarySize LastWrite() const override
+			DataSize LastWrite() const override
 			{
 				return m_LastWrite;
 			}
-			void SetLastWrite(BinarySize lastWrite) override
+			void SetLastWrite(DataSize lastWrite) override
 			{
 				m_LastWrite = lastWrite;
 			}
 			
 			IOutputStream& Write(const void* buffer, size_t size) override;
 
-			StreamOffset TellO() const override;
-			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override;
+			DataSize TellO() const override;
+			DataSize SeekO(DataSize offset, IOStreamSeek seek) override;
 
 			bool Flush() override;
-			bool SetAllocationSize(BinarySize allocationSize) override;
+			bool SetAllocationSize(DataSize allocationSize) override;
 
 			// IReadableOutputStream
 			std::unique_ptr<IInputStream> CreateInputStream() const override;
@@ -153,10 +153,10 @@ namespace kxf
 
 				m_Handle = Utility::ExchangeResetAndReturn(other.m_Handle, nullptr);
 				m_LastError = std::move(other.m_LastError);
-				m_LastRead = Utility::ExchangeResetAndReturn(other.m_LastRead, BinarySize());
-				m_LastWrite = Utility::ExchangeResetAndReturn(other.m_LastWrite, BinarySize());
+				m_LastRead = Utility::ExchangeResetAndReturn(other.m_LastRead, DataSize());
+				m_LastWrite = Utility::ExchangeResetAndReturn(other.m_LastWrite, DataSize());
 
-				m_StreamOffset = Utility::ExchangeResetAndReturn(other.m_StreamOffset, StreamOffset());
+				m_StreamOffset = Utility::ExchangeResetAndReturn(other.m_StreamOffset, DataSize());
 				m_AccessMode = Utility::ExchangeResetAndReturn(other.m_AccessMode, FlagSet<IOStreamAccess>());
 				m_ShareMode = Utility::ExchangeResetAndReturn(other.m_ShareMode, FlagSet<IOStreamShare>());
 				m_Flags = Utility::ExchangeResetAndReturn(other.m_Flags, FlagSet<IOStreamFlag>());

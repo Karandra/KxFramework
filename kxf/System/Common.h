@@ -90,4 +90,12 @@ namespace kxf
 		High,
 		Realtime,
 	};
+
+	enum class KernelObjectNamespace
+	{
+		None = -1,
+
+		Local,
+		Global
+	};
 }

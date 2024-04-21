@@ -75,7 +75,7 @@ namespace kxf::FileSystem::Private
 			size.HighPart = findInfo.nFileSizeHigh;
 			size.LowPart = findInfo.nFileSizeLow;
 
-			fileItem.SetSize(BinarySize::FromBytes(size.QuadPart));
+			fileItem.SetSize(DataSize::FromBytes(size.QuadPart));
 		}
 
 		// Compressed file size
@@ -85,7 +85,7 @@ namespace kxf::FileSystem::Private
 
 			String pathName = path.GetFullPathWithNS();
 			compressedSize.LowPart = ::GetCompressedFileSizeW(pathName.wc_str(), &compressedSize.HighPart);
-			fileItem.SetCompressedSize(BinarySize::FromBytes(compressedSize.QuadPart));
+			fileItem.SetCompressedSize(DataSize::FromBytes(compressedSize.QuadPart));
 		}
 
 		// Date and time
@@ -145,7 +145,7 @@ namespace kxf::FileSystem::Private
 				// File size
 				if (!isDirectory)
 				{
-					fileItem.SetSize(BinarySize::FromBytes(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileSizeLow, fileInfo.nFileSizeHigh)));
+					fileItem.SetSize(DataSize::FromBytes(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileSizeLow, fileInfo.nFileSizeHigh)));
 				}
 
 				// Date and time
@@ -159,7 +159,7 @@ namespace kxf::FileSystem::Private
 					FILE_COMPRESSION_INFO compressionInfo = {};
 					if (::GetFileInformationByHandleEx(fileHandle, FILE_INFO_BY_HANDLE_CLASS::FileCompressionInfo, &compressionInfo, sizeof(compressionInfo)))
 					{
-						fileItem.SetCompressedSize(BinarySize::FromBytes(compressionInfo.CompressedFileSize.QuadPart));
+						fileItem.SetCompressedSize(DataSize::FromBytes(compressionInfo.CompressedFileSize.QuadPart));
 					}
 				}
 
@@ -181,7 +181,7 @@ namespace kxf::FileSystem::Private
 	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
 								 const FSPath& source,
 								 const FSPath& destination,
-								 std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func,
+								 std::function<bool(FSPath, FSPath, DataSize, DataSize)> func,
 								 FlagSet<FSActionFlag> flags,
 								 bool move)
 	{
@@ -208,7 +208,7 @@ namespace kxf::FileSystem::Private
 				bool result = false;
 				if (func)
 				{
-					auto ForwardCallback = [&](BinarySize copied, BinarySize total)
+					auto ForwardCallback = [&](DataSize copied, DataSize total)
 					{
 						return std::invoke(func, source, std::move(target), copied, total);
 					};

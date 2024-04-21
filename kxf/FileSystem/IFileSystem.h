@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "StorageVolume.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/LocallyUniqueID.h"
 #include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/RTTI/RTTI.h"
@@ -48,8 +48,8 @@ namespace kxf
 			virtual bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
-			virtual bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
-			virtual bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
 			virtual bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
@@ -107,8 +107,8 @@ namespace kxf
 			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const UniversallyUniqueID& id, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
-			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
-			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
 			virtual bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) = 0;
 

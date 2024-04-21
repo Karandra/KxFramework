@@ -95,7 +95,7 @@ namespace kxf
 			DictionaryBuffer m_Dictionary;
 			size_t m_RingBufferIndex = 0;
 
-			BinarySize m_LastRead;
+			DataSize m_LastRead;
 			std::optional<StreamError> m_LastError;
 
 		private:
@@ -121,7 +121,7 @@ namespace kxf
 			}
 
 			// IInputStream
-			BinarySize LastRead() const override
+			DataSize LastRead() const override
 			{
 				return m_LastRead ? m_LastRead : m_Stream->LastRead();
 			}

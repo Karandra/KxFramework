@@ -57,14 +57,14 @@ namespace kxf::System
 		return isWow64 != FALSE;
 		#endif
 	}
-	void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept
+	void GetRegistryQuota(DataSize& used, DataSize& allowed) noexcept
 	{
 		DWORD usedBytes = 0;
 		DWORD allowedBytes = 0;
 		if (::GetSystemRegistryQuota(&allowedBytes, &usedBytes))
 		{
-			used = BinarySize::FromBytes(usedBytes);
-			allowed = BinarySize::FromBytes(allowedBytes);
+			used = DataSize::FromBytes(usedBytes);
+			allowed = DataSize::FromBytes(allowedBytes);
 		}
 	}
 
@@ -274,24 +274,24 @@ namespace kxf::System
 		if (::GlobalMemoryStatusEx(&info))
 		{
 			MemoryStatus memoryStatus;
-			memoryStatus.TotalRAM = BinarySize::FromBytes(info.ullTotalPhys);
-			memoryStatus.TotalVirtual = BinarySize::FromBytes(info.ullTotalVirtual);
-			memoryStatus.TotalPageFile = BinarySize::FromBytes(info.ullTotalPageFile);
-			memoryStatus.AvailableRAM = BinarySize::FromBytes(info.ullAvailPhys);
-			memoryStatus.AvailableVirtual = BinarySize::FromBytes(info.ullAvailVirtual);
-			memoryStatus.AvailablePageFile = BinarySize::FromBytes(info.ullAvailPageFile);
+			memoryStatus.TotalRAM = DataSize::FromBytes(info.ullTotalPhys);
+			memoryStatus.TotalVirtual = DataSize::FromBytes(info.ullTotalVirtual);
+			memoryStatus.TotalPageFile = DataSize::FromBytes(info.ullTotalPageFile);
+			memoryStatus.AvailableRAM = DataSize::FromBytes(info.ullAvailPhys);
+			memoryStatus.AvailableVirtual = DataSize::FromBytes(info.ullAvailVirtual);
+			memoryStatus.AvailablePageFile = DataSize::FromBytes(info.ullAvailPageFile);
 			memoryStatus.MemoryLoad = info.dwMemoryLoad / 100.0f;
 
 			return memoryStatus;
 		}
 		return {};
 	}
-	BinarySize GetPhysicallyInstalledMemory() noexcept
+	DataSize GetPhysicallyInstalledMemory() noexcept
 	{
 		ULONGLONG totalMemoryInKilobytes = 0;
 		if (::GetPhysicallyInstalledSystemMemory(&totalMemoryInKilobytes))
 		{
-			return BinarySize::FromKB(totalMemoryInKilobytes);
+			return DataSize::FromKB(totalMemoryInKilobytes);
 		}
 		return {};
 	}
@@ -607,9 +607,9 @@ namespace kxf::System
 						info.SubSystemID = description.SubSysId;
 						info.Revision = description.Revision;
 						info.UniqueID = Utility::IntFromLowHigh<uint64_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
-						info.DedicatedVideoMemory = BinarySize::FromBytes(description.DedicatedVideoMemory);
-						info.DedicatedSystemMemory = BinarySize::FromBytes(description.DedicatedSystemMemory);
-						info.SharedSystemMemory = BinarySize::FromBytes(description.SharedSystemMemory);
+						info.DedicatedVideoMemory = DataSize::FromBytes(description.DedicatedVideoMemory);
+						info.DedicatedSystemMemory = DataSize::FromBytes(description.DedicatedSystemMemory);
+						info.SharedSystemMemory = DataSize::FromBytes(description.SharedSystemMemory);
 
 						info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
 						info.Flags.Add(DisplayAdapterFlag::Remote, description.Flags & DXGI_ADAPTER_FLAG_REMOTE);

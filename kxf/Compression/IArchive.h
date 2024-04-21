@@ -28,8 +28,8 @@ namespace kxf
 			virtual size_t GetItemCount() const = 0;
 			virtual FileItem GetItem(size_t index) const = 0;
 
-			virtual BinarySize GetOriginalSize() const = 0;
-			virtual BinarySize GetCompressedSize() const = 0;
+			virtual DataSize GetOriginalSize() const = 0;
+			virtual DataSize GetCompressedSize() const = 0;
 			double GetCompressionRatio() const
 			{
 				return GetSizeRatio(GetCompressedSize(), GetOriginalSize());

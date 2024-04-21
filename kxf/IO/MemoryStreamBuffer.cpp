@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr size_t g_BufferSize = kxf::BinarySize::FromKB(64).ToBytes();
+	constexpr size_t g_BufferSize = kxf::DataSize::FromKB(64).ToBytes();
 }
 
 namespace kxf
@@ -32,7 +32,7 @@ namespace kxf
 			{
 				currentChunkSize = bytesMax - totalRead;
 			}
-			BinarySize read = stream.Read(buffer, currentChunkSize).LastRead();
+			DataSize read = stream.Read(buffer, currentChunkSize).LastRead();
 
 			totalRead += read.ToBytes();
 			if (!read || read == 0 || stream.GetLastError() == StreamErrorCode::EndOfStream)

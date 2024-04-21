@@ -27,7 +27,7 @@ namespace kxf
 			{
 				return false;
 			}
-			BinarySize GetSize() const override
+			DataSize GetSize() const override
 			{
 				return {};
 			}
@@ -59,7 +59,7 @@ namespace kxf
 			{
 				return false;
 			}
-			BinarySize GetSize() const override
+			DataSize GetSize() const override
 			{
 				return {};
 			}
@@ -71,11 +71,11 @@ namespace kxf
 				return false;
 			}
 
-			BinarySize LastRead() const override
+			DataSize LastRead() const override
 			{
 				return {};
 			}
-			void SetLastRead(BinarySize lastRead) override
+			void SetLastRead(DataSize lastRead) override
 			{
 			}
 
@@ -96,11 +96,11 @@ namespace kxf
 				return false;
 			}
 
-			StreamOffset TellI() const override
+			DataSize TellI() const override
 			{
 				return {};
 			}
-			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override
+			DataSize SeekI(DataSize offset, IOStreamSeek seek) override
 			{
 				return {};
 			}
@@ -132,17 +132,17 @@ namespace kxf
 			{
 				return false;
 			}
-			BinarySize GetSize() const override
+			DataSize GetSize() const override
 			{
 				return {};
 			}
 
 		public:
-			BinarySize LastWrite() const override
+			DataSize LastWrite() const override
 			{
 				return {};
 			}
-			void SetLastWrite(BinarySize lastWrite) override
+			void SetLastWrite(DataSize lastWrite) override
 			{
 			}
 
@@ -159,11 +159,11 @@ namespace kxf
 				return false;
 			}
 
-			StreamOffset TellO() const override
+			DataSize TellO() const override
 			{
 				return {};
 			}
-			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override
+			DataSize SeekO(DataSize offset, IOStreamSeek seek) override
 			{
 				return {};
 			}
@@ -172,7 +172,7 @@ namespace kxf
 			{
 				return false;
 			}
-			bool SetAllocationSize(BinarySize allocationSize) override
+			bool SetAllocationSize(DataSize allocationSize) override
 			{
 				return false;
 			}

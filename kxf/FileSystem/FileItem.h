@@ -3,7 +3,7 @@
 #include "FSPath.h"
 #include "kxf/Core/String.h"
 #include "kxf/Core/DateTime.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 #include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
@@ -20,8 +20,8 @@ namespace kxf
 
 		private:
 			FSPath m_Path;
-			BinarySize m_Size;
-			BinarySize m_CompressedSize;
+			DataSize m_Size;
+			DataSize m_CompressedSize;
 			DateTime m_CreationTime;
 			DateTime m_LastAccessTime;
 			DateTime m_ModificationTime;
@@ -191,11 +191,11 @@ namespace kxf
 			}
 
 			// Size
-			BinarySize GetSize() const noexcept
+			DataSize GetSize() const noexcept
 			{
 				return m_Size;
 			}
-			FileItem& SetSize(BinarySize size) noexcept
+			FileItem& SetSize(DataSize size) noexcept
 			{
 				m_Size = size;
 				return *this;
@@ -209,11 +209,11 @@ namespace kxf
 				}
 				return 1;
 			}
-			BinarySize GetCompressedSize() const noexcept
+			DataSize GetCompressedSize() const noexcept
 			{
 				return m_CompressedSize;
 			}
-			FileItem& SetCompressedSize(BinarySize size) noexcept
+			FileItem& SetCompressedSize(DataSize size) noexcept
 			{
 				m_CompressedSize = size;
 				return *this;

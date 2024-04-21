@@ -128,19 +128,16 @@ namespace kxf
 	};
 	KxFlagSet_Declare(MemoryProtection);
 
-	enum class KernelObjectNamespace
-	{
-		None = -1,
-
-		Local,
-		Global
-	};
-
 	enum class SortOrder
 	{
 		None = -1,
 		Ascending,
 		Descending
+	};
+	enum class CallbackCommand
+	{
+		Continue,
+		Terminate
 	};
 }
 

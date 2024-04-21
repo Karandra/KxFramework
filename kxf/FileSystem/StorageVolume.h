@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "kxf/Core/UniversallyUniqueID.h"
-#include "kxf/Core/BinarySize.h"
+#include "kxf/Core/DataSize.h"
 
 namespace kxf
 {
@@ -16,7 +16,7 @@ namespace kxf
 		public:
 			struct SpaceLayoutInfo final
 			{
-				BinarySize DataPerSector;
+				DataSize DataPerSector;
 				uint32_t SectorsPerCluster = 0;
 				uint32_t FreeClusters = 0;
 				uint32_t TotalClusters = 0;
@@ -74,9 +74,9 @@ namespace kxf
 			FlagSet<FileSystemFeature> GetFileSystemFeatures() const noexcept;
 
 			std::optional<SpaceLayoutInfo> GetSpaceLayoutInfo() const noexcept;
-			BinarySize GetTotalSpace() const noexcept;
-			BinarySize GetUsedSpace() const noexcept;
-			BinarySize GetFreeSpace() const noexcept;
+			DataSize GetTotalSpace() const noexcept;
+			DataSize GetUsedSpace() const noexcept;
+			DataSize GetFreeSpace() const noexcept;
 
 			LegacyVolume GetLegacyVolume() const;
 			Enumerator<FSPath> EnumMountPoints() const;

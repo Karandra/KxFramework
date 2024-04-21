@@ -196,7 +196,7 @@ namespace kxf::FileSystem::Private
 	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
 								 const FSPath& source,
 								 const FSPath& destination,
-								 std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func,
+								 std::function<bool(FSPath, FSPath, DataSize, DataSize)> func,
 								 FlagSet<FSActionFlag> flags,
 								 bool move);
 }

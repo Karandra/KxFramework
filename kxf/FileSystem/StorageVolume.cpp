@@ -274,7 +274,7 @@ namespace kxf
 		if (::GetDiskFreeSpaceW(m_Path, &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters, &totalNumberOfClusters))
 		{
 			SpaceLayoutInfo layoutInfo = {};
-			layoutInfo.DataPerSector = BinarySize::FromBytes(bytesPerSector);
+			layoutInfo.DataPerSector = DataSize::FromBytes(bytesPerSector);
 			layoutInfo.SectorsPerCluster = sectorsPerCluster;
 			layoutInfo.FreeClusters = numberOfFreeClusters;
 			layoutInfo.TotalClusters = totalNumberOfClusters;
@@ -283,32 +283,32 @@ namespace kxf
 		}
 		return {};
 	}
-	BinarySize StorageVolume::GetTotalSpace() const noexcept
+	DataSize StorageVolume::GetTotalSpace() const noexcept
 	{
 		ULARGE_INTEGER value = {};
 		if (::GetDiskFreeSpaceExW(m_Path, nullptr, &value, nullptr))
 		{
-			return BinarySize::FromBytes(value.QuadPart);
+			return DataSize::FromBytes(value.QuadPart);
 		}
 		return {};
 	}
-	BinarySize StorageVolume::GetUsedSpace() const noexcept
+	DataSize StorageVolume::GetUsedSpace() const noexcept
 	{
 		ULARGE_INTEGER total = {};
 		ULARGE_INTEGER free = {};
 
 		if (::GetDiskFreeSpaceExW(m_Path, nullptr, &total, &free))
 		{
-			return BinarySize::FromBytes(total.QuadPart - free.QuadPart);
+			return DataSize::FromBytes(total.QuadPart - free.QuadPart);
 		}
 		return {};
 	}
-	BinarySize StorageVolume::GetFreeSpace() const noexcept
+	DataSize StorageVolume::GetFreeSpace() const noexcept
 	{
 		ULARGE_INTEGER value = {};
 		if (::GetDiskFreeSpaceExW(m_Path, nullptr, nullptr, &value))
 		{
-			return BinarySize::FromBytes(value.QuadPart);
+			return DataSize::FromBytes(value.QuadPart);
 		}
 		return {};
 	}

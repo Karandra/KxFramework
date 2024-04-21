@@ -388,7 +388,7 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	BinarySize Archive::GetOriginalSize() const
+	DataSize Archive::GetOriginalSize() const
 	{
 		if (m_Data.OriginalSize < 0)
 		{
@@ -401,7 +401,7 @@ namespace kxf::SevenZip
 		}
 		return m_Data.OriginalSize;
 	}
-	BinarySize Archive::GetCompressedSize() const
+	DataSize Archive::GetCompressedSize() const
 	{
 		if (m_Data.CompressedSize < 0)
 		{

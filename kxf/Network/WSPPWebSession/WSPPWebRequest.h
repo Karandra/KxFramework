@@ -149,26 +149,26 @@ namespace kxf
 				return m_State;
 			}
 
-			BinarySize GetBytesSent() const override
+			DataSize GetBytesSent() const override
 			{
-				return BinarySize::FromBytes(m_BytesSent);
+				return DataSize::FromBytes(m_BytesSent);
 			}
-			BinarySize GetBytesExpectedToSend() const override
+			DataSize GetBytesExpectedToSend() const override
 			{
-				return BinarySize::FromBytes(m_BytesExpectedToSend);
+				return DataSize::FromBytes(m_BytesExpectedToSend);
 			}
 			TransferRate GetSendRate() const override
 			{
 				return {};
 			}
 
-			BinarySize GetBytesReceived() const override
+			DataSize GetBytesReceived() const override
 			{
-				return BinarySize::FromBytes(m_BytesReceived);
+				return DataSize::FromBytes(m_BytesReceived);
 			}
-			BinarySize GetBytesExpectedToReceive() const override
+			DataSize GetBytesExpectedToReceive() const override
 			{
-				return BinarySize::FromBytes(m_BytesExpectedToReceive);
+				return DataSize::FromBytes(m_BytesExpectedToReceive);
 			}
 			TransferRate GetReceiveRate() const override
 			{
@@ -215,7 +215,7 @@ namespace kxf
 			{
 				return false;
 			}
-			bool SetResumeOffset(StreamOffset offset) override
+			bool SetResumeOffset(DataSize offset) override
 			{
 				return false;
 			}
