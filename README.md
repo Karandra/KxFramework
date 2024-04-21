@@ -78,3 +78,6 @@ Same thing applies to any project that will use KxFramework as a dependency. Con
 - Fully implement **Sciter** UI module.
 - Eventually get rid of **wxWidgets** and native controls. Requires fully ready to use Sciter module and many other changes.
 - ~~Rewrite CURL wrapper to make it async.~~ [Done](https://github.com/Karandra/KxFramework/commit/064d181dbf0be8817df1057a55a37bdd7d2166b7)
+- Either get rid of the Enumerator code (and revert all the code changes for it) or rewrite it to use C++20 coroutines. While being an interesting experiment, in its current state it's no better than a callback function while consuming a lot of maintenance time whenever I have to use it.
+- Incorporate any useful code from [KxVirtualFileSystem](https://github.com/Karandra/KxVirtualFileSystem) and [PrivateProfileRedirector](https://github.com/Karandra/PrivateProfileRedirector) code bases and make them use this framework.
+- Update old code to use newer C++ features.
