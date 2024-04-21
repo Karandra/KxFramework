@@ -48,6 +48,7 @@ namespace kxf::System
 			SystemPlatformID PlatformID = SystemPlatformID::Unknown;
 			SystemProductType ProductType = SystemProductType::Unknown;
 			FlagSet<SystemProductSuite> ProductSuite;
+			bool Is64Bit = false;
 
 		public:
 			VersionInfo() noexcept = default;
@@ -115,7 +116,7 @@ namespace kxf::System
 	KX_API void GetRegistryQuota(DataSize& used, DataSize& allowed) noexcept;
 
 	KX_API String GetProductName();
-	KX_API String GetProductName(const VersionInfo& versionInfo, bool is64Bit);
+	KX_API String GetProductName(const VersionInfo& versionInfo);
 
 	KX_API std::optional<KernelVersion> GetKernelVersion() noexcept;
 	KX_API std::optional<VersionInfo> GetVersionInfo() noexcept;
@@ -148,53 +149,6 @@ namespace kxf::System
 	KX_API bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept;
 
 	KX_API bool IsWindowsServer() noexcept;
-	KX_API bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1) noexcept;
-	inline bool IsWindows10OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(10, 0);
-	}
-	inline bool IsWindows8Point1OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 3);
-	}
-	inline bool IsWindows8OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 2);
-	}
-	inline bool IsWindows7SP1OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 1, 1);
-	}
-	inline bool IsWindows7OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 1);
-	}
-	inline bool IsWindowsVistaSP2OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 0, 2);
-	}
-	inline bool IsWindowsVistaSP1OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 0, 1);
-	}
-	inline bool IsWindowsVistaOrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(6, 0);
-	}
-	inline bool IsWindowsXPSP3OrGreater()
-	{
-		return IsWindowsVersionOrGreater(5, 1, 3);
-	}
-	inline bool IsWindowsXPSP2OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(5, 1, 2);
-	}
-	inline bool IsWindowsXPSP1OrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(5, 1, 1);
-	}
-	inline bool IsWindowsXPOrGreater() noexcept
-	{
-		return IsWindowsVersionOrGreater(5, 1);
-	}
+	KX_API bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1, int buildNumber = -1) noexcept;
+	KX_API bool IsWindowsVersionOrGreater(NamedSystemRelease namedRelease) noexcept;
 };

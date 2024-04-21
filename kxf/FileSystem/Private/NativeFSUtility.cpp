@@ -18,7 +18,7 @@ namespace kxf::FileSystem::Private
 		// https://stackoverflow.com/questions/62440438/getfileinformationbyhandleex-fileidinfo-vs-deviceiocontrol-fsctl-create-or-get-o
 
 		UniversallyUniqueID result = LocallyUniqueID(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileIndexLow, fileInfo.nFileIndexHigh));
-		if (System::IsWindows8OrGreater())
+		if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows8))
 		{
 			FILE_ID_INFO fileIDInfo = {};
 			if (::GetFileInformationByHandleEx(fileHandle, FILE_INFO_BY_HANDLE_CLASS::FileIdInfo, &fileIDInfo, sizeof(fileIDInfo)))

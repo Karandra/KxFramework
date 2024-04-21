@@ -37,7 +37,7 @@ namespace
 				AlignedObjectStorage<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileIDDescriptor;
 				fileIDDescriptor->dwSize = fileIDDescriptor.size();
 
-				if (System::IsWindows8OrGreater())
+				if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows8))
 				{
 					fileIDDescriptor->Type = FILE_ID_TYPE::ExtendedFileIdType;
 

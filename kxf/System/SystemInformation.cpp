@@ -72,11 +72,11 @@ namespace kxf::System
 	{
 		if (const auto versionInfo = GetVersionInfo())
 		{
-			return GetProductName(*versionInfo, Is64Bit());
+			return GetProductName(*versionInfo);
 		}
 		return {};
 	}
-	String GetProductName(const VersionInfo& versionInfo, bool is64Bit)
+	String GetProductName(const VersionInfo& versionInfo)
 	{
 		// For reference: https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexa
 		const int versionMajor = versionInfo.Kernel.Major;
@@ -95,7 +95,14 @@ namespace kxf::System
 					{
 						if (isWorkstation)
 						{
-							return "Windows 10";
+							if (buildNumber >= 22000)
+							{
+								return "Windows 11";
+							}
+							else
+							{
+								return "Windows 10";
+							}
 						}
 						else
 						{
@@ -180,13 +187,13 @@ namespace kxf::System
 					{
 						if (isWorkstation)
 						{
-							if (is64Bit)
+							if (versionInfo.Is64Bit)
 							{
 								return "Windows XP Professional x64 Edition";
 							}
 							else
 							{
-								// This branch shouldn't really be executes since there are no regular Windows XP with 6.2 kernel version
+								// This branch shouldn't really be executed since there's no regular Windows XP with 6.2 kernel version
 								return "Windows XP";
 							}
 						}
@@ -241,6 +248,7 @@ namespace kxf::System
 
 			if (CheckKernerlVersion(versionInfo.Kernel))
 			{
+				versionInfo.Is64Bit = Is64Bit();
 				versionInfo.PlatformID = Private::MapSystemPlatformID(infoEx.dwPlatformId);
 				versionInfo.SystemType = Private::MapSystemType(infoEx.wProductType);
 				versionInfo.ProductSuite = Private::MapSystemProductSuite(infoEx.wSuiteMask);
@@ -728,32 +736,75 @@ namespace kxf::System
 		auto version = GetVersionInfo();
 		return version && version->SystemType == SystemType::Server;
 	}
-	bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor) noexcept
+	bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor, int buildNumber) noexcept
 	{
 		if (auto version = GetKernelVersion())
 		{
-			auto CheckServicePack = [&]()
+			if (version->Major >= majorVersion && version->Minor >= minorVersion)
 			{
-				if (servicePackMajor != -1)
-				{
-					return version->ServicePackMajor >= servicePackMajor;
-				}
-				return true;
-			};
-
-			if (version->Major > majorVersion)
-			{
-				// No sense in checking service pack if it's completely different version
-				return true;
-			}
-			else if (version->Major == majorVersion)
-			{
-				if (version->Minor >= minorVersion)
-				{
-					return CheckServicePack();
-				}
+				return (servicePackMajor == -1 || version->ServicePackMajor >= servicePackMajor) &&
+					(buildNumber == -1 || version->Build >= buildNumber);
 			}
 		}
+		return false;
+	}
+	bool IsWindowsVersionOrGreater(NamedSystemRelease namedRelease) noexcept
+	{
+		switch (namedRelease)
+		{
+			case NamedSystemRelease::WindowsXP:
+			{
+				return IsWindowsVersionOrGreater(5, 1);
+			}
+			case NamedSystemRelease::WindowsXPSP1:
+			{
+				return IsWindowsVersionOrGreater(5, 1, 1);
+			}
+			case NamedSystemRelease::WindowsXPSP2:
+			{
+				return IsWindowsVersionOrGreater(5, 1, 2);
+			}
+			case NamedSystemRelease::WindowsXPSP3:
+			{
+				return IsWindowsVersionOrGreater(5, 1, 3);
+			}
+			case NamedSystemRelease::WindowsVista:
+			{
+				return IsWindowsVersionOrGreater(6, 0);
+			}
+			case NamedSystemRelease::WindowsVistaSP1:
+			{
+				return IsWindowsVersionOrGreater(6, 0, 1);
+			}
+			case NamedSystemRelease::WindowsVistaSP2:
+			{
+				return IsWindowsVersionOrGreater(6, 0, 2);
+			}
+			case NamedSystemRelease::Windows7:
+			{
+				return IsWindowsVersionOrGreater(6, 1);
+			}
+			case NamedSystemRelease::Windows7SP1:
+			{
+				return IsWindowsVersionOrGreater(6, 1, 1);
+			}
+			case NamedSystemRelease::Windows8:
+			{
+				return IsWindowsVersionOrGreater(6, 2);
+			}
+			case NamedSystemRelease::Windows8_1:
+			{
+				return IsWindowsVersionOrGreater(6, 3);
+			}
+			case NamedSystemRelease::Windows10:
+			{
+				return IsWindowsVersionOrGreater(10, 0);
+			}
+			case NamedSystemRelease::Windows11:
+			{
+				return IsWindowsVersionOrGreater(10, 0, -1, 22000);
+			}
+		};
 		return false;
 	}
 }

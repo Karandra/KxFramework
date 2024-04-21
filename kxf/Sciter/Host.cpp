@@ -258,7 +258,7 @@ namespace kxf::Sciter
 			::DestroyWindow(oldHandle);
 
 			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead (if the style is supported) and attach it to the wxWindow
-			nativeExStyle.Add(WS_EX_NOREDIRECTIONBITMAP, m_Style.Contains(HostStyle::DesktopComposition) && System::IsWindows8OrGreater());
+			nativeExStyle.Add(WS_EX_NOREDIRECTIONBITMAP, m_Style.Contains(HostStyle::DesktopComposition) && System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows8));
 
 			m_AllowSciterHandleMessage = true;
 			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, *nativeStyle, *nativeExStyle);

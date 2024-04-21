@@ -228,6 +228,25 @@ namespace kxf
 		// Windows Home Server is installed.
 		HomeServer = 1 << 18
 	};
+	enum class NamedSystemRelease
+	{
+		Unknown = 0,
+
+		WindowsXP,
+		WindowsXPSP1,
+		WindowsXPSP2,
+		WindowsXPSP3,
+		WindowsVista,
+		WindowsVistaSP1,
+		WindowsVistaSP2,
+		Windows7,
+		Windows7SP1,
+		Windows8,
+		Windows8_1,
+		Windows10,
+		Windows11
+	};
+
 	enum class SystemFeature
 	{
 		None = 0,

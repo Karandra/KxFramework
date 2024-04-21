@@ -213,19 +213,23 @@ namespace kxf
 
 	String GUIApplication::GetNativeTheme() const
 	{
-		if (System::IsWindows10OrGreater())
+		if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows11))
+		{
+			return SystemAppearance::IsDark() ? "FluentUI Dark" : "FluentUI Light";
+		}
+		else if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows10))
 		{
 			return SystemAppearance::IsDark() ? "ModernUI Dark" : "ModernUI Light";
 		}
-		else if (System::IsWindows8OrGreater())
+		else if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows8))
 		{
-			return "ModernUI";
+			return "MetroUI";
 		}
-		else if (System::IsWindowsVistaOrGreater())
+		else if (System::IsWindowsVersionOrGreater(NamedSystemRelease::WindowsVista))
 		{
 			return ::IsAppThemed() ? "Aero" : "Classic";
 		}
-		else if (System::IsWindowsXPOrGreater())
+		else if (System::IsWindowsVersionOrGreater(NamedSystemRelease::WindowsXP))
 		{
 			return ::IsAppThemed() ? "Luna" : "Classic";
 		}
