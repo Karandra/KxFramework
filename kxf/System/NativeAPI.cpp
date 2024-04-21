@@ -250,6 +250,18 @@ namespace kxf
 		}
 	}
 
+	void NativeAPILoader::Initialize()
+	{
+		InitializeNtDLL();
+		InitializeKernel32();
+		InitializeKernelBase();
+		InitializeUser32();
+		InitializeShlWAPI();
+		InitializeDWMAPI();
+		InitializeDbgHelp();
+		InitializeDXGI();
+		InitializeDComp();
+	}
 	bool NativeAPILoader::IsLibraryLoaded(NativeAPISet library) const noexcept
 	{
 		const size_t index = static_cast<size_t>(library);
@@ -342,15 +354,7 @@ namespace kxf::NativeAPI::Private
 				// We're still going to initialize them all, the initialization function checks the load state.
 				if (m_Loader.DoLoadLibraries({}, true) != 0)
 				{
-					m_Loader.InitializeNtDLL();
-					m_Loader.InitializeKernel32();
-					m_Loader.InitializeKernelBase();
-					m_Loader.InitializeUser32();
-					m_Loader.InitializeShlWAPI();
-					m_Loader.InitializeDWMAPI();
-					m_Loader.InitializeDbgHelp();
-					m_Loader.InitializeDXGI();
-					m_Loader.InitializeDComp();
+					m_Loader.Initialize();
 
 					Log::Info("InitializationModule::OnInit -> Success");
 					return true;

@@ -87,6 +87,7 @@ namespace kxf
 			{
 				return DoUnloadLibraries();
 			}
+			void Initialize();
 			bool IsLibraryLoaded(NativeAPISet library) const noexcept;
 
 			void SetLookupDirectory(const FSPath& path);
