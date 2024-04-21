@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "kxf/RTTI/RTTI.h"
-#include "kxf/Core/UniqueFunction.h"
 
 namespace kxf
 {
@@ -18,6 +17,6 @@ namespace kxf
 
 			virtual void Run() = 0;
 			virtual void Terminate() = 0;
-			virtual void QueueTask(unique_function<void()> task) = 0;
+			virtual void QueueTask(std::move_only_function<void()> task) = 0;
 	};
 }

@@ -1742,9 +1742,6 @@
     <ClInclude Include="kxf\wxWidgets\EventTagRef.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\UniqueFunction.h">
-      <Filter>kxf\Core</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\WMI.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
@@ -3596,7 +3593,7 @@
     </ClCompile>
     <ClCompile Include="kxf\Core\StupidMemoryAllocator.cpp">
       <Filter>kxf\Core</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\WebView.cpp">
       <Filter>kxf\UI\Widgets</Filter>
     </ClCompile>

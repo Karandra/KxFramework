@@ -81,8 +81,8 @@ namespace kxf
 		friend struct BinarySerializer<String>;
 
 		public:
-			using string_type = std::basic_string<XChar>;
 			using value_type = XChar;
+			using string_type = std::basic_string<XChar>;
 			using traits_type = std::char_traits<XChar>;
 			using allocator_type = std::allocator<XChar>;
 			

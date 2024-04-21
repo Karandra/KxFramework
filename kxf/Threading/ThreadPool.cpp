@@ -42,7 +42,7 @@ namespace kxf
 					bool shouldTerminate = false;
 					while (!shouldTerminate)
 					{
-						unique_function<void()> task;
+						std::move_only_function<void()> task;
 						if (std::unique_lock lock(m_TaskQueueLock); true)
 						{
 							m_TaskCondition.wait(lock, [&]()
@@ -84,7 +84,7 @@ namespace kxf
 			m_ThreadPool.clear();
 		}
 	}
-	void ThreadPool::QueueTask(unique_function<void()> task)
+	void ThreadPool::QueueTask(std::move_only_function<void()> task)
 	{
 		if (task)
 		{

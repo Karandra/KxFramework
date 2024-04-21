@@ -282,7 +282,6 @@
     <ClInclude Include="kxf\Core\StaticVariablesCollection.h" />
     <ClInclude Include="kxf\Core\StupidMemoryAllocator.h" />
     <ClInclude Include="kxf\Core\UniChar.h" />
-    <ClInclude Include="kxf\Core\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\IMemoryStream.h" />

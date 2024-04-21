@@ -13,7 +13,7 @@ namespace kxf
 			std::vector<std::thread> m_ThreadPool;
 			mutable std::mutex m_ThreadPoolLock;
 
-			std::queue<unique_function<void()>> m_TaskQueue;
+			std::queue<std::move_only_function<void()>> m_TaskQueue;
 			std::condition_variable m_TaskCondition;
 			mutable std::mutex m_TaskQueueLock;
 
@@ -44,7 +44,7 @@ namespace kxf
 
 			void Run() override;
 			void Terminate() override;
-			void QueueTask(unique_function<void()> task) override;
+			void QueueTask(std::move_only_function<void()> task) override;
 
 		public:
 			ThreadPool& operator=(const ThreadPool&) = delete;

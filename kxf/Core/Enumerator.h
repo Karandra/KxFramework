@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "IEnumerator.h"
 #include "OptionalRef.h"
-#include "UniqueFunction.h"
 #include "AlignedStorage.h"
 
 namespace kxf::Private
@@ -110,7 +109,7 @@ namespace kxf
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		private:
-			kxf::unique_function<TValueContainer(IEnumerator&)> m_MoveNext;
+			std::move_only_function<TValueContainer(IEnumerator&)> m_MoveNext;
 			AlignedStorage<TBufferValue> m_CurrentValue;
 
 			EnumeratorInstruction m_CurrentInstruction = EnumeratorInstruction::Terminate;
@@ -226,7 +225,7 @@ namespace kxf
 			// IEnumerator
 			bool IsNull() const noexcept override
 			{
-				return m_MoveNext.is_null();
+				return m_MoveNext == nullptr;
 			}
 
 			EnumeratorInstruction MoveNext() override
