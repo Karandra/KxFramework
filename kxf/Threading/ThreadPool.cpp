@@ -82,6 +82,7 @@ namespace kxf
 				thread.join();
 			}
 			m_ThreadPool.clear();
+			m_ShouldTerminate = false;
 		}
 	}
 	void ThreadPool::QueueTask(std::move_only_function<void()> task)

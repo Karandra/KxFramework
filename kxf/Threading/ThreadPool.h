@@ -38,6 +38,10 @@ namespace kxf
 		public:
 			bool IsRunning() const override;
 			bool ShouldTerminate() const override;
+			void* GetHandle() const override
+			{
+				return nullptr;
+			}
 
 			size_t GetConcurrency() const override;
 			bool SetConcurrency(size_t concurrency) override;

@@ -11,6 +11,7 @@ namespace kxf
 		public:
 			virtual bool IsRunning() const = 0;
 			virtual bool ShouldTerminate() const = 0;
+			virtual void* GetHandle() const = 0;
 
 			virtual size_t GetConcurrency() const = 0;
 			virtual bool SetConcurrency(size_t value) = 0;
