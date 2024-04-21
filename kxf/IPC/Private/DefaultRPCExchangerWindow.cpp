@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	bool DefaultRPCExchangerWindow::Create(const UniversallyUniqueID& sessionID)
+	bool DefaultRPCExchangerWindow::Create(const String& sessionID)
 	{
 		return m_Window.Create([&](intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam) -> bool
 		{
@@ -20,7 +20,7 @@ namespace kxf
 				return true;
 			}
 			return false;
-		}, Format("kxf::DefaultRPCExchangerWindow-{}", sessionID.ToString(UUIDFormat::CurlyBraces)));
+		}, Format("kxf::DefaultRPCExchangerWindow-{}", sessionID));
 	}
 	bool DefaultRPCExchangerWindow::Destroy() noexcept
 	{

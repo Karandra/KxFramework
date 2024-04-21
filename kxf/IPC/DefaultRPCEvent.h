@@ -57,7 +57,7 @@ namespace kxf
 			// RPCEvent
 			IRPCServer* GetServer() const override;
 			IRPCClient* GetClient() const override;
-			UniversallyUniqueID GetClientID() const override
+			String GetClientID() const override
 			{
 				return m_Procedure.GetClientID();
 			}

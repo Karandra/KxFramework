@@ -27,7 +27,7 @@ namespace kxf
 				return m_Window.GetHandle();
 			}
 
-			bool Create(const UniversallyUniqueID& sessionID);
+			bool Create(const String& sessionID);
 			bool Destroy() noexcept;
 	};
 }

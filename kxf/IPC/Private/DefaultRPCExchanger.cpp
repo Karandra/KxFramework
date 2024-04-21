@@ -23,18 +23,18 @@ namespace kxf
 	}
 	String DefaultRPCExchanger::GetControlBufferName() const
 	{
-		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID);
 	}
 	String DefaultRPCExchanger::GetResultBufferName() const
 	{
-		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID);
 	}
 	String DefaultRPCExchanger::GetSessionMutexName() const
 	{
-		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID.ToString(UUIDFormat::CurlyBraces));
+		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID);
 	}
 
-	void DefaultRPCExchanger::OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
+	void DefaultRPCExchanger::OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
 	{
 		m_SessionID = sessionID;
 		m_EvtHandler = &evtHandler;
@@ -47,7 +47,7 @@ namespace kxf
 		m_ControlBuffer.Free();
 	}
 
-	void DefaultRPCExchanger::OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const UniversallyUniqueID& clientID)
+	void DefaultRPCExchanger::OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const String& clientID)
 	{
 		auto& procedure = event.m_Procedure;
 		Serialization::ReadObject(stream, procedure);
@@ -60,7 +60,7 @@ namespace kxf
 			}
 
 			// Override client ID
-			if (clientID)
+			if (!clientID.IsEmpty())
 			{
 				procedure.m_ClientID = clientID;
 			}

@@ -88,7 +88,7 @@ namespace kxf
 	DefaultRPCClient::DefaultRPCClient()
 	{
 		// TODO: Watch server status using the provided PID and initiate disconnect event
-		// the server terminates without proper notifications (i.e crashes).
+		// when the server terminates without proper notifications (i.e crashes).
 	}
 	DefaultRPCClient::~DefaultRPCClient()
 	{
@@ -100,7 +100,7 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCClient::ConnectToServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, const UniversallyUniqueID& clientID, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags )
+	bool DefaultRPCClient::ConnectToServer(const String& sessionID, IEvtHandler& evtHandler, const String& clientID, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags )
 	{
 		if (!m_SessionMutex)
 		{

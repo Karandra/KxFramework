@@ -16,7 +16,7 @@ namespace kxf
 			EvtHandler m_ServiceEvtHandler;
 			IEvtHandler* m_UserEvtHandler = nullptr;
 
-			std::unordered_map<UniversallyUniqueID, void*> m_UniqueClients;
+			std::unordered_map<String, void*> m_UniqueClients;
 			std::unordered_set<void*> m_AnonymousClients;
 
 		private:
@@ -25,7 +25,7 @@ namespace kxf
 
 			bool DoStartServer();
 			void DoTerminateServer(bool notify);
-			MemoryInputStream DoInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult);
+			MemoryInputStream DoInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult);
 
 			bool HasAnyClients() const noexcept
 			{
@@ -46,14 +46,14 @@ namespace kxf
 		public:
 			// IRPCServer
 			bool IsServerRunning() const override;
-			bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) override;
+			bool StartServer(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) override;
 			void TerminateServer() override;
-			UniversallyUniqueID GetSessionID() const override
+			String GetSessionID() const override
 			{
 				return m_SessionID;
 			}
 
-			MemoryInputStream RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
+			MemoryInputStream RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
 			void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;
 	};
 }

@@ -18,16 +18,16 @@ namespace kxf
 
 		public:
 			virtual bool IsServerRunning() const = 0;
-			virtual bool StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) = 0;
+			virtual bool StartServer(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool = {}, FlagSet<RPCExchangeFlag> flags = {}) = 0;
 			virtual void TerminateServer() = 0;
-			virtual UniversallyUniqueID GetSessionID() const = 0;
+			virtual String GetSessionID() const = 0;
 
-			virtual MemoryInputStream RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
+			virtual MemoryInputStream RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) = 0;
 			virtual void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) = 0;
 
 		public:
 			template<class TReturn = void, class... Args>
-			TReturn InvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, Args&&... arg)
+			TReturn InvokeProcedure(const String& clientID, const EventID& procedureID, Args&&... arg)
 			{
 				return IPC::Private::InvokeProcedure<TReturn>([&](MemoryOutputStream& parametersStream, size_t parametersCount, bool hasResult)
 				{

@@ -23,7 +23,7 @@ namespace kxf
 	void DefaultRPCServer::HandleClientEvent(DefaultRPCEvent& event, bool add)
 	{
 		const auto& procedure = event.GetProcedure();
-		if (auto id = procedure.GetClientID())
+		if (auto id = procedure.GetClientID(); !id.IsEmpty())
 		{
 			if (add)
 			{
@@ -130,7 +130,7 @@ namespace kxf
 		m_UniqueClients.clear();
 		m_AnonymousClients.clear();
 	}
-	MemoryInputStream DefaultRPCServer::DoInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream DefaultRPCServer::DoInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		CleanupClients();
 
@@ -149,7 +149,7 @@ namespace kxf
 				return procedure;
 			};
 
-			if (clientID)
+			if (!clientID.IsEmpty())
 			{
 				auto it = m_UniqueClients.find(clientID);
 				if (it != m_UniqueClients.end())
@@ -189,7 +189,7 @@ namespace kxf
 	}
 	bool DefaultRPCServer::OnDataRecievedFilter(const DefaultRPCProcedure& procedure)
 	{
-		if (procedure.m_ClientID)
+		if (!procedure.m_ClientID.IsEmpty())
 		{
 			auto it = m_UniqueClients.find(procedure.m_ClientID);
 			if (it != m_UniqueClients.end())
@@ -229,7 +229,7 @@ namespace kxf
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCServer::StartServer(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
+	bool DefaultRPCServer::StartServer(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
 	{
 		if (!m_SessionMutex)
 		{
@@ -246,9 +246,9 @@ namespace kxf
 		DoTerminateServer(true);
 	}
 
-	MemoryInputStream DefaultRPCServer::RawInvokeProcedure(const UniversallyUniqueID& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream DefaultRPCServer::RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
-		if (clientID)
+		if (!clientID.IsEmpty())
 		{
 			return DoInvokeProcedure(clientID, procedureID, parameters, parametersCount, hasResult);
 		}

@@ -30,7 +30,7 @@ namespace kxf
 		public:
 			virtual IRPCServer* GetServer() const = 0;
 			virtual IRPCClient* GetClient() const = 0;
-			virtual UniversallyUniqueID GetClientID() const = 0;
+			virtual String GetClientID() const = 0;
 
 			virtual bool HasResult() const = 0;
 			virtual size_t GetParameterCount() const = 0;

@@ -26,7 +26,7 @@ namespace kxf
 		protected:
 			Mutex m_SessionMutex;
 			SharedMemoryBuffer m_ControlBuffer;
-			UniversallyUniqueID m_SessionID;
+			String m_SessionID;
 			FlagSet<RPCExchangeFlag> m_ExchangeFlags;
 			KernelObjectNamespace m_KernelScope = KernelObjectNamespace::None;
 
@@ -46,13 +46,13 @@ namespace kxf
 			String GetResultBufferName() const;
 			String GetSessionMutexName() const;
 
-			void OnInitialize(const UniversallyUniqueID& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags);
+			void OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags);
 			void OnTerminate();
 
 		public:
 			virtual void OnDataRecieved(IInputStream& stream) = 0;
 			virtual bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) = 0;
-			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const UniversallyUniqueID& clientID = {});
+			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const String& clientID = {});
 
 			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
 	};
@@ -76,7 +76,7 @@ namespace kxf
 		private:
 			uint32_t m_Version = GetFormatVersion();
 			EventID m_ProcedureID;
-			UniversallyUniqueID m_ClientID;
+			String m_ClientID;
 			void* m_OriginHandle = nullptr;
 			uint32_t m_ParametersCount = 0;
 			bool m_HasResult = false;
@@ -124,13 +124,13 @@ namespace kxf
 				return m_OriginHandle;
 			}
 
-			UniversallyUniqueID GetClientID() const
+			String GetClientID() const
 			{
 				return m_ClientID;
 			}
-			void SetClientID(const UniversallyUniqueID& clientID)
+			void SetClientID(String clientID)
 			{
-				m_ClientID = clientID;
+				m_ClientID = std::move(clientID);
 			}
 
 		public:
