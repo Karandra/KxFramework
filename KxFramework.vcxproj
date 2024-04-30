@@ -722,7 +722,6 @@
     <ClInclude Include="kxf\Core\DataSize.h" />
     <ClInclude Include="kxf\Core\Common.h" />
     <ClInclude Include="kxf\Core\FlagSet.h" />
-    <ClInclude Include="kxf\Core\ExtraData.h" />
     <ClInclude Include="kxf\Core\IndexedEnum.h" />
     <ClInclude Include="kxf\Core\Math.h" />
     <ClInclude Include="kxf\Core\StdID.h" />

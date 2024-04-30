@@ -85,12 +85,6 @@
     <Filter Include="kxf\Drawing\Private">
       <UniqueIdentifier>{d0521874-4a25-4cdf-b542-c5159ced03de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Localization">
-      <UniqueIdentifier>{78fcd35b-5cf3-4408-b0d1-c3feaddb2f37}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="kxf\Localization\Private">
-      <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\System\SystemProcess">
       <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
@@ -305,6 +299,12 @@
     <Filter Include="kxf\System\SystemThread">
       <UniqueIdentifier>{2dd77d05-df15-42f6-a037-e93590f9a9ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Localization">
+      <UniqueIdentifier>{78fcd35b-5cf3-4408-b0d1-c3feaddb2f37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Localization\Private">
+      <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -468,9 +468,6 @@
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\FileItem.h">
       <Filter>kxf\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Core\ExtraData.h">
-      <Filter>kxf\Core</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\IFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
