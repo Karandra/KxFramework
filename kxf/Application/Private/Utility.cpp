@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "Utility.h"
-#include "kxf/Core/Format.h"
 #include <Windows.h>
 
 namespace kxf::Application::Private

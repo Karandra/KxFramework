@@ -2,7 +2,6 @@
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
 #include "RegEx.h"
-#include "Format.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/Utility/Common.h"

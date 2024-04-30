@@ -4,7 +4,6 @@
 #include "InStreamWrapper.h"
 #include "ArchiveOpenCallback.h"
 #include "../Library.h"
-#include "kxf/Core/Format.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/Utility/ScopeGuard.h"

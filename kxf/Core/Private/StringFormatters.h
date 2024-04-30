@@ -1,147 +1,8 @@
 #pragma once
-#include "Common.h"
-#include "String.h"
+#include "../Common.h"
 #include <format>
 #include <string>
 #include <string_view>
-
-namespace kxf::Private
-{
-	String ConvertQtStyleFormat(const String& format);
-	void LogFormatterException(const std::format_error& e);
-
-	template<class... Args>
-	String DoFromat(StringView format, Args&&... arg)
-	{
-		if constexpr((sizeof...(Args)) == 0)
-		{
-			return String(format);
-		}
-
-		try
-		{
-			return std::vformat(format, std::make_wformat_args(std::forward<Args>(arg)...));
-		}
-		catch (const std::format_error& e)
-		{
-			LogFormatterException(e);
-			return String(format);
-		}
-		return {};
-	}
-
-	template<class... Args>
-	size_t DoFormattedSize(StringView format, Args&&... arg)
-	{
-		if constexpr((sizeof...(Args)) == 0)
-		{
-			return format.length();
-		}
-
-		try
-		{
-			return std::formatted_size(format, std::forward<Args>(arg)...);
-		}
-		catch (const std::format_error& e)
-		{
-			LogFormatterException(e);
-			return 0;
-		}
-		return 0;
-	}
-}
-
-namespace kxf
-{
-	template<class... Args>
-	String Format(const char* format, Args&&... arg)
-	{
-		if (format)
-		{
-			auto utf8 = String::FromUTF8(format);
-			return Private::DoFromat(utf8.xc_view(), std::forward<Args>(arg)...);
-		}
-		return {};
-	}
-
-	template<class... Args>
-	String Format(const wchar_t* format, Args&&... arg)
-	{
-		if (format)
-		{
-			return Private::DoFromat(format, std::forward<Args>(arg)...);
-		}
-		return {};
-	}
-
-	template<class... Args>
-	String Format(std::string_view format, Args&&... arg)
-	{
-		auto utf8 = String::FromUTF8(format);
-		return Private::DoFromat(utf8.xc_view(), std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	String Format(std::wstring_view format, Args&&... arg)
-	{
-		return Private::DoFromat(format, std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	String Format(const String& format, Args&&... arg)
-	{
-		return Private::DoFromat(format.xc_view(), std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	String FormatQtStyle(const String& format, Args&&... arg)
-	{
-		return Format(Private::ConvertQtStyleFormat(format), std::forward<Args>(arg)...);
-	}
-}
-
-namespace kxf
-{
-	template<class... Args>
-	size_t FormattedSize(const char* format, Args&&... arg)
-	{
-		if (format)
-		{
-			auto utf8 = String::FromUTF8(format);
-			return Private::DoFormattedSize(utf8.xc_view(), std::forward<Args>(arg)...);
-		}
-		return 0;
-	}
-
-	template<class... Args>
-	size_t FormattedSize(const wchar_t* format, Args&&... arg)
-	{
-		if (format)
-		{
-			return Private::DoFormattedSize(format, std::forward<Args>(arg)...);
-		}
-		return 0;
-	}
-
-	template<class... Args>
-	size_t FormattedSize(std::string_view format, Args&&... arg)
-	{
-		auto utf8 = String::FromUTF8(format);
-		return Private::DoFormattedSize(utf8.xc_view(), std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	size_t FormattedSize(std::wstring_view format, Args&&... arg)
-	{
-		return Private::DoFormattedSize(format, std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	size_t FormattedSize(const String& format, Args&&... arg)
-	{
-		return Private::DoFormattedSize(format.xc_view(), std::forward<Args>(arg)...);
-	}
-}
 
 namespace std
 {
@@ -168,6 +29,7 @@ namespace std
 	};
 
 	// wxString
+	#ifdef __WXWINDOWS__
 	template<>
 	struct formatter<wxString, char>: std::formatter<std::string_view, char>
 	{
@@ -185,9 +47,10 @@ namespace std
 		template<class TFormatContext>
 		auto format(const wxString& value, TFormatContext& formatContext) const
 		{
-			return std::formatter<std::wstring_view, wchar_t>::format(std::wstring_view(value.wx_str(), value.length()), formatContext);
+			return std::formatter<std::wstring_view, wchar_t>::format(std::wstring_view(value.wc_str(), value.length()), formatContext);
 		}
 	};
+	#endif
 
 	// Converting const char[N]/wchar_t[N]
 	template<size_t N>

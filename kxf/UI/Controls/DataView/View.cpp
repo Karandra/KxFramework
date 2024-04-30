@@ -5,7 +5,6 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "Renderer.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace

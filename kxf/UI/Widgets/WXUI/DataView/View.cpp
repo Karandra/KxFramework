@@ -2,7 +2,6 @@
 #include "View.h"
 #include "HeaderCtrl.h"
 #include "MainWindow.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/System/SystemInformation.h"
 

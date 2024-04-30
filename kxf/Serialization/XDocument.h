@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "Private/XDocument.h"

@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "StandardLocalization.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Application/ICoreApplication.h"
 
 namespace

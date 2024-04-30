@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "DataSize.h"
 #include "Math.h"
-#include "Format.h"
 #include "kxf/Application/ICoreApplication.h"
 
 namespace

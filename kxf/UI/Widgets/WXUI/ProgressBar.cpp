@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "ProgressBar.h"
 #include "../../INativeWidget.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include <Windows.h>
 #include <Commctrl.h>

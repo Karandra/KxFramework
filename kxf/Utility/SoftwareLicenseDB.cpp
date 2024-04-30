@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "SoftwareLicenseDB.h"
 #include "System.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/IEncodingConverter.h"
 #include "kxf/System/DynamicLibrary.h"
 

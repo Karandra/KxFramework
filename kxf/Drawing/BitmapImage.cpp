@@ -4,7 +4,6 @@
 #include "GDIRenderer/GDICursor.h"
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/Core/Format.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 #include <wx/image.h>
 

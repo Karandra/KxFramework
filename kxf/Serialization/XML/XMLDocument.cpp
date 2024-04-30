@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "XMLDocument.h"
 #include "Private/Utility.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Network/URI.h"
 #include "kxf/Utility/SoftwareLicenseDB.h"
 

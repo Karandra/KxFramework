@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
-#include "kxf/Core/Format.h"
 
 namespace kxf
 {

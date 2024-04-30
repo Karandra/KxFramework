@@ -1,21 +1,21 @@
 #include "KxfPCH.h"
 #include "LocallyUniqueID.h"
-#include "kxf/Core/Format.h"
+#include "kxf/Core/String.h"
 #include <cwchar>
 
 namespace
 {
 	std::atomic<uint64_t> g_SequentialID = 0;
 
-	uint64_t CreateFromString(const wchar_t* value) noexcept
-	{
-		wchar_t* end = nullptr;
-		return std::wcstoull(value, &end, 16);
-	}
 	uint64_t CreateFromString(const char* value) noexcept
 	{
 		char* end = nullptr;
 		return std::strtoull(value, &end, 16);
+	}
+	uint64_t CreateFromString(const wchar_t* value) noexcept
+	{
+		wchar_t* end = nullptr;
+		return std::wcstoull(value, &end, 16);
 	}
 }
 

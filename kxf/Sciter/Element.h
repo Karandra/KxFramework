@@ -3,7 +3,6 @@
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
 #include "kxf/Core/String.h"
-#include "kxf/Core/Format.h"
 
 namespace kxf
 {

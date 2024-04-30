@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "Validator.h"
 #include <wx/spinctrl.h>
-#include "kxf/Core/Format.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace
@@ -132,7 +131,7 @@ namespace kxf::UI::Private
 		{
 			if (HWND textArea = ::GetWindow(spinDouble->GetHandle(), GW_HWNDPREV))
 			{
-				// Hacky but works
+				// Hacky, but works
 				SpinCtrlDoubleWrapper* wrapper = reinterpret_cast<SpinCtrlDoubleWrapper*>(spinDouble);
 				value = wrapper->DoValueToText(spinDouble->GetValue());
 

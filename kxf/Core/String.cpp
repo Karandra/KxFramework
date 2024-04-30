@@ -1,10 +1,12 @@
 #include "KxfPCH.h"
 #include "String.h"
+#include "RegEx.h"
 #include "IEncodingConverter.h"
 #include "kxf/IO/IStream.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/Utility/Common.h"
-#include <kxf/System/UndefWindows.h>
 #include <wx/string.h>
+#include <kxf/System/UndefWindows.h>
 #include <cctype>
 
 namespace
@@ -401,6 +403,10 @@ namespace kxf
 	{
 		return EncodingConverter_ASCII.ToWideChar(ascii);
 	}
+	String String::FromEncoding(std::string_view source, IEncodingConverter& encodingConverter)
+	{
+		return encodingConverter.ToWideChar(source);
+	}
 
 	String String::FromFloatingPoint(double value, int precision)
 	{
@@ -487,6 +493,7 @@ namespace kxf
 	}
 
 	// Construction
+	#ifdef __WXWINDOWS__
 	String::String(const wxString& other) noexcept
 		:m_String(StringViewOf(other))
 	{
@@ -495,6 +502,7 @@ namespace kxf
 	{
 		Private::MoveWxString(m_String, std::move(other));
 	}
+	#endif
 
 	String::String(const char* data, size_t length)
 		:String(EncodingConverter_WhateverWorks.ToWideChar(data, length))
@@ -520,6 +528,10 @@ namespace kxf
 			ascii += c.ToASCII().value_or(replaceWith);
 		}
 		return ascii;
+	}
+	std::string String::ToEncoding(IEncodingConverter& encodingConverter) const
+	{
+		return encodingConverter.ToMultiByte(m_String);
 	}
 
 	// Concatenation
@@ -904,20 +916,25 @@ namespace kxf
 	}
 
 	// Conversion
+	#ifdef __WXWINDOWS__
 	String::operator wxString() const
 	{
 		return wxString(xc_str(), length());
 	}
+	#endif
 
 	// Comparison
+	#ifdef __WXWINDOWS__
 	std::strong_ordering String::operator<=>(const wxString& other) const noexcept
 	{
 		return xc_view() <=> StringViewOf(other);
 	}
+	#endif
 }
 
 namespace kxf::Private
 {
+	#ifdef __WXWINDOWS__
 	const String::string_type& GetWxStringImpl(const wxString& string) noexcept
 	{
 		return string.ToStdWstring();
@@ -954,6 +971,23 @@ namespace kxf::Private
 			// Also see a comment in the next overload
 			destination = std::move(GetWxStringImpl(source));
 		}
+	}
+	#endif
+
+	String ConvertQtStyleFormat(const String& format)
+	{
+		RegEx regEx("%(\\d+)");
+
+		String result = format;
+		while (regEx.Matches(format))
+		{
+			regEx.ReplaceAll(result, "{\\1}");
+		}
+		return result;
+	}
+	void LogFormatterException(const std::format_error& e)
+	{
+		Log::Error("std::format_error: {}", e.what());
 	}
 }
 

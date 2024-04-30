@@ -6,7 +6,6 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/System/HandlePtr.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 

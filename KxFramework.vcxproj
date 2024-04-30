@@ -143,6 +143,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
+    <ClInclude Include="kxf\Core\Private\StringFormatters.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\AffineMatrix.h" />
     <ClInclude Include="kxf\Drawing\Angle.h" />
@@ -263,7 +264,6 @@
     <ClInclude Include="kxf\Core\DynamicVariablesCollection.h" />
     <ClInclude Include="kxf\Core\ErrorCode.h" />
     <ClInclude Include="kxf\Core\Enumerator.h" />
-    <ClInclude Include="kxf\Core\Format.h" />
     <ClInclude Include="kxf\Core\IEncodingConverter.h" />
     <ClInclude Include="kxf\Core\IEnumerator.h" />
     <ClInclude Include="kxf\Core\IErrorCode.h" />
@@ -897,7 +897,6 @@
     <ClCompile Include="kxf\Core\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\Core\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\Core\ErrorCode.cpp" />
-    <ClCompile Include="kxf\Core\Format.cpp" />
     <ClCompile Include="kxf\Core\IEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\Core\LocallyUniqueID.cpp" />

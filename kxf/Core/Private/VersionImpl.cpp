@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "VersionImpl.h"
 #include "../Version.h"
-#include "kxf/Core/Format.h"
 
 namespace
 {

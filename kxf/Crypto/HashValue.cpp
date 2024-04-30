@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "HashValue.h"
 #include "kxf/Core/String.h"
-#include "kxf/Core/Format.h"
 
 namespace kxf::Crypto::Private
 {

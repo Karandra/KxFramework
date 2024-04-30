@@ -1,6 +1,5 @@
 #include "KxfPCH.h"
 #include "ExecutableVersionResource.h"
-#include "kxf/Core/Format.h"
 #include <Windows.h>
 #include "UndefWindows.h"
 

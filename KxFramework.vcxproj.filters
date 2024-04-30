@@ -1896,9 +1896,6 @@
     <ClInclude Include="kxf\IO\MemoryStreamBuffer.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\Format.h">
-      <Filter>kxf\Core</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Core\UniChar.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
@@ -2408,6 +2405,9 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\Widgets\DataView\Editors\Common.h">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Core\Private\StringFormatters.h">
+      <Filter>kxf\Core\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

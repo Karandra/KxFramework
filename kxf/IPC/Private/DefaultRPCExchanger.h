@@ -1,6 +1,5 @@
 #pragma once
 #include "kxf/Core/String.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Threading/Mutex.h"

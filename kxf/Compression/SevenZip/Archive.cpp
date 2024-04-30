@@ -9,7 +9,6 @@
 #include "Private/ArchiveUpdateCallback.h"
 #include "Private/InStreamWrapper.h"
 #include "Private/OutStreamWrapper.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/ErrorCode.h"
 #include "kxf/Core/Enumerator.h"
 #include "kxf/System/VariantProperty.h"
