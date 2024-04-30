@@ -397,6 +397,10 @@
     <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcess.h" />
     <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.h" />
     <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h" />
+    <ClInclude Include="kxf\System\SystemThread.h" />
+    <ClInclude Include="kxf\System\SystemThread\ISystemThread.h" />
+    <ClInclude Include="kxf\System\SystemThread\RunningSystemThread.h" />
+    <ClInclude Include="kxf\System\SystemThread\SystemThreadInfo.h" />
     <ClInclude Include="kxf\System\UserName.h" />
     <ClInclude Include="kxf\System\VariantProperty.h" />
     <ClInclude Include="kxf\System\Win32Error.h" />
@@ -929,7 +933,9 @@
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
-    <ClCompile Include="kxf\Log\Private\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\Log\Private\WxOverride.cpp" />
+    <ClCompile Include="kxf\Log\ScopedLogger.cpp" />
+    <ClCompile Include="kxf\Log\ScopedLoggerTarget.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebResponse.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebRequest.cpp" />
@@ -980,6 +986,10 @@
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcess.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
+    <ClCompile Include="kxf\System\SystemThread.cpp" />
+    <ClCompile Include="kxf\System\SystemThread\ISystemThread.cpp" />
+    <ClCompile Include="kxf\System\SystemThread\RunningSystemThread.cpp" />
+    <ClCompile Include="kxf\System\SystemThread\SystemThreadInfo.cpp" />
     <ClCompile Include="kxf\System\UserName.cpp" />
     <ClCompile Include="kxf\System\VariantProperty.cpp" />
     <ClCompile Include="kxf\System\Win32Error.cpp" />

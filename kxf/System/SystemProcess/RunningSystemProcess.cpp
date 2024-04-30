@@ -1,6 +1,8 @@
 #include "KxfPCH.h"
 #include "RunningSystemProcess.h"
 #include "kxf/System/NativeAPI.h"
+#include "kxf/System/SystemProcess.h"
+#include "kxf/System/SystemThread.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/Common.h"
@@ -9,15 +11,10 @@
 #include <Windows.h>
 #include <PsAPI.h>
 #include <WInternl.h>
-#include <TlHelp32.h>
 #include "kxf/System/UndefWindows.h"
 
 namespace
 {
-	// Get environment variables of another process
-	// http://stackoverflow.com/questions/38297878/get-startupinfo-for-given-process
-	// https://msdn.microsoft.com/en-us/library/bb432286(v=vs.85).aspx
-
 	bool SafeTerminateProcess(HANDLE processHandle, uint32_t exitCode) noexcept
 	{
 		using namespace kxf;
@@ -61,7 +58,7 @@ namespace
 			remoteThreadHandle = ::CreateRemoteThread(processHandleDuplicate ? processHandleDuplicate : processHandle,
 													  nullptr,
 													  0,
-													  reinterpret_cast<LPTHREAD_START_ROUTINE>(::GetProcAddress(::GetModuleHandleW(L"Kernel32.dll"), "ExitProcess")),
+													  reinterpret_cast<LPTHREAD_START_ROUTINE>(::GetProcAddress(::GetModuleHandleW(L"kernel32.dll"), "ExitProcess")),
 													  reinterpret_cast<void*>(static_cast<size_t>(exitCode)),
 													  0,
 													  &threadID);
@@ -91,35 +88,41 @@ namespace kxf
 	RunningSystemProcess RunningSystemProcess::GetCurrentProcess()
 	{
 		RunningSystemProcess process;
-		process.m_Handle = ::GetCurrentProcess();
+		process.AttachHandle(::GetCurrentProcess());
+
 		return process;
 	}
-
-	void RunningSystemProcess::Open(uint32_t pid, SystemProcessAccess access)
+	RunningSystemProcess RunningSystemProcess::OpenCurrentProcess(FlagSet<SystemProcessAccess> access, bool inheritHandle)
 	{
-		m_Handle = ::OpenProcess(*System::Private::MapSystemProcessAccess(access), FALSE, pid);
-	}
-	void RunningSystemProcess::Close()
-	{
-		if (m_Handle)
-		{
-			::CloseHandle(m_Handle);
-		}
-		m_Handle = nullptr;
+		return RunningSystemProcess(::GetCurrentProcessId(), access, inheritHandle);
 	}
 
+	// ISystemProcess
 	bool RunningSystemProcess::IsCurrent() const
 	{
 		return GetID() == ::GetCurrentProcessId();
 	}
 	bool RunningSystemProcess::Is64Bit() const
 	{
-		if (NativeAPI::Kernel32::IsWow64Process && !IsNull())
+		if (m_Handle)
 		{
-			BOOL value = FALSE;
-			if (NativeAPI::Kernel32::IsWow64Process(m_Handle, &value))
+			if (NativeAPI::Kernel32::IsWow64Process2)
 			{
-				return !value;
+				// Set initial value to something we aren't looking for after the successful function call
+				uint16_t processMachine = IMAGE_FILE_MACHINE_TARGET_HOST;
+				uint16_t nativeMachine = IMAGE_FILE_MACHINE_TARGET_HOST;
+				if (NativeAPI::Kernel32::IsWow64Process2(m_Handle, &processMachine, &nativeMachine))
+				{
+					return processMachine == IMAGE_FILE_MACHINE_UNKNOWN;
+				}
+			}
+			if (NativeAPI::Kernel32::IsWow64Process)
+			{
+				BOOL value = FALSE;
+				if (NativeAPI::Kernel32::IsWow64Process(m_Handle, &value))
+				{
+					return !value;
+				}
 			}
 		}
 		return false;
@@ -133,11 +136,11 @@ namespace kxf
 	{
 		return System::Private::MapSystemProcessPriority(::GetPriorityClass(m_Handle));
 	}
-	bool RunningSystemProcess::SetPriority(SystemProcessPriority value)
+	bool RunningSystemProcess::SetPriority(SystemProcessPriority priority)
 	{
-		if (auto priority = System::Private::MapSystemProcessPriority(value))
+		if (auto value = System::Private::MapSystemProcessPriority(priority))
 		{
-			return ::SetPriorityClass(m_Handle, *priority);
+			return ::SetPriorityClass(m_Handle, *value);
 		}
 		return false;
 	}
@@ -156,12 +159,12 @@ namespace kxf
 		}
 		return {};
 	}
-	bool RunningSystemProcess::Terminate(uint32_t exitCode, bool force)
+	bool RunningSystemProcess::Terminate(uint32_t exitCode)
 	{
-		return force ? ::TerminateProcess(m_Handle, exitCode) : SafeTerminateProcess(m_Handle, exitCode);
+		return ::TerminateProcess(m_Handle, exitCode);
 	}
 
-	bool RunningSystemProcess::SuspendProcess()
+	bool RunningSystemProcess::Suspend()
 	{
 		if (NativeAPI::NtDLL::NtSuspendProcess)
 		{
@@ -169,7 +172,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool RunningSystemProcess::ResumeProcess()
+	bool RunningSystemProcess::Resume()
 	{
 		if (NativeAPI::NtDLL::NtResumeProcess)
 		{
@@ -178,52 +181,22 @@ namespace kxf
 		return false;
 	}
 
-	FSPath RunningSystemProcess::GetExecutablePath() const
-	{
-		DWORD length = 0;
-		wchar_t buffer[INT16_MAX] = {};
-		if (::QueryFullProcessImageNameW(m_Handle, 0, buffer, &length))
-		{
-			return buffer;
-		}
-		return {};
-	}
-	FSPath RunningSystemProcess::GetWorkingDirectory() const
-	{
-		// TODO: https://stackoverflow.com/questions/14018280/how-to-get-a-process-working-dir-on-windows
-		if (IsCurrent())
-		{
-			return NativeFileSystem().GetExecutingModuleWorkingDirectory();
-		}
-		return {};
-	}
-	String RunningSystemProcess::GetExecutableParameters() const
-	{
-		String commandLine = GetCommandLine();
-		if (!commandLine.IsEmpty())
-		{
-			String parameters;
-
-			FSPath path = GetExecutablePath();
-			if (commandLine.StartsWith(path.GetFullPath(), &parameters, StringActionFlag::IgnoreCase))
-			{
-				return parameters;
-			}
-		}
-		return {};
-	}
 	String RunningSystemProcess::GetCommandLine() const
 	{
 		// http://stackoverflow.com/questions/18358150/ntqueryinformationprocess-keep-to-fail
 
 		// PROCESS_QUERY_INFORMATION|PROCESS_VM_READ
-
 		if (NativeAPI::NtDLL::NtQueryInformationProcess)
 		{
 			PROCESS_BASIC_INFORMATION processInformation = {};
 			uint32_t processInformationSize = 0;
 			if (NativeAPI::NtDLL::NtQueryInformationProcess(m_Handle, PROCESSINFOCLASS::ProcessBasicInformation, &processInformation, sizeof(processInformation), &processInformationSize) >= 0)
 			{
+				if (processInformation.PebBaseAddress == nullptr)
+				{
+					return {};
+				}
+
 				// Read PEB memory block
 				SIZE_T read = 0;
 				PEB peb = {};
@@ -248,105 +221,126 @@ namespace kxf
 		}
 		return {};
 	}
-
-	size_t RunningSystemProcess::EnumThreads(std::function<bool(uint32_t)> func) const
+	FSPath RunningSystemProcess::GetExecutablePath() const
 	{
-		if (IsNull())
+		DWORD length = INT16_MAX;
+		String result;
+		if (::QueryFullProcessImageNameW(m_Handle, 0, Utility::StringBuffer(result, length, true), &length))
 		{
-			return 0;
+			return result;
 		}
-
-		HANDLE snapshotHandle = ::CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-		if (snapshotHandle && snapshotHandle != INVALID_HANDLE_VALUE)
+		return {};
+	}
+	FSPath RunningSystemProcess::GetWorkingDirectory() const
+	{
+		// TODO: https://stackoverflow.com/questions/14018280/how-to-get-a-process-working-dir-on-windows
+		if (IsCurrent())
 		{
-			Utility::ScopeGuard atExit = [&]()
+			return NativeFileSystem().GetExecutingModuleWorkingDirectory();
+		}
+		return {};
+	}
+	String RunningSystemProcess::GetExecutableParameters() const
+	{
+		String commandLine = GetCommandLine();
+		if (!commandLine.IsEmpty())
+		{
+			String parameters;
+			if (commandLine.StartsWith(GetExecutablePath().GetFullPath(), &parameters, StringActionFlag::IgnoreCase))
 			{
-				::CloseHandle(snapshotHandle);
-			};
-
-			THREADENTRY32 entry = {};
-			entry.dwSize = sizeof(entry);
-			if (::Thread32First(snapshotHandle, &entry))
-			{
-				size_t count = 0;
-				uint32_t currentPID = GetID();
-				bool invokeCallback = true;
-
-				do
-				{
-					if (entry.dwSize >= FIELD_OFFSET(THREADENTRY32, th32OwnerProcessID) + sizeof(entry.th32OwnerProcessID) && entry.th32OwnerProcessID == currentPID)
-					{
-						if (invokeCallback)
-						{
-							count++;
-							if (!std::invoke(func, entry.th32ThreadID))
-							{
-								invokeCallback = false;
-							}
-						}
-					}
-					entry.dwSize = sizeof(entry);
-				}
-				while (::Thread32Next(snapshotHandle, &entry));
-				return count;
+				return parameters;
 			}
+			return commandLine;
+		}
+		return {};
+	}
+	SHWindowCommand RunningSystemProcess::GetShowWindowCommand() const
+	{
+		return SHWindowCommand::None;
+	}
+
+	size_t RunningSystemProcess::EnumEnvironemntVariables(std::function<CallbackCommand(const String&, const String&)> func) const
+	{
+		// TODO:
+		// http://stackoverflow.com/questions/38297878/get-startupinfo-for-given-process
+		// https://msdn.microsoft.com/en-us/library/bb432286(v=vs.85).aspx
+		return 0;
+	}
+	size_t RunningSystemProcess::EnumThreads(std::function<CallbackCommand(SystemThread)> func) const
+	{
+		if (!IsNull())
+		{
+			return System::Private::EnumThreads([&](uint32_t pid, uint32_t tid)
+			{
+				return std::invoke(func, tid);
+			}, GetID());
 		}
 		return 0;
 	}
-	size_t RunningSystemProcess::EnumWindows(std::function<bool(void*)> func) const
+	size_t RunningSystemProcess::EnumWindows(std::function<CallbackCommand(void*)> func) const
 	{
-		std::tuple<decltype(func)&, size_t, uint32_t> callContext = {func, 0, GetID()};
-		::EnumWindows([](HWND windowHandle, LPARAM lParam) -> BOOL
+		if (!IsNull())
 		{
-			auto& context = *reinterpret_cast<decltype(callContext)*>(lParam);
-
-			DWORD pid = 0;
-			::GetWindowThreadProcessId(windowHandle, &pid);
-
-			if (pid != 0 && pid == std::get<2>(context))
+			return System::Private::EnumWindows([&](void* hwnd, uint32_t pid, uint32_t tid)
 			{
-				++std::get<1>(context);
-				return std::invoke(std::get<0>(context), windowHandle);
-			}
-			return TRUE;
-		}, reinterpret_cast<LPARAM>(&callContext));
-
-		return std::get<1>(callContext);
+				return std::invoke(func, hwnd);
+			}, GetID());
+		}
+		return 0;
 	}
-	uint32_t RunningSystemProcess::GetMainThread() const
+
+	// RunningSystemProcess
+	bool RunningSystemProcess::Open(uint32_t pid, FlagSet<SystemProcessAccess> access, bool inheritHandle)
 	{
-		uint32_t result = 0;
+		if (!m_Handle)
+		{
+			m_Handle = ::OpenProcess(*System::Private::MapSystemProcessAccess(access), inheritHandle, pid);
+			return m_Handle != nullptr;
+		}
+		return false;
+	}
+	void RunningSystemProcess::Close()
+	{
+		if (m_Handle)
+		{
+			::CloseHandle(m_Handle);
+			m_Handle = nullptr;
+		}
+	}
+
+	SystemThread RunningSystemProcess::GetMainThread() const
+	{
+		SystemThread result;
 		std::optional<FILETIME> earliestTime;
 
-		EnumThreads([&](uint32_t threadID)
+		EnumThreads([&](SystemThread threadInfo)
 		{
-			if (HANDLE threadHandle = ::OpenThread(THREAD_QUERY_LIMITED_INFORMATION, FALSE, threadID))
+			if (auto thread = threadInfo.Open(SystemThreadAccess::QueryLimitedInformation))
 			{
-				Utility::ScopeGuard atExit = [&]()
-				{
-					::CloseHandle(threadHandle);
-				};
-
 				FILETIME creation = {};
 				FILETIME exit = {};
 				FILETIME kernel = {};
 				FILETIME user = {};
-				if (::GetThreadTimes(threadHandle, &creation, &exit, &kernel, &user))
+				if (::GetThreadTimes(thread.GetHandle(), &creation, &exit, &kernel, &user))
 				{
 					if (!earliestTime)
 					{
 						earliestTime = creation;
-						result = threadID;
+						result = threadInfo;
 					}
 					else if (::CompareFileTime(&creation, &*earliestTime) == -1)
 					{
 						earliestTime = creation;
-						result = threadID;
+						result = threadInfo;
 					}
 				}
 			}
-			return true;
+			return CallbackCommand::Continue;
 		});
 		return result;
+	}
+	bool RunningSystemProcess::SafeTerminate(uint32_t exitCode)
+	{
+		return SafeTerminateProcess(m_Handle, exitCode);
 	}
 }

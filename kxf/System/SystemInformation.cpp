@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "SystemInformation.h"
+#include "SystemProcess.h"
 #include "NativeAPI.h"
 #include "Registry.h"
 #include "COM.h"
@@ -49,12 +50,7 @@ namespace kxf::System
 		#if defined(_WIN64)
 		return true;
 		#else
-		BOOL isWow64 = FALSE;
-		if (NativeAPI::Kernel32::IsWow64Process)
-		{
-			NativeAPI::Kernel32::IsWow64Process(::GetCurrentProcess(), &isWow64);
-		}
-		return isWow64 != FALSE;
+		return SystemProcess::GetCurrentProcess().Is64Bit();
 		#endif
 	}
 	void GetRegistryQuota(DataSize& used, DataSize& allowed) noexcept

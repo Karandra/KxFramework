@@ -7,7 +7,7 @@
 
 namespace kxf::System
 {
-	size_t EnumRunningProcesses(std::function<bool(uint32_t)> func)
+	size_t EnumRunningProcesses(std::function<CallbackCommand(SystemProcess)> func)
 	{
 		DWORD buffer[4096] = {};
 		DWORD validBufferSize = 0;
@@ -20,7 +20,7 @@ namespace kxf::System
 			for (size_t i = 0; i < totalCount; i++)
 			{
 				count++;
-				if (!std::invoke(func, buffer[i]))
+				if (std::invoke(func, buffer[i]) == CallbackCommand::Terminate)
 				{
 					break;
 				}

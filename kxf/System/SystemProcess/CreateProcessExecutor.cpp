@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "CreateProcessExecutor.h"
 #include "ProcessEvent.h"
-#include "kxf/Core/Format.h"
 #include "kxf/System/Private/Shell.h"
 #include "kxf/System/Private/System.h"
 
@@ -33,6 +32,7 @@ namespace kxf::System
 
 namespace kxf::System
 {
+	// CreateProcessExecutor
 	void CreateProcessExecutor::PrepareEnvironmentBuffer(const ISystemProcess& info)
 	{
 		info.EnumEnvironemntVariables([&](const String& name, const String& value)
@@ -42,7 +42,8 @@ namespace kxf::System
 			m_EnvironmentBuffer.AppendData(L"=", sizeof(wchar_t));
 			m_EnvironmentBuffer.AppendData(value.wc_str(), value.length() * sizeof(wchar_t));
 			m_EnvironmentBuffer.AppendData(L"\0", sizeof(wchar_t));
-			return true;
+
+			return CallbackCommand::Continue;
 		});
 		if (m_EnvironmentBuffer.GetDataLen() != 0)
 		{
@@ -206,29 +207,15 @@ namespace kxf::System
 			::CloseHandle(m_ProcessInfo.hThread);
 		}
 	}
-
-	uint32_t CreateProcessExecutor::GetMainThread() const
+	
+	SystemThread CreateProcessExecutor::GetMainThread() const
 	{
 		if (IsProcessAlive())
 		{
 			return m_ProcessInfo.dwThreadId;
 		}
-		return 0;
+		return {};
 	}
-	bool CreateProcessExecutor::ResumeProcess()
-	{
-		if (IsProcessAlive())
-		{
-			if (!m_IsMainThreadResumed)
-			{
-				ResumeMainThread();
-				return true;
-			}
-			return RunningSystemProcess::ResumeProcess();
-		}
-		return false;
-	}
-	
 	bool CreateProcessExecutor::CreateProcess(const ISystemProcess& info)
 	{
 		// Process creation flags
@@ -285,6 +272,21 @@ namespace kxf::System
 		{
 			AttachHandle(m_ProcessInfo.hProcess);
 			return true;
+		}
+		return false;
+	}
+
+	// ISystemProcess
+	bool CreateProcessExecutor::Resume()
+	{
+		if (IsProcessAlive())
+		{
+			if (!m_IsMainThreadResumed)
+			{
+				ResumeMainThread();
+				return true;
+			}
+			return RunningSystemProcess::Resume();
 		}
 		return false;
 	}

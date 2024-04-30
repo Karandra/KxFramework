@@ -302,6 +302,9 @@
     <Filter Include="kxf\UI\Widgets\DataView\Editors">
       <UniqueIdentifier>{e4e18639-5e2f-4e27-b95d-dfd0be9a48a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\System\SystemThread">
+      <UniqueIdentifier>{2dd77d05-df15-42f6-a037-e93590f9a9ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -742,9 +745,6 @@
     </ClInclude>
     <ClInclude Include="kxf\System\SystemProcess\CreateProcessExecutor.h">
       <Filter>kxf\System\SystemProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\SystemProcess.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Windows\SplashWindow.h">
       <Filter>kxf\UI\Windows</Filter>
@@ -2406,8 +2406,23 @@
     <ClInclude Include="kxf\UI\Widgets\DataView\Editors\Common.h">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\SystemProcess.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemThread\SystemThreadInfo.h">
+      <Filter>kxf\System\SystemThread</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemThread.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemThread\ISystemThread.h">
+      <Filter>kxf\System\SystemThread</Filter>
+    </ClInclude>
     <ClInclude Include="kxf\Threading\ThreadLocalSlot.h">
       <Filter>kxf\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemThread\RunningSystemThread.h">
+      <Filter>kxf\System\SystemThread</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Core\Private\StringFormatters.h">
       <Filter>kxf\Core\Private</Filter>
@@ -2630,9 +2645,6 @@
     </ClCompile>
     <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp">
       <Filter>kxf\System\SystemProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SystemProcess.cpp">
-      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Windows\SplashWindow.cpp">
       <Filter>kxf\UI\Windows</Filter>
@@ -3321,9 +3333,6 @@
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\Format.cpp">
-      <Filter>kxf\Core</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Crypto\HashValue.cpp">
       <Filter>kxf\Crypto</Filter>
     </ClCompile>
@@ -3657,8 +3666,23 @@
     <ClCompile Include="kxf\UI\Widgets\DataView\Editors\TextBox.cpp">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\System\SystemProcess.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemThread\SystemThreadInfo.cpp">
+      <Filter>kxf\System\SystemThread</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemThread.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
     <ClCompile Include="kxf\Threading\ThreadLocalSlot.cpp">
       <Filter>kxf\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemThread\ISystemThread.cpp">
+      <Filter>kxf\System\SystemThread</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemThread\RunningSystemThread.cpp">
+      <Filter>kxf\System\SystemThread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

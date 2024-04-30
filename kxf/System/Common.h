@@ -45,6 +45,41 @@ namespace kxf
 	};
 	KxFlagSet_Declare(SHWindowCommand);
 
+	enum class SystemStandardAccess: uint32_t
+	{
+		None = 0,
+
+		Delete = 1 << 0,
+		Synchronize = 1 << 1,
+		ReadControl = 1 << 2,
+		WriteOwner = 1 << 3,
+		WriteDAC = 1 << 4,
+
+		Everything = std::numeric_limits<uint32_t>::max()
+	};
+	KxFlagSet_Declare(SystemStandardAccess);
+
+	enum class SystemThreadAccess: uint32_t
+	{
+		None = 0,
+
+		QueryInformation = 1 << 0,
+		QueryLimitedInformation = 1 << 1,
+		SetInformation = 1 << 2,
+		SetLimitedInformation = 1 << 3,
+		SuspendResume = 1 << 4,
+		Synchronize = 1 << 5,
+		Terminate = 1 << 6,
+		GetContext = 1 << 7,
+		SetContext = 1 << 8,
+		SetToken = 1 << 9,
+		Impersonate = 1 << 10,
+		DirectImpersonation = 1 << 11,
+
+		Everything = std::numeric_limits<uint32_t>::max()
+	};
+	KxFlagSet_Declare(SystemThreadAccess);
+
 	enum class SystemProcessAccess: uint32_t
 	{
 		None = 0,
@@ -60,8 +95,10 @@ namespace kxf
 		VMOperation = 1 << 8,
 		VMRead = 1 << 9,
 		VMWrite = 1 << 10,
+		SetQuota = 1 << 11,
+		DuplicateHandle = 1 << 12,
 
-		Everything = CreateProcess|CreateThread|QueryInformation|QueryLimitedInformation|SetInformation|SuspendResume|Terminate|Synchronize|VMOperation|VMRead|VMWrite
+		Everything = std::numeric_limits<uint32_t>::max()
 	};
 	KxFlagSet_Declare(SystemProcessAccess);
 
@@ -78,7 +115,7 @@ namespace kxf
 		Async = 1 << 16
 	};
 	KxFlagSet_Declare(CreateSystemProcessFlag);
-	
+
 	enum class SystemProcessPriority
 	{
 		None = -1,
@@ -88,7 +125,7 @@ namespace kxf
 		Normal,
 		AboveNormal,
 		High,
-		Realtime,
+		Realtime
 	};
 
 	enum class KernelObjectNamespace

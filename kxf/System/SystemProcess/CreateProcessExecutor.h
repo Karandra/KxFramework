@@ -1,6 +1,7 @@
 #pragma once
 #include "RunningSystemProcess.h"
 #include "RunningSystemProcessStdIO.h"
+#include "kxf/System/SystemThread.h"
 #include <wx/thread.h>
 #include <wx/stream.h>
 #include <Windows.h>
@@ -93,6 +94,7 @@ namespace kxf::System
 				return Implementation::QueryInterface(iid);
 			}
 
+			// CreateProcessExecutor
 			ExitCode Entry() override;
 			void ResumeMainThread();
 			bool IsProcessAlive() const;
@@ -109,11 +111,9 @@ namespace kxf::System
 			~CreateProcessExecutor();
 
 		public:
-			// ISystemProcess
-			uint32_t GetMainThread() const override;
-			bool ResumeProcess() override;
+			// CreateProcessExecutor
+			SystemThread GetMainThread() const;
 
-		public:
 			bool CreateProcess(const ISystemProcess& info);
 			wxThreadError Run()
 			{
@@ -123,5 +123,8 @@ namespace kxf::System
 			{
 				Entry();
 			}
+
+			// ISystemProcess
+			bool Resume() override;
 	};
 }

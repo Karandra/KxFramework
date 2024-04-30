@@ -7,22 +7,19 @@ namespace kxf
 	{
 		public:
 			static RunningSystemProcess GetCurrentProcess();
+			static RunningSystemProcess OpenCurrentProcess(FlagSet<SystemProcessAccess> access = SystemProcessAccess::Everything, bool inheritHandle = false);
 
 		private:
 			void* m_Handle = nullptr;
 
-		private:
-			void Open(uint32_t pid, SystemProcessAccess access);
-			void Close();
-
 		public:
 			RunningSystemProcess() = default;
-			RunningSystemProcess(uint32_t pid, SystemProcessAccess access)
+			RunningSystemProcess(uint32_t pid, FlagSet<SystemProcessAccess> access, bool inheritHandle = false)
 			{
-				Open(pid, access);
+				Open(pid, access, inheritHandle);
 			}
 			RunningSystemProcess(const RunningSystemProcess&) = delete;
-			RunningSystemProcess(RunningSystemProcess&& other)
+			RunningSystemProcess(RunningSystemProcess&& other) noexcept
 			{
 				*this = std::move(other);
 			}
@@ -32,43 +29,51 @@ namespace kxf
 			}
 
 		public:
+			// ISystemProcess
 			bool IsNull() const override
 			{
 				return m_Handle == nullptr;
-			}
-			bool DoesExist() const override
-			{
-				return m_Handle != nullptr;
 			}
 			bool IsCurrent() const override;
 			bool Is64Bit() const override;
 			uint32_t GetID() const override;
 
 			SystemProcessPriority GetPriority() const override;
-			bool SetPriority(SystemProcessPriority value) override;
+			bool SetPriority(SystemProcessPriority priority) override;
 
-			SHWindowCommand GetShowWindowCommand() const override
-			{
-				return SHWindowCommand::None;
-			}
-			bool SetShowWindowCommand(SHWindowCommand value) override
-			{
-				return false;
-			}
+			bool IsRunning() const override;
+			std::optional<uint32_t> GetExitCode() const override;
+			bool Terminate(uint32_t exitCode) override;
 
-			size_t EnumEnvironemntVariables(std::function<bool(const String&, const String&)> func) const override
-			{
-				return 0;
-			}
+			bool Suspend() override;
+			bool Resume() override;
+
+			String GetCommandLine() const override;
+			FSPath GetExecutablePath() const override;
+			FSPath GetWorkingDirectory() const override;
+			String GetExecutableParameters() const override;
+			SHWindowCommand GetShowWindowCommand() const override;
+
+			size_t EnumEnvironemntVariables(std::function<CallbackCommand(const String&, const String&)> func) const override;
+			size_t EnumThreads(std::function<CallbackCommand(SystemThread)> func) const override;
+			size_t EnumWindows(std::function<CallbackCommand(void*)> func) const override;
+
+			// RunningSystemProcess
+			bool Open(uint32_t pid, FlagSet<SystemProcessAccess> access, bool inheritHandle = false);
+			void Close();
 
 			void* GetHandle() const
 			{
 				return m_Handle;
 			}
-			void AttachHandle(void* handle)
+			bool AttachHandle(void* handle)
 			{
-				Close();
-				m_Handle = handle;
+				if (!m_Handle)
+				{
+					m_Handle = handle;
+					return true;
+				}
+				return false;
 			}
 			void* DetachHandle() noexcept
 			{
@@ -77,25 +82,12 @@ namespace kxf
 				return handle;
 			}
 
-			bool IsRunning() const override;
-			std::optional<uint32_t> GetExitCode() const override;
-			bool Terminate(uint32_t exitCode, bool force = false) override;
-
-			bool SuspendProcess() override;
-			bool ResumeProcess() override;
-
-			FSPath GetExecutablePath() const override;
-			FSPath GetWorkingDirectory() const override;
-			String GetExecutableParameters() const override;
-			String GetCommandLine() const;
-
-			size_t EnumThreads(std::function<bool(uint32_t)> func) const override;
-			size_t EnumWindows(std::function<bool(void*)> func) const override;
-			uint32_t GetMainThread() const override;
+			SystemThread GetMainThread() const;
+			bool SafeTerminate(uint32_t exitCode);
 
 		public:
 			RunningSystemProcess& operator=(const RunningSystemProcess&) = delete;
-			RunningSystemProcess& operator=(RunningSystemProcess&& other)
+			RunningSystemProcess& operator=(RunningSystemProcess&& other) noexcept
 			{
 				m_Handle = other.m_Handle;
 				other.m_Handle = nullptr;
