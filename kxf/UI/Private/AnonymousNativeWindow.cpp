@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "AnonymousNativeWindow.h"
-#include "kxf/Log/Common.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -44,7 +44,7 @@ namespace kxf::Private
 				}
 				else
 				{
-					Log::FatalError(__FUNCTION__ ": Unhandled exception occurred");
+					Log::Critical(__FUNCTION__ ": Unhandled exception occurred");
 					std::terminate();
 				}
 			}

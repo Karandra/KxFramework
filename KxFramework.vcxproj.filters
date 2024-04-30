@@ -1932,7 +1932,7 @@
     <ClInclude Include="kxf\Drawing\IRendererNative.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Log\Private\OutputStreamTarget.h">
+    <ClInclude Include="kxf\Log\Private\WxOverride.h">
       <Filter>kxf\Log\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h">
@@ -2406,6 +2406,9 @@
     <ClInclude Include="kxf\UI\Widgets\DataView\Editors\Common.h">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Log\ScopedLogger.h">
+      <Filter>kxf\Log</Filter>
+    </ClInclude>
     <ClInclude Include="kxf\System\SystemProcess.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
@@ -2423,6 +2426,9 @@
     </ClInclude>
     <ClInclude Include="kxf\System\SystemThread\RunningSystemThread.h">
       <Filter>kxf\System\SystemThread</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Log\ScopedLoggerTarget.h">
+      <Filter>kxf\Log</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Core\Private\StringFormatters.h">
       <Filter>kxf\Core\Private</Filter>
@@ -3369,7 +3375,7 @@
     <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Log\Private\OutputStreamTarget.cpp">
+    <ClCompile Include="kxf\Log\Private\WxOverride.cpp">
       <Filter>kxf\Log\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Network\WebRequest.cpp">
@@ -3666,6 +3672,9 @@
     <ClCompile Include="kxf\UI\Widgets\DataView\Editors\TextBox.cpp">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Log\ScopedLogger.cpp">
+      <Filter>kxf\Log</Filter>
+    </ClCompile>
     <ClCompile Include="kxf\System\SystemProcess.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
@@ -3683,6 +3692,9 @@
     </ClCompile>
     <ClCompile Include="kxf\System\SystemThread\RunningSystemThread.cpp">
       <Filter>kxf\System\SystemThread</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Log\ScopedLoggerTarget.cpp">
+      <Filter>kxf\Log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

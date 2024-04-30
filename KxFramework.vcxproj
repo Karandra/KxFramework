@@ -316,7 +316,9 @@
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\Log.hpp" />
     <ClInclude Include="kxf\Log\Common.h" />
-    <ClInclude Include="kxf\Log\Private\OutputStreamTarget.h" />
+    <ClInclude Include="kxf\Log\Private\WxOverride.h" />
+    <ClInclude Include="kxf\Log\ScopedLogger.h" />
+    <ClInclude Include="kxf\Log\ScopedLoggerTarget.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\LibCURL.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.h" />

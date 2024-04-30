@@ -1,9 +1,9 @@
 #include "KxfPCH.h"
 #include "Common.h"
 #include "SciterAPI.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/ExecutableVersionResource.h"
-#include "kxf/Log/Common.h"
 
 namespace
 {

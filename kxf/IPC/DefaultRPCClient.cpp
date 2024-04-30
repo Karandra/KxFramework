@@ -2,7 +2,7 @@
 #include "DefaultRPCClient.h"
 #include "DefaultRPCEvent.h"
 #include "Private/DefaultRPCExchangerWindow.h"
-#include "kxf/Log/Common.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/IO/MemoryStream.h"

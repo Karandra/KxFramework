@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "Win32CommonEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
-#include "kxf/Log/Common.h"
+#include "kxf/Log/ScopedLogger.h"
 #include <Windows.h>
 
 namespace kxf::EventSystem::Private

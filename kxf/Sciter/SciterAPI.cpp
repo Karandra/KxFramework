@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "SciterAPI.h"
 #include "Common.h"
-#include "kxf/Log/Common.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/System/DynamicLibrary.h"
 
 // Stylesheets

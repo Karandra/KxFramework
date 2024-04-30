@@ -1,6 +1,6 @@
 #include "KxfPCH.h"
 #include "NativeAPI.h"
-#include "kxf/Log/Common.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Utility/Common.h"
 #include <Windows.h>
