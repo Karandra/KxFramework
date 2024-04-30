@@ -6,9 +6,8 @@
 #include "kxf/System/SystemProcess.h"
 #include "kxf/System/SystemThread.h"
 #include "kxf/Threading/ThreadLocalSlot.h"
-#include "kxf/Threading/ReadWriteLock.h"
-#include "kxf/Threading/LockGuard.h"
 #include <source_location>
+#include <atomic>
 #include <vector>
 #include <map>
 
@@ -50,28 +49,20 @@ namespace kxf
 {
 	class ScopedLoggerGlobalContext final
 	{
-		friend class ScopedLoggerTLS;
-
 		public:
 			static ScopedLoggerGlobalContext& GetInstance() noexcept;
 
 		private:
-			mutable ReadWriteLock m_Lock;
-			std::shared_ptr<IScopedLoggerContext> m_UserContext;
+			std::atomic<std::shared_ptr<IScopedLoggerContext>> m_UserContext;
 			std::atomic<TimeZoneOffset> m_TimeOffset;
 			std::atomic<LogLevel> m_LogLevel = LogLevel::Unknown;
 
-			mutable ReadWriteLock m_TLSStorageLock;
-			std::map<uint32_t, ScopedLoggerTLS> m_TLSStorage;
 			std::unique_ptr<ScopedLoggerTLS> m_UnknownContext;
 			FiberLocalSlot m_TLSIndex;
 
 		private:
 			void Initialize();
 			void Destroy();
-
-			void CleanupTLSStorage();
-			void OnTLSTerminated(ScopedLoggerTLS& tls);
 
 		private:
 			ScopedLoggerGlobalContext()
@@ -87,14 +78,10 @@ namespace kxf
 		public:
 			std::shared_ptr<IScopedLoggerContext> GetUserContext() const noexcept
 			{
-				ReadLockGuard lock(m_Lock);
-
 				return m_UserContext;
 			}
-			void SetUserContext(std::shared_ptr<IScopedLoggerContext> userContext)
+			void SetUserContext(std::shared_ptr<IScopedLoggerContext> userContext) noexcept
 			{
-				WriteLockGuard lock(m_Lock);
-
 				m_UserContext = std::move(userContext);
 			}
 
@@ -145,7 +132,9 @@ namespace kxf
 		protected:
 			void Initialize();
 			void Destroy();
+
 			void LogOpenClose(bool open);
+			std::shared_ptr<IScopedLoggerTarget> CreateLogTarget();
 
 			void OnScopeEnter(ScopedLogger& scope)
 			{
@@ -162,7 +151,6 @@ namespace kxf
 				if (!m_Terminated)
 				{
 					m_Terminated = true;
-					m_GlobalContext.OnTLSTerminated(*this);
 					Destroy();
 				}
 			}
@@ -667,7 +655,7 @@ namespace kxf
 			}
 	};
 
-	class ScopedLoggerUnknownTLS: public ScopedLoggerTLS
+	class ScopedLoggerUnknownTLS final: public ScopedLoggerTLS
 	{
 		private:
 			std::optional<ScopedLogger> m_Scope;

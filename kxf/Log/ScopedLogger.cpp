@@ -62,7 +62,7 @@ namespace kxf
 	{
 		m_TLSIndex.Initialize([](void* ptr)
 		{
-			if (auto tls = static_cast<ScopedLoggerTLS*>(ptr))
+			if (auto tls = Utility::AssumeUniquePtr(static_cast<ScopedLoggerTLS*>(ptr)))
 			{
 				tls->OnTermination();
 			}
@@ -80,28 +80,7 @@ namespace kxf
 	void ScopedLoggerGlobalContext::Destroy()
 	{
 		m_TLSIndex.Uninitialize();
-		m_TLSStorage.clear();
 		m_UnknownContext = {};
-	}
-
-	void ScopedLoggerGlobalContext::CleanupTLSStorage()
-	{
-		for (auto it = m_TLSStorage.begin(); it != m_TLSStorage.end();)
-		{
-			if (it->second.IsTerminated())
-			{
-				it = m_TLSStorage.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
-	}
-	void ScopedLoggerGlobalContext::OnTLSTerminated(ScopedLoggerTLS& tls)
-	{
-		// We can't really do anything here to free the TLS right away
-		// so this callback isn't going to be used for now
 	}
 
 	ScopedLoggerTLS* ScopedLoggerGlobalContext::QueryThreadContext() const noexcept
@@ -120,24 +99,12 @@ namespace kxf
 		}
 		else
 		{
-			WriteLockGuard lock(m_TLSStorageLock);
+			auto tls = std::make_unique<ScopedLoggerTLS>(*this);
+			tls->Initialize();
 
-			// Check for already terminated TLS to free them
-			CleanupTLSStorage();
-
-			// Create a new TLS
-			auto threadID = SystemThread::GetCurrentThread().GetID();
-			auto it = m_TLSStorage.try_emplace(threadID, *this);
-			if (!it.second)
-			{
-				throw std::runtime_error(__FUNCTION__ ": ScopedLoggerTLS already exist in the global storage, but not in the tls value");
-			}
-
-			auto& tls = it.first->second;
-			tls.Initialize();
-			m_TLSIndex.SetValue(&tls);
-
-			return tls;
+			ptr = tls.release();
+			m_TLSIndex.SetValue(ptr);
+			return *ptr;
 		}
 	}
 	bool ScopedLoggerGlobalContext::CanLogLevel(LogLevel logLevel) const noexcept
@@ -167,14 +134,7 @@ namespace kxf
 	{
 		m_Thread = SystemThread::GetCurrentThread();
 		m_Process = SystemProcess::GetCurrentProcess();
-		if (auto context = m_GlobalContext.GetUserContext())
-		{
-			m_LogTarget = context->CreateLogTarget(*this);
-		}
-		else
-		{
-			m_LogTarget = std::make_shared<ConsoleScopedLoggerTarget>(*this);
-		}
+		m_LogTarget = CreateLogTarget();
 
 		LogOpenClose(true);
 	}
@@ -188,6 +148,7 @@ namespace kxf
 			m_LogTarget = nullptr;
 		}
 	}
+
 	void ScopedLoggerTLS::LogOpenClose(bool open)
 	{
 		if (!m_LogTarget)
@@ -240,6 +201,14 @@ namespace kxf
 			message.Write(*this);
 		}
 	}
+	std::shared_ptr<IScopedLoggerTarget> ScopedLoggerTLS::CreateLogTarget()
+	{
+		if (auto context = m_GlobalContext.GetUserContext())
+		{
+			return context->CreateLogTarget(*this);
+		}
+		return std::make_shared<ConsoleScopedLoggerTarget>(*this);
+	}
 
 	void ScopedLoggerTLS::Flush()
 	{
@@ -255,7 +224,7 @@ namespace kxf
 			String buffer;
 
 			// Log time
-			buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.m_TimeOffset));
+			buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.GetTimeOffset()));
 
 			// Log location
 			if (IsUnknown())
@@ -289,14 +258,8 @@ namespace kxf
 	{
 		m_Thread = {};
 		m_Process = SystemProcess::GetCurrentProcess();
-		if (auto context = m_GlobalContext.GetUserContext())
-		{
-			m_LogTarget = context->CreateLogTarget(*this);
-		}
-		else
-		{
-			m_LogTarget = std::make_shared<ConsoleScopedLoggerTarget>(*this);
-		}
+		m_LogTarget = CreateLogTarget();
+
 		m_Scope.emplace(*this, "<unknown context>()");
 		m_Scope->SetSuccess();
 
