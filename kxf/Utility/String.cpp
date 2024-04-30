@@ -24,6 +24,12 @@ namespace kxf::Utility
 		{
 			case Type::NarrowChars:
 			{
+				if (m_NullTerminated)
+				{
+					m_Length = strnlen(m_NarrowChars.data(), m_NarrowChars.size());
+					m_NarrowChars.resize(m_Length);
+				}
+				
 				IEncodingConverter& converter = m_EncodingConverter ? *m_EncodingConverter : EncodingConverter_WhateverWorks;
 				m_Value = converter.ToWideChar(m_NarrowChars);
 
@@ -31,6 +37,12 @@ namespace kxf::Utility
 			}
 			case Type::WideChars:
 			{
+				if (m_NullTerminated)
+				{
+					m_Length = wcsnlen(m_WideChars.data(), m_WideChars.size());
+					m_WideChars.resize(m_Length);
+				}
+
 				m_Value = std::move(m_WideChars);
 				break;
 			}

@@ -3,3 +3,4 @@
 
 // kxf
 #include "kxf/pch.hpp"
+#include "kxf/Core/String.h"

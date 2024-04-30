@@ -15,8 +15,8 @@
 #endif
 
 // Standard library
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <optional>
@@ -30,12 +30,12 @@
 
 // Essential headers
 #include "kxf/wxWidgets/Setup.h"
-#include "kxf/Core/FlagSet.h"
 #include "kxf/Core/StdID.h"
+#include "kxf/Core/FlagSet.h"
 #include "kxf/System/UndefWindows.h"
 #include "kxf/wxWidgets/Setup.h"
 
-// Forward declarations
+// Forward declarations for some core classes
 namespace kxf
 {
 	class String;

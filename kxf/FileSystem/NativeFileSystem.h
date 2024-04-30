@@ -202,7 +202,7 @@ namespace kxf
 				:NativeFileSystem(std::move(directory))
 			{
 			}
-			ScopedNativeFileSystem(const UniversallyUniqueID& scope)
+			ScopedNativeFileSystem(UniversallyUniqueID scope)
 				:NativeFileSystem(std::move(scope))
 			{
 			}

@@ -2,6 +2,8 @@
 #include "kxf/Common.hpp"
 #include "TypeTraits.h"
 #include <type_traits>
+#include <algorithm>
+#include <numeric>
 #include <utility>
 #include <array>
 
@@ -30,7 +32,7 @@ namespace kxf::Utility
 	template<class TFunc, class... Args>
 	constexpr void ForEachParameterPackItem(TFunc&& func, Args&&... arg) noexcept
 	{
-		std::initializer_list<int>{(func(std::forward<Args>(arg)), 0)...};
+		std::initializer_list<int>{(std::invoke(func, std::forward<Args>(arg)), 0)...};
 	}
 
 	template<class... Args>
@@ -40,17 +42,18 @@ namespace kxf::Utility
 	}
 
 	template<class... Args>
+	constexpr bool IsEmptyParameterPack() noexcept
+	{
+		return CountOfParameterPack<Args...>() == 0;
+	}
+
+	template<class... Args>
 	constexpr size_t SizeOfParameterPackValues() noexcept
 	{
 		const constexpr size_t count = CountOfParameterPack<Args...>();
 		const constexpr std::array<size_t, count> sizes = {sizeof(Args)...};
 
-		size_t sizeInBytes = 0;
-		for (const size_t& size: sizes)
-		{
-			sizeInBytes += size;
-		}
-		return sizeInBytes;
+		return std::accumulate(sizes.begin(), sizes.end(), static_cast<size_t>(0));
 	}
 
 	template<class TPointer, class TValue>
@@ -63,6 +66,12 @@ namespace kxf::Utility
 		{
 			*ptr = static_cast<TPointer>(std::forward<TValue>(value));
 		}
+	}
+
+	template<class TPointer>
+	std::unique_ptr<TPointer> AssumeUniquePtr(TPointer* ptr) noexcept
+	{
+		return std::unique_ptr<TPointer>(ptr);
 	}
 
 	template<class TTarget, class TSource>

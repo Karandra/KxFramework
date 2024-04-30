@@ -65,8 +65,9 @@ namespace kxf::Utility
 		private:
 			String& m_Value;
 			size_t m_Length = 0;
-
 			Type m_Type = Type::None;
+			bool m_NullTerminated = false;
+
 			std::string m_NarrowChars;
 			std::wstring m_WideChars;
 			IEncodingConverter* m_EncodingConverter = nullptr;
@@ -77,12 +78,12 @@ namespace kxf::Utility
 			void Finalize();
 
 		public:
-			StringBuffer(String& value, size_t length) noexcept
-				:m_Value(value), m_Length(length)
+			StringBuffer(String& value, size_t length, bool nullTerminated = false) noexcept
+				:m_Value(value), m_Length(length), m_NullTerminated(nullTerminated)
 			{
 			}
-			StringBuffer(String& value, size_t length, IEncodingConverter& encondigConverter) noexcept
-				:m_Value(value), m_Length(length), m_EncodingConverter(&encondigConverter)
+			StringBuffer(String& value, size_t length, IEncodingConverter& encondigConverter, bool nullTerminated = false) noexcept
+				:m_Value(value), m_Length(length), m_EncodingConverter(&encondigConverter), m_NullTerminated(nullTerminated)
 			{
 			}
 			~StringBuffer()
