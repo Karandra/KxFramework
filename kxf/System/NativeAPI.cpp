@@ -148,12 +148,15 @@ namespace kxf
 			INIT_FUNCTION(Kernel32, Wow64RevertWow64FsRedirection);
 
 			INIT_FUNCTION(Kernel32, IsWow64Process);
+			INIT_FUNCTION(Kernel32, IsWow64Process2);
 
 			INIT_FUNCTION(Kernel32, SetDefaultDllDirectories);
 			INIT_FUNCTION(Kernel32, AddDllDirectory);
 			INIT_FUNCTION(Kernel32, RemoveDllDirectory);
 			INIT_FUNCTION(Kernel32, SetDllDirectoryW);
 			INIT_FUNCTION(Kernel32, GetDllDirectoryW);
+			INIT_FUNCTION(Kernel32, GetThreadDescription);
+			INIT_FUNCTION(Kernel32, SetThreadDescription);
 
 			Log::Info("InitializeKernel32 -> Success");
 		}
@@ -294,12 +297,15 @@ namespace kxf::NativeAPI
 		DEFINE_FUNCTION(Wow64RevertWow64FsRedirection);
 
 		DEFINE_FUNCTION(IsWow64Process);
+		DEFINE_FUNCTION(IsWow64Process2);
 
 		DEFINE_FUNCTION(SetDefaultDllDirectories);
 		DEFINE_FUNCTION(AddDllDirectory);
 		DEFINE_FUNCTION(RemoveDllDirectory);
 		DEFINE_FUNCTION(SetDllDirectoryW);
 		DEFINE_FUNCTION(GetDllDirectoryW);
+		DEFINE_FUNCTION(GetThreadDescription);
+		DEFINE_FUNCTION(SetThreadDescription);
 	}
 	namespace KernelBase
 	{

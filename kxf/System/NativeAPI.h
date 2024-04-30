@@ -148,12 +148,15 @@ namespace kxf::NativeAPI
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, Wow64RevertWow64FsRedirection, void*);
 
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, IsWow64Process, HANDLE, BOOL*);
+		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, IsWow64Process2, HANDLE, uint16_t*, uint16_t*);
 
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, SetDefaultDllDirectories, DWORD);
 		Kx_NativeAPI_DeclateFunc(DLL_DIRECTORY_COOKIE, Kx_NativeAPI, AddDllDirectory, const wchar_t*);
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, RemoveDllDirectory, DLL_DIRECTORY_COOKIE);
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, SetDllDirectoryW, const wchar_t*);
 		Kx_NativeAPI_DeclateFunc(DWORD, Kx_NativeAPI, GetDllDirectoryW, DWORD, wchar_t*);
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, GetThreadDescription, HANDLE, wchar_t**);
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, SetThreadDescription, HANDLE, const wchar_t*);
 	}
 	namespace KernelBase
 	{
