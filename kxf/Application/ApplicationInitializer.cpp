@@ -2,6 +2,7 @@
 #include "ApplicationInitializer.h"
 #include "kxf/wxWidgets/Application.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "Private/NativeApp.h"
 #include <wx/init.h>
 #include <wx/except.h>
@@ -19,7 +20,6 @@ namespace kxf
 
 			// We're not using the dynamic 'wxApp' initialization
 			wxAppConsole::SetInitializerFunction(nullptr);
-
 			return true;
 		}
 		return false;
@@ -54,6 +54,8 @@ namespace kxf
 
 	void ApplicationInitializer::OnTerminate()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		if (m_IsCreated)
 		{
 			m_Application.OnDestroy();
@@ -84,30 +86,50 @@ namespace kxf
 			m_CommandLine = nullptr;
 			m_CommandLineCount = 0;
 		}
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app)
 		:m_Application(app)
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		RunInitSequence();
+
+		KX_SCOPEDLOG.SetSuccess(IsInitialized());
 	}
 	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, char** argv)
 		:m_Application(app)
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		RunInitSequence(argc, argv);
+
+		KX_SCOPEDLOG.SetSuccess(IsInitialized());
 	}
 	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv)
 		:m_Application(app)
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		RunInitSequence(argc, argv);
+
+		KX_SCOPEDLOG.SetSuccess(IsInitialized());
 	}
 	ApplicationInitializer::~ApplicationInitializer()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		OnTerminate();
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	int ApplicationInitializer::Run() noexcept
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		try
 		{
 			if (m_Application.OnInit())
@@ -120,7 +142,10 @@ namespace kxf
 				};
 
 				// Run the main loop
-				return m_Application.OnRun();
+				int exitCode = m_Application.OnRun();
+
+				KX_SCOPEDLOG.LogReturn(exitCode);
+				return exitCode;
 			}
 		}
 		catch (...)

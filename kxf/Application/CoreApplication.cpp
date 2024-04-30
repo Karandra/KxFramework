@@ -2,10 +2,10 @@
 #include "CoreApplication.h"
 #include "Private/NativeApp.h"
 #include "Private/Utility.h"
+#include "kxf/Log/ScopedLogger.h"
 #include "kxf/EventSystem/Private/Win32ConsoleEventLoop.h"
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
-#include "kxf/Core/Format.h"
 #include "kxf/Core/Enumerator.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/NtStatus.h"
@@ -188,6 +188,8 @@ namespace kxf
 	// ICoreApplication
 	bool CoreApplication::OnCreate()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		if (!m_NativeAppInitialized)
 		{
 			if (auto app = wxAppConsole::GetInstance())
@@ -196,14 +198,19 @@ namespace kxf
 				m_NativeAppInitialized = app->wxAppConsole::Initialize(argc, m_ArgVW);
 				if (!m_NativeAppInitialized)
 				{
+					KX_SCOPEDLOG.SetFail();
 					return false;
 				}
 			}
 		}
+
+		KX_SCOPEDLOG.SetSuccess();
 		return true;
 	}
 	void CoreApplication::OnDestroy()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		UninitDLLNotifications();
 
 		// Destroy the main loop
@@ -223,6 +230,8 @@ namespace kxf
 				m_NativeAppCleanedUp = true;
 			}
 		}
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	void CoreApplication::OnExit()
@@ -232,6 +241,8 @@ namespace kxf
 	}
 	int CoreApplication::OnRun()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		if (auto mainLoop = CreateMainLoop())
 		{
 			// Save the old main loop pointer (if any), create a new loop and run it.
@@ -243,13 +254,20 @@ namespace kxf
 			};
 
 			// Here we're running our newly created main loop saved in place of 'm_MainLoop' pointer.
-			return m_MainLoop->Run();
+			int code = m_MainLoop->Run();
+
+			KX_SCOPEDLOG.LogReturn(code);
+			return code;
 		}
+
+		KX_SCOPEDLOG.LogReturn(m_ExitCode);
 		return m_ExitCode.value_or(-1);
 	}
 
 	void CoreApplication::Exit(int exitCode)
 	{
+		KX_SCOPEDLOG_ARGS(exitCode);
+
 		if (m_MainLoop)
 		{
 			ExitMainLoop(exitCode);
@@ -259,6 +277,8 @@ namespace kxf
 			m_ExitCode = exitCode;
 			std::terminate();
 		}
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	void CoreApplication::AddEventFilter(std::shared_ptr<IEventFilter> eventFilter)
@@ -408,6 +428,8 @@ namespace kxf
 	}
 	void CoreApplication::ExitMainLoop(int exitCode)
 	{
+		KX_SCOPEDLOG_ARGS(exitCode);
+
 		// We should exit from the main event loop, not just any currently active (e.g. modal dialog) event loop
 		m_ExitCode = exitCode;
 		if (m_MainLoop && m_MainLoop->IsRunning())
@@ -706,7 +728,7 @@ namespace kxf
 		}
 		else
 		{
-			// We can't store more than one exception currently: while we could  support this by just
+			// We can't store more than one exception currently: while we could support this by just
 			// using a 'std::vector<std::exception_ptr>', it shouldn't be actually necessary because
 			// we should never have more than one active exception anyhow.
 			return false;
@@ -723,30 +745,35 @@ namespace kxf
 	// Application::IDebugHandler
 	void CoreApplication::OnAssertFailure(const String& file, int line, const String& function, const String& condition, const String& message)
 	{
-		if (wxLog* log = wxLog::GetActiveTarget(); log && log->IsEnabled() && log->IsLevelEnabled(wxLOG_Debug, wxLOG_COMPONENT))
-		{
-			log->LogTextAtLevel(wxLOG_Debug, Format("File '{}'@{}; Function '{}'; When [{}]; {}", file, line, function, condition, message));
-		}
+		// No need to do anything with it here, it's going to be logged by our log system
 	}
 
 	// Application::ICommandLine
 	void CoreApplication::InitializeCommandLine(char** argv, size_t argc)
 	{
+		KX_SCOPEDLOG_ARGS(argv, argc);
+
 		m_ArgC = argc;
 		m_ArgVA = argv;
 		m_ArgVW = nullptr;
 
 		m_CommandLineParser.SetCommandLine(argc, argv);
 		OnCommandLineInit(m_CommandLineParser);
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void CoreApplication::InitializeCommandLine(wchar_t** argv, size_t argc)
 	{
+		KX_SCOPEDLOG_ARGS(argv, argc);
+
 		m_ArgC = argc;
 		m_ArgVA = nullptr;
 		m_ArgVW = argv;
 		
 		m_CommandLineParser.SetCommandLine(argc, argv);
 		OnCommandLineInit(m_CommandLineParser);
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	Enumerator<String> CoreApplication::EnumCommandLineArgs() const
