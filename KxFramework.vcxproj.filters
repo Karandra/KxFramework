@@ -2406,6 +2406,9 @@
     <ClInclude Include="kxf\UI\Widgets\DataView\Editors\Common.h">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Threading\ThreadLocalSlot.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
     <ClInclude Include="kxf\Core\Private\StringFormatters.h">
       <Filter>kxf\Core\Private</Filter>
     </ClInclude>
@@ -3653,6 +3656,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Widgets\DataView\Editors\TextBox.cpp">
       <Filter>kxf\UI\Widgets\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\ThreadLocalSlot.cpp">
+      <Filter>kxf\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -409,6 +409,7 @@
     <ClInclude Include="kxf\Threading\SynchronizedCondition.h" />
     <ClInclude Include="kxf\Threading\ThreadEvent.h" />
     <ClInclude Include="kxf\Threading\LockGuard.h" />
+    <ClInclude Include="kxf\Threading\ThreadLocalSlot.h" />
     <ClInclude Include="kxf\Threading\ThreadPool.h" />
     <ClInclude Include="kxf\UI\Controls\AUI.h" />
     <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h" />
@@ -988,6 +989,7 @@
     <ClCompile Include="kxf\Threading\Mutex.cpp" />
     <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
     <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp" />
+    <ClCompile Include="kxf\Threading\ThreadLocalSlot.cpp" />
     <ClCompile Include="kxf\Threading\ThreadPool.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp" />

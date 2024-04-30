@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/EventSystem/Event.h"
+
 namespace kxf
 {
 	class KX_API ThreadEvent: public BasicEvent
