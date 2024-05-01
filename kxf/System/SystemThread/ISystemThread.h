@@ -131,15 +131,5 @@ namespace kxf
 			virtual bool Resume() = 0;
 
 			virtual size_t EnumWindows(std::function<CallbackCommand(void*)> func) const = 0;
-
-		public:
-			explicit operator bool() const
-			{
-				return !IsNull();
-			}
-			bool operator!() const
-			{
-				return IsNull();
-			}
 	};
 }

@@ -79,6 +79,15 @@ namespace kxf
 			}
 
 		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
+
 			RunningSystemThread& operator=(const RunningSystemThread&) = delete;
 			RunningSystemThread& operator=(RunningSystemThread&& other) noexcept
 			{

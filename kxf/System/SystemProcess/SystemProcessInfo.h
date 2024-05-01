@@ -111,6 +111,16 @@ namespace kxf
 			{
 				return RunningSystemProcess(m_PID, SystemProcessAccess::QueryLimitedInformation|SystemProcessAccess::DuplicateHandle).SafeTerminate(exitCode);
 			}
+
+		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
 	};
 }
 

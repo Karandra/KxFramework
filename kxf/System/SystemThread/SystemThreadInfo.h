@@ -87,6 +87,16 @@ namespace kxf
 			{
 				return RunningSystemThread(m_TID, access, inheritHandle);
 			}
+
+		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
 	};
 }
 

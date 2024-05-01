@@ -86,6 +86,15 @@ namespace kxf
 			bool SafeTerminate(uint32_t exitCode);
 
 		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
+
 			RunningSystemProcess& operator=(const RunningSystemProcess&) = delete;
 			RunningSystemProcess& operator=(RunningSystemProcess&& other) noexcept
 			{
