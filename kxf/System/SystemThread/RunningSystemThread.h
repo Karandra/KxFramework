@@ -78,6 +78,8 @@ namespace kxf
 				return handle;
 			}
 
+			bool PostMessage(uint32_t message, intptr_t wParam, intptr_t lParam);
+
 		public:
 			explicit operator bool() const
 			{

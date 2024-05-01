@@ -133,4 +133,9 @@ namespace kxf
 			m_Handle = nullptr;
 		}
 	}
+
+	bool RunningSystemThread::PostMessage(uint32_t message, intptr_t wParam, intptr_t lParam)
+	{
+		return ::PostThreadMessageW(GetID(), message, wParam, lParam);
+	}
 }
