@@ -97,7 +97,7 @@ namespace kxf
 			{
 				return RunningSystemProcess(m_PID, SystemProcessAccess::None).EnumThreads(std::move(func));
 			}
-			size_t EnumWindows(std::function<CallbackCommand(void*)> func) const override
+			size_t EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const override
 			{
 				return RunningSystemProcess(m_PID, SystemProcessAccess::None).EnumWindows(std::move(func));
 			}
@@ -232,7 +232,7 @@ namespace kxf
 			{
 				return 0;
 			}
-			size_t EnumWindows(std::function<CallbackCommand(void*)> func) const override
+			size_t EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const override
 			{
 				return 0;
 			}

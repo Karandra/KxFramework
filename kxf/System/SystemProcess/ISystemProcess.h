@@ -7,6 +7,7 @@
 namespace kxf
 {
 	class SystemThread;
+	class SystemWindow;
 }
 
 namespace kxf
@@ -42,6 +43,6 @@ namespace kxf
 
 			virtual size_t EnumEnvironemntVariables(std::function<CallbackCommand(const String&, const String&)> func) const = 0;
 			virtual size_t EnumThreads(std::function<CallbackCommand(SystemThread)> func) const = 0;
-			virtual size_t EnumWindows(std::function<CallbackCommand(void*)> func) const = 0;
+			virtual size_t EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const = 0;
 	};
 }

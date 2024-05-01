@@ -3,6 +3,7 @@
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/SystemProcess.h"
 #include "kxf/System/SystemThread.h"
+#include "kxf/System/SystemWindow.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/Common.h"
@@ -277,7 +278,7 @@ namespace kxf
 		}
 		return 0;
 	}
-	size_t RunningSystemProcess::EnumWindows(std::function<CallbackCommand(void*)> func) const
+	size_t RunningSystemProcess::EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const
 	{
 		if (!IsNull())
 		{

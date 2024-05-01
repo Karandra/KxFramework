@@ -52,7 +52,7 @@ namespace kxf
 			bool Suspend() override;
 			bool Resume() override;
 
-			size_t EnumWindows(std::function<CallbackCommand(void*)> func) const override;
+			size_t EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const override;
 
 			// RunningSystemThread
 			bool Open(uint32_t tid, FlagSet<SystemThreadAccess> access, bool inheritHandle = false);

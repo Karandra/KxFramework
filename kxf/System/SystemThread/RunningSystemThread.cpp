@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "RunningSystemThread.h"
 #include "kxf/System/SystemProcess.h"
+#include "kxf/System/SystemWindow.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/HResult.h"
@@ -103,7 +104,7 @@ namespace kxf
 		return ::ResumeThread(m_Handle) != std::numeric_limits<DWORD>::max();
 	}
 
-	size_t RunningSystemThread::EnumWindows(std::function<CallbackCommand(void*)> func) const
+	size_t RunningSystemThread::EnumWindows(std::function<CallbackCommand(SystemWindow)> func) const
 	{
 		if (!IsNull())
 		{
