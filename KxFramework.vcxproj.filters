@@ -305,6 +305,9 @@
     <Filter Include="kxf\Localization\Private">
       <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\System\SystemWindow">
+      <UniqueIdentifier>{9ad2b5d1-4bd5-4da5-a707-c0d0f3ee2bbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -2430,6 +2433,15 @@
     <ClInclude Include="kxf\Core\Private\StringFormatters.h">
       <Filter>kxf\Core\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\SystemWindow.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemWindow\ISystemWindow.h">
+      <Filter>kxf\System\SystemWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemWindow\SystemWindow.h">
+      <Filter>kxf\System\SystemWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3692,6 +3704,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Log\ScopedLoggerTarget.cpp">
       <Filter>kxf\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemWindow.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
+      <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -403,6 +403,9 @@
     <ClInclude Include="kxf\System\SystemThread\ISystemThread.h" />
     <ClInclude Include="kxf\System\SystemThread\RunningSystemThread.h" />
     <ClInclude Include="kxf\System\SystemThread\SystemThreadInfo.h" />
+    <ClInclude Include="kxf\System\SystemWindow.h" />
+    <ClInclude Include="kxf\System\SystemWindow\ISystemWindow.h" />
+    <ClInclude Include="kxf\System\SystemWindow\SystemWindow.h" />
     <ClInclude Include="kxf\System\UserName.h" />
     <ClInclude Include="kxf\System\VariantProperty.h" />
     <ClInclude Include="kxf\System\Win32Error.h" />
@@ -991,6 +994,8 @@
     <ClCompile Include="kxf\System\SystemThread\ISystemThread.cpp" />
     <ClCompile Include="kxf\System\SystemThread\RunningSystemThread.cpp" />
     <ClCompile Include="kxf\System\SystemThread\SystemThreadInfo.cpp" />
+    <ClCompile Include="kxf\System\SystemWindow.cpp" />
+    <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp" />
     <ClCompile Include="kxf\System\UserName.cpp" />
     <ClCompile Include="kxf\System\VariantProperty.cpp" />
     <ClCompile Include="kxf\System\Win32Error.cpp" />
