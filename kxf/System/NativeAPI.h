@@ -18,6 +18,7 @@ namespace kxf
 		ShlWAPI,
 		DWMAPI,
 		DbgHelp,
+		OleAcc,
 		DXGI,
 		DComp
 	};
@@ -68,6 +69,7 @@ namespace kxf
 			void InitializeShlWAPI() noexcept;
 			void InitializeDWMAPI() noexcept;
 			void InitializeDbgHelp() noexcept;
+			void InitializeOleAcc() noexcept;
 			void InitializeDXGI() noexcept;
 			void InitializeDComp() noexcept;
 
@@ -183,6 +185,10 @@ namespace kxf::NativeAPI
 	namespace DbgHelp
 	{
 		Kx_NativeAPI_DeclateFunc(IMAGE_NT_HEADERS*, Kx_NativeAPI, ImageNtHeader, void*);
+	}
+	namespace OleAcc
+	{
+		Kx_NativeAPI_DeclateFunc(HANDLE, Kx_NativeAPI, GetProcessHandleFromHwnd, HWND);
 	}
 	namespace DXGI
 	{

@@ -227,6 +227,18 @@ namespace kxf
 			Log::Info("InitializeDbgHelp -> Success");
 		}
 	}
+	void NativeAPILoader::InitializeOleAcc() noexcept
+	{
+		Log::Info("InitializeOleAcc");
+		using namespace NativeAPI;
+
+		if (IsLibraryLoaded(NativeAPISet::OleAcc))
+		{
+			INIT_FUNCTION(OleAcc, GetProcessHandleFromHwnd);
+
+			Log::Info("InitializeOleAcc -> Success");
+		}
+	}
 	void NativeAPILoader::InitializeDXGI() noexcept
 	{
 		Log::Info("InitializeDXGI");
@@ -262,6 +274,7 @@ namespace kxf
 		InitializeShlWAPI();
 		InitializeDWMAPI();
 		InitializeDbgHelp();
+		InitializeOleAcc();
 		InitializeDXGI();
 		InitializeDComp();
 	}
@@ -332,6 +345,10 @@ namespace kxf::NativeAPI
 	namespace DbgHelp
 	{
 		DEFINE_FUNCTION(ImageNtHeader);
+	}
+	namespace OleAcc
+	{
+		DEFINE_FUNCTION(GetProcessHandleFromHwnd);
 	}
 	namespace DXGI
 	{
