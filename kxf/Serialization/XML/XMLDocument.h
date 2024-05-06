@@ -199,8 +199,8 @@ namespace kxf
 			// Attributes
 			size_t GetAttributeCount() const override;
 			bool HasAttributes() const override;
-			size_t EnumAttributeNames(std::function<bool(String)> func) const override;
-			size_t EnumAttributes(std::function<bool(XMLAttribute)> func) const;
+			size_t EnumAttributeNames(std::function<CallbackCommand(String)> func) const override;
+			size_t EnumAttributes(std::function<CallbackCommand(XMLAttribute)> func) const;
 
 			bool HasAttribute(const String& name) const override;
 			bool RemoveAttribute(const String& name) override;

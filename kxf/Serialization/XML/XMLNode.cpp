@@ -510,14 +510,14 @@ namespace kxf
 		}
 		return false;
 	}
-	size_t XMLNode::EnumAttributeNames(std::function<bool(String)> func) const
+	size_t XMLNode::EnumAttributeNames(std::function<CallbackCommand(String)> func) const
 	{
 		return EnumAttributes([&](XMLAttribute attribute)
 		{
 			return std::invoke(func, attribute.GetName());
 		});
 	}
-	size_t XMLNode::EnumAttributes(std::function<bool(XMLAttribute)> func) const
+	size_t XMLNode::EnumAttributes(std::function<CallbackCommand(XMLAttribute)> func) const
 	{
 		if (GetNode())
 		{
@@ -527,7 +527,7 @@ namespace kxf
 				for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute; attribute = attribute->Next())
 				{
 					count++;
-					if (!std::invoke(func, XMLAttribute(*this, *attribute)))
+					if (std::invoke(func, XMLAttribute(*this, *attribute)) == CallbackCommand::Terminate)
 					{
 						break;
 					}

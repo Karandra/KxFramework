@@ -297,7 +297,7 @@ namespace kxf
 	{
 		return HTML::Private::GetAttributesCount(ToGumboNode(GetNode()));
 	}
-	size_t HTMLNode::EnumAttributeNames(std::function<bool(String)> func) const
+	size_t HTMLNode::EnumAttributeNames(std::function<CallbackCommand(String)> func) const
 	{
 		if (auto node = GetNode())
 		{
@@ -309,7 +309,7 @@ namespace kxf
 				for (size_t i = 0; i < attributeCount; i++)
 				{
 					count++;
-					if (!std::invoke(func, String::FromUTF8(attributes[i]->name)))
+					if (std::invoke(func, String::FromUTF8(attributes[i]->name)) == CallbackCommand::Terminate)
 					{
 						break;
 					}
@@ -332,7 +332,7 @@ namespace kxf
 	{
 		return HTML::Private::GetChildrenCount(ToGumboNode(GetNode()));
 	}
-	size_t HTMLNode::EnumChildren(std::function<bool(HTMLNode)> func) const
+	size_t HTMLNode::EnumChildren(std::function<CallbackCommand(HTMLNode)> func) const
 	{
 		if (auto node = GetNode())
 		{
@@ -342,7 +342,7 @@ namespace kxf
 				for (size_t i = 0; i < children->length; i++)
 				{
 					count++;
-					if (!std::invoke(func, HTMLNode(HTML::Private::GetNodeAt(children, i), m_Document)))
+					if (std::invoke(func, HTMLNode(HTML::Private::GetNodeAt(children, i), m_Document)) == CallbackCommand::Terminate)
 					{
 						break;
 					}

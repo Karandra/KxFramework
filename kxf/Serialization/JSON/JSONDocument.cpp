@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr char g_Copyright[] = "Copyright© 2013-2021 Niels Lohmann";
+	constexpr char g_Copyright[] = "Copyright© 2013-2023 Niels Lohmann";
 }
 
 namespace kxf
