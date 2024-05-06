@@ -34,7 +34,7 @@ namespace kxf::XDocument
 		public:
 			static std::pair<StringView, int> ExtractIndexFromName(StringView elementName, StringView xPathSeparator);
 			static bool ContainsValueForbiddenCharacters(const String& value);
-		
+			
 			template<class TNode>
 			static String ConstructXPath(const TNode& thisNode)
 			{
@@ -214,9 +214,9 @@ namespace kxf::XDocument
 			{
 				return DoGetValue();
 			}
-			String GetValue(const String& defaultValue = {}) const
+			String GetValue(String defaultValue = {}) const
 			{
-				return DoGetValue().value_or(defaultValue);
+				return DoGetValue().value_or(std::move(defaultValue));
 			}
 
 			std::optional<bool> QueryValueBool() const
@@ -246,23 +246,21 @@ namespace kxf::XDocument
 				return DoGetValuePointer().value_or(const_cast<void*>(defaultValue));
 			}
 
-			template<class T = int64_t>
+			template<class T = int64_t> requires(TestIntType<T>())
 			std::optional<T> QueryValueInt() const
 			{
 				return QueryValueIntWithBase<T>(10);
 			}
 
-			template<class T = int64_t, class TDefault = T>
-			T GetValueInt(TDefault defaultValue = 0) const
+			template<class T = int64_t> requires(TestIntType<T>())
+			T GetValueInt(T defaultValue = 0) const
 			{
 				return QueryValueIntWithBase<T>(10).value_or(defaultValue);
 			}
 
-			template<class T = int64_t>
+			template<class T = int64_t> requires(TestIntType<T>())
 			std::optional<T> QueryValueIntWithBase(int base) const
 			{
-				Private::AssertIntType<T>();
-
 				if (auto value = DoGetValueIntWithBase(base))
 				{
 					return static_cast<T>(*value);
@@ -270,8 +268,8 @@ namespace kxf::XDocument
 				return {};
 			}
 
-			template<class T = int64_t, class TDefault = T>
-			T GetValueIntWithBase(int base, TDefault defaultValue = 0) const
+			template<class T = int64_t> requires(TestIntType<T>())
+			T GetValueIntWithBase(int base, T defaultValue = 0) const
 			{
 				return QueryValueIntWithBase<T>(base).value_or(defaultValue);
 			}
@@ -309,8 +307,8 @@ namespace kxf::XDocument
 				return DoSetValue(FormatPointer(nullptr), WriteEmpty::Always, AsCDATA::Never);
 			}
 
-			template<class T>
-			std::enable_if_t<Private::TestIntType<T>(), bool> SetValue(T value, int base = 10)
+			template<class T> requires(Private::TestIntType<T>())
+			bool SetValue(T value, int base = 10)
 			{
 				return DoSetValue(FormatInt(static_cast<int64_t>(value), base), WriteEmpty::Always, AsCDATA::Never);
 			}
@@ -324,7 +322,7 @@ namespace kxf::XDocument
 			{
 				return GetAttributeCount() != 0;
 			}
-			virtual size_t EnumAttributeNames(std::function<bool(String)> func) const
+			virtual size_t EnumAttributeNames(std::function<CallbackCommand(String)> func) const
 			{
 				return 0;
 			}
@@ -346,9 +344,9 @@ namespace kxf::XDocument
 			{
 				return DoGetAttribute(name);
 			}
-			String GetAttribute(const String& name, const String& defaultValue = {}) const
+			String GetAttribute(const String& name, String defaultValue = {}) const
 			{
-				return DoGetAttribute(name).value_or(defaultValue);
+				return DoGetAttribute(name).value_or(std::move(defaultValue));
 			}
 
 			std::optional<bool> QueryAttributeBool(const String& name) const
@@ -378,23 +376,21 @@ namespace kxf::XDocument
 				return DoGetAttributePointer(name).value_or(const_cast<void*>(defaultValue));
 			}
 
-			template<class T = int64_t>
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			std::optional<T> QueryAttributeInt(const String& name) const
 			{
 				return QueryAttributeIntWithBase<T>(name, 10);
 			}
 
-			template<class T = int64_t, class TDefault = T>
-			T GetAttributeInt(const String& name, TDefault defaultValue = 0) const
+			template<class T = int64_t> requires(Private::TestIntType<T>())
+			T GetAttributeInt(const String& name, T defaultValue = 0) const
 			{
 				return QueryAttributeIntWithBase<T>(name, 10).value_or(defaultValue);
 			}
 
-			template<class T = int64_t>
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			std::optional<T> QueryAttributeIntWithBase(const String& name, int base) const
 			{
-				Private::AssertIntType<T>();
-
 				if (auto value = DoGetAttributeIntWithBase(name, base))
 				{
 					return static_cast<T>(*value);
@@ -402,8 +398,8 @@ namespace kxf::XDocument
 				return {};
 			}
 
-			template<class T = int64_t, class TDefault = T>
-			T GetAttributeIntWithBase(const String& name, int base, TDefault defaultValue = 0) const
+			template<class T = int64_t> requires(Private::TestIntType<T>())
+			T GetAttributeIntWithBase(const String& name, int base, T defaultValue = 0) const
 			{
 				return QueryAttributeIntWithBase<T>(name, base).value_or(defaultValue);
 			}
@@ -441,8 +437,8 @@ namespace kxf::XDocument
 				return DoSetAttribute(name, FormatPointer(nullptr), WriteEmpty::Always);
 			}
 
-			template<class T>
-			std::enable_if_t<Private::TestIntType<T>(), bool> SetAttribute(const String& name, T value, int base = 10)
+			template<class T> requires(Private::TestIntType<T>())
+			bool SetAttribute(const String& name, T value, int base = 10)
 			{
 				return DoSetAttribute(name, FormatInt(static_cast<int64_t>(value), base), WriteEmpty::Always);
 			}
@@ -479,7 +475,7 @@ namespace kxf::XDocument
 			}
 
 			// Node
-			virtual size_t EnumChildren(std::function<bool(TNode)> func) const
+			virtual size_t EnumChildren(std::function<CallbackCommand(TNode)> func) const
 			{
 				return 0;
 			}
