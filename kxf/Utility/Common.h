@@ -9,23 +9,19 @@
 
 namespace kxf::Utility
 {
-	template<class TLeft, class TRight>
-	constexpr void ExchangeAndReset(TLeft& left, TLeft& right, TRight nullValue) noexcept
+	template<class T, class TNull> requires(std::is_move_assignable_v<T> && std::is_move_assignable_v<TNull>)
+	constexpr void ExchangeAndReset(T& left, T& right, TNull&& nullValue) noexcept
 	{
-		static_assert(std::is_trivially_move_assignable_v<TLeft> && std::is_trivially_move_assignable_v<TRight>,
-					  "can only use ExchangeAndReset for trivially move assignable types");
-
-		left = right;
+		left = std::move(right);
 		right = std::move(nullValue);
 	}
 	
-	template<class TLeft, class TRight>
-	constexpr TLeft ExchangeResetAndReturn(TLeft& right, TRight nullValue) noexcept
+	template<class T, class TNull> requires(std::is_default_constructible_v<T>)
+	constexpr T ExchangeResetAndReturn(T& right, TNull&& nullValue) noexcept
 	{
-		static_assert(std::is_default_constructible_v<TLeft>, "left type must be default constructible");
+		T left = std::move(right);
+		right = std::move(nullValue);
 
-		TLeft left{};
-		ExchangeAndReset(left, right, std::move(nullValue));
 		return left;
 	}
 
