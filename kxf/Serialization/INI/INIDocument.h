@@ -2,58 +2,187 @@
 #include "../Common.h"
 #include "../XDocument.h"
 #include "kxf/Core/Version.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/IO/IStream.h"
+#include "kxf/Utility/Common.h"
 #include <map>
 
-namespace SimpleINI
+namespace kxf
 {
-	#include "SimpleIni.h"
+	class INIDocument;
+	class INIDocumentImpl;
+	class INIDocumentSection;
+
+	enum class INIDocumentOption: uint32_t
+	{
+		None = 0,
+
+		Spaces = 1u << 0,
+		Quotes = 1u << 1,
+		MultiKey = 1u << 2
+	};
+	KxFlagSet_Declare(INIDocumentOption);
 }
 
 namespace kxf
 {
-	class KX_API INIDocument: private XDocument::XNode<INIDocument>
+	class KX_API INIDocumentSection: public XDocument::XNode<INIDocumentSection>
 	{
-		friend class XDocument::XNode<INIDocument>;
-
-		public:
-			static String GetLibraryName();
-			static Version GetLibraryVersion();
+		friend class INIDocument;
 
 		private:
-			using TDocument = SimpleINI::CSimpleIniA;
-
-		private:
-			TDocument m_Document;
-
-		private:
-			void Init();
-			void DoLoad(const char* ini, size_t length);
-			void DoUnload();
+			INIDocument* m_Ref = nullptr;
+			AsCDATA m_AsCDATA = AsCDATA::Auto;
+			String m_SectionName;
+			String m_Comment;
+			size_t m_Index = npos;
 
 		protected:
+			// IXNode
 			std::optional<String> DoGetValue() const override;
 			bool DoSetValue(const String& value, WriteEmpty writeEmpty, AsCDATA asCDATA) override;
 
 			std::optional<String> DoGetAttribute(const String& name) const override;
 			bool DoSetAttribute(const String& name, const String& value, WriteEmpty writeEmpty) override;
 
-			std::optional<String> IniGetValue(const String& sectionName, const String& keyName) const;
-			bool IniSetValue(const String& sectionName, const String& keyName, const String& value, WriteEmpty writeEmpty = WriteEmpty::Always);
-
-		private:
-			INIDocument(const std::string_view& ini)
-				:INIDocument()
+		public:
+			INIDocumentSection() = default;
+			INIDocumentSection(INIDocument& document, String sectionName, String comment = {}, size_t index = npos)
+				:m_Ref(&document), m_SectionName(std::move(sectionName)), m_Comment(std::move(comment))
 			{
-				if (!ini.empty())
-				{
-					DoLoad(ini.data(), ini.length());
-				}
+			}
+			INIDocumentSection(const INIDocumentSection&) = default;
+			INIDocumentSection(INIDocumentSection&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 
 		public:
+			// IXNode
+			bool IsNull() const override
+			{
+				return m_Ref == nullptr;
+			}
+			String GetXPath() const override
+			{
+				return m_SectionName;
+			}
+
+			bool IsCDATA() const override
+			{
+				return m_AsCDATA == AsCDATA::Always;
+			}
+			bool SetCDATA(bool value) override
+			{
+				m_AsCDATA = value ? AsCDATA::Always : AsCDATA::Never;
+				return true;
+			}
+			void SetCDATA(AsCDATA asCDATA) noexcept
+			{
+				m_AsCDATA = asCDATA;
+			}
+
+			size_t GetIndexWithinParent() const override
+			{
+				return m_Index;
+			}
+			String GetName() const override
+			{
+				return m_SectionName;
+			}
+			bool SetName(const String& name) override
+			{
+				m_SectionName = name;
+				return true;
+			}
+
+			size_t GetChildrenCount() const override
+			{
+				return 0;
+			}
+			bool ClearChildren() override
+			{
+				return false;
+			}
+			bool ClearNode() override;
+
+			size_t GetAttributeCount() const override;
+			size_t EnumAttributeNames(std::function<CallbackCommand(String)> func) const override;
+
+			bool HasAttribute(const String& name) const;
+			bool RemoveAttribute(const String& name);
+			bool ClearAttributes();
+
+			// INIDocumentSection
+			String GetComment() const
+			{
+				return m_Comment;
+			}
+			void SetComment(String comment)
+			{
+				m_Comment = std::move(comment);
+			}
+
+			size_t EnumKeyNames(std::function<CallbackCommand(String)> func) const;
+
+		public:
+			INIDocumentSection& operator=(const INIDocumentSection&) = default;
+			INIDocumentSection& operator=(INIDocumentSection&& other) noexcept
+			{
+				Utility::ExchangeAndReset(m_Ref, other.m_Ref, nullptr);
+				Utility::ExchangeAndReset(m_AsCDATA, other.m_AsCDATA, AsCDATA::Auto);
+				m_SectionName = std::move(other.m_SectionName);
+				m_Comment = std::move(other.m_Comment);
+
+				return *this;
+			}
+	};
+}
+
+namespace kxf
+{
+	class KX_API INIDocument final: public INIDocumentSection, public IObject
+	{
+		friend class INIDocumentSection;
+		friend class XDocument::XNode<INIDocument>;
+
+		private:
+			std::unique_ptr<INIDocumentImpl> m_Document;
+
+		protected:
+			// IXNode
+			std::optional<String> DoGetValue() const override
+			{
+				return IniDoGetValue(m_SectionName, {});
+			}
+			bool DoSetValue(const String& value, WriteEmpty writeEmpty, AsCDATA asCDATA) override
+			{
+				return IniDoSetValue(m_SectionName, {}, value, m_Comment, writeEmpty, asCDATA);
+			}
+
+			std::optional<String> DoGetAttribute(const String& name) const override
+			{
+				return IniDoGetValue(m_SectionName, name);
+			}
+			bool DoSetAttribute(const String& name, const String& value, WriteEmpty writeEmpty) override
+			{
+				return IniDoSetValue(m_SectionName, name, value, m_Comment, writeEmpty, m_AsCDATA);
+			}
+
+			// IObject
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override;
+
+			// INIDocument
+			void Init();
+			bool DoLoad(const char* ini, size_t length);
+			void DoUnload();
+
+			std::optional<String> IniDoGetValue(const String& sectionName, const String& keyName, String* comment = nullptr) const;
+			bool IniDoSetValue(const String& sectionName, const String& keyName, const String& value, const String& comment = {}, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto);
+
+		public:
 			INIDocument()
-				:m_Document(true, false, false)
+				:INIDocumentSection(*this, {})
 			{
 				Init();
 			}
@@ -70,41 +199,79 @@ namespace kxf
 			{
 				Load(stream);
 			}
-			INIDocument(INIDocument&&) = delete;
 			INIDocument(const INIDocument&) = delete;
+			INIDocument(INIDocument&& other) noexcept
+			{
+				*this = std::move(*this);
+			}
+			~INIDocument();
 
 		public:
-			// General
-			bool IsNull() const override
+			// IXNode
+			bool IsNull() const override;
+			String GetXPath() const override
 			{
-				return m_Document.IsEmpty();
+				return {};
 			}
 
+			size_t GetIndexWithinParent() const override
+			{
+				return npos;
+			}
+			String GetName() const override
+			{
+				return {};
+			}
+			bool SetName(const String& name) override
+			{
+				return false;
+			}
+
+			size_t GetChildrenCount() const override;
+			bool HasChildren() const override;
+			bool ClearChildren() override;
+			bool ClearNode() override;
+
+			// XNode
+			INIDocumentSection QueryElement(const String& XPath) const override;
+			INIDocumentSection ConstructElement(const String& XPath) override;
+
+			size_t EnumChildren(std::function<CallbackCommand(INIDocumentSection)> func) const override;
+			INIDocumentSection GetFirstChild() const override;
+			INIDocumentSection GetLastChild() const override;
+
+		public:
+			// INIDocument
 			bool Load(const String& ini);
 			bool Load(IInputStream& stream);
 			bool Save(IOutputStream& stream) const;
 			String Save() const;
 			INIDocument Clone() const;
 
-			// Navigation
-			size_t GetSectionNames(std::function<bool(String)> func) const;
-			size_t GetKeyNames(const String& sectionName, std::function<bool(String)> func) const;
+			FlagSet<INIDocumentOption> GetOptions() const;
+			void SetOptions(FlagSet<INIDocumentOption> options);
 
-			// Value
+			size_t EnumSectionNames(std::function<CallbackCommand(String)> func) const;
+			size_t EnumKeyNames(const String& sectionName, std::function<CallbackCommand(String)> func) const;
+			using INIDocumentSection::EnumKeyNames;
+
 			bool HasSection(const String& sectionName) const;
 			bool HasValue(const String& sectionName, const String& keyName) const;
 
-			String GetValue(const String& sectionName, const String& keyName, const String& defaultValue = {}) const
+			bool RemoveSection(const String& sectionName, bool removeEmpty = true);
+			bool RemoveValue(const String& sectionName, const String& keyName, bool removeEmpty = true);
+
+			String IniGetValue(const String& sectionName, const String& keyName, const String& defaultValue = {}) const
 			{
-				return IniGetValue(sectionName, keyName).value_or(defaultValue);
+				return IniDoGetValue(sectionName, keyName).value_or(defaultValue);
 			}
-			int64_t GetValueInt(const String& sectionName, const String& keyName, int64_t defaultValue = 0) const
+			int64_t IniGetValueInt(const String& sectionName, const String& keyName, int64_t defaultValue = 0) const
 			{
-				return GetValueIntWithBase(sectionName, keyName, 10, defaultValue);
+				return IniGetValueIntWithBase(sectionName, keyName, 10, defaultValue);
 			}
-			int64_t GetValueIntWithBase(const String& sectionName, const String& keyName, int base, int64_t defaultValue = 0) const
+			int64_t IniGetValueIntWithBase(const String& sectionName, const String& keyName, int base, int64_t defaultValue = 0) const
 			{
-				if (auto value = IniGetValue(sectionName, keyName))
+				if (auto value = IniDoGetValue(sectionName, keyName))
 				{
 					if (auto iValue = ParseInt(*value, base))
 					{
@@ -113,9 +280,9 @@ namespace kxf
 				}
 				return defaultValue;
 			}
-			double GetValueFloat(const String& sectionName, const String& keyName, double defaultValue = 0.0) const
+			double IniGetValueFloat(const String& sectionName, const String& keyName, double defaultValue = 0.0) const
 			{
-				if (auto value = IniGetValue(sectionName, keyName))
+				if (auto value = IniDoGetValue(sectionName, keyName))
 				{
 					if (auto iValue = ParseFloat(*value))
 					{
@@ -124,9 +291,9 @@ namespace kxf
 				}
 				return defaultValue;
 			}
-			bool GetValueBool(const String& sectionName, const String& keyName, bool defaultValue = false) const
+			bool IniGetValueBool(const String& sectionName, const String& keyName, bool defaultValue = false) const
 			{
-				if (auto value = IniGetValue(sectionName, keyName))
+				if (auto value = IniDoGetValue(sectionName, keyName))
 				{
 					if (auto bValue = ParseBool(*value))
 					{
@@ -136,46 +303,49 @@ namespace kxf
 				return defaultValue;
 			}
 
-			bool SetValue(const String& sectionName, const String& keyName, const String& value, WriteEmpty writeEmpty = WriteEmpty::Always)
+			bool IniSetValue(const String& sectionName, const String& keyName, const String& value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 			{
-				return IniSetValue(sectionName, keyName, value, writeEmpty);
+				return IniDoSetValue(sectionName, keyName, value, {}, writeEmpty, asCDATA);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, const char* value, WriteEmpty writeEmpty = WriteEmpty::Always)
+			bool IniSetValue(const String& sectionName, const String& keyName, const char* value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 			{
-				return IniSetValue(sectionName, keyName, String::FromUTF8(value), writeEmpty);
+				return IniDoSetValue(sectionName, keyName, String::FromUTF8(value), {}, writeEmpty, asCDATA);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, const wchar_t* value, WriteEmpty writeEmpty = WriteEmpty::Always)
+			bool IniSetValue(const String& sectionName, const String& keyName, const wchar_t* value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 			{
-				return IniSetValue(sectionName, keyName, String(value), writeEmpty);
+				return IniDoSetValue(sectionName, keyName, String(value), {}, writeEmpty, asCDATA);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, int64_t value)
+			bool IniSetValue(const String& sectionName, const String& keyName, int64_t value)
 			{
-				return IniSetValue(sectionName, keyName, FormatInt(value), WriteEmpty::Always);
+				return IniDoSetValue(sectionName, keyName, FormatInt(value), {}, WriteEmpty::Always);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, int value)
+			bool IniSetValue(const String& sectionName, const String& keyName, int value)
 			{
-				return IniSetValue(sectionName, keyName, FormatInt(value), WriteEmpty::Always);
+				return IniDoSetValue(sectionName, keyName, FormatInt(value), {}, WriteEmpty::Always);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, double value, int precision = -1)
+			bool IniSetValue(const String& sectionName, const String& keyName, double value, int precision = -1)
 			{
-				return IniSetValue(sectionName, keyName, FormatFloat(value, precision), WriteEmpty::Always);
+				return IniDoSetValue(sectionName, keyName, FormatFloat(value, precision), {}, WriteEmpty::Always);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, float value, int precision = -1)
+			bool IniSetValue(const String& sectionName, const String& keyName, float value, int precision = -1)
 			{
-				return IniSetValue(sectionName, keyName, FormatFloat((double)value, precision), WriteEmpty::Always);
+				return IniDoSetValue(sectionName, keyName, FormatFloat(static_cast<double>(value), precision), {}, WriteEmpty::Always);
 			}
-			bool SetValue(const String& sectionName, const String& keyName, bool value)
+			bool IniSetValue(const String& sectionName, const String& keyName, bool value)
 			{
-				return IniSetValue(sectionName, keyName, FormatBool(value), WriteEmpty::Always);
+				return IniDoSetValue(sectionName, keyName, FormatBool(value), {}, WriteEmpty::Always);
 			}
-
-			// Deletion
-			bool RemoveSection(const String& sectionName);
-			bool RemoveValue(const String& sectionName, const String& keyName);
 
 		public:
 			INIDocument& operator=(const INIDocument&) = delete;
-			INIDocument& operator=(INIDocument&&) = delete;
+			INIDocument& operator=(INIDocument&& other) noexcept
+			{
+				static_cast<INIDocumentSection&>(*this) = std::move(other);
+				m_Ref = this;
+				m_Document = std::move(other.m_Document);
+
+				return *this;
+			}
 	};
 }
 

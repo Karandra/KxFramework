@@ -1,76 +1,293 @@
 #include "KxfPCH.h"
 #include "INIDocument.h"
+#include "kxf/Core/ILibraryInfo.h"
+#include "kxf/IO/MemoryStream.h"
+#include "kxf/Utility/SoftwareLicenseDB.h"
 
+namespace SimpleINI
+{
+	#include "SimpleIni.h"
+}
 namespace
 {
-	kxf::String ToWxString(const std::string& stdString)
-	{
-		using namespace kxf;
+	constexpr char g_Copyright[] = "Copyright© 2006-2012 Brodie Thiesfield";
+	constexpr int g_VersionMajor = 4;
+	constexpr int g_VersionMinor = 19;
+	constexpr int g_VersionPatch = 0;
+}
 
-		return String::FromUTF8(stdString.c_str(), stdString.size());
+namespace kxf
+{
+	class INIDocumentImpl final: public SimpleINI::CSimpleIniA
+	{
+		public:
+			using SimpleINI::CSimpleIniA::CSimpleIniA;
+
+		public:
+			static INIDocumentSection ToSection(const INIDocument& document, const Entry& entry)
+			{
+				return INIDocumentSection(const_cast<INIDocument&>(document), String::FromUTF8(entry.pItem), String::FromUTF8(entry.pComment), entry.nOrder);
+			}
+
+			template<class TFunc>
+			size_t ForEach(TNamesDepend& items, TFunc&& func, SortOrder order = SortOrder::None) const
+			{
+				if (order != SortOrder::None)
+				{
+					items.sort(INIDocumentImpl::Entry::LoadOrder());
+				}
+
+				size_t count = 0;
+				if (order == SortOrder::Ascending || order == SortOrder::None)
+				{
+					for (auto it = items.begin(); it != items.end(); ++it)
+					{
+						count++;
+						if (std::invoke(func, *it) == CallbackCommand::Terminate)
+						{
+							break;
+						}
+					}
+				}
+				else if (order == SortOrder::Descending)
+				{
+					for (auto it = items.rbegin(); it != items.rend(); ++it)
+					{
+						count++;
+						if (std::invoke(func, *it) == CallbackCommand::Terminate)
+						{
+							break;
+						}
+					}
+				}
+				return count;
+			}
+
+			template<class TFunc>
+			size_t ForEachSection(TFunc&& func, SortOrder order = SortOrder::None) const
+			{
+				TNamesDepend items;
+				GetAllSections(items);
+
+				return ForEach(items, std::forward<TFunc>(func), order);
+			}
+
+			template<class TFunc>
+			size_t ForEachKey(TFunc&& func, const String& sectionName, SortOrder order = SortOrder::None) const
+			{
+				TNamesDepend items;
+				if (GetAllKeys(sectionName.utf8_str(), items))
+				{
+					return ForEach(items, std::forward<TFunc>(func), order);
+				}
+				return 0;
+			}
+
+			template<class TFunc>
+			size_t ForEachValue(TFunc&& func, const String& sectionName, const String& keyName, SortOrder order = SortOrder::None) const
+			{
+				TNamesDepend items;
+				if (GetAllValues(sectionName.utf8_str(), keyName.utf8_str(), items))
+				{
+					return ForEach(items, std::forward<TFunc>(func), order);
+				}
+				return 0;
+			}
+	};
+}
+
+namespace kxf
+{
+	// IXNode
+	std::optional<String> INIDocumentSection::DoGetValue() const
+	{
+		return m_Ref->IniDoGetValue(m_SectionName, {});
 	}
-	kxf::String ToWxString(const char* charString)
+	bool INIDocumentSection::DoSetValue(const String& value, WriteEmpty writeEmpty, AsCDATA asCDATA)
 	{
-		using namespace kxf;
+		return m_Ref->IniDoSetValue(m_SectionName, {}, value, {}, writeEmpty, asCDATA);
+	}
 
-		return String::FromUTF8(charString);
+	std::optional<String> INIDocumentSection::DoGetAttribute(const String& name) const
+	{
+		return m_Ref->IniDoGetValue(m_SectionName, name);
+	}
+	bool INIDocumentSection::DoSetAttribute(const String& name, const String& value, WriteEmpty writeEmpty)
+	{
+		return m_Ref->IniDoSetValue(m_SectionName, name, value, {}, writeEmpty, m_AsCDATA);
+	}
+
+	bool INIDocumentSection::ClearNode()
+	{
+		if (m_Ref)
+		{
+			return m_Ref->RemoveSection(m_SectionName, true);
+		}
+		return false;
+	}
+	size_t INIDocumentSection::GetAttributeCount() const
+	{
+		if (m_Ref && m_Ref->m_Document)
+		{
+			auto count = m_Ref->m_Document->GetSectionSize(m_SectionName.utf8_str());
+			return count >= 0 ? count : 0;
+		}
+		return 0;
+	}
+	size_t INIDocumentSection::EnumAttributeNames(std::function<CallbackCommand(String)> func) const
+	{
+		if (m_Ref)
+		{
+			return m_Ref->EnumKeyNames(m_SectionName, std::move(func));
+		}
+		return 0;
+	}
+
+	bool INIDocumentSection::HasAttribute(const String& name) const
+	{
+		if (m_Ref)
+		{
+			return m_Ref->HasValue(m_SectionName, name);
+		}
+		return false;
+	}
+	bool INIDocumentSection::RemoveAttribute(const String& name)
+	{
+		if (m_Ref)
+		{
+			return m_Ref->RemoveValue(m_SectionName, name);
+		}
+		return false;
+	}
+	bool INIDocumentSection::ClearAttributes()
+	{
+		if (m_Ref)
+		{
+			return m_Ref->RemoveSection(m_SectionName, false);
+		}
+		return false;
+	}
+
+	// INIDocumentSection
+	size_t INIDocumentSection::EnumKeyNames(std::function<CallbackCommand(String)> func) const
+	{
+		if (m_Ref)
+		{
+			return m_Ref->EnumKeyNames(m_SectionName, std::move(func));
+		}
+		return 0;
 	}
 }
 
 namespace kxf
 {
-	String INIDocument::GetLibraryName()
+	// IObject
+	RTTI::QueryInfo INIDocument::DoQueryInterface(const IID& iid) noexcept
 	{
-		return "SimpleINI";
-	}
-	Version INIDocument::GetLibraryVersion()
-	{
-		return "4.17";
+		if (iid.IsOfType<ILibraryInfo>())
+		{
+			class INIDocumentLibraryInfo final: public ILibraryInfo
+			{
+				public:
+					// ILibraryInfo
+					String GetName() const override
+					{
+						return "SimpleINI";
+					}
+					Version GetVersion() const override
+					{
+						return {g_VersionMajor, g_VersionMinor, g_VersionPatch};
+					}
+					uint32_t GetAPILevel() const override
+					{
+						return g_VersionMajor * 1000 + g_VersionMinor * 100 + g_VersionPatch * 10;
+					}
+					URI GetHomePage() const override
+					{
+						return "https://github.com/brofield/simpleini";
+					}
+
+					String GetLicense() const override
+					{
+						return SoftwareLicenseDB::Get().GetText(SoftwareLicenseType::MIT, g_Copyright);
+					}
+					String GetLicenseName() const override
+					{
+						return SoftwareLicenseDB::Get().GetName(SoftwareLicenseType::MIT);
+					}
+					String GetCopyright() const override
+					{
+						return g_Copyright;
+					}
+			};
+
+			static INIDocumentLibraryInfo libraryInfo;
+			return static_cast<ILibraryInfo&>(libraryInfo);
+		}
+		else if (iid.IsOfType<INIDocument>())
+		{
+			return *this;
+		}
+		return IObject::DoQueryInterface(iid);
 	}
 
+	// INIDocument
 	void INIDocument::Init()
 	{
-		m_Document.SetSpaces(false);
-		//m_Document.SetAllowEmptyValues(false); // This function has been removed from SimpleINI at some point
+		m_Document = std::make_unique<INIDocumentImpl>();
+		m_Document->SetAllowKeyOnly(false);
+		m_Document->SetUnicode(true);
+
+		m_Document->SetSpaces(false);
+		m_Document->SetQuotes(false);
+		m_Document->SetMultiKey(false);
+		m_Document->SetMultiLine(false);
 	}
-	void INIDocument::DoLoad(const char* ini, size_t length)
+	bool INIDocument::DoLoad(const char* ini, size_t length)
 	{
-		m_Document.LoadData(ini, length);
+		if (!m_Document)
+		{
+			Init();
+		}
+		return m_Document->LoadData(ini, length) == SimpleINI::SI_OK;
 	}
 	void INIDocument::DoUnload()
 	{
-		m_Document.Reset();
-	}
-
-	std::optional<String> INIDocument::DoGetValue() const
-	{
-		return IniGetValue({}, {});
-	}
-	bool INIDocument::DoSetValue(const String& value, WriteEmpty writeEmpty, AsCDATA asCDATA)
-	{
-		return IniSetValue({}, {}, value, writeEmpty);
-	}
-
-	std::optional<String> INIDocument::DoGetAttribute(const String& name) const
-	{
-		return {};
-	}
-	bool INIDocument::DoSetAttribute(const String& name, const String& value, WriteEmpty writeEmpty)
-	{
-		return false;
-	}
-
-	std::optional<String> INIDocument::IniGetValue(const String& sectionName, const String& keyName) const
-	{
-		auto sectionNameUTF8 = sectionName.ToUTF8();
-		auto keyNameUTF8 = keyName.ToUTF8();
-		if (const char* value = m_Document.GetValue(sectionNameUTF8.data(), keyNameUTF8.data()))
+		if (m_Document)
 		{
-			return String::FromUTF8(value);
+			m_Document->Reset();
+		}
+	}
+
+	std::optional<String> INIDocument::IniDoGetValue(const String& sectionName, const String& keyName, String* comment) const
+	{
+		if (m_Document)
+		{
+			if (comment)
+			{
+				// Single key only for now
+				std::optional<String> value;
+				m_Document->ForEachValue([&](const INIDocumentImpl::Entry& entry)
+				{
+					value = String::FromUTF8(entry.pItem);
+					*comment = String::FromUTF8(entry.pComment);
+
+					return CallbackCommand::Terminate;
+				}, sectionName, keyName);
+
+				return value;
+			}
+			else
+			{
+				if (const char* value = m_Document->GetValue(sectionName.utf8_str(), keyName.utf8_str(), nullptr))
+				{
+					return String::FromUTF8(value);
+				}
+			}
 		}
 		return {};
 	}
-	bool INIDocument::IniSetValue(const String& sectionName, const String& keyName, const String& value, WriteEmpty writeEmpty)
+	bool INIDocument::IniDoSetValue(const String& sectionName, const String& keyName, const String& value, const String& comment, WriteEmpty writeEmpty, AsCDATA asCDATA)
 	{
 		if (writeEmpty == WriteEmpty::Never && value.IsEmpty())
 		{
@@ -78,115 +295,257 @@ namespace kxf
 		}
 		else
 		{
-			auto sectionNameUTF8 = sectionName.ToUTF8();
-			auto keyNameUTF8 = keyName.ToUTF8();
-			auto valueUTF8 = value.ToUTF8();
+			if (!m_Document)
+			{
+				Init();
+			}
 
-			SimpleINI::SI_Error status = m_Document.SetValue(sectionNameUTF8.data(), keyNameUTF8.data(), valueUTF8.data(), nullptr, true);
+			auto status = m_Document->SetValue(sectionName.utf8_str(), keyName.utf8_str(), value.utf8_str(), !comment.IsEmpty() ? comment.utf8_str() : nullptr, true);
 			return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
 		}
 	}
 
+	INIDocument::~INIDocument() = default;
+
+	// IXNode
+	bool INIDocument::IsNull() const
+	{
+		return !m_Document || m_Document->IsEmpty();
+	}
+
+	size_t INIDocument::GetChildrenCount() const
+	{
+		if (m_Document)
+		{
+			INIDocumentImpl::TNamesDepend sections;
+			m_Document->GetAllSections(sections);
+
+			return sections.size();
+		}
+		return 0;
+	}
+	bool INIDocument::HasChildren() const
+	{
+		return m_Document && !m_Document->IsEmpty();
+	}
+	bool INIDocument::ClearChildren()
+	{
+		if (m_Document)
+		{
+			m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			{
+				m_Document->Delete(entry.pItem, nullptr, true);
+				return CallbackCommand::Continue;
+			});
+			return true;
+		}
+		return {};
+	}
+	bool INIDocument::ClearNode()
+	{
+		if (m_Document)
+		{
+			m_Document->Reset();
+			return true;
+		}
+		return false;
+	}
+
+	// XNode
+	INIDocumentSection INIDocument::QueryElement(const String& XPath) const
+	{
+		if (m_Document)
+		{
+			INIDocumentSection section;
+			m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			{
+				if (entry.pItem == XPath)
+				{
+					section = INIDocumentImpl::ToSection(*this, entry);
+					return CallbackCommand::Terminate;
+				}
+				return CallbackCommand::Continue;
+			});
+			return section;
+		}
+		return {};
+	}
+	INIDocumentSection INIDocument::ConstructElement(const String& XPath)
+	{
+		return INIDocumentSection(*this, XPath);
+	}
+
+	size_t INIDocument::EnumChildren(std::function<CallbackCommand(INIDocumentSection)> func) const
+	{
+		if (m_Document)
+		{
+			return m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			{
+				return std::invoke(func, INIDocumentImpl::ToSection(*this, entry));
+			}, SortOrder::Ascending);
+		}
+		return 0;
+	}
+	INIDocumentSection INIDocument::GetFirstChild() const
+	{
+		if (m_Document)
+		{
+			INIDocumentSection section;
+			m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			{
+				section = INIDocumentImpl::ToSection(*this, entry);
+				return CallbackCommand::Terminate;
+			}, SortOrder::Ascending);
+			return section;
+		}
+		return {};
+	}
+	INIDocumentSection INIDocument::GetLastChild() const
+	{
+		if (m_Document)
+		{
+			INIDocumentSection section;
+			m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			{
+				section = INIDocumentImpl::ToSection(*this, entry);
+				return CallbackCommand::Terminate;
+			}, SortOrder::Descending);
+			return section;
+		}
+		return {};
+	}
+
+	// INIDocument
 	bool INIDocument::Load(const String& ini)
 	{
 		DoUnload();
 
 		auto utf8 = ini.ToUTF8();
-		DoLoad(utf8.data(), utf8.length());
-		return !IsNull();
+		return DoLoad(utf8.data(), utf8.length());
 	}
 	bool INIDocument::Load(IInputStream& stream)
 	{
 		DoUnload();
 
-		wxMemoryBuffer buffer(stream.GetSize().ToBytes());
-		stream.Read(buffer.GetData(), buffer.GetBufSize());
-		buffer.SetDataLen(stream.LastRead().ToBytes());
+		MemoryOutputStream memoryStream;
+		memoryStream.Write(stream);
+		auto& buffer = memoryStream.GetStreamBuffer();
 
-		DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
-		return !IsNull();
+		return DoLoad(reinterpret_cast<const char*>(buffer.GetBufferStart()), buffer.GetBufferSize());
 	}
 	bool INIDocument::Save(IOutputStream& stream) const
 	{
-		std::string buffer;
-		m_Document.Save(buffer, false);
-		return stream.WriteAll(buffer.data(), buffer.length());
+		if (m_Document)
+		{
+			std::string buffer;
+			m_Document->Save(buffer, false);
+
+			return stream.WriteAll(buffer.data(), buffer.size());
+		}
+		return false;
 	}
 	String INIDocument::Save() const
 	{
-		std::string buffer;
-		m_Document.Save(buffer, false);
-		return ToWxString(buffer);
+		if (m_Document)
+		{
+			std::string buffer;
+			m_Document->Save(buffer, false);
+
+			return String::FromUTF8(buffer);
+		}
+		return {};
 	}
 	INIDocument INIDocument::Clone() const
 	{
-		std::string buffer;
-		m_Document.Save(buffer, false);
-
-		return INIDocument(StringViewOf(buffer));
-	}
-
-	size_t INIDocument::GetSectionNames(std::function<bool(String)> func) const
-	{
-		TDocument::TNamesDepend sections;
-		m_Document.GetAllSections(sections);
-		sections.sort(TDocument::Entry::LoadOrder());
-
-		size_t count = 0;
-		for (TDocument::TNamesDepend::const_iterator it = sections.begin(); it != sections.end(); ++it)
+		if (m_Document)
 		{
-			count++;
-			if (!std::invoke(func, ToWxString(it->pItem)))
-			{
-				break;
-			}
+			std::string buffer;
+			m_Document->Save(buffer, false);
+
+			INIDocument document;
+			document.DoLoad(buffer.data(), buffer.size());
+			return document;
 		}
-		return count;
+		return {};
 	}
-	size_t INIDocument::GetKeyNames(const String& sectionName, std::function<bool(String)> func) const
+
+	FlagSet<INIDocumentOption> INIDocument::GetOptions() const
 	{
-		auto utf8 = sectionName.ToUTF8();
-
-		TDocument::TNamesDepend keys;
-		if (m_Document.GetAllKeys(utf8.data(), keys))
+		if (m_Document)
 		{
-			keys.sort(SimpleINI::CSimpleIniA::Entry::LoadOrder());
+			FlagSet<INIDocumentOption> options;
+			options.Add(INIDocumentOption::Spaces, m_Document->UsingSpaces());
+			options.Add(INIDocumentOption::Quotes, m_Document->UsingQuotes());
+			options.Add(INIDocumentOption::MultiKey, m_Document->IsMultiKey());
 
-			size_t count = 0;
-			for (TDocument::TNamesDepend::const_iterator it = keys.begin(); it != keys.end(); ++it)
+			return options;
+		}
+		return {};
+	}
+	void INIDocument::SetOptions(FlagSet<INIDocumentOption> options)
+	{
+		if (m_Document)
+		{
+			m_Document->SetSpaces(options.Contains(INIDocumentOption::Spaces));
+			m_Document->SetQuotes(options.Contains(INIDocumentOption::Quotes));
+			m_Document->SetMultiKey(options.Contains(INIDocumentOption::MultiKey));
+		}
+	}
+
+	size_t INIDocument::EnumSectionNames(std::function<CallbackCommand(String)> func) const
+	{
+		if (m_Document)
+		{
+			return m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
 			{
-				count++;
-				if (!std::invoke(func, ToWxString(it->pItem)))
-				{
-					break;
-				}
-			}
-			return count;
+				return std::invoke(func, String::FromUTF8(entry.pItem));
+			}, SortOrder::Ascending);
+		}
+		return 0;
+	}
+	size_t INIDocument::EnumKeyNames(const String& sectionName, std::function<CallbackCommand(String)> func) const
+	{
+		if (m_Document)
+		{
+			return m_Document->ForEachKey([&](const INIDocumentImpl::Entry& entry)
+			{
+				return std::invoke(func, String::FromUTF8(entry.pItem));
+			}, sectionName, SortOrder::Ascending);
 		}
 		return 0;
 	}
 
-	bool INIDocument::RemoveSection(const String& sectionName)
-	{
-		auto sectionNameUTF8 = sectionName.ToUTF8();
-		return m_Document.DeleteValue(sectionNameUTF8.data(), nullptr, nullptr, true);
-	}
-	bool INIDocument::RemoveValue(const String& sectionName, const String& keyName)
-	{
-		auto sectionNameUTF8 = sectionName.ToUTF8();
-		auto keyNameUTF8 = keyName.ToUTF8();
-		return m_Document.DeleteValue(sectionNameUTF8.data(), keyNameUTF8.data(), nullptr, false);
-	}
-
-	bool INIDocument::HasValue(const String& sectionName, const String& keyName)  const
-	{
-		auto sectionNameUTF8 = sectionName.ToUTF8();
-		auto keyNameUTF8 = keyName.ToUTF8();
-		return m_Document.GetValue(sectionNameUTF8.data(), keyNameUTF8.data()) != nullptr;
-	}
 	bool INIDocument::HasSection(const String& sectionName) const
 	{
-		auto sectionNameUTF8 = sectionName.ToUTF8();
-		return m_Document.GetSection(sectionNameUTF8.data()) != nullptr;
+		if (m_Document)
+		{
+			return m_Document->GetSection(sectionName.utf8_str()) != nullptr;
+		}
+		return false;
+	}
+	bool INIDocument::HasValue(const String& sectionName, const String& keyName)  const
+	{
+		if (m_Document)
+		{
+			return m_Document->GetValue(sectionName.utf8_str(), keyName.utf8_str()) != nullptr;
+		}
+		return false;
+	}
+
+	bool INIDocument::RemoveSection(const String& sectionName, bool removeEmpty)
+	{
+		if (m_Document)
+		{
+			return m_Document->Delete(sectionName.utf8_str(), nullptr, removeEmpty);
+		}
+		return false;
+	}
+	bool INIDocument::RemoveValue(const String& sectionName, const String& keyName, bool removeEmpty)
+	{
+		if (m_Document)
+		{
+			return m_Document->Delete(sectionName.utf8_str(), keyName.utf8_str(), removeEmpty);
+		}
+		return false;
 	}
 }
