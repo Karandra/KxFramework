@@ -189,6 +189,7 @@ namespace kxf
 
 			static String FromASCII(const char* ascii, size_t length = npos);
 			static String FromASCII(std::string_view ascii);
+			static String FromLocalEncoding(std::string_view ascii);
 			static String FromEncoding(std::string_view source, IEncodingConverter& encodingConverter);
 
 			static String FromFloatingPoint(double value, int precision = -1);
@@ -287,7 +288,7 @@ namespace kxf
 
 		private:
 			string_type m_String;
-			mutable std::unique_ptr<std::string> m_ConvertedNC;
+			mutable std::unique_ptr<std::string> m_Converted;
 
 		public:
 			String() = default;
@@ -381,30 +382,38 @@ namespace kxf
 				return m_String.data();
 			}
 
-			std::basic_string_view<char> nc_view() const noexcept
+			std::basic_string_view<char> nc_view() const
 			{
-				m_ConvertedNC = std::make_unique<std::string>(ToUTF8());
-				return *m_ConvertedNC;
+				m_Converted = std::make_unique<std::string>(ToLocalEncoding());
+				return *m_Converted;
 			}
-			std::basic_string_view<wchar_t> wc_view() const noexcept
+			std::basic_string_view<char> utf8_view() const
 			{
-				return {m_String.c_str(), m_String.length()};
+				m_Converted = std::make_unique<std::string>(ToUTF8());
+				return *m_Converted;
 			}
-			std::basic_string_view<XChar> xc_view() const noexcept
+			std::basic_string_view<wchar_t> wc_view() const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
-				return {m_String.c_str(), m_String.length()};
+				return StringViewOf(m_String);
+			}
+			std::basic_string_view<XChar> xc_view() const noexcept(std::is_same_v<XChar, wchar_t>)
+			{
+				return StringViewOf(m_String);
 			}
 
-			const char* nc_str() const noexcept(std::is_same_v<XChar, char>)
+			const char* nc_str() const
 			{
-				m_ConvertedNC = std::make_unique<std::string>(ToUTF8());
-				return m_ConvertedNC->c_str();
+				return nc_view().data();
+			}
+			const char* utf8_str() const
+			{
+				return utf8_view().data();
 			}
 			const wchar_t* wc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				return m_String.c_str();
 			}
-			const XChar* xc_str() const noexcept
+			const XChar* xc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				return m_String.c_str();
 			}
@@ -424,6 +433,7 @@ namespace kxf
 				return ToUTF8(StringViewOf(m_String));
 			}
 			std::string ToASCII(char replaceWith = '_') const;
+			std::string ToLocalEncoding() const;
 			std::string ToEncoding(IEncodingConverter& encodingConverter) const;
 
 			// Concatenation and formatting
@@ -1064,7 +1074,7 @@ namespace kxf
 			String& operator=(const String& other)
 			{
 				m_String = other.m_String;
-				m_ConvertedNC = nullptr;
+				m_Converted = nullptr;
 
 				return *this;
 			}

@@ -378,6 +378,10 @@ namespace kxf
 	{
 		return EncodingConverter_ASCII.ToWideChar(ascii);
 	}
+	String String::FromLocalEncoding(std::string_view ascii)
+	{
+		return EncodingConverter_Local.ToWideChar(ascii);
+	}
 	String String::FromEncoding(std::string_view source, IEncodingConverter& encodingConverter)
 	{
 		return encodingConverter.ToWideChar(source);
@@ -494,6 +498,10 @@ namespace kxf
 			ascii += c.ToASCII().value_or(replaceWith);
 		}
 		return ascii;
+	}
+	std::string String::ToLocalEncoding() const
+	{
+		return EncodingConverter_Local.ToMultiByte(m_String);
 	}
 	std::string String::ToEncoding(IEncodingConverter& encodingConverter) const
 	{
