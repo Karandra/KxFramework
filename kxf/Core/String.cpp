@@ -11,31 +11,6 @@
 
 namespace
 {
-	char DoCharToLower(char c) noexcept
-	{
-		#pragma warning(suppress: 4312)
-		#pragma warning(suppress: 4302)
-		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
-	}
-	char DoCharToUpper(char c) noexcept
-	{
-		#pragma warning(suppress: 4312)
-		#pragma warning(suppress: 4302)
-		return reinterpret_cast<char>(::CharUpperA(reinterpret_cast<LPSTR>(c)));
-	}
-	wchar_t DoCharToLower(wchar_t c) noexcept
-	{
-		#pragma warning(suppress: 4312)
-		#pragma warning(suppress: 4302)
-		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
-	}
-	wchar_t DoCharToUpper(wchar_t c) noexcept
-	{
-		#pragma warning(suppress: 4312)
-		#pragma warning(suppress: 4302)
-		return reinterpret_cast<wchar_t>(::CharUpperW(reinterpret_cast<LPWSTR>(c)));
-	}
-
 	void StringMakeLower(std::wstring& string) noexcept
 	{
 		::CharLowerBuffW(string.data(), string.length());
@@ -240,7 +215,7 @@ namespace
 			}
 			else
 			{
-				if (expression[expressionIndex] == questionChar || (ignoreCase && DoCharToUpper(expression[expressionIndex]) == DoCharToUpper(name[nameIndex])) || (!ignoreCase && expression[expressionIndex] == name[nameIndex]))
+				if (expression[expressionIndex] == questionChar || (ignoreCase && kxf::UniChar(expression[expressionIndex]).CompareNoCase(name[nameIndex]) == 0) || (!ignoreCase && expression[expressionIndex] == name[nameIndex]))
 				{
 					expressionIndex++;
 					nameIndex++;
@@ -255,13 +230,13 @@ namespace
 	}
 	bool IsNameInExpression(std::string_view name, std::string_view expression, bool ignoreCase)
 	{
-		constexpr char DOS_STAR = L'<';
-		constexpr char DOS_QM = L'>';
-		constexpr char DOS_DOT = L'"';
+		constexpr char DOS_STAR = '<';
+		constexpr char DOS_QM = '>';
+		constexpr char DOS_DOT = '"';
 
-		constexpr char dotChar = L'.';
-		constexpr char starChar = L'*';
-		constexpr char questionChar = L'?';
+		constexpr char dotChar = '.';
+		constexpr char starChar = '*';
+		constexpr char questionChar = '?';
 
 		return IsNameInExpressionImpl(name, expression, ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT);
 	}
@@ -358,7 +333,7 @@ namespace kxf
 	{
 		if (flags & StringActionFlag::IgnoreCase)
 		{
-			return ToLower(left) <=> ToLower(right);
+			return left.CompareNoCase(right);
 		}
 		else
 		{
@@ -413,16 +388,7 @@ namespace kxf
 		return wxString::FromCDouble(value, precision);
 	}
 
-	// Case conversion
-	UniChar String::ToLower(UniChar c) noexcept
-	{
-		return DoCharToUpper(static_cast<XChar>(*c));
-	}
-	UniChar String::ToUpper(UniChar c) noexcept
-	{
-		return DoCharToLower(static_cast<XChar>(*c));
-	}
-
+	// String length
 	bool String::IsEmptyOrWhitespace() const noexcept
 	{
 		if (m_String.empty())

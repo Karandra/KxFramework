@@ -70,10 +70,22 @@ namespace kxf
 				m_Value = c;
 			}
 
-			template<class T> requires(std::is_integral_v<T>)
+			template<class T> requires(std::is_integral_v<T> || std::is_enum_v<T>)
 			constexpr T GetAs() const noexcept
 			{
 				return static_cast<T>(m_Value);
+			}
+
+			UniChar ToLowerCase() const noexcept;
+			UniChar ToUpperCase() const noexcept;
+
+			constexpr std::strong_ordering Compare(const UniChar& other) noexcept
+			{
+				return m_Value <=> other.m_Value;
+			}
+			std::strong_ordering CompareNoCase(const UniChar& other) noexcept
+			{
+				return ToLowerCase().m_Value <=> other.ToLowerCase().m_Value;
 			}
 
 		public:
@@ -87,7 +99,6 @@ namespace kxf
 			}
 
 			constexpr auto operator<=>(const UniChar&) const noexcept = default;
-
 			constexpr uint32_t operator*() const noexcept
 			{
 				return m_Value;

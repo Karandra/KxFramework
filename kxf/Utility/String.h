@@ -1,6 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/Core/String.h"
+#include "kxf/Core/UniChar.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -34,9 +35,9 @@ namespace kxf::Utility
 		size_t operator()(T&& value) const noexcept
 		{
 			size_t hashValue = 0;
-			for (const auto& c: value)
+			for (UniChar c: value)
 			{
-				hash_combine(hashValue, String::ToLower(c).GetValue());
+				hash_combine(hashValue, c.ToLowerCase().GetValue());
 			}
 			return hashValue;
 		}

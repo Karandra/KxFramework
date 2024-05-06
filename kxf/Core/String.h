@@ -193,10 +193,6 @@ namespace kxf
 
 			static String FromFloatingPoint(double value, int precision = -1);
 
-			// Case conversion
-			static UniChar ToLower(UniChar c) noexcept;
-			static UniChar ToUpper(UniChar c) noexcept;
-
 			// Substring extraction
 			template<class TFunc>
 			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, FlagSet<StringActionFlag> flags = {})
@@ -738,7 +734,7 @@ namespace kxf
 			{
 				if (!m_String.empty())
 				{
-					m_String[0] = *ToUpper(m_String[0]);
+					m_String[0] = *UniChar(m_String[0]).ToUpperCase();
 				}
 				return *this;
 			}

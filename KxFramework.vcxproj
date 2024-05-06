@@ -848,6 +848,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Core\UniChar.cpp" />
     <ClCompile Include="kxf\Crypto\HashValue.cpp" />
     <ClCompile Include="kxf\Drawing\AffineMatrix.cpp" />
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
