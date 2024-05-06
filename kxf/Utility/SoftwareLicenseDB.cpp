@@ -125,11 +125,11 @@ namespace kxf
 			}
 			case SoftwareLicenseType::GNU_GPLv3:
 			{
-				return LoadLicense("GNU_GPLv3");
+				return Format(LoadLicense("GNU_GPLv3"), copyright).Trim();
 			}
 			case SoftwareLicenseType::GNU_LGPLv3:
 			{
-				return LoadLicense("GNU_LGPLv3");
+				return Format(LoadLicense("GNU_LGPLv3"), copyright).Trim();
 			}
 			case SoftwareLicenseType::BSD2_Clause:
 			{
