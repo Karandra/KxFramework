@@ -18,15 +18,31 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+
 #include <memory>
-#include <optional>
+#include <string>
+#include <string_view>
+#include <variant>
+#include <vector>
+#include <array>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <functional>
-#include <algorithm>
+#include <atomic>
+#include <locale>
+#include <optional>
+#include <exception>
+#include <stdexcept>
 #include <type_traits>
+#include <algorithm>
+#include <numeric>
 #include <utility>
 #include <compare>
 #include <tuple>
 #include <span>
+#include <bit>
 
 // Essential headers
 #include "kxf/wxWidgets/Setup.h"
