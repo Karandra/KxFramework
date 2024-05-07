@@ -825,7 +825,6 @@
     <ClInclude Include="kxf\Utility\Memory.h" />
     <ClInclude Include="kxf\Utility\Numeric.h" />
     <ClInclude Include="kxf\Utility\String.h" />
-    <ClInclude Include="kxf\Utility\System.h" />
     <ClInclude Include="kxf\Utility\TypeTraits.h" />
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
     <ClInclude Include="kxf\wxWidgets\WithImageList.h" />
@@ -1219,7 +1218,6 @@
     <ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp" />
     <ClCompile Include="kxf\UI\Validator.cpp" />
     <ClCompile Include="kxf\Utility\String.cpp" />
-    <ClCompile Include="kxf\Utility\System.cpp" />
     <ClCompile Include="kxf\EventSystem\EventBroadcastProcessor.cpp" />
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp" />

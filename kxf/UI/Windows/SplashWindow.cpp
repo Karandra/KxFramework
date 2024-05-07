@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "SplashWindow.h"
+#include "kxf/System/SystemWindow.h" 
 #include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
-#include "kxf/Utility/System.h"
 #include <wx/rawbmp.h>
 
 namespace kxf::UI
@@ -87,7 +87,7 @@ namespace kxf::UI
 
 		if (wxFrame::Create(parent, wxID_NONE, {}, Point::UnspecifiedPosition(), size, frameStyle, GetClassInfo()->GetClassName()))
 		{
-			Utility::ModWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
+			SystemWindow(GetHandle()).ModWindowStyle(GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
 			m_Timer.Bind(wxEVT_TIMER, &SplashWindow::OnTimer, this);
 			m_Timer.Bind(wxEVT_SIZE, &SplashWindow::OnSize, this);
 

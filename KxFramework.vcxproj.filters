@@ -598,9 +598,6 @@
     <ClInclude Include="kxf\Utility\Drawing.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\System.h">
-      <Filter>kxf\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Core\IndexedEnum.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
@@ -2600,9 +2597,6 @@
     <ClCompile Include="kxf\Utility\String.cpp">
       <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Utility\System.cpp">
-      <Filter>kxf\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Network\URI.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
@@ -3711,6 +3705,7 @@
     <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
       <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Core\UniChar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

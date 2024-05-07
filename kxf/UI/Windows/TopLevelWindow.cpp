@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
 #include "TopLevelWindow.h"
 #include "kxf/System/NativeAPI.h"
+#include "kxf/System/SystemWindow.h" 
 #include "kxf/Drawing/BitmapImage.h"
-#include "kxf/Utility/System.h"
 #include <DWMAPI.h>
 #include "kxf/System/UndefWindows.h"
 #undef DWMAPI
@@ -56,11 +56,11 @@ namespace kxf::UI::Private
 	{
 		if (NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea)
 		{
-			HWND handle = m_Window->GetHandle();
-			Utility::ModWindowStyle(handle, GWL_EXSTYLE, WS_EX_LAYERED, false);
+			SystemWindow window = m_Window->GetHandle();
+			window.ModWindowStyle(GWL_EXSTYLE, WS_EX_LAYERED, false);
 
 			MARGINS margins = {};
-			return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(handle, &margins) == S_OK;
+			return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(window.GetHandle(), &margins) == S_OK;
 		}
 		return false;
 	}
@@ -68,16 +68,16 @@ namespace kxf::UI::Private
 	{
 		if (NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea)
 		{
-			HWND handle = m_Window->GetHandle();
-			Utility::ModWindowStyle(handle, GWL_EXSTYLE, WS_EX_LAYERED, true);
+			SystemWindow window = m_Window->GetHandle();
+			window.ModWindowStyle(GWL_EXSTYLE, WS_EX_LAYERED, true);
 
 			if (color)
 			{
-				::SetLayeredWindowAttributes(handle, color.GetCOLORREF(), color.GetFixed8().Alpha, LWA_COLORKEY);
+				::SetLayeredWindowAttributes(reinterpret_cast<HWND>(window.GetHandle()), color.GetCOLORREF(), color.GetFixed8().Alpha, LWA_COLORKEY);
 			}
 			else
 			{
-				::SetLayeredWindowAttributes(handle, color.GetCOLORREF(), 0, 0);
+				::SetLayeredWindowAttributes(reinterpret_cast<HWND>(window.GetHandle()), color.GetCOLORREF(), 0, 0);
 			}
 
 			MARGINS margins = {};
@@ -85,7 +85,7 @@ namespace kxf::UI::Private
 			margins.cxRightWidth = rect.GetY();
 			margins.cyTopHeight = rect.GetWidth();
 			margins.cyBottomHeight = rect.GetHeight();
-			return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(handle, &margins) == S_OK;
+			return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(window.GetHandle(), &margins) == S_OK;
 		}
 		return false;
 	}
@@ -199,15 +199,13 @@ namespace kxf::UI::Private
 	}
 	bool TopLevelWindowBase::EnableMinimizeButton(bool enable)
 	{
-		HWND handle = m_Window->GetHandle();
-		Utility::ModWindowStyle(handle, GWL_STYLE, WS_MINIMIZEBOX, enable);
-		return true;
+		SystemWindow window = m_Window->GetHandle();
+		return window.ModWindowStyle(GWL_STYLE, WS_MINIMIZEBOX, enable).has_value();
 	}
 	bool TopLevelWindowBase::EnableMaximizeButton(bool enable)
 	{
-		HWND handle = m_Window->GetHandle();
-		Utility::ModWindowStyle(handle, GWL_STYLE, WS_MAXIMIZEBOX, enable);
-		return true;
+		SystemWindow window = m_Window->GetHandle();
+		return window.ModWindowStyle(GWL_STYLE, WS_MAXIMIZEBOX, enable).has_value();
 	}
 
 	void* TopLevelWindowBase::GetWindowUserData() const

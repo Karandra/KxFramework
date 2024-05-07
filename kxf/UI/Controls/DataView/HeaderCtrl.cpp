@@ -4,9 +4,9 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "kxf/UI/Common.h"
+#include "kxf/System/SystemWindow.h" 
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Drawing/IRendererNative.h"
-#include "kxf/Utility/System.h"
 #include "kxf/Utility/Drawing.h"
 
 Kx_MakeWinUnicodeCallWrapper(SendMessage);
@@ -92,7 +92,7 @@ namespace kxf::UI::DataView
 		if (m_HeaderCtrlHandle)
 		{
 			// Enable all required styles
-			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_HORZ|HDS_CHECKBOXES|HDS_BUTTONS|HDS_HOTTRACK|HDS_FULLDRAG, true);
+			SystemWindow(m_HeaderCtrlHandle).ModWindowStyle(GWL_STYLE, HDS_HORZ|HDS_CHECKBOXES|HDS_BUTTONS|HDS_HOTTRACK|HDS_FULLDRAG, true);
 		}
 
 		event.Skip();
@@ -625,10 +625,13 @@ namespace kxf::UI::DataView
 			}
 
 			// Update styles based on column properties
-			auto style = Utility::GetWindowStyle(m_HeaderCtrlHandle, GWL_STYLE);
-			style.Mod(HDS_NOSIZING, !hasResizableColumns);
-			style.Mod(HDS_DRAGDROP, hasMoveableColumns);
-			Utility::SetWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, style);
+			SystemWindow(m_HeaderCtrlHandle).ModWindowStyle(GWL_STYLE, [&](FlagSet<intptr_t> style)
+			{
+				style.Mod(HDS_NOSIZING, !hasResizableColumns);
+				style.Mod(HDS_DRAGDROP, hasMoveableColumns);
+
+				return style;
+			});
 		}
 	}
 	void HeaderCtrl::UpdateColumn(const Column& column)

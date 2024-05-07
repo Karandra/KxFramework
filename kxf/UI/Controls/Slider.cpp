@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
 #include "Slider.h"
-#include "kxf/Utility/Common.h"
-#include "kxf/Utility/System.h" 
+#include "kxf/System/SystemWindow.h" 
 
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h" 
@@ -25,13 +24,14 @@ namespace kxf::UI
 		// Remove 'SliderStyle::NoThumb' from default wx flags. Just in case.
 		if (wxSlider::Create(parent, id, value, minValue, maxValue, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.Remove(SliderStyle::NoThumb).ToInt(), validator))
 		{
+			SystemWindow window = GetHandle();
 			if (style & SliderStyle::Both)
 			{
-				Utility::ModWindowStyle(GetHandle(), GWL_STYLE, TBS_BOTH, true);
+				window.ModWindowStyle(GWL_STYLE, TBS_BOTH, true);
 			}
 			if (style & SliderStyle::NoThumb)
 			{
-				Utility::ModWindowStyle(GetHandle(), GWL_STYLE, TBS_NOTHUMB, true);
+				window.ModWindowStyle(GWL_STYLE, TBS_NOTHUMB, true);
 			}
 			return true;
 		}

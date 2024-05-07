@@ -1,9 +1,9 @@
 #include "KxfPCH.h"
 #include "StdDialog.h"
+#include "kxf/System/SystemWindow.h" 
 #include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GDIRenderer/UxTheme.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/System.h"
 
 namespace
 {
@@ -432,8 +432,8 @@ namespace kxf::UI
 	void StdDialog::SetResizingBehavior()
 	{
 		Size size = Size(GetMinSize());
-		wxOrientation nSide = GetWindowResizeSide();
-		switch ((int)nSide)
+		auto resizeSide = GetWindowResizeSide();
+		switch (ToInt(resizeSide))
 		{
 			case wxBOTH:
 			{
@@ -456,7 +456,8 @@ namespace kxf::UI
 				break;
 			}
 		};
-		Utility::ModWindowStyle(GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, nSide == wxBOTH);
+
+		SystemWindow(GetHandle()).ModWindowStyle(GWL_STYLE, WS_MAXIMIZEBOX, resizeSide == wxBOTH);
 	}
 	void StdDialog::PostCreate(const Point& pos)
 	{

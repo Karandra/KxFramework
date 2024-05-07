@@ -92,6 +92,25 @@ namespace kxf
 				return handle;
 			}
 
+			template<class TFunc>
+			requires(std::is_convertible_v<std::invoke_result_t<TFunc, FlagSet<intptr_t>>, FlagSet<intptr_t>>)
+			std::optional<intptr_t> ModWindowStyle(int index, TFunc&& func)
+			{
+				return GetValue(index).and_then([&](intptr_t value)
+				{
+					FlagSet<intptr_t> flags = std::invoke(func, FlagSet(value));
+					return SetValue(index, *flags);
+				});
+			}
+
+			std::optional<intptr_t> ModWindowStyle(int index, FlagSet<intptr_t> style, bool enable)
+			{
+				return ModWindowStyle(index, [&](auto flags)
+				{
+					return flags.Mod(style, enable);
+				});
+			}
+
 		public:
 			SystemWindow& operator=(const SystemWindow&) = delete;
 			SystemWindow& operator=(SystemWindow&& other) noexcept

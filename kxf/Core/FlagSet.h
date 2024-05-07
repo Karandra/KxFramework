@@ -108,6 +108,7 @@ namespace kxf
 				}
 		};
 	}
+
 	template<class TEnum> requires(IsFlagSet_v<TEnum>)
 	constexpr Private::FlagSetIntermediate<TEnum> operator|(TEnum left, TEnum right) noexcept
 	{
