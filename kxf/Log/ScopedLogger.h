@@ -31,6 +31,11 @@ namespace kxf
 		public:
 			virtual void Write(LogLevel logLevel, StringView str) = 0;
 			virtual void Flush() = 0;
+
+			virtual String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const
+			{
+				return {};
+			}
 	};
 
 	class IScopedLoggerContext: public RTTI::Interface<IScopedLoggerContext>
@@ -134,6 +139,7 @@ namespace kxf
 			void Destroy();
 
 			void LogOpenClose(bool open);
+			String FormatRecord(LogLevel logLevel, DateTime timestamp, StringView str) const;
 			std::shared_ptr<IScopedLoggerTarget> CreateLogTarget();
 
 			void OnScopeEnter(ScopedLogger& scope)
@@ -201,7 +207,7 @@ namespace kxf
 			}
 
 			void Flush();
-			void Write(LogLevel logLevel, DateTime timestamp, StringView str);
+			void Write(LogLevel logLevel, DateTime timestamp, StringView message);
 	};
 }
 

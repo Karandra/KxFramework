@@ -201,6 +201,35 @@ namespace kxf
 			message.Write(*this);
 		}
 	}
+	String ScopedLoggerTLS::FormatRecord(LogLevel logLevel, DateTime timestamp, StringView message) const
+	{
+		String buffer;
+
+		// Log time
+		buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.GetTimeOffset()));
+
+		// Log location
+		if (IsUnknown())
+		{
+			buffer.Format("[{}/<unk>:{:05}]", m_Process.GetID(), SystemThread::GetCurrentThread().GetID());
+		}
+		else
+		{
+			buffer.Format("[{:05}/{:05}]", m_Process.GetID(), m_Thread.GetID());
+		}
+
+		// Log message level
+		buffer.Format("[{:11}]", FormatLogLevel(logLevel));
+
+		// Add indents
+		buffer.Append(' ', m_ScopeLevel * 4);
+
+		// Log the actual message string
+		buffer += ' ';
+		buffer += message;
+
+		return buffer;
+	}
 	std::shared_ptr<IScopedLoggerTarget> ScopedLoggerTLS::CreateLogTarget()
 	{
 		if (auto context = m_GlobalContext.GetUserContext())
@@ -217,37 +246,17 @@ namespace kxf
 			m_LogTarget->Flush();
 		}
 	}
-	void ScopedLoggerTLS::Write(LogLevel logLevel, DateTime timestamp, StringView str)
+	void ScopedLoggerTLS::Write(LogLevel logLevel, DateTime timestamp, StringView message)
 	{
-		if (!str.empty() && m_GlobalContext.CanLogLevel(logLevel))
+		if (!message.empty() && m_GlobalContext.CanLogLevel(logLevel))
 		{
-			String buffer;
-
-			// Log time
-			buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.GetTimeOffset()));
-
-			// Log location
-			if (IsUnknown())
+			String formatted = m_LogTarget->FormatRecord(*this, logLevel, timestamp, message);
+			if (formatted.IsEmpty())
 			{
-				buffer.Format("[{}/<unk>:{:06}]", m_Process.GetID(), SystemThread::GetCurrentThread().GetID());
-			}
-			else
-			{
-				buffer.Format("[{}/{}]", m_Process.GetID(), m_Thread.GetID());
+				formatted = FormatRecord(logLevel, timestamp, message);
 			}
 
-			// Log message level
-			buffer.Format("[{:11}]", FormatLogLevel(logLevel));
-
-			// Add indents
-			buffer.Append(' ', m_ScopeLevel * 4);
-
-			// Log the actual message string
-			buffer += ' ';
-			buffer += str;
-
-			// Write the whole thing out
-			m_LogTarget->Write(logLevel, buffer.xc_view());
+			m_LogTarget->Write(logLevel, formatted.xc_view());
 		}
 	}
 }
