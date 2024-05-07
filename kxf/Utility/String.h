@@ -66,12 +66,10 @@ namespace kxf::Utility
 		private:
 			String& m_Value;
 			size_t m_Length = 0;
+			std::vector<std::byte> m_Buffer;
+			IEncodingConverter* m_EncodingConverter = nullptr;
 			Type m_Type = Type::None;
 			bool m_NullTerminated = false;
-
-			std::string m_NarrowChars;
-			std::wstring m_WideChars;
-			IEncodingConverter* m_EncodingConverter = nullptr;
 
 		private:
 			char* PrepareNarrowChars();

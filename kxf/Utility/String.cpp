@@ -2,21 +2,61 @@
 #include "String.h"
 #include "kxf/Core/IEncodingConverter.h"
 
+namespace
+{
+	template<class T>
+	T* PrepareBuffer(std::vector<std::byte>& buffer, size_t length)
+	{
+		buffer.resize(length * sizeof(T));
+		return reinterpret_cast<T*>(buffer.data());
+	}
+
+	template<class T>
+	kxf::String FinalizeBuffer(std::vector<std::byte>& buffer, size_t& length, bool isNullTerminated, kxf::IEncodingConverter* encondigConverter)
+	{
+		auto ptr = reinterpret_cast<T*>(buffer.data());
+		if (isNullTerminated)
+		{
+			size_t size = buffer.size() / sizeof(T);
+			if constexpr(std::is_same_v<T, char>)
+			{
+				length = ::strnlen(ptr, size);
+			}
+			else if constexpr(std::is_same_v<T, wchar_t>)
+			{
+				length = ::wcsnlen(ptr, size);
+			}
+
+			buffer.resize(length * sizeof(T));
+			ptr = reinterpret_cast<T*>(buffer.data());
+		}
+
+		if constexpr(std::is_same_v<T, char>)
+		{
+			return kxf::String::FromEncoding(std::basic_string_view<T>(ptr, length), encondigConverter ? *encondigConverter : kxf::EncodingConverter_WhateverWorks);
+		}
+		else if constexpr(std::is_same_v<T, wchar_t>)
+		{
+			return std::basic_string_view<T>(ptr, length);
+		}
+	}
+}
+
 namespace kxf::Utility
 {
 	char* StringBuffer::PrepareNarrowChars()
 	{
-		m_NarrowChars.resize(m_Length);
+		auto ptr = PrepareBuffer<char>(m_Buffer, m_Length);
 		m_Type = Type::NarrowChars;
 
-		return m_NarrowChars.data();
+		return ptr;
 	}
 	wchar_t* StringBuffer::PrepareWideChars()
 	{
-		m_WideChars.resize(m_Length);
+		auto ptr = PrepareBuffer<wchar_t>(m_Buffer, m_Length);
 		m_Type = Type::WideChars;
 
-		return m_WideChars.data();
+		return ptr;
 	}
 	void StringBuffer::Finalize()
 	{
@@ -24,26 +64,12 @@ namespace kxf::Utility
 		{
 			case Type::NarrowChars:
 			{
-				if (m_NullTerminated)
-				{
-					m_Length = strnlen(m_NarrowChars.data(), m_NarrowChars.size());
-					m_NarrowChars.resize(m_Length);
-				}
-				
-				IEncodingConverter& converter = m_EncodingConverter ? *m_EncodingConverter : EncodingConverter_WhateverWorks;
-				m_Value = converter.ToWideChar(m_NarrowChars);
-
+				m_Value = FinalizeBuffer<char>(m_Buffer, m_Length, m_NullTerminated, m_EncodingConverter);
 				break;
 			}
 			case Type::WideChars:
 			{
-				if (m_NullTerminated)
-				{
-					m_Length = wcsnlen(m_WideChars.data(), m_WideChars.size());
-					m_WideChars.resize(m_Length);
-				}
-
-				m_Value = std::move(m_WideChars);
+				m_Value = FinalizeBuffer<wchar_t>(m_Buffer, m_Length, m_NullTerminated, m_EncodingConverter);
 				break;
 			}
 		};
