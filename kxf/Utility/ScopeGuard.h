@@ -1,21 +1,21 @@
 #pragma once
 #include "Common.h"
-#include <optional>
 
 namespace kxf::Utility
 {
-	template<class TFunc_>
+	template<class TCallable_>
+	requires(std::is_invocable_r_v<void, TCallable_>)
 	class ScopeGuard final
 	{
 		public:
-			using TFunc = TFunc_;
+			using TCallable = TCallable_;
 
 		private:
-			std::optional<TFunc> m_Func;
+			std::optional<TCallable> m_Callable;
 
 		public:
-			ScopeGuard(TFunc&& func) noexcept
-				:m_Func(std::forward<TFunc>(func))
+			ScopeGuard(TCallable&& callable) noexcept
+				:m_Callable(std::forward<TCallable>(callable))
 			{
 			}
 			ScopeGuard(ScopeGuard&&) noexcept = default;
@@ -28,23 +28,87 @@ namespace kxf::Utility
 		public:
 			bool IsActive() const noexcept
 			{
-				return m_Func.has_value();
+				return m_Callable.has_value();
 			}
 			void Dismiss() noexcept
 			{
-				m_Func.reset();
+				m_Callable.reset();
 			}
-			void Invoke()
+			void Invoke() noexcept(std::is_nothrow_invocable_r_v<void, TCallable>)
 			{
-				if (m_Func)
+				if (m_Callable)
 				{
-					std::invoke(*m_Func);
-					m_Func.reset();
+					std::invoke(*m_Callable);
+					m_Callable.reset();
 				}
 			}
 
 		public:
 			ScopeGuard& operator=(ScopeGuard&&) noexcept = default;
 			ScopeGuard& operator=(const ScopeGuard&) = delete;
+	};
+}
+
+namespace kxf::Utility
+{
+	template<class TCallable_>
+	class ExceptionScopeGuard final
+	{
+		static_assert(std::is_nothrow_invocable_r_v<void, TCallable_>, "no-throw invokable callable required");
+
+		public:
+			using TCallable = TCallable_;
+
+		private:
+			ScopeGuard<TCallable> m_Guard;
+			const int m_UncaughtExceptions = std::uncaught_exceptions();
+
+		public:
+			ExceptionScopeGuard(TCallable&& callable) noexcept
+				:m_Guard(std::forward<TCallable>(callable))
+			{
+			}
+			ExceptionScopeGuard(ExceptionScopeGuard&& other) noexcept
+			{
+				*this = std::move(other);
+			}
+			ExceptionScopeGuard(const ExceptionScopeGuard&) = delete;
+			~ExceptionScopeGuard() noexcept
+			{
+				if (m_UncaughtExceptions != std::uncaught_exceptions())
+				{
+					m_Guard.Invoke();
+				}
+				else
+				{
+					m_Guard.Dismiss();
+				}
+			}
+
+		public:
+			bool IsActive() const noexcept
+			{
+				return m_Guard.IsActive();
+			}
+			void Dismiss() noexcept
+			{
+				m_Guard.Dismiss();
+			}
+			void Invoke() noexcept
+			{
+				m_Guard.Invoke();
+			}
+
+		public:
+			ExceptionScopeGuard& operator=(ExceptionScopeGuard&& other) noexcept
+			{
+				m_Guard = std::move(other.m_Guard);
+
+				m_UncaughtExceptions = other.m_UncaughtExceptions;
+				other.m_UncaughtExceptions = std::numeric_limits<int>::max();
+
+				return *this;
+			}
+			ExceptionScopeGuard& operator=(const ExceptionScopeGuard&) = delete;
 	};
 }

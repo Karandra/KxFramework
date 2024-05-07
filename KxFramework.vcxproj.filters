@@ -1664,9 +1664,6 @@
     <ClInclude Include="kxf\Utility\ScopeGuard.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h">
-      <Filter>kxf\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>

@@ -4,7 +4,7 @@
 #include "kxf/Core/String.h"
 #include "kxf/Core/NativeUUID.h"
 #include "kxf/Utility/Memory.h"
-#include "kxf/Utility/ExceptionScopeGuard.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "Private/COM.h"
 #include <memory>
 #include <new>
