@@ -59,7 +59,7 @@ namespace kxf
 {
 	bool WMINamespace::Initialize(const kxf::FSPath& wmiNamespace, const UserCredentials* credentials, const Locale& locale)
 	{
-		if (HResult result = COM::CreateInstance(CLSID_WbemLocator, ClassContext::InprocServer, &m_Locator))
+		if (HResult result = COM::CreateInstance(CLSID_WbemLocator, COMClassContext::InprocServer, &m_Locator))
 		{
 			auto ns = ToBSTR(wmiNamespace.GetFullPath());
 			auto localeName = ToBSTR(locale.GetName());

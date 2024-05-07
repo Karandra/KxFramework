@@ -19,26 +19,26 @@ namespace
 
 		return nativeFlags;
 	}
-	constexpr FlagSet<CLSCTX> MapClassContext(FlagSet<ClassContext> context) noexcept
+	constexpr FlagSet<CLSCTX> MapClassContext(FlagSet<COMClassContext> context) noexcept
 	{
 		FlagSet<CLSCTX> nativeContext;
-		nativeContext.Add(CLSCTX::CLSCTX_INPROC_SERVER, context & ClassContext::InprocServer);
-		nativeContext.Add(CLSCTX::CLSCTX_INPROC_HANDLER, context & ClassContext::InprocHandler);
-		nativeContext.Add(CLSCTX::CLSCTX_LOCAL_SERVER, context & ClassContext::LocalServer);
-		nativeContext.Add(CLSCTX::CLSCTX_REMOTE_SERVER, context & ClassContext::RemoteServer);
-		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_CODE_DOWNLOAD, context & ClassContext::EnableCodeDownload);
-		nativeContext.Add(CLSCTX::CLSCTX_NO_CODE_DOWNLOAD, context & ClassContext::NoCodeDownload);
-		nativeContext.Add(CLSCTX::CLSCTX_NO_CUSTOM_MARSHAL, context & ClassContext::NoCustomMarshal);
-		nativeContext.Add(CLSCTX::CLSCTX_NO_FAILURE_LOG, context & ClassContext::NoFailureLog);
-		nativeContext.Add(CLSCTX::CLSCTX_DISABLE_AAA, context & ClassContext::DisableAAA);
-		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_AAA, context & ClassContext::EnableAAA);
-		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_AAA_AS_IU, context & ClassContext::ActivateAAAAsIU);
-		nativeContext.Add(CLSCTX::CLSCTX_FROM_DEFAULT_CONTEXT, context & ClassContext::FromDefaultContext);
-		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_32_BIT_SERVER, context & ClassContext::Activate32BitServer);
-		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_64_BIT_SERVER, context & ClassContext::Activate64BitServer);
-		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_ARM32_SERVER, context & ClassContext::ActivateARM32Server);
-		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_CLOAKING, context & ClassContext::EnableCloaking);
-		nativeContext.Add(CLSCTX::CLSCTX_APPCONTAINER, context & ClassContext::AppContainer);
+		nativeContext.Add(CLSCTX::CLSCTX_INPROC_SERVER, context & COMClassContext::InprocServer);
+		nativeContext.Add(CLSCTX::CLSCTX_INPROC_HANDLER, context & COMClassContext::InprocHandler);
+		nativeContext.Add(CLSCTX::CLSCTX_LOCAL_SERVER, context & COMClassContext::LocalServer);
+		nativeContext.Add(CLSCTX::CLSCTX_REMOTE_SERVER, context & COMClassContext::RemoteServer);
+		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_CODE_DOWNLOAD, context & COMClassContext::EnableCodeDownload);
+		nativeContext.Add(CLSCTX::CLSCTX_NO_CODE_DOWNLOAD, context & COMClassContext::NoCodeDownload);
+		nativeContext.Add(CLSCTX::CLSCTX_NO_CUSTOM_MARSHAL, context & COMClassContext::NoCustomMarshal);
+		nativeContext.Add(CLSCTX::CLSCTX_NO_FAILURE_LOG, context & COMClassContext::NoFailureLog);
+		nativeContext.Add(CLSCTX::CLSCTX_DISABLE_AAA, context & COMClassContext::DisableAAA);
+		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_AAA, context & COMClassContext::EnableAAA);
+		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_AAA_AS_IU, context & COMClassContext::ActivateAAAAsIU);
+		nativeContext.Add(CLSCTX::CLSCTX_FROM_DEFAULT_CONTEXT, context & COMClassContext::FromDefaultContext);
+		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_32_BIT_SERVER, context & COMClassContext::Activate32BitServer);
+		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_64_BIT_SERVER, context & COMClassContext::Activate64BitServer);
+		nativeContext.Add(CLSCTX::CLSCTX_ACTIVATE_ARM32_SERVER, context & COMClassContext::ActivateARM32Server);
+		nativeContext.Add(CLSCTX::CLSCTX_ENABLE_CLOAKING, context & COMClassContext::EnableCloaking);
+		nativeContext.Add(CLSCTX::CLSCTX_APPCONTAINER, context & COMClassContext::AppContainer);
 
 		return nativeContext;
 	}
@@ -95,7 +95,7 @@ namespace kxf::COM
 		return uuid;
 	}
 
-	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer) noexcept
+	HResult CreateInstance(const NativeUUID& classID, COMClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer) noexcept
 	{
 		return ::CoCreateInstance(ToGUID(classID), outer, MapClassContext(classContext), ToGUID(iid), result);
 	}

@@ -186,7 +186,7 @@ namespace kxf::System
 		// Doesn't work, no idea why. Doesn't seems to be required for the task scheduler to work.
 		//HRESULT res = ::CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, 0, nullptr);
 
-		if (HResult hr = COM::CreateInstance(CLSID_TaskScheduler, ClassContext::InprocServer, &m_TaskService))
+		if (HResult hr = COM::CreateInstance(CLSID_TaskScheduler, COMClassContext::InprocServer, &m_TaskService))
 		{
 			hr = m_TaskService->Connect(VariantFromString_Null(serverName),
 										VariantFromString_Null(userCredentials.GetName()),

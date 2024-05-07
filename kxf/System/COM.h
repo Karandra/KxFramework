@@ -25,7 +25,7 @@ namespace kxf
 		DisableOLE1DDE = 1 << 0,
 		SpeedOverMemory = 1 << 1
 	};
-	enum class ClassContext: uint32_t
+	enum class COMClassContext: uint32_t
 	{
 		InprocServer = 1 << 0,
 		InprocHandler = 1 << 1,
@@ -47,7 +47,7 @@ namespace kxf
 	};
 
 	KxFlagSet_Declare(COMInitFlag);
-	KxFlagSet_Declare(ClassContext);
+	KxFlagSet_Declare(COMClassContext);
 }
 
 namespace kxf::COM
@@ -87,14 +87,14 @@ namespace kxf::COM
 
 namespace kxf::COM
 {
-	KX_API HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
-	inline HResult CreateInstance(const ::_GUID& classID, ClassContext classContext, const ::_GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
+	KX_API HResult CreateInstance(const NativeUUID& classID, COMClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
+	inline HResult CreateInstance(const ::_GUID& classID, COMClassContext classContext, const ::_GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
 	{
 		return CreateInstance(FromGUID(classID), classContext, FromGUID(iid), result, outer);
 	}
 
 	template<class AnyID, class T>
-	HResult CreateInstance(const AnyID& classID, ClassContext classContext, T** result, IUnknown* outer = nullptr) noexcept
+	HResult CreateInstance(const AnyID& classID, COMClassContext classContext, T** result, IUnknown* outer = nullptr) noexcept
 	{
 		return CreateInstance(ToUUID(classID), classContext, UUIDOf<T>(), reinterpret_cast<void**>(result), outer);
 	}
