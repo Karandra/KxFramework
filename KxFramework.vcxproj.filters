@@ -2439,6 +2439,9 @@
     <ClInclude Include="kxf\Core\Private\FormatQtStyle.h">
       <Filter>kxf\Core\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Log\ScopedLoggerContext.h">
+      <Filter>kxf\Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3706,6 +3709,9 @@
       <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Core\UniChar.cpp" />
+    <ClCompile Include="kxf\Log\ScopedLoggerContext.cpp">
+      <Filter>kxf\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

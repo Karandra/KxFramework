@@ -6,10 +6,34 @@
 
 namespace kxf
 {
-	class ConsoleScopedLoggerTarget: public IScopedLoggerTarget
+	class ScopedLoggerEmptyTarget final: public IScopedLoggerTarget
 	{
 		public:
-			ConsoleScopedLoggerTarget(ScopedLoggerTLS& tls)
+			ScopedLoggerEmptyTarget() noexcept = default;
+			ScopedLoggerEmptyTarget(ScopedLoggerTLS& tls) noexcept
+			{
+			}
+
+		public:
+			// IScopedLoggerTarget
+			void Write(LogLevel logLevel, StringView str) override
+			{
+			}
+			void Flush() override
+			{
+			}
+
+			String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const override
+			{
+				return {};
+			}
+	};
+
+	class ScopedLoggerConsoleTarget: public IScopedLoggerTarget
+	{
+		public:
+			ScopedLoggerConsoleTarget() noexcept = default;
+			ScopedLoggerConsoleTarget(ScopedLoggerTLS& tls) noexcept
 			{
 			}
 
@@ -19,14 +43,14 @@ namespace kxf
 			void Flush() override;
 	};
 
-	class FileScopedLoggerTarget: public IScopedLoggerTarget
+	class ScopedLoggerFileTarget: public IScopedLoggerTarget
 	{
 		private:
 			std::unique_ptr<IOutputStream> m_Stream;
 			size_t m_WriteCount = 0;
 
 		public:
-			FileScopedLoggerTarget(ScopedLoggerTLS& tls, const FSPath& directory);
+			ScopedLoggerFileTarget(ScopedLoggerTLS& tls, const FSPath& directory = {});
 
 		public:
 			// IScopedLoggerTarget
@@ -34,26 +58,63 @@ namespace kxf
 			void Flush() override;
 	};
 
-	class AggregateScopedLoggerTarget: public IScopedLoggerTarget
+	class ScopedLoggerAggregateTarget: public IScopedLoggerTarget
 	{
+		private:
+			template<class T, class TFunc>
+			static void ForEach(T&& container, TFunc&& func)
+			{
+				for (auto it = container.rbegin(); it != container.rend(); ++it)
+				{
+					if (std::invoke(func, *it->get()) == CallbackCommand::Terminate)
+					{
+						break;
+					}
+				}
+			}
+
 		public:
 			std::vector<std::shared_ptr<IScopedLoggerTarget>> m_LogTargets;
+
+		public:
+			ScopedLoggerAggregateTarget() noexcept = default;
+			ScopedLoggerAggregateTarget(ScopedLoggerTLS& tls) noexcept
+			{
+			}
 
 		public:
 			// IScopedLoggerTarget
 			void Write(LogLevel logLevel, StringView str) override
 			{
-				for (auto& ptr: m_LogTargets)
+				ForEach(m_LogTargets, [&](IScopedLoggerTarget& ref)
 				{
-					ptr->Write(logLevel, str);
-				}
+					ref.Write(logLevel, str);
+					return CallbackCommand::Continue;
+				});
 			}
 			void Flush() override
 			{
-				for (auto& ptr: m_LogTargets)
+				ForEach(m_LogTargets, [&](IScopedLoggerTarget& ref)
 				{
-					ptr->Flush();
-				}
+					ref.Flush();
+					return CallbackCommand::Continue;
+				});
+			}
+
+			String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const override
+			{
+				String formatted;
+				ForEach(m_LogTargets, [&](const IScopedLoggerTarget& ref)
+				{
+					formatted = ref.FormatRecord(tls, logLevel, timestamp, message);
+					if (!formatted.IsEmpty())
+					{
+						return CallbackCommand::Terminate;
+					}
+					return CallbackCommand::Continue;
+				});
+
+				return formatted;
 			}
 
 			// AggregateScopedLoggerTarget
@@ -71,25 +132,6 @@ namespace kxf
 					return ptr;
 				}
 				return nullptr;
-			}
-	};
-
-	class FileScopedLoggerContext: public IScopedLoggerContext
-	{
-		private:
-			FSPath m_LogDirectory;
-
-		public:
-			FileScopedLoggerContext(FSPath logDirectory)
-				:m_LogDirectory(std::move(logDirectory))
-			{
-			}
-
-		public:
-			// IScopedLoggerContext
-			std::shared_ptr<IScopedLoggerTarget> CreateLogTarget(ScopedLoggerTLS& tls) override
-			{
-				return std::make_shared<FileScopedLoggerTarget>(tls, m_LogDirectory);
 			}
 	};
 }

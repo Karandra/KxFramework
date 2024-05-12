@@ -319,6 +319,7 @@
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\Private\WxOverride.h" />
     <ClInclude Include="kxf\Log\ScopedLogger.h" />
+    <ClInclude Include="kxf\Log\ScopedLoggerContext.h" />
     <ClInclude Include="kxf\Log\ScopedLoggerTarget.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\LibCURL.h" />
@@ -939,6 +940,7 @@
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\Private\WxOverride.cpp" />
     <ClCompile Include="kxf\Log\ScopedLogger.cpp" />
+    <ClCompile Include="kxf\Log\ScopedLoggerContext.cpp" />
     <ClCompile Include="kxf\Log\ScopedLoggerTarget.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLWebResponse.cpp" />

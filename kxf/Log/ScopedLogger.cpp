@@ -8,9 +8,9 @@ namespace
 {
 	kxf::String FormatTimestamp(kxf::DateTime timestamp, const kxf::TimeZoneOffset& tzOffset)
 	{
-		return timestamp.Format("%Y-%m-%d/%T", tzOffset).Format(".{:03}", timestamp.GetMillisecond(tzOffset));
+		return timestamp.Format("%Y-%m-%d/%H:%M:%S.%l", tzOffset);
 	}
-	const char* FormatLogLevel(kxf::LogLevel logLevel)
+	std::string_view FormatLogLevel(kxf::LogLevel logLevel)
 	{
 		using namespace kxf;
 
@@ -46,18 +46,27 @@ namespace
 				return "Critical";
 			}
 		};
-		return "<UNKNOWN>";
+		return {};
 	}
 }
 
 namespace kxf
 {
-	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::GetInstance() noexcept
+	String ToString(LogLevel value)
 	{
-		static ScopedLoggerGlobalContext context;
+		return FormatLogLevel(value);
+	}
+
+	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::Initialize(std::shared_ptr<IScopedLoggerContext> userContext)
+	{
+		static ScopedLoggerGlobalContext context(std::move(userContext));
 		return context;
 	}
-	
+	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::GetInstance() noexcept
+	{
+		return Initialize(nullptr);
+	}
+
 	void ScopedLoggerGlobalContext::Initialize()
 	{
 		m_TLSIndex.Initialize([](void* ptr)
@@ -74,13 +83,18 @@ namespace kxf
 
 		m_TimeOffset = TimeZone::Local;
 		m_UnknownContext = std::make_unique<ScopedLoggerUnknownTLS>(*this);
+		m_UnknownContext->Initialize();
 
 		Log::WxOverride::Install();
 	}
 	void ScopedLoggerGlobalContext::Destroy()
 	{
+		if (m_UnknownContext)
+		{
+			m_UnknownContext->Destroy();
+			m_UnknownContext = {};
+		}
 		m_TLSIndex.Uninitialize();
-		m_UnknownContext = {};
 	}
 
 	ScopedLoggerTLS* ScopedLoggerGlobalContext::QueryThreadContext() const noexcept
@@ -134,6 +148,7 @@ namespace kxf
 	{
 		m_Thread = SystemThread::GetCurrentThread();
 		m_Process = SystemProcess::GetCurrentProcess();
+		m_TimeStamp = DateTime::Now();
 		m_LogTarget = CreateLogTarget();
 
 		LogOpenClose(true);
@@ -204,6 +219,7 @@ namespace kxf
 	String ScopedLoggerTLS::FormatRecord(LogLevel logLevel, DateTime timestamp, StringView message) const
 	{
 		String buffer;
+		buffer.reserve(255);
 
 		// Log time
 		buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.GetTimeOffset()));
@@ -236,7 +252,7 @@ namespace kxf
 		{
 			return context->CreateLogTarget(*this);
 		}
-		return std::make_shared<ConsoleScopedLoggerTarget>(*this);
+		return std::make_shared<ScopedLoggerConsoleTarget>(*this);
 	}
 
 	void ScopedLoggerTLS::Flush()
@@ -263,16 +279,77 @@ namespace kxf
 
 namespace kxf
 {
+	void ScopedLogger::OnEnter(StringView serializedParameters)
+	{
+		if (CanEnterLeave())
+		{
+			if (auto logger = FlowControl(); true)
+			{
+				logger.Log("Enter: ", m_Function);
+				if (!serializedParameters.empty())
+				{
+					logger.Format(" ({})", serializedParameters);
+				}
+			}
+			m_ScopeTLS.OnScopeEnter(*this);
+		}
+	}
+	void ScopedLogger::OnLeave()
+	{
+		if (CanEnterLeave())
+		{
+			m_ScopeTLS.OnScopeLeave(*this);
+
+			auto funcName = m_Function.xc_view();
+			if (auto pos = funcName.find('('); pos != funcName.npos)
+			{
+				funcName.remove_suffix(funcName.length() - pos);
+			}
+
+			if (auto logger = FlowControl(); true)
+			{
+				logger.Log("Leave: ");
+				if (!m_IsSuccess)
+				{
+					logger << "<FAILED> ";
+				}
+				logger << funcName;
+				if (!m_IsVoid && !m_ReturnValue.empty())
+				{
+					logger << " -> " << m_ReturnValue;
+				}
+			}
+		}
+	}
+}
+
+namespace kxf
+{
+	void ScopedLoggerUnknown::Initialize()
+	{
+		m_Function = "<unknown context>()";
+		m_IsVoid = true;
+		m_IsSuccess = true;
+	}
+	void ScopedLoggerUnknown::Destroy()
+	{
+		m_Function.clear();
+	}
+
 	void ScopedLoggerUnknownTLS::Initialize()
 	{
 		m_Thread = {};
 		m_Process = SystemProcess::GetCurrentProcess();
+		m_TimeStamp = DateTime::Now();
 		m_LogTarget = CreateLogTarget();
-
-		m_Scope.emplace(*this, "<unknown context>()");
-		m_Scope->SetSuccess();
+		m_Scope.Initialize();
 
 		LogOpenClose(true);
+	}
+	void ScopedLoggerUnknownTLS::Destroy()
+	{
+		m_Scope.Destroy();
+		ScopedLoggerTLS::Destroy();
 	}
 }
 
@@ -282,53 +359,7 @@ namespace kxf
 	{
 		if (m_Scope)
 		{
-			m_Scope->Write(m_LogLevel, m_TimeStamp, m_Buffer.xc_view());
-		}
-	}
-
-	void ScopedLogger::OnEnter(StringView parameters)
-	{
-		{
-			auto logger = FlowControl();
-
-			logger.Log("Enter: ", m_Function);
-			if (!parameters.empty())
-			{
-				if (m_Function.Contains('('))
-				{
-					logger.Format(" /. {{{}}}", parameters);
-				}
-				else
-				{
-					logger.Format(" ({})", parameters);
-				}
-			}
-		}
-		m_ScopeTLS.OnScopeEnter(*this);
-	}
-	void ScopedLogger::OnLeave()
-	{
-		m_ScopeTLS.OnScopeLeave(*this);
-
-		auto funcName = m_Function.xc_view();
-		if (auto pos = funcName.find('('); pos != funcName.npos)
-		{
-			funcName.remove_suffix(funcName.length() - pos);
-		}
-
-		{
-			auto logger = FlowControl();
-
-			logger.Log("Leave: ");
-			if (!m_IsSuccess)
-			{
-				logger << "<FAILED> ";
-			}
-			logger << funcName;
-			if (!m_IsVoid && !m_ReturnValue.empty())
-			{
-				logger << " -> " << m_ReturnValue;
-			}
+			m_Scope->GetTLS().Write(m_LogLevel, m_TimeStamp, m_Buffer.xc_view());
 		}
 	}
 }

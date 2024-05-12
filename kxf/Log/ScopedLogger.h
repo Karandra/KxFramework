@@ -6,6 +6,7 @@
 #include "kxf/System/SystemProcess.h"
 #include "kxf/System/SystemThread.h"
 #include "kxf/Threading/ThreadLocalSlot.h"
+#include "kxf/Utility/Common.h"
 #include <source_location>
 #include <atomic>
 #include <vector>
@@ -13,8 +14,8 @@
 
 namespace kxf
 {
-	class ScopedLogger;
 	class ScopedLoggerTLS;
+	class ScopedLoggerScope;
 	class ScopedLoggerGlobalContext;
 	class ScopedMessageLogger;
 }
@@ -48,6 +49,7 @@ namespace kxf
 		public:
 			virtual std::shared_ptr<IScopedLoggerTarget> CreateLogTarget(ScopedLoggerTLS& tls) = 0;
 	};
+
 }
 
 namespace kxf
@@ -55,10 +57,11 @@ namespace kxf
 	class ScopedLoggerGlobalContext final
 	{
 		public:
+			static ScopedLoggerGlobalContext& Initialize(std::shared_ptr<IScopedLoggerContext> userContext);
 			static ScopedLoggerGlobalContext& GetInstance() noexcept;
 
 		private:
-			std::atomic<std::shared_ptr<IScopedLoggerContext>> m_UserContext;
+			std::shared_ptr<IScopedLoggerContext> m_UserContext;
 			std::atomic<TimeZoneOffset> m_TimeOffset;
 			std::atomic<LogLevel> m_LogLevel = LogLevel::Unknown;
 
@@ -70,7 +73,8 @@ namespace kxf
 			void Destroy();
 
 		private:
-			ScopedLoggerGlobalContext()
+			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext)
+				:m_UserContext(std::move(userContext))
 			{
 				Initialize();
 			}
@@ -84,10 +88,6 @@ namespace kxf
 			std::shared_ptr<IScopedLoggerContext> GetUserContext() const noexcept
 			{
 				return m_UserContext;
-			}
-			void SetUserContext(std::shared_ptr<IScopedLoggerContext> userContext) noexcept
-			{
-				m_UserContext = std::move(userContext);
 			}
 
 			ScopedLoggerTLS* QueryThreadContext() const noexcept;
@@ -131,12 +131,13 @@ namespace kxf
 			std::vector<ScopedLogger*> m_ScopeStack;
 			SystemThread m_Thread;
 			SystemProcess m_Process;
+			DateTime m_TimeStamp;
 			size_t m_ScopeLevel = 0;
 			bool m_Terminated = false;
 
 		protected:
-			void Initialize();
-			void Destroy();
+			virtual void Initialize();
+			virtual void Destroy();
 
 			void LogOpenClose(bool open);
 			String FormatRecord(LogLevel logLevel, DateTime timestamp, StringView str) const;
@@ -193,6 +194,10 @@ namespace kxf
 			{
 				return m_Thread;
 			}
+			DateTime GetTimestamp() const noexcept
+			{
+				return m_TimeStamp;
+			}
 			size_t GetScopeLevel() const noexcept
 			{
 				return m_ScopeLevel;
@@ -215,7 +220,6 @@ namespace kxf
 {
 	class ScopedMessageLogger final
 	{
-		friend class ScopedLogger;
 		friend class ScopedLoggerTLS;
 		friend class ScopedLoggerUnknownTLS;
 
@@ -228,7 +232,7 @@ namespace kxf
 			LogLevel m_LogLevel = LogLevel::Unknown;
 
 		private:
-			void Initialize()
+			void Reset()
 			{
 				m_Buffer.clear();
 				m_Separator.clear();
@@ -295,12 +299,12 @@ namespace kxf
 			ScopedMessageLogger(LogLevel logLevel = LogLevel::Unknown)
 				:m_LogLevel(logLevel)
 			{
-				Initialize();
+				Reset();
 			}
 			ScopedMessageLogger(ScopedLogger& scope, LogLevel logLevel = LogLevel::Unknown)
 				:m_Scope(&scope), m_LogLevel(logLevel)
 			{
-				Initialize();
+				Reset();
 			}
 			ScopedMessageLogger(const ScopedMessageLogger&) = delete;
 			ScopedMessageLogger(ScopedMessageLogger&&) = default;
@@ -340,12 +344,12 @@ namespace kxf
 			void Finalize()
 			{
 				Write();
-				Initialize();
+				Reset();
 			}
 			void Finalize(ScopedLoggerTLS& tls)
 			{
 				Write(tls);
-				Initialize();
+				Reset();
 			}
 
 		public:
@@ -488,11 +492,9 @@ namespace kxf
 
 namespace kxf
 {
-	class ScopedLogger final
+	class ScopedLogger
 	{
-		friend class ScopedMessageLogger;
-
-		private:
+		protected:
 			ScopedLoggerTLS& m_ScopeTLS;
 			uint32_t m_Line = 0;
 			uint32_t m_Column = 0;
@@ -502,11 +504,7 @@ namespace kxf
 			bool m_IsSuccess = false;
 			bool m_IsVoid = false;
 
-		private:
-			void Write(LogLevel logLevel, DateTime timestamp, StringView str)
-			{
-				m_ScopeTLS.Write(logLevel, timestamp, str);
-			}
+		protected:
 			void FromSourceLocation(const std::source_location& sourceLocation)
 			{
 				m_Line = sourceLocation.line();
@@ -514,8 +512,12 @@ namespace kxf
 				m_FileName = sourceLocation.file_name();
 				m_Function = sourceLocation.function_name();
 			}
+			bool CanEnterLeave() const noexcept
+			{
+				return !m_Function.IsEmpty();
+			}
 
-			void OnEnter(StringView parameters = {});
+			void OnEnter(StringView serializedParameters = {});
 			void OnLeave();
 
 			ScopedMessageLogger FlowControl()
@@ -523,29 +525,28 @@ namespace kxf
 				return ScopedMessageLogger(*this, LogLevel::FlowControl);
 			}
 
-		public:
-			ScopedLogger(ScopedLoggerTLS& tls, String function)
-				:m_ScopeTLS(tls), m_Function(std::move(function))
+		protected:
+			ScopedLogger(ScopedLoggerTLS& tls)
+				:m_ScopeTLS(tls)
 			{
-				OnEnter();
-			}
-
-			ScopedLogger(const std::source_location& sourceLocation = std::source_location::current())
-				:m_ScopeTLS(ScopedLoggerGlobalContext::GetInstance().GetThreadContext())
-			{
-				FromSourceLocation(sourceLocation);
-				OnEnter();
 			}
 
 			template<class... Args>
-			ScopedLogger(const std::source_location& sourceLocation, Args&&... arg)
-				:m_ScopeTLS(ScopedLoggerGlobalContext::GetInstance().GetThreadContext())
+			ScopedLogger(ScopedLoggerTLS& tls, const std::source_location& sourceLocation, Args&&... arg)
+				:m_ScopeTLS(tls)
 			{
 				FromSourceLocation(sourceLocation);
 
-				ScopedMessageLogger logger;
-				logger.PrintSep(", ", std::forward<Args>(arg)...);
-				OnEnter(logger.ToString());
+				if (!Utility::IsEmptyParameterPack<Args...>())
+				{
+					ScopedMessageLogger logger;
+					logger.PrintSep(", ", std::forward<Args>(arg)...);
+					OnEnter(logger.ToString());
+				}
+				else
+				{
+					OnEnter();
+				}
 			}
 
 			~ScopedLogger()
@@ -624,100 +625,133 @@ namespace kxf
 			}
 	};
 
-	class AutoScopedLogger final
+	class ScopedLoggerScope final: public ScopedLogger
+	{
+		public:
+			ScopedLoggerScope(const std::source_location& sourceLocation = std::source_location::current())
+				:ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
+			{
+			}
+
+			template<class... Args>
+			ScopedLoggerScope(const std::source_location& sourceLocation, Args&&... arg)
+				: ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
+			{
+			}
+	};
+
+	class ScopedLoggerAuto final: public ScopedLogger
 	{
 		private:
-			ScopedLoggerTLS* m_TLS = nullptr;
-			ScopedLogger* m_Scope = nullptr;
-
-		public:
-			AutoScopedLogger() noexcept
+			static ScopedLoggerTLS& GetActiveTLS() noexcept
 			{
 				auto& global = ScopedLoggerGlobalContext::GetInstance();
 				if (auto tls = global.QueryThreadContext())
 				{
-					m_TLS = tls;
+					return *tls;
 				}
 				else
 				{
-					m_TLS = &global.GetUnknownThreadContext();
+					return global.GetUnknownThreadContext();
 				}
-				m_Scope = m_TLS->GetCurrentScope();
+			}
+
+		private:
+			ScopedLogger* m_Scope = nullptr;
+
+		public:
+			ScopedLoggerAuto()
+				:ScopedLogger(GetActiveTLS())
+			{
+				m_Scope = m_ScopeTLS.GetCurrentScope();
 			}
 
 		public:
-			ScopedLoggerTLS& GetTLS() const noexcept
-			{
-				return *m_TLS;
-			}
-			ScopedLogger& GetScope() const noexcept
+			ScopedLogger& GetCurrentScope() const noexcept
 			{
 				return *m_Scope;
 			}
+	};
+}
 
-			ScopedLogger* operator->() const noexcept
+namespace kxf
+{
+	class ScopedLoggerUnknown final: public ScopedLogger
+	{
+		friend class ScopedLoggerUnknownTLS;
+
+		private:
+			void Initialize();
+			void Destroy();
+
+		private:
+			ScopedLoggerUnknown(ScopedLoggerTLS& tls)
+				:ScopedLogger(tls)
 			{
-				return m_Scope;
 			}
 	};
 
 	class ScopedLoggerUnknownTLS final: public ScopedLoggerTLS
 	{
 		private:
-			std::optional<ScopedLogger> m_Scope;
+			ScopedLoggerUnknown m_Scope;
 
 		private:
-			void Initialize();
+			void Initialize() override;
+			void Destroy() override;
 
 		public:
 			ScopedLoggerUnknownTLS(ScopedLoggerGlobalContext& globalContext)
-				:ScopedLoggerTLS(globalContext)
+				:ScopedLoggerTLS(globalContext), m_Scope(*this)
 			{
-				Initialize();
 			}
 	};
 }
 
+namespace kxf
+{
+	String ToString(LogLevel value);
+}
 namespace kxf::Log
 {
 	template<class TFormat, class... Args>
 	void Critical(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Critical().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Critical().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Error(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Error().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Error().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Warning(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Warning().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Warning().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Info(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Info().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Info().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Debug(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Debug().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Debug().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Trace(const TFormat& format, Args&&... arg)
 	{
-		AutoScopedLogger()->Trace().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Trace().Format(format, std::forward<Args>(arg)...);
 	}
 }
 
 #define KX_SCOPEDLOG				scopedLogger_
-#define KX_SCOPEDLOG_AUTO			kxf::AutoScopedLogger	KX_SCOPEDLOG;
-#define KX_SCOPEDLOG_FUNC			kxf::ScopedLogger		KX_SCOPEDLOG(std::source_location::current());
-#define KX_SCOPEDLOG_ARGS(...)		kxf::ScopedLogger		KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__);
+#define KX_SCOPEDLOG_AUTO			kxf::ScopedLoggerAuto		KX_SCOPEDLOG;
+#define KX_SCOPEDLOG_FUNC			kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current());
+#define KX_SCOPEDLOG_ARGS(...)		kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__);
