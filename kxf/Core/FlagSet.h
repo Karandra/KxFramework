@@ -245,6 +245,14 @@ namespace kxf
 				return *this;
 			}
 
+			constexpr FlagSet ExtractIfMatches(FlagSet mask) const noexcept
+			{
+				if (Contains(mask))
+				{
+					return static_cast<TEnum>(ToInt() & mask.ToInt());
+				}
+				return {};
+			}
 			constexpr TEnum ExtractConsecutive(FlagSet mask) const noexcept
 			{
 				return static_cast<TEnum>(ToInt() & mask.ToInt());
