@@ -246,19 +246,19 @@ namespace kxf::XDocument
 				return DoGetValuePointer().value_or(const_cast<void*>(defaultValue));
 			}
 
-			template<class T = int64_t> requires(TestIntType<T>())
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			std::optional<T> QueryValueInt() const
 			{
 				return QueryValueIntWithBase<T>(10);
 			}
 
-			template<class T = int64_t> requires(TestIntType<T>())
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			T GetValueInt(T defaultValue = 0) const
 			{
 				return QueryValueIntWithBase<T>(10).value_or(defaultValue);
 			}
 
-			template<class T = int64_t> requires(TestIntType<T>())
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			std::optional<T> QueryValueIntWithBase(int base) const
 			{
 				if (auto value = DoGetValueIntWithBase(base))
@@ -268,7 +268,7 @@ namespace kxf::XDocument
 				return {};
 			}
 
-			template<class T = int64_t> requires(TestIntType<T>())
+			template<class T = int64_t> requires(Private::TestIntType<T>())
 			T GetValueIntWithBase(int base, T defaultValue = 0) const
 			{
 				return QueryValueIntWithBase<T>(base).value_or(defaultValue);
