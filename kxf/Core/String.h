@@ -1232,8 +1232,6 @@ namespace kxf
 		KX_API void MoveWxString(String::string_type& destination, wxString&& source) noexcept;
 		#endif
 
-		String ConvertQtStyleFormat(const String& format);
-
 		template<class... Args>
 		String DoFormat(std::wstring_view format, Args&&... arg)
 		{
@@ -1309,18 +1307,6 @@ namespace kxf
 	OutputIt FormatTo(OutputIt outputIt, const TFormat& format, Args&&... arg)
 	{
 		return Private::DoFormatTo(outputIt, StringViewOf(format), std::forward<Args>(arg)...);
-	}
-
-	template<class... Args>
-	String FormatQtStyle(const String& format, Args&&... arg)
-	{
-		return Format(Private::ConvertQtStyleFormat(format), std::forward<Args>(arg)...);
-	}
-
-	template<class OutputIt, class... Args>
-	OutputIt FormatQtStyleTo(OutputIt outputIt, const String& format, Args&&... arg)
-	{
-		return FormatTo(outputIt, Private::ConvertQtStyleFormat(format), std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>

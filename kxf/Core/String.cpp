@@ -948,17 +948,6 @@ namespace kxf::Private
 	}
 	#endif
 
-	String ConvertQtStyleFormat(const String& format)
-	{
-		RegEx regEx("%(\\d+)");
-
-		String result = format;
-		while (regEx.Matches(format))
-		{
-			regEx.ReplaceAll(result, "{\\1}");
-		}
-		return result;
-	}
 	void LogFormatterException(const std::format_error& e)
 	{
 		Log::Error("std::format_error: {}", e.what());

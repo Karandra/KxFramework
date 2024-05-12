@@ -2436,6 +2436,9 @@
     <ClInclude Include="kxf\System\SystemWindow\SystemWindow.h">
       <Filter>kxf\System\SystemWindow</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Core\Private\FormatQtStyle.h">
+      <Filter>kxf\Core\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

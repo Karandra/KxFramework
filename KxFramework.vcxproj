@@ -143,6 +143,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
+    <ClInclude Include="kxf\Core\Private\FormatQtStyle.h" />
     <ClInclude Include="kxf\Core\Private\StringFormatters.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\AffineMatrix.h" />
