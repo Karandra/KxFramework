@@ -100,7 +100,7 @@ namespace kxf
 				return m_Path.length();
 			}
 			size_t GetComponentCount() const;
-			Enumerator<String> EnumComponents() const;
+			std::vector<StringView> EnumComponents() const;
 
 			bool HasNamespace() const
 			{
