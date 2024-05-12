@@ -690,11 +690,11 @@ namespace kxf
 			{
 				if (streamFlags.Contains(IOStreamFlag::AllowDirectories))
 				{
-					CreateDirectory(path);
+					CreateDirectory(path, flags.ExtractIfMatches(FSActionFlag::Recursive));
 				}
 				else
 				{
-					CreateDirectory(path.GetParent());
+					CreateDirectory(path.GetParent(), flags.ExtractIfMatches(FSActionFlag::Recursive));
 				}
 				fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
 			}
