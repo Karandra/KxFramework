@@ -5,6 +5,7 @@
 #include "kxf/System/HResult.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/String.h"
 #include "Private/NamespacePrefix.h"
 #include <pathcch.h>
 #include <locale>
@@ -510,10 +511,11 @@ namespace kxf
 			bool isSuccess = false;
 			if (NativeAPI::KernelBase::PathCchCanonicalizeEx)
 			{
-				wchar_t result[std::numeric_limits<int16_t>::max()] = {};
-				if (HResult(NativeAPI::KernelBase::PathCchCanonicalizeEx(result, std::size(result), m_Path.wc_str(), PATHCCH_ALLOW_LONG_PATHS|PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS)))
+				String result;
+				constexpr size_t length = std::numeric_limits<int16_t>::max();
+				if (HResult(NativeAPI::KernelBase::PathCchCanonicalizeEx(Utility::StringBuffer(result, length, true), length, m_Path.wc_str(), PATHCCH_ALLOW_LONG_PATHS|PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS)))
 				{
-					AssignFromPath(result);
+					AssignFromPath(std::move(result));
 					isSuccess = true;
 				}
 			}
