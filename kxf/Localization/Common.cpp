@@ -11,7 +11,7 @@
 namespace
 {
 	template<class TFunc>
-	bool OnSearchPackage(TFunc&& func, kxf::FileItem item)
+	kxf::CallbackCommand OnSearchPackage(TFunc&& func, kxf::FileItem item)
 	{
 		using namespace kxf;
 
@@ -24,7 +24,7 @@ namespace
 				return std::invoke(func, std::move(locale), std::move(item));
 			}
 		}
-		return true;
+		return CallbackCommand::Continue;
 	}
 }
 
@@ -43,7 +43,7 @@ namespace kxf::Localization
 		return Private::LocalizeLabelString(FromInt<StdID>(*id));
 	}
 
-	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
+	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<CallbackCommand(Locale, FileItem)> func)
 	{
 		std::unordered_set<String> extensions;
 		for (auto&& classInfo: RTTI::GetClassInfo<ILocalizationPackage>().EnumDerivedClasses())
@@ -58,12 +58,12 @@ namespace kxf::Localization
 		}
 
 		size_t count = 0;
-		for (const FileItem& item: fileSystem.EnumItems(directory, {}, FSActionFlag::LimitToFiles))
+		for (FileItem item: fileSystem.EnumItems(directory, {}, FSActionFlag::LimitToFiles))
 		{
 			if (extensions.find(item.GetFileExtension().MakeLower()) != extensions.end())
 			{
 				count++;
-				if (!OnSearchPackage(func, std::move(item)))
+				if (OnSearchPackage(func, std::move(item)) == CallbackCommand::Terminate)
 				{
 					break;
 				}
@@ -71,7 +71,7 @@ namespace kxf::Localization
 		}
 		return count;
 	}
-	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
+	size_t SearchPackages(const DynamicLibrary& library, std::function<CallbackCommand(Locale, FileItem)> func)
 	{
 		if (library)
 		{
