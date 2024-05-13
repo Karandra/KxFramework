@@ -2,6 +2,7 @@
 #include "ScopedLoggerTarget.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/Threading/LockGuard.h"
 #include <iostream>
 
 namespace
@@ -9,6 +10,29 @@ namespace
 	kxf::String FormatTimestamp(kxf::DateTime timestamp, const kxf::TimeZoneOffset& tzOffset)
 	{
 		return timestamp.Format("%Y-%m-%d %H-%M-%S.%l", tzOffset);
+	}
+}
+
+namespace kxf::Private
+{
+	bool ScopedLoggerFlushControl::ShouldFlush(LogLevel logLevel) const noexcept
+	{
+		switch (logLevel)
+		{
+			case LogLevel::FlowControl:
+			case LogLevel::Critical:
+			case LogLevel::Warning:
+			case LogLevel::Error:
+			{
+				return true;
+			}
+		};
+
+		if (m_FlushTreshold != std::numeric_limits<size_t>::max() && m_WriteCount >= m_FlushTreshold)
+		{
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -27,7 +51,7 @@ namespace kxf
 
 namespace kxf
 {
-	ScopedLoggerFileTarget::ScopedLoggerFileTarget(ScopedLoggerTLS& tls, const FSPath& directory)
+	ScopedLoggerFileTarget::ScopedLoggerFileTarget(ScopedLoggerTLS& tls, IFileSystem& fs, const FSPath& directory)
 	{
 		auto timestamp = tls.GetTimestamp();
 		auto directoryTimestamp = tls.GetGlobalContext().GetUnknownThreadContext().GetTimestamp();
@@ -44,7 +68,6 @@ namespace kxf
 			path.Format("[{}] UnknownContext.log", FormatTimestamp(timestamp, tzOffset));
 		}
 
-		NativeFileSystem fs(directory ? directory : NativeFileSystem::GetExecutingModuleWorkingDirectory());
 		m_Stream = fs.OpenToWrite(path, IOStreamDisposition::CreateAlways, IOStreamShare::Read, FSActionFlag::CreateDirectoryTree|FSActionFlag::Recursive);
 	}
 
@@ -54,28 +77,42 @@ namespace kxf
 		IO::OutputStreamWriter writer(*m_Stream);
 		writer.WriteStringUTF8(String(str).Append('\n', 1));
 
-		if (++m_WriteCount >= 16)
+		m_FlushControl.OnWrite();
+		if (m_FlushControl.ShouldFlush(logLevel))
 		{
-			m_WriteCount = 0;
-			Flush();
-
-			return;
+			m_Stream->Flush();
+			m_FlushControl.OnFlush();
 		}
-
-		switch (logLevel)
-		{
-			case LogLevel::FlowControl:
-			case LogLevel::Critical:
-			case LogLevel::Warning:
-			case LogLevel::Error:
-			{
-				Flush();
-				break;
-			}
-		};
 	}
 	void ScopedLoggerFileTarget::Flush()
 	{
 		m_Stream->Flush();
+		m_FlushControl.OnFlush();
+	}
+}
+
+namespace kxf
+{
+	// IScopedLoggerTarget
+	void ScopedLoggerSingleFileTarget::Write(LogLevel logLevel, StringView str)
+	{
+		WriteLockGuard lock(m_Lock);
+
+		IO::OutputStreamWriter writer(*m_Stream);
+		writer.WriteStringUTF8(String(str).Append('\n', 1));
+
+		m_FlushControl.OnWrite();
+		if (m_FlushControl.ShouldFlush(logLevel))
+		{
+			m_Stream->Flush();
+			m_FlushControl.OnFlush();
+		}
+	}
+	void ScopedLoggerSingleFileTarget::Flush()
+	{
+		WriteLockGuard lock(m_Lock);
+
+		m_Stream->Flush();
+		m_FlushControl.OnFlush();
 	}
 }

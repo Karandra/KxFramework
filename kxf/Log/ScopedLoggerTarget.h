@@ -3,6 +3,38 @@
 #include "ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/FileSystem/FSPath.h"
+#include "kxf/Threading/ReadWriteLock.h"
+
+namespace kxf::Private
+{
+	class ScopedLoggerFlushControl final
+	{
+		public:
+			static constexpr size_t FlushNever = std::numeric_limits<size_t>::max();
+			static constexpr size_t FlushDefault = 64;
+			static constexpr size_t FlushAlways = 0;
+
+		private:
+			size_t m_WriteCount = 0;
+			size_t m_FlushTreshold = FlushDefault;
+
+		public:
+			void OnWrite() noexcept
+			{
+				++m_WriteCount;
+			}
+			void OnFlush() noexcept
+			{
+				m_WriteCount = 0;
+			}
+			bool ShouldFlush(LogLevel logLevel) const noexcept;
+
+			void SetFlushTreshold(size_t value) noexcept
+			{
+				m_FlushTreshold = value;
+			}
+	};
+}
 
 namespace kxf
 {
@@ -42,15 +74,49 @@ namespace kxf
 	{
 		private:
 			std::unique_ptr<IOutputStream> m_Stream;
-			size_t m_WriteCount = 0;
+			Private::ScopedLoggerFlushControl m_FlushControl;
 
 		public:
-			ScopedLoggerFileTarget(ScopedLoggerTLS& tls, const FSPath& directory = {});
+			ScopedLoggerFileTarget(ScopedLoggerTLS& tls, IFileSystem& fs, const FSPath& directory = {});
 
 		public:
 			// IScopedLoggerTarget
 			void Write(LogLevel logLevel, StringView str) override;
 			void Flush() override;
+
+			// ScopedLoggerFileTarget
+			void SetFlushTreshold(size_t value) noexcept
+			{
+				m_FlushControl.SetFlushTreshold(value);
+			}
+	};
+
+	class ScopedLoggerSingleFileTarget: public IScopedLoggerTarget
+	{
+		private:
+			ReadWriteLock m_Lock;
+			std::unique_ptr<IOutputStream> m_Stream;
+			Private::ScopedLoggerFlushControl m_FlushControl;
+
+		public:
+			ScopedLoggerSingleFileTarget(ScopedLoggerTLS& tls)
+			{
+			}
+			ScopedLoggerSingleFileTarget(std::unique_ptr<IOutputStream> stream)
+				:m_Stream(std::move(stream))
+			{
+			}
+
+		public:
+			// IScopedLoggerTarget
+			void Write(LogLevel logLevel, StringView str) override;
+			void Flush() override;
+
+			// ScopedLoggerSingleFileTarget
+			void SetFlushTreshold(size_t value) noexcept
+			{
+				m_FlushControl.SetFlushTreshold(value);
+			}
 	};
 
 	class ScopedLoggerAggregateTarget: public IScopedLoggerTarget
