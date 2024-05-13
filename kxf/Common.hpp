@@ -7,11 +7,7 @@
 		#define KX_API __declspec(dllimport)
 	#endif
 #elif defined KXF_STATIC_LIBRARY
-	#ifdef KXF_LIBRARY
-		#define KX_API __declspec(dllexport)
-	#else
-		#define KX_API
-	#endif
+	#define KX_API
 #endif
 
 // Standard library
