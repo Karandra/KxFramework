@@ -11,6 +11,7 @@
 #include "kxf/Drawing/GDIRenderer/GDICursor.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Utility/String.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 #include <Windows.h>
@@ -209,10 +210,10 @@ namespace kxf
 	{
 		if (m_Handle)
 		{
-			wchar_t buffer[INT16_MAX] = {};
-			if (::GetModuleFileNameW(AsHMODULE(*m_Handle), buffer, std::size(buffer)) != 0)
+			String result;
+			if (::GetModuleFileNameW(AsHMODULE(*m_Handle), Utility::StringBuffer(result, INT16_MAX, true), INT16_MAX) != 0)
 			{
-				return buffer;
+				return result;
 			}
 		}
 		return {};
@@ -245,7 +246,7 @@ namespace kxf
 	}
 
 	// Functions
-	size_t DynamicLibrary::EnumExportedFunctionNames(std::function<bool(String)> func) const
+	size_t DynamicLibrary::EnumExportedFunctions(std::function<CallbackCommand(String, size_t, void*)> func) const
 	{
 		size_t count = 0;
 		MapDLL(*m_Handle, [&](const char* base, const IMAGE_DOS_HEADER* dosHeader, const IMAGE_NT_HEADERS64* ntHeader, const IMAGE_SECTION_HEADER* sections, auto& adjustRVA)
@@ -256,13 +257,19 @@ namespace kxf
 				auto exports = reinterpret_cast<const IMAGE_EXPORT_DIRECTORY*>(base + adjustRVA(exportDirectory.VirtualAddress));
 				if (auto namesArray = reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(base) + adjustRVA(exports->AddressOfNames)))
 				{
+					auto nameOrdinalsArray = reinterpret_cast<const uint16_t*>(reinterpret_cast<uintptr_t>(base) + adjustRVA(exports->AddressOfNameOrdinals));
+					auto functionsArray = reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(base) + adjustRVA(exports->AddressOfFunctions));
+
 					for (size_t i = 0; i < static_cast<size_t>(exports->NumberOfNames); i++)
 					{
 						const auto name = reinterpret_cast<const char*>(base + adjustRVA(namesArray[i]));
+						const auto ordinal = nameOrdinalsArray[i];
+						const auto funcRVA = static_cast<intptr_t>(functionsArray[i]);
+
 						if (name && *name)
 						{
 							count++;
-							if (!std::invoke(func, name))
+							if (std::invoke(func, name, ordinal + 1, reinterpret_cast<void*>(funcRVA)) == CallbackCommand::Terminate)
 							{
 								break;
 							}
@@ -291,8 +298,51 @@ namespace kxf
 		return nullptr;
 	}
 
+	bool DynamicLibrary::ContainsExportedFunction(const String& name)
+	{
+		if (IsResource())
+		{
+			bool found = false;
+			EnumExportedFunctions([&found, &searchFor = name](const String& name, size_t ordinal, void* rva)
+			{
+				if (searchFor == name)
+				{
+					found = true;
+					return CallbackCommand::Terminate;
+				}
+				return CallbackCommand::Continue;
+			});
+			return found;
+		}
+		else
+		{
+			return GetExportedFunctionAddress(name) != nullptr;
+		}
+	}
+	bool DynamicLibrary::ContainsExportedFunction(size_t ordinal)
+	{
+		if (IsResource())
+		{
+			bool found = false;
+			EnumExportedFunctions([&found, &searchFor = ordinal](const String& name, size_t ordinal, void* rva)
+			{
+				if (searchFor == ordinal)
+				{
+					found = true;
+					return CallbackCommand::Terminate;
+				}
+				return CallbackCommand::Continue;
+			});
+			return found;
+		}
+		else
+		{
+			return GetExportedFunctionAddress(ordinal) != nullptr;
+		}
+	}
+
 	// Dependencies
-	size_t DynamicLibrary::EnumDependencyModuleNames(std::function<bool(String)> func) const
+	size_t DynamicLibrary::EnumDependencyModuleNames(std::function<CallbackCommand(String)> func) const
 	{
 		if (m_Handle)
 		{
@@ -309,7 +359,7 @@ namespace kxf
 						if (name && *name)
 						{
 							count++;
-							if (!std::invoke(func, name))
+							if (std::invoke(func, name) == CallbackCommand::Terminate)
 							{
 								break;
 							}
@@ -323,7 +373,7 @@ namespace kxf
 	}
 
 	// Resources
-	bool DynamicLibrary::IsDataFile() const noexcept
+	bool DynamicLibrary::IsResource() const noexcept
 	{
 		return m_Handle ? IsHandleDataFile(*m_Handle) : false;
 	}
@@ -333,14 +383,14 @@ namespace kxf
 	}
 	bool DynamicLibrary::IsAnyResource() const noexcept
 	{
-		return IsDataFile() || IsImageResource();
+		return IsResource() || IsImageResource();
 	}
 
 	bool DynamicLibrary::IsResourceExist(const String& resType, const String& resName, const Locale& locale) const
 	{
 		return m_Handle && GetResourceHandle(AsHMODULE(*m_Handle), resType, resName, locale) != nullptr;
 	}
-	size_t DynamicLibrary::EnumResourceTypes(std::function<bool(String)> func, const Locale& locale) const
+	size_t DynamicLibrary::EnumResourceTypes(std::function<CallbackCommand(String)> func, const Locale& locale) const
 	{
 		if (m_Handle)
 		{
@@ -350,13 +400,13 @@ namespace kxf
 				auto& context = *reinterpret_cast<decltype(callContext)*>(lParam);
 
 				context.CallCount++;
-				return std::invoke(context.Callable, resType);
+				return std::invoke(context.Callable, resType) == CallbackCommand::Continue;
 			}, reinterpret_cast<LONG_PTR>(&callContext), 0, GetLangID(locale));
 			return callContext.CallCount;
 		}
 		return 0;
 	}
-	size_t DynamicLibrary::EnumResourceNames(const String& resType, std::function<bool(String)> func, const Locale& locale) const
+	size_t DynamicLibrary::EnumResourceNames(const String& resType, std::function<CallbackCommand(String)> func, const Locale& locale) const
 	{
 		if (m_Handle)
 		{
@@ -366,12 +416,12 @@ namespace kxf
 				auto& context = *reinterpret_cast<decltype(callContext)*>(lParam);
 
 				context.CallCount++;
-				return std::invoke(context.Callable, resName);
+				return std::invoke(context.Callable, resName) == CallbackCommand::Continue;
 			}, reinterpret_cast<LONG_PTR>(&callContext), 0, GetLangID(locale));
 		}
 		return 0;
 	}
-	size_t DynamicLibrary::EnumResourceLanguages(const String& resType, const String& resName, std::function<bool(Locale)> func) const
+	size_t DynamicLibrary::EnumResourceLanguages(const String& resType, const String& resName, std::function<CallbackCommand(Locale)> func) const
 	{
 		if (m_Handle)
 		{
@@ -381,7 +431,7 @@ namespace kxf
 				auto& context = *reinterpret_cast<decltype(callContext)*>(lParam);
 
 				context.CallCount++;
-				return std::invoke(context.Callable, Locale::FromLangID(Localization::LangID(langID, SORT_DEFAULT)));
+				return std::invoke(context.Callable, Locale::FromLangID(Localization::LangID(langID, SORT_DEFAULT))) == CallbackCommand::Continue;
 			}, reinterpret_cast<LONG_PTR>(&callContext), 0, 0);
 			return callContext.CallCount;
 		}

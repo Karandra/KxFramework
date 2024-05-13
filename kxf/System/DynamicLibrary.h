@@ -104,7 +104,7 @@ namespace kxf
 			}
 
 			// Functions
-			size_t EnumExportedFunctionNames(std::function<bool(String)> func) const;
+			size_t EnumExportedFunctions(std::function<CallbackCommand(String, size_t, void*)> func) const;
 
 			void* GetExportedFunctionAddress(const char* name) const;
 			void* GetExportedFunctionAddress(const wchar_t* name) const
@@ -136,18 +136,21 @@ namespace kxf
 				}
 			}
 
+			bool ContainsExportedFunction(const String& name);
+			bool ContainsExportedFunction(size_t ordinal);
+
 			// Dependencies
-			size_t EnumDependencyModuleNames(std::function<bool(String)> func) const;
+			size_t EnumDependencyModuleNames(std::function<CallbackCommand(String)> func) const;
 
 			// Resources
-			bool IsDataFile() const noexcept;
+			bool IsResource() const noexcept;
 			bool IsImageResource() const noexcept;
 			bool IsAnyResource() const noexcept;
 
 			bool IsResourceExist(const String& resType, const String& resName, const Locale& locale = {}) const;
-			size_t EnumResourceTypes(std::function<bool(String)> func, const Locale& locale = {}) const;
-			size_t EnumResourceNames(const String& resType, std::function<bool(String)> func, const Locale& locale = {}) const;
-			size_t EnumResourceLanguages(const String& resType, const String& resName, std::function<bool(Locale)> func) const;
+			size_t EnumResourceTypes(std::function<CallbackCommand(String)> func, const Locale& locale = {}) const;
+			size_t EnumResourceNames(const String& resType, std::function<CallbackCommand(String)> func, const Locale& locale = {}) const;
+			size_t EnumResourceLanguages(const String& resType, const String& resName, std::function<CallbackCommand(Locale)> func) const;
 			std::span<const std::byte> GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
 
 			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
