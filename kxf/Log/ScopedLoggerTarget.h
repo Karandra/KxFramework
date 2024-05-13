@@ -22,11 +22,6 @@ namespace kxf
 			void Flush() override
 			{
 			}
-
-			String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const override
-			{
-				return {};
-			}
 	};
 
 	class ScopedLoggerConsoleTarget: public IScopedLoggerTarget
@@ -101,12 +96,12 @@ namespace kxf
 				});
 			}
 
-			String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const override
+			String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message, StringView category) const override
 			{
 				String formatted;
 				ForEach(m_LogTargets, [&](const IScopedLoggerTarget& ref)
 				{
-					formatted = ref.FormatRecord(tls, logLevel, timestamp, message);
+					formatted = ref.FormatRecord(tls, logLevel, timestamp, message, category);
 					if (!formatted.IsEmpty())
 					{
 						return CallbackCommand::Terminate;

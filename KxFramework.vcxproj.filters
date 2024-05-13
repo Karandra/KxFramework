@@ -2442,6 +2442,9 @@
     <ClInclude Include="kxf\Log\ScopedLoggerContext.h">
       <Filter>kxf\Log</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Log\Categories.h">
+      <Filter>kxf\Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -316,6 +316,7 @@
     <ClInclude Include="kxf\Localization\QtLocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\Log.hpp" />
+    <ClInclude Include="kxf\Log\Categories.h" />
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\Private\WxOverride.h" />
     <ClInclude Include="kxf\Log\ScopedLogger.h" />

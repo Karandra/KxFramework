@@ -216,7 +216,7 @@ namespace kxf
 			message.Write(*this);
 		}
 	}
-	String ScopedLoggerTLS::FormatRecord(LogLevel logLevel, DateTime timestamp, StringView message) const
+	String ScopedLoggerTLS::FormatRecord(LogLevel logLevel, DateTime timestamp, StringView message, StringView category) const
 	{
 		String buffer;
 		buffer.reserve(255);
@@ -225,20 +225,24 @@ namespace kxf
 		buffer.Format("[{}]", FormatTimestamp(timestamp, m_GlobalContext.GetTimeOffset()));
 
 		// Log location
-		if (IsUnknown())
-		{
-			buffer.Format("[{}/<unk>:{:05}]", m_Process.GetID(), SystemThread::GetCurrentThread().GetID());
-		}
-		else
-		{
-			buffer.Format("[{:05}/{:05}]", m_Process.GetID(), m_Thread.GetID());
-		}
+		bool isUnknown = IsUnknown();
+		buffer.Format("[PID:{:0>5}|{}:{:0>5}]",
+					  m_Process.GetID(),
+					  isUnknown ? "UNK" : "TID",
+					  isUnknown ? SystemThread::GetCurrentThread().GetID() : m_Thread.GetID()
+		);
 
 		// Log message level
-		buffer.Format("[{:11}]", FormatLogLevel(logLevel));
+		buffer.Format("[{:<11}]", FormatLogLevel(logLevel));
 
 		// Add indents
 		buffer.Append(' ', m_ScopeLevel * 4);
+
+		// Add category if present
+		if (!category.empty())
+		{
+			buffer.Format(" <{}>", category);
+		}
 
 		// Log the actual message string
 		buffer += ' ';
@@ -262,14 +266,14 @@ namespace kxf
 			m_LogTarget->Flush();
 		}
 	}
-	void ScopedLoggerTLS::Write(LogLevel logLevel, DateTime timestamp, StringView message)
+	void ScopedLoggerTLS::Write(LogLevel logLevel, DateTime timestamp, StringView message, StringView category)
 	{
 		if (!message.empty() && m_GlobalContext.CanLogLevel(logLevel))
 		{
-			String formatted = m_LogTarget->FormatRecord(*this, logLevel, timestamp, message);
+			String formatted = m_LogTarget->FormatRecord(*this, logLevel, timestamp, message, category);
 			if (formatted.IsEmpty())
 			{
-				formatted = FormatRecord(logLevel, timestamp, message);
+				formatted = FormatRecord(logLevel, timestamp, message, category);
 			}
 
 			m_LogTarget->Write(logLevel, formatted.xc_view());
@@ -359,7 +363,7 @@ namespace kxf
 	{
 		if (m_Scope)
 		{
-			m_Scope->GetTLS().Write(m_LogLevel, m_TimeStamp, m_Buffer.xc_view());
+			Write(m_Scope->GetTLS());
 		}
 	}
 }

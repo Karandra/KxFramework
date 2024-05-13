@@ -33,7 +33,7 @@ namespace kxf
 			virtual void Write(LogLevel logLevel, StringView str) = 0;
 			virtual void Flush() = 0;
 
-			virtual String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message) const
+			virtual String FormatRecord(const ScopedLoggerTLS& tls, LogLevel logLevel, DateTime timestamp, StringView message, StringView category = {}) const
 			{
 				return {};
 			}
@@ -140,7 +140,7 @@ namespace kxf
 			virtual void Destroy();
 
 			void LogOpenClose(bool open);
-			String FormatRecord(LogLevel logLevel, DateTime timestamp, StringView str) const;
+			String FormatRecord(LogLevel logLevel, DateTime timestamp, StringView str, StringView category) const;
 			std::shared_ptr<IScopedLoggerTarget> CreateLogTarget();
 
 			void OnScopeEnter(ScopedLogger& scope)
@@ -212,7 +212,7 @@ namespace kxf
 			}
 
 			void Flush();
-			void Write(LogLevel logLevel, DateTime timestamp, StringView message);
+			void Write(LogLevel logLevel, DateTime timestamp, StringView message, StringView category);
 	};
 }
 
@@ -225,7 +225,8 @@ namespace kxf
 
 		private:
 			ScopedLogger* m_Scope = nullptr;
-			String m_Buffer;
+			String m_Message;
+			String m_Category;
 			String m_Separator;
 			bool m_SeparatorAllowed = false;
 			DateTime m_TimeStamp;
@@ -234,7 +235,8 @@ namespace kxf
 		private:
 			void Reset()
 			{
-				m_Buffer.clear();
+				m_Message.clear();
+				m_Category.clear();
 				m_Separator.clear();
 				m_SeparatorAllowed = false;
 				m_TimeStamp = DateTime::Now();
@@ -258,11 +260,11 @@ namespace kxf
 					ProcessSeparator();
 					if constexpr(std::is_same_v<T, wchar_t>)
 					{
-						m_Buffer += str;
+						m_Message += str;
 					}
 					else
 					{
-						m_Buffer += String::FromUTF8(str);
+						m_Message += String::FromUTF8(str);
 					}
 				}
 			}
@@ -281,9 +283,9 @@ namespace kxf
 			}
 			void ProcessSeparator()
 			{
-				if (m_SeparatorAllowed && !m_Separator.empty() && !m_Buffer.empty())
+				if (m_SeparatorAllowed && !m_Separator.empty() && !m_Message.empty())
 				{
-					m_Buffer += m_Separator;
+					m_Message += m_Separator;
 					m_SeparatorAllowed = false;
 				}
 			}
@@ -332,13 +334,13 @@ namespace kxf
 			}
 			StringView ToString() const noexcept
 			{
-				return m_Buffer.xc_str();
+				return m_Message.xc_str();
 			}
 
 			void Write();
 			void Write(ScopedLoggerTLS& tls)
 			{
-				tls.Write(m_LogLevel, m_TimeStamp, m_Buffer.xc_view());
+				tls.Write(m_LogLevel, m_TimeStamp, m_Message.xc_view(), m_Category.xc_view());
 			}
 
 			void Finalize()
@@ -378,7 +380,7 @@ namespace kxf
 			ScopedMessageLogger& Format(const TFormat& format, Args&&... arg)
 			{
 				ProcessSeparator();
-				m_Buffer.Format(format, std::forward<Args>(arg)...);
+				m_Message.Format(format, std::forward<Args>(arg)...);
 				return *this;
 			}
 
@@ -392,9 +394,14 @@ namespace kxf
 				m_SeparatorAllowed = true;
 				return *this;
 			}
-			ScopedMessageLogger& SetSeparator(String separator)
+			ScopedMessageLogger& SetSeparator(String value)
 			{
-				m_Separator = std::move(separator);
+				m_Separator = std::move(value);
+				return *this;
+			}
+			ScopedMessageLogger& SetCategory(String value)
+			{
+				m_Category = std::move(value);
 				return *this;
 			}
 
@@ -721,9 +728,21 @@ namespace kxf::Log
 	}
 
 	template<class TFormat, class... Args>
+	void CriticalCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Critical().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
 	void Error(const TFormat& format, Args&&... arg)
 	{
 		ScopedLoggerAuto().Error().Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
+	void ErrorCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Error().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -733,9 +752,21 @@ namespace kxf::Log
 	}
 
 	template<class TFormat, class... Args>
+	void WarningCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Warning().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
 	void Info(const TFormat& format, Args&&... arg)
 	{
 		ScopedLoggerAuto().Info().Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
+	void InfoCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Info().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -745,9 +776,21 @@ namespace kxf::Log
 	}
 
 	template<class TFormat, class... Args>
+	void DebugCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Debug().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
 	void Trace(const TFormat& format, Args&&... arg)
 	{
 		ScopedLoggerAuto().Trace().Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
+	void TraceCategory(String category, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAuto().Trace().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 }
 

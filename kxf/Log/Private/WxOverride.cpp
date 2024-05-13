@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "WxOverride.h"
+#include "../Categories.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/Utility/Common.h"
@@ -80,7 +81,7 @@ namespace kxf::Log
 		{
 			logger.Format("[Message: {}]", msg);
 		}
-		ScopedLoggerAuto().GetTLS().Write(MapLogLevel(level), DateTime().SetValue(info.timestampMS), logger.ToString());
+		ScopedLoggerAuto().GetTLS().Write(MapLogLevel(level), DateTime().SetValue(info.timestampMS), logger.ToString(), LogCategory::wxWidgets);
 	}
 
 	void WxOverride::Flush()
