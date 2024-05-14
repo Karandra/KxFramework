@@ -440,40 +440,19 @@ namespace kxf
 				DoLog(str);
 				return *this;
 			}
-			ScopedMessageLogger& operator<<(char c)
-			{
-				DoLog(std::string_view(&c, 1));
-				return *this;
-			}
-			ScopedMessageLogger& operator<<(wchar_t c)
-			{
-				DoLog(std::wstring_view(&c, 1));
-				return *this;
-			}
-			ScopedMessageLogger& operator<<(bool b)
-			{
-				DoLog(b ? "true" : "false");
-				return *this;
-			}
-
-			template<class T> requires(std::is_arithmetic_v<T>)
-			ScopedMessageLogger& operator<<(T value)
-			{
-				DoLog(std::to_wstring(value));
-				return *this;
-			}
-
-			template<class T> requires(std::is_enum_v<T>)
-			ScopedMessageLogger& operator<<(T value)
-			{
-				DoLog(std::to_wstring(static_cast<std::underlying_type_t<T>>(value)));
-				return *this;
-			}
 
 			template<class T> requires(std::is_pointer_v<T>)
-			ScopedMessageLogger& operator<<(T value)
+			ScopedMessageLogger& operator<<(T ptr)
 			{
-				DoLog(String().Format("0x{:0{}x}", reinterpret_cast<intptr_t>(value), sizeof(void*) * 2));
+				DoLog(String().Format("0x{:0{}x}", reinterpret_cast<intptr_t>(ptr), sizeof(void*) * 2));
+				return *this;
+			}
+
+			template<class T>
+			requires(!std::is_pointer_v<T> && std::is_invocable_r_v<String, decltype(kxf::Format<const String&, const T&>), const String&, const T&>)
+			ScopedMessageLogger& operator<<(const T& formattable)
+			{
+				DoLog(kxf::Format("{}", formattable));
 				return *this;
 			}
 
