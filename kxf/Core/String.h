@@ -1036,7 +1036,7 @@ namespace kxf
 			}
 			void assign(const XChar* data, size_t length = npos)
 			{
-				m_String.assign(data, length);
+				m_String.assign(data, CalcStringLength(data, length));
 			}
 			void shrink_to_fit()
 			{
