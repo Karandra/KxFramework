@@ -263,7 +263,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	bool StupidMemoryAllocator::Free(void* ptr) noexcept
+	bool StupidMemoryAllocator::Free(void* ptr, size_t alignment) noexcept
 	{
 		WriteLockGuard lock(m_Lock);
 
@@ -290,7 +290,7 @@ namespace kxf
 			return true;
 		}, false);
 	}
-	auto StupidMemoryAllocator::QueryAllocationInfo(void* ptr) const noexcept -> AllocationInfo
+	auto StupidMemoryAllocator::QueryAllocationInfo(void* ptr, size_t alignment) const noexcept -> AllocationInfo
 	{
 		ReadLockGuard lock(m_Lock);
 

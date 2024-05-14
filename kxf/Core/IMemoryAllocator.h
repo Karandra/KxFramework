@@ -10,6 +10,17 @@ namespace kxf
 
 		ZeroMemory = FlagSetValue<MemoryAllocatorFlag>(0)
 	};
+	KxFlagSet_Declare(MemoryAllocatorFlag);
+
+	enum class MemoryAllocatorCapabilities: uint32_t
+	{
+		None = 0,
+
+		QueryInfo = FlagSetValue<MemoryAllocatorCapabilities>(0),
+		Alignment = FlagSetValue<MemoryAllocatorCapabilities>(1),
+		AllocationTracking = FlagSetValue<MemoryAllocatorCapabilities>(2)
+	};
+	KxFlagSet_Declare(MemoryAllocatorCapabilities);
 }
 
 namespace kxf
@@ -36,9 +47,11 @@ namespace kxf
 			};
 
 		public:
+			virtual FlagSet<MemoryAllocatorCapabilities> GetAllocatorCapabilities() const noexcept = 0;
+
 			virtual void* Allocate(size_t size, size_t alignment = 0, FlagSet<MemoryAllocatorFlag> flags = {}) noexcept = 0;
-			virtual bool Free(void* ptr) noexcept = 0;
-			virtual AllocationInfo QueryAllocationInfo(void* ptr) const noexcept = 0;
+			virtual bool Free(void* ptr, size_t alignment = 0) noexcept = 0;
+			virtual AllocationInfo QueryAllocationInfo(void* ptr, size_t alignment = 0) const noexcept = 0;
 
 			virtual size_t GetRequestedBytes() const noexcept = 0;
 			virtual size_t GetAllocatedBytes() const noexcept = 0;
@@ -89,6 +102,19 @@ namespace kxf
 			}
 
 		public:
+			bool is_null() const noexcept
+			{
+				return m_Allocator == nullptr;
+			}
+			std::shared_ptr<IMemoryAllocator> get_allocator() const noexcept
+			{
+				return m_Allocator;
+			}
+			FlagSet<MemoryAllocatorFlag> get_allocation_flags() const noexcept
+			{
+				return m_AllocationFlags;
+			}
+
 			T* allocate(size_t count)
 			{
 				auto ptr = m_Allocator->Allocate(count * sizeof(T), 0, m_AllocationFlags);
@@ -115,6 +141,15 @@ namespace kxf
 				m_AllocationFlags = other.m_AllocationFlags;
 
 				return *this;
+			}
+
+			explicit operator bool() const noexcept
+			{
+				return !is_null();
+			}
+			bool operator!() const noexcept
+			{
+				return is_null();
 			}
 	};
 }

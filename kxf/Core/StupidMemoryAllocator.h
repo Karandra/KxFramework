@@ -95,9 +95,14 @@ namespace kxf
 			bool SetPageSize(size_t size) noexcept override;
 
 			// IMemoryAllocator
+			FlagSet<MemoryAllocatorCapabilities> GetAllocatorCapabilities() const noexcept override
+			{
+				return MemoryAllocatorCapabilities::QueryInfo|MemoryAllocatorCapabilities::AllocationTracking;
+			}
+
 			void* Allocate(size_t size, size_t alignment = 0, FlagSet<MemoryAllocatorFlag> flags = {}) noexcept override;
-			bool Free(void* ptr) noexcept override;
-			AllocationInfo QueryAllocationInfo(void* ptr) const noexcept override;
+			bool Free(void* ptr, size_t alignment = 0) noexcept override;
+			AllocationInfo QueryAllocationInfo(void* ptr, size_t alignment = 0) const noexcept override;
 
 			size_t GetRequestedBytes() const noexcept override
 			{
