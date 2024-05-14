@@ -114,6 +114,7 @@ namespace kxf::NativeAPI
 		using UINT = uint32_t;
 		using ULONG = uint32_t;
 		using DWORD = uint32_t;
+		using SIZE_T = size_t;
 
 		using HWND = void*;
 		using HANDLE = void*;
@@ -159,6 +160,8 @@ namespace kxf::NativeAPI
 		Kx_NativeAPI_DeclateFunc(DWORD, Kx_NativeAPI, GetDllDirectoryW, DWORD, wchar_t*);
 		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, GetThreadDescription, HANDLE, wchar_t**);
 		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, SetThreadDescription, HANDLE, const wchar_t*);
+
+		Kx_NativeAPI_DeclateFunc(void*, Kx_NativeAPI, VirtualAlloc2, HANDLE, void*, SIZE_T, ULONG, ULONG, void*, ULONG);
 	}
 	namespace KernelBase
 	{

@@ -159,6 +159,8 @@ namespace kxf
 			INIT_FUNCTION(Kernel32, GetThreadDescription);
 			INIT_FUNCTION(Kernel32, SetThreadDescription);
 
+			INIT_FUNCTION(Kernel32, VirtualAlloc2);
+
 			Log::Info("InitializeKernel32 -> Success");
 		}
 	}
@@ -320,6 +322,8 @@ namespace kxf::NativeAPI
 		DEFINE_FUNCTION(GetDllDirectoryW);
 		DEFINE_FUNCTION(GetThreadDescription);
 		DEFINE_FUNCTION(SetThreadDescription);
+
+		DEFINE_FUNCTION(VirtualAlloc2);
 	}
 	namespace KernelBase
 	{
