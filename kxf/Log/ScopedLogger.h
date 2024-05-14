@@ -233,13 +233,17 @@ namespace kxf
 			LogLevel m_LogLevel = LogLevel::Unknown;
 
 		private:
+			void Init()
+			{
+				m_TimeStamp = DateTime::Now();
+			}
 			void Reset()
 			{
 				m_Message.clear();
 				m_Category.clear();
 				m_Separator.clear();
 				m_SeparatorAllowed = false;
-				m_TimeStamp = DateTime::Now();
+				Init();
 			}
 			bool CanLog() const
 			{
@@ -298,15 +302,15 @@ namespace kxf
 			}
 
 		public:
-			ScopedMessageLogger(LogLevel logLevel = LogLevel::Unknown)
-				:m_LogLevel(logLevel)
+			ScopedMessageLogger(LogLevel logLevel = LogLevel::Unknown, String category = {})
+				:m_LogLevel(logLevel), m_Category(std::move(category))
 			{
-				Reset();
+				Init();
 			}
-			ScopedMessageLogger(ScopedLogger& scope, LogLevel logLevel = LogLevel::Unknown)
-				:m_Scope(&scope), m_LogLevel(logLevel)
+			ScopedMessageLogger(ScopedLogger& scope, LogLevel logLevel = LogLevel::Unknown, String category = {})
+				:m_Scope(&scope), m_LogLevel(logLevel), m_Category(std::move(category))
 			{
-				Reset();
+				Init();
 			}
 			ScopedMessageLogger(const ScopedMessageLogger&) = delete;
 			ScopedMessageLogger(ScopedMessageLogger&&) = default;
@@ -506,9 +510,9 @@ namespace kxf
 			void OnEnter(StringView serializedParameters = {});
 			void OnLeave();
 
-			ScopedMessageLogger FlowControl()
+			ScopedMessageLogger FlowControl(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::FlowControl);
+				return ScopedMessageLogger(*this, LogLevel::FlowControl, std::move(category));
 			}
 
 		protected:
@@ -550,33 +554,33 @@ namespace kxf
 				return m_ScopeTLS.GetScopeLevel();
 			}
 
-			ScopedMessageLogger Log()
+			ScopedMessageLogger Log(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Unknown);
+				return ScopedMessageLogger(*this, LogLevel::Unknown, std::move(category));
 			}
-			ScopedMessageLogger Trace()
+			ScopedMessageLogger Trace(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Trace);
+				return ScopedMessageLogger(*this, LogLevel::Trace, std::move(category));
 			}
-			ScopedMessageLogger Debug()
+			ScopedMessageLogger Debug(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Debug);
+				return ScopedMessageLogger(*this, LogLevel::Debug, std::move(category));
 			}
-			ScopedMessageLogger Info()
+			ScopedMessageLogger Info(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Information);
+				return ScopedMessageLogger(*this, LogLevel::Information, std::move(category));
 			}
-			ScopedMessageLogger Warning()
+			ScopedMessageLogger Warning(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Warning);
+				return ScopedMessageLogger(*this, LogLevel::Warning, std::move(category));
 			}
-			ScopedMessageLogger Error()
+			ScopedMessageLogger Error(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Error);
+				return ScopedMessageLogger(*this, LogLevel::Error, std::move(category));
 			}
-			ScopedMessageLogger Critical()
+			ScopedMessageLogger Critical(String category = {})
 			{
-				return ScopedMessageLogger(*this, LogLevel::Critical);
+				return ScopedMessageLogger(*this, LogLevel::Critical, std::move(category));
 			}
 
 			void SetSuccess(bool success = true) noexcept
@@ -709,7 +713,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void CriticalCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Critical().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Critical(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -721,7 +725,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void ErrorCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Error().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Error(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -733,7 +737,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void WarningCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Warning().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Warning(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -745,7 +749,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void InfoCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Info().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Info(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -757,7 +761,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void DebugCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Debug().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Debug(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
@@ -769,7 +773,7 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void TraceCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Trace().SetCategory(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAuto().Trace(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 }
 
