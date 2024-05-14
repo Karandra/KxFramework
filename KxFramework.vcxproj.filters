@@ -2448,6 +2448,9 @@
     <ClInclude Include="kxf\Core\StandardAllocator.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Core\Private\ErrorCode.h">
+      <Filter>kxf\Core\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3720,6 +3723,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Core\StandardAllocator.cpp">
       <Filter>kxf\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\Private\ErrorCode.cpp">
+      <Filter>kxf\Core\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/Core/String.h"
+#include "Private/ErrorCode.h"
 #include "kxf/Localization/Locale.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
@@ -41,7 +41,6 @@ namespace kxf
 	};
 }
 
-
 namespace kxf
 {
 	template<>
@@ -58,6 +57,31 @@ namespace kxf
 			value.SetValue(buffer);
 
 			return read;
+		}
+	};
+}
+
+namespace std
+{
+	template<std::derived_from<kxf::IErrorCode> T>
+	struct formatter<T, char>: std::formatter<std::string_view, char>
+	{
+		template<class TFormatContext>
+		auto format(const T& error, TFormatContext& formatContext) const
+		{
+			auto formatted = kxf::Private::FormatErrorCode(error);
+			return std::formatter<std::string_view, char>::format(formatted.utf8_view(), formatContext);
+		}
+	};
+
+	template<std::derived_from<kxf::IErrorCode> T>
+	struct formatter<T, wchar_t>: std::formatter<std::wstring_view, wchar_t>
+	{
+		template<class TFormatContext>
+		auto format(const T& error, TFormatContext& formatContext) const
+		{
+			auto formatted = kxf::Private::FormatErrorCode(error);
+			return std::formatter<std::wstring_view, wchar_t>::format(formatted.wc_view(), formatContext);
 		}
 	};
 }

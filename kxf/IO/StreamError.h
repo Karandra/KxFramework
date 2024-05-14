@@ -18,7 +18,7 @@ namespace kxf
 
 namespace kxf
 {
-	class StreamError final: public RTTI::ExtendInterface<StreamError, IErrorCode>
+	class StreamError final: public RTTI::Implementation<StreamError, IErrorCode>
 	{
 		KxRTTI_DeclareIID(StreamError, {0x2c783dc3, 0x9106, 0x4dc9, {0x86, 0xb0, 0x5f, 0x94, 0xe1, 0xe4, 0x37, 0x8f}});
 
