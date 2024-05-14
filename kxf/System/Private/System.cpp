@@ -7,12 +7,12 @@
 
 namespace kxf::System::Private
 {
-	String FormatMessage(const void* source, uint32_t messageID, uint32_t flags, const Locale& locale) noexcept
+	String FormatMessage(const void* source, uint32_t messageID, FlagSet<uint32_t> flags, const Locale& locale) noexcept
 	{
 		auto lcid = (locale && !locale.IsInvariant() ? locale : locale.GetUserDefault()).GetLCID();
 
 		wchar_t* formattedMessage = nullptr;
-		uint32_t length = ::FormatMessageW(flags|FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_IGNORE_INSERTS,
+		uint32_t length = ::FormatMessageW(*flags.Add(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_IGNORE_INSERTS),
 										   source,
 										   messageID,
 										   lcid.value_or(MAKELCID(LANG_NEUTRAL, SORT_DEFAULT)),

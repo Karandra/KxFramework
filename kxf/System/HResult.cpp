@@ -3,6 +3,7 @@
 #include "Win32Error.h"
 #include "NtStatus.h"
 #include "COM.h"
+#include "Private/System.h"
 #include "Private/ErrorCode.h"
 
 namespace kxf
@@ -104,7 +105,7 @@ namespace kxf
 	}
 	String HResult::GetMessage(const Locale& locale) const
 	{
-		return _com_error(GetValue(), m_ErrorInfo).ErrorMessage();
+		return System::Private::FormatMessage(nullptr, m_Value, FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, locale);
 	}
 
 	String HResult::GetSource() const

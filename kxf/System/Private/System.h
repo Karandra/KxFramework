@@ -6,7 +6,7 @@
 
 namespace kxf::System::Private
 {
-	String FormatMessage(const void* source, uint32_t messageID, uint32_t flags = 0, const Locale& locale = {}) noexcept;
+	String FormatMessage(const void* source, uint32_t messageID, FlagSet<uint32_t> flags = {}, const Locale& locale = {}) noexcept;
 	size_t EnumWindows(std::function<CallbackCommand(void*, uint32_t, uint32_t)> func, std::optional<uint32_t> pid = {}, std::optional<uint32_t> tid = {});
 	size_t EnumThreads(std::function<CallbackCommand(uint32_t, uint32_t)> func, std::optional<uint32_t> pid = {}, std::optional<uint32_t> tid = {});
 
