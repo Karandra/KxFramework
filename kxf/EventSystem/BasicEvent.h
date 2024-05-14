@@ -101,7 +101,7 @@ namespace kxf
 					m_PrivateState.Mod(EventPrivateState::Async, isAsync);
 
 					m_EventID = eventID;
-					m_UniqueID = std::move(uuid);
+					m_UniqueID = uuid;
 					m_Timestamp = TimeSpan::Now(SteadyClock());
 					m_ProcessFlags = flags;
 
