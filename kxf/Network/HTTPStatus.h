@@ -79,7 +79,7 @@ namespace kxf
 
 namespace kxf
 {
-	struct HTTPStatusCodeDef final: public IndexedEnumDefinition<HTTPStatusCodeDef, HTTPStatusCode, std::string_view, true>
+	struct HTTPStatusCodeDef final: public IndexedEnumDefinition<HTTPStatusCodeDef, HTTPStatusCode, std::string_view>
 	{
 		inline static constexpr TItem Items[] =
 		{
