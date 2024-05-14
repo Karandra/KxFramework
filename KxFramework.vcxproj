@@ -145,6 +145,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Core\Private\FormatQtStyle.h" />
     <ClInclude Include="kxf\Core\Private\StringFormatters.h" />
+    <ClInclude Include="kxf\Core\StandardAllocator.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\AffineMatrix.h" />
     <ClInclude Include="kxf\Drawing\Angle.h" />
@@ -849,6 +850,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Core\StandardAllocator.cpp" />
     <ClCompile Include="kxf\Core\UniChar.cpp" />
     <ClCompile Include="kxf\Crypto\HashValue.cpp" />
     <ClCompile Include="kxf\Drawing\AffineMatrix.cpp" />

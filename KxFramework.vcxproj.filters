@@ -2445,6 +2445,9 @@
     <ClInclude Include="kxf\Log\Categories.h">
       <Filter>kxf\Log</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Core\StandardAllocator.h">
+      <Filter>kxf\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3714,6 +3717,9 @@
     <ClCompile Include="kxf\Core\UniChar.cpp" />
     <ClCompile Include="kxf\Log\ScopedLoggerContext.cpp">
       <Filter>kxf\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\StandardAllocator.cpp">
+      <Filter>kxf\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
