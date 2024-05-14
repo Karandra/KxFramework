@@ -781,3 +781,4 @@ namespace kxf::Log
 #define KX_SCOPEDLOG_AUTO			kxf::ScopedLoggerAuto		KX_SCOPEDLOG;
 #define KX_SCOPEDLOG_FUNC			kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current());
 #define KX_SCOPEDLOG_ARGS(...)		kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__);
+#define KX_SCOPEDLOG_VAR(value)		.Format(#value "=[{}]", value).Sep()
