@@ -236,12 +236,12 @@ namespace kxf
 			void Init()
 			{
 				m_TimeStamp = DateTime::Now();
+				m_Separator.assign(kxS(", "));
 			}
 			void Reset()
 			{
 				m_Message.clear();
 				m_Category.clear();
-				m_Separator.clear();
 				m_SeparatorAllowed = false;
 				Init();
 			}
