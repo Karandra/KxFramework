@@ -62,20 +62,23 @@ namespace kxf
 			static ScopedLoggerGlobalContext& GetInstance() noexcept;
 
 		private:
-			std::shared_ptr<IScopedLoggerContext> m_UserContext;
+			std::atomic<std::shared_ptr<IScopedLoggerContext>> m_UserContext;
 			std::atomic<TimeZoneOffset> m_TimeOffset;
 			std::atomic<LogLevel> m_LogLevel = LogLevel::Unknown;
 
-			std::unique_ptr<ScopedLoggerTLS> m_UnknownContext;
+			std::unique_ptr<ScopedLoggerUnknownTLS> m_UnknownContext;
 			FiberLocalSlot m_TLSIndex;
+			bool m_UpdateUserContext = false;
 
 		private:
+			bool IsInitialized() const noexcept;
 			void Initialize();
 			void Destroy();
 
+			void OnUserContextUpdated();
+
 		private:
 			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext)
-				:m_UserContext(std::move(userContext))
 			{
 				Initialize();
 			}
@@ -93,10 +96,7 @@ namespace kxf
 
 			ScopedLoggerTLS* QueryThreadContext() const noexcept;
 			ScopedLoggerTLS& GetThreadContext();
-			ScopedLoggerTLS& GetUnknownThreadContext() const noexcept
-			{
-				return *m_UnknownContext;
-			}
+			ScopedLoggerTLS& GetUnknownThreadContext() const noexcept;
 
 			LogLevel GetLogLevel() const noexcept
 			{
@@ -128,7 +128,8 @@ namespace kxf
 
 		protected:
 			ScopedLoggerGlobalContext& m_GlobalContext;
-			std::shared_ptr<IScopedLoggerTarget> m_LogTarget;
+			std::atomic<std::weak_ptr<IScopedLoggerContext>> m_UserContextRef;
+			std::atomic<std::shared_ptr<IScopedLoggerTarget>> m_LogTarget;
 			std::vector<ScopedLogger*> m_ScopeStack;
 			SystemThread m_Thread;
 			SystemProcess m_Process;
@@ -137,12 +138,12 @@ namespace kxf
 			bool m_Terminated = false;
 
 		protected:
-			virtual void Initialize();
-			virtual void Destroy();
+			void Initialize();
+			void Destroy();
 
 			void LogOpenClose(bool open);
 			String FormatRecord(LogLevel logLevel, DateTime timestamp, StringView str, StringView category) const;
-			std::shared_ptr<IScopedLoggerTarget> CreateLogTarget();
+			void InitializeUserData(std::shared_ptr<IScopedLoggerContext> userContext);
 
 			void OnScopeEnter(ScopedLogger& scope)
 			{
@@ -159,18 +160,14 @@ namespace kxf
 				if (!m_Terminated)
 				{
 					m_Terminated = true;
-					Destroy();
 				}
 			}
+			void UpdateUserContext(std::shared_ptr<IScopedLoggerContext> userContext);
 
 		public:
 			ScopedLoggerTLS(ScopedLoggerGlobalContext& globalContext)
 				:m_GlobalContext(globalContext)
 			{
-			}
-			virtual ~ScopedLoggerTLS()
-			{
-				Destroy();
 			}
 
 		public:
@@ -688,13 +685,18 @@ namespace kxf
 			ScopedLoggerUnknownScope m_Scope;
 
 		private:
-			void Initialize() override;
-			void Destroy() override;
+			void Initialize();
+			void Destroy();
 
 		public:
 			ScopedLoggerUnknownTLS(ScopedLoggerGlobalContext& globalContext)
 				:ScopedLoggerTLS(globalContext), m_Scope(*this)
 			{
+				Initialize();
+			}
+			~ScopedLoggerUnknownTLS()
+			{
+				Destroy();
 			}
 	};
 }

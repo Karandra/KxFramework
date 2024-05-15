@@ -59,14 +59,27 @@ namespace kxf
 
 	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::Initialize(std::shared_ptr<IScopedLoggerContext> userContext)
 	{
-		static ScopedLoggerGlobalContext context(std::move(userContext));
-		return context;
+		static ScopedLoggerGlobalContext globalContext(userContext);
+		if (globalContext.IsInitialized() && userContext)
+		{
+			std::shared_ptr<IScopedLoggerContext> expected;
+			if (globalContext.m_UserContext.compare_exchange_strong(expected, std::move(userContext)))
+			{
+				globalContext.OnUserContextUpdated();
+			}
+		}
+
+		return globalContext;
 	}
 	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::GetInstance() noexcept
 	{
 		return Initialize(nullptr);
 	}
 
+	bool ScopedLoggerGlobalContext::IsInitialized() const noexcept
+	{
+		return !m_TLSIndex.IsNull();
+	}
 	void ScopedLoggerGlobalContext::Initialize()
 	{
 		m_TLSIndex.Initialize([](void* ptr)
@@ -74,6 +87,7 @@ namespace kxf
 			if (auto tls = Utility::AssumeUniquePtr(static_cast<ScopedLoggerTLS*>(ptr)))
 			{
 				tls->OnTermination();
+				tls->Destroy();
 			}
 		});
 		if (!m_TLSIndex)
@@ -83,18 +97,19 @@ namespace kxf
 
 		m_TimeOffset = TimeZone::Local;
 		m_UnknownContext = std::make_unique<ScopedLoggerUnknownTLS>(*this);
-		m_UnknownContext->Initialize();
 
 		Log::WxOverride::Install();
 	}
 	void ScopedLoggerGlobalContext::Destroy()
 	{
-		if (m_UnknownContext)
-		{
-			m_UnknownContext->Destroy();
-			m_UnknownContext = {};
-		}
+		m_UnknownContext = {};
 		m_TLSIndex.Uninitialize();
+	}
+
+	void ScopedLoggerGlobalContext::OnUserContextUpdated()
+	{
+		m_UpdateUserContext = true;
+		m_UnknownContext->UpdateUserContext(m_UserContext);
 	}
 
 	ScopedLoggerTLS* ScopedLoggerGlobalContext::QueryThreadContext() const noexcept
@@ -109,6 +124,10 @@ namespace kxf
 	{
 		if (auto ptr = QueryThreadContext())
 		{
+			if (m_UpdateUserContext)
+			{
+				ptr->UpdateUserContext(m_UserContext);
+			}
 			return *ptr;
 		}
 		else
@@ -120,6 +139,10 @@ namespace kxf
 			m_TLSIndex.SetValue(ptr);
 			return *ptr;
 		}
+	}
+	ScopedLoggerTLS& ScopedLoggerGlobalContext::GetUnknownThreadContext() const noexcept
+	{
+		return *m_UnknownContext;
 	}
 	bool ScopedLoggerGlobalContext::CanLogLevel(LogLevel logLevel) const noexcept
 	{
@@ -149,28 +172,23 @@ namespace kxf
 		m_Thread = SystemThread::GetCurrentThread();
 		m_Process = SystemProcess::GetCurrentProcess();
 		m_TimeStamp = DateTime::Now();
-		m_LogTarget = CreateLogTarget();
+		InitializeUserData(m_GlobalContext.GetUserContext());
 
 		LogOpenClose(true);
 	}
 	void ScopedLoggerTLS::Destroy()
 	{
-		if (m_LogTarget)
-		{
-			LogOpenClose(false);
+		LogOpenClose(false);
 
-			m_LogTarget->Flush();
-			m_LogTarget = nullptr;
+		if (auto logTarget = m_LogTarget.load())
+		{
+			logTarget->Flush();
+			logTarget = nullptr;
 		}
 	}
 
 	void ScopedLoggerTLS::LogOpenClose(bool open)
 	{
-		if (!m_LogTarget)
-		{
-			return;
-		}
-
 		if (open)
 		{
 			ScopedMessageLogger message(LogLevel::FlowControl);
@@ -250,33 +268,49 @@ namespace kxf
 
 		return buffer;
 	}
-	std::shared_ptr<IScopedLoggerTarget> ScopedLoggerTLS::CreateLogTarget()
+	void ScopedLoggerTLS::InitializeUserData(std::shared_ptr<IScopedLoggerContext> userContext)
 	{
-		if (auto context = m_GlobalContext.GetUserContext())
+		if (userContext)
 		{
-			return context->CreateLogTarget(*this);
+			m_UserContextRef = userContext;
+			m_LogTarget = userContext->CreateLogTarget(*this);
 		}
-		return std::make_shared<ScopedLoggerConsoleTarget>(*this);
+		else
+		{
+			m_UserContextRef.store({});
+			m_LogTarget = std::make_shared<ScopedLoggerConsoleTarget>(*this);
+		}
+	}
+	void ScopedLoggerTLS::UpdateUserContext(std::shared_ptr<IScopedLoggerContext> userContext)
+	{
+		auto weak = m_UserContextRef.load();
+		if (weak.expired() || weak.lock() != userContext)
+		{
+			InitializeUserData(std::move(userContext));
+		}
 	}
 
 	void ScopedLoggerTLS::Flush()
 	{
-		if (m_LogTarget)
+		if (auto logTarget = m_LogTarget.load())
 		{
-			m_LogTarget->Flush();
+			logTarget->Flush();
 		}
 	}
 	void ScopedLoggerTLS::Write(LogLevel logLevel, DateTime timestamp, StringView message, StringView category)
 	{
 		if (!message.empty() && m_GlobalContext.CanLogLevel(logLevel))
 		{
-			String formatted = m_LogTarget->FormatRecord(*this, logLevel, timestamp, message, category);
-			if (formatted.IsEmpty())
+			if (auto logTarget = m_LogTarget.load())
 			{
-				formatted = FormatRecord(logLevel, timestamp, message, category);
-			}
+				String formatted = logTarget->FormatRecord(*this, logLevel, timestamp, message, category);
+				if (formatted.IsEmpty())
+				{
+					formatted = FormatRecord(logLevel, timestamp, message, category);
+				}
 
-			m_LogTarget->Write(logLevel, formatted.xc_view());
+				logTarget->Write(logLevel, formatted.xc_view());
+			}
 		}
 	}
 }
@@ -345,7 +379,7 @@ namespace kxf
 		m_Thread = {};
 		m_Process = SystemProcess::GetCurrentProcess();
 		m_TimeStamp = DateTime::Now();
-		m_LogTarget = CreateLogTarget();
+		InitializeUserData(m_GlobalContext.GetUserContext());
 		m_Scope.Initialize();
 
 		LogOpenClose(true);
