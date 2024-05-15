@@ -56,12 +56,17 @@ namespace kxf
 	}
 	size_t NativeAPILoader::DoLoadLibraries(std::initializer_list<NativeAPISet> apiSets, bool moduleMode) noexcept
 	{
+		KX_SCOPEDLOG_ARGS(apiSets.size(), moduleMode);
+
 		const size_t loadedAlready = GetLoadedLibrariesCount();
-		Log::Info("DoLoadLibraries: loadedAlready=[{}], m_TotalCount=[{}], moduleMode=[{}]", loadedAlready, m_TotalCount, moduleMode);
-		Log::Info("Lookup directory: '{}'", m_LookupDirectory);
+		KX_SCOPEDLOG.Info()
+			KX_SCOPEDLOG_VALUE(loadedAlready)
+			KX_SCOPEDLOG_VALUE(m_TotalCount)
+			KX_SCOPEDLOG_VALUE(m_LookupDirectory);
 
 		if (moduleMode && loadedAlready != 0)
 		{
+			KX_SCOPEDLOG.LogReturn(loadedAlready);
 			return loadedAlready;
 		}
 
@@ -71,7 +76,7 @@ namespace kxf
 			auto& item = m_LoadedLibraries[i];
 			if (apiSets.size() == 0 || std::find(apiSets.begin(), apiSets.end(), item.Type) != apiSets.end())
 			{
-				Log::Info("Loading library: '{}'", item.Name);
+				KX_SCOPEDLOG.Info().Format("Loading library: '{}'", item.Name);
 
 				if (!m_LookupDirectory.IsEmpty())
 				{
@@ -79,7 +84,7 @@ namespace kxf
 					path.Append(item.Name);
 
 					auto fullPath = path.GetFullPathWithNS();
-					Log::Info("Loading library '{}' using a fully qualified path name '{}'", item.Name, fullPath);
+					KX_SCOPEDLOG.Info().Format("Loading library '{}' using a fully qualified path name '{}'", item.Name, fullPath);
 
 					item.Handle = ::LoadLibraryW(fullPath.wc_str());
 				}
@@ -94,16 +99,21 @@ namespace kxf
 				}
 				else
 				{
-					Log::Warning("Couldn't load '{}' library", item.Name);
+					KX_SCOPEDLOG.Error().Format("Couldn't load '{}' library", item.Name);
 				}
 			}
 		}
 
-		Log::Info("Loaded {} libraries", loadedCount);
-		return GetLoadedLibrariesCount();
+		KX_SCOPEDLOG.Info().Format("Loaded {} libraries", loadedCount);
+
+		auto loaded = GetLoadedLibrariesCount();
+		KX_SCOPEDLOG.LogReturn(loaded);
+		return loaded;
 	}
 	size_t NativeAPILoader::DoUnloadLibraries() noexcept
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		size_t unloadedCount = 0;
 		for (size_t i = 0; i < m_TotalCount; i++)
 		{
@@ -115,12 +125,14 @@ namespace kxf
 				unloadedCount++;
 			}
 		}
+
+		KX_SCOPEDLOG.LogReturn(unloadedCount);
 		return unloadedCount;
 	}
 
 	void NativeAPILoader::InitializeNtDLL() noexcept
 	{
-		Log::Info("InitializeNtDLL");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::NtDLL))
@@ -134,13 +146,12 @@ namespace kxf
 			INIT_FUNCTION(NtDLL, NtResumeProcess);
 			INIT_FUNCTION(NtDLL, LdrRegisterDllNotification);
 			INIT_FUNCTION(NtDLL, LdrUnregisterDllNotification);
-
-			Log::Info("InitializeNtDLL -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeKernel32() noexcept
 	{
-		Log::Info("InitializeKernel32");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::Kernel32))
@@ -160,25 +171,23 @@ namespace kxf
 			INIT_FUNCTION(Kernel32, SetThreadDescription);
 
 			INIT_FUNCTION(Kernel32, VirtualAlloc2);
-
-			Log::Info("InitializeKernel32 -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeKernelBase() noexcept
 	{
-		Log::Info("InitializeKernelBase");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::KernelBase))
 		{
 			INIT_FUNCTION(KernelBase, PathCchCanonicalizeEx);
-
-			Log::Info("InitializeKernelBase -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeUser32() noexcept
 	{
-		Log::Info("InitializeUser32");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::User32))
@@ -188,24 +197,24 @@ namespace kxf
 			INIT_FUNCTION(User32, GetDpiForSystem);
 			INIT_FUNCTION(User32, GetDpiForWindow);
 
-			Log::Info("InitializeUser32 -> Success");
+			KX_SCOPEDLOG.SetSuccess();
 		}
 	}
 	void NativeAPILoader::InitializeShlWAPI() noexcept
 	{
-		Log::Info("InitializeShlWAPI");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::ShlWAPI))
 		{
 			INIT_FUNCTION(ShlWAPI, PathCanonicalizeW);
 
-			Log::Info("InitializeShlWAPI -> Success");
+			KX_SCOPEDLOG.SetSuccess();
 		}
 	}
 	void NativeAPILoader::InitializeDWMAPI() noexcept
 	{
-		Log::Info("InitializeDWMAPI");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DWMAPI))
@@ -214,37 +223,35 @@ namespace kxf
 			INIT_FUNCTION(DWMAPI, DwmGetColorizationColor);
 			INIT_FUNCTION(DWMAPI, DwmExtendFrameIntoClientArea);
 			INIT_FUNCTION(DWMAPI, DwmEnableBlurBehindWindow);
-
-			Log::Info("InitializeDWMAPI -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeDbgHelp() noexcept
 	{
-		Log::Info("InitializeDbgHelp");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DbgHelp))
 		{
 			INIT_FUNCTION(DbgHelp, ImageNtHeader);
 
-			Log::Info("InitializeDbgHelp -> Success");
+			KX_SCOPEDLOG.SetSuccess();
 		}
 	}
 	void NativeAPILoader::InitializeOleAcc() noexcept
 	{
-		Log::Info("InitializeOleAcc");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::OleAcc))
 		{
 			INIT_FUNCTION(OleAcc, GetProcessHandleFromHwnd);
-
-			Log::Info("InitializeOleAcc -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeDXGI() noexcept
 	{
-		Log::Info("InitializeDXGI");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DXGI))
@@ -252,24 +259,25 @@ namespace kxf
 			INIT_FUNCTION(DXGI, CreateDXGIFactory1);
 			INIT_FUNCTION(DXGI, CreateDXGIFactory2);
 
-			Log::Info("InitializeDXGI -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeDComp() noexcept
 	{
-		Log::Info("InitializeDComp");
+		KX_SCOPEDLOG_FUNC;
 		using namespace NativeAPI;
 
 		if (IsLibraryLoaded(NativeAPISet::DComp))
 		{
 			INIT_FUNCTION(DComp, DCompositionCreateDevice);
-
-			Log::Info("InitializeDComp -> Success");
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 
 	void NativeAPILoader::Initialize()
 	{
+		KX_SCOPEDLOG_FUNC;
+
 		InitializeNtDLL();
 		InitializeKernel32();
 		InitializeKernelBase();
@@ -280,6 +288,8 @@ namespace kxf
 		InitializeOleAcc();
 		InitializeDXGI();
 		InitializeDComp();
+
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	bool NativeAPILoader::IsLibraryLoaded(NativeAPISet library) const noexcept
 	{
@@ -295,6 +305,7 @@ namespace kxf
 
 namespace kxf::NativeAPI
 {
+	KX_SCOPEDLOG_FUNC;
 	namespace NtDLL
 	{
 		DEFINE_FUNCTION(RtlGetVersion);
@@ -376,7 +387,7 @@ namespace kxf::NativeAPI::Private
 		public:
 			bool OnInit() noexcept override
 			{
-				Log::Info("InitializationModule::OnInit");
+				KX_SCOPEDLOG_FUNC;
 
 				// In module mode the loader will load all libraries only if there are no libraries loaded yet.
 				// We're still going to initialize them all, the initialization function checks the load state.
@@ -384,20 +395,18 @@ namespace kxf::NativeAPI::Private
 				{
 					m_Loader.Initialize();
 
-					Log::Info("InitializationModule::OnInit -> Success");
+					KX_SCOPEDLOG.LogReturn(true);
 					return true;
 				}
-				else
-				{
-					Log::Info("InitializationModule::OnInit -> Failed");
-					return false;
-				}
+				return false;
 			}
 			void OnExit() noexcept override
 			{
-				Log::Info("InitializationModule::OnExit");
+				KX_SCOPEDLOG_FUNC;
 
 				m_Loader.UnloadLibraries();
+
+				KX_SCOPEDLOG.SetSuccess();
 			}
 
 		private:
