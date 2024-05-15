@@ -68,7 +68,7 @@ namespace kxf
 			path.Format("[{}] UnknownContext.log", FormatTimestamp(timestamp, tzOffset));
 		}
 
-		m_Stream = fs.OpenToWrite(path, IOStreamDisposition::CreateAlways, IOStreamShare::Read, FSActionFlag::CreateDirectoryTree|FSActionFlag::Recursive);
+		m_Stream = fs.OpenToWrite(directory / path, IOStreamDisposition::CreateAlways, IOStreamShare::Read, FSActionFlag::CreateDirectoryTree|FSActionFlag::Recursive);
 	}
 
 	// IScopedLoggerTarget
