@@ -55,72 +55,6 @@ namespace kxf
 
 namespace kxf
 {
-	class ScopedLoggerGlobalContext final
-	{
-		public:
-			static ScopedLoggerGlobalContext& Initialize(std::shared_ptr<IScopedLoggerContext> userContext);
-			static ScopedLoggerGlobalContext& GetInstance() noexcept;
-
-		private:
-			std::atomic<std::shared_ptr<IScopedLoggerContext>> m_UserContext;
-			std::atomic<TimeZoneOffset> m_TimeOffset;
-			std::atomic<LogLevel> m_LogLevel = LogLevel::Unknown;
-
-			std::unique_ptr<ScopedLoggerUnknownTLS> m_UnknownContext;
-			FiberLocalSlot m_TLSIndex;
-			bool m_UpdateUserContext = false;
-
-		private:
-			bool IsInitialized() const noexcept;
-			void Initialize();
-			void Destroy();
-
-			void OnUserContextUpdated();
-
-		private:
-			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext)
-			{
-				Initialize();
-			}
-			ScopedLoggerGlobalContext(const ScopedLoggerGlobalContext&) = delete;
-			~ScopedLoggerGlobalContext()
-			{
-				Destroy();
-			}
-
-		public:
-			std::shared_ptr<IScopedLoggerContext> GetUserContext() const noexcept
-			{
-				return m_UserContext;
-			}
-
-			ScopedLoggerTLS* QueryThreadContext() const noexcept;
-			ScopedLoggerTLS& GetThreadContext();
-			ScopedLoggerTLS& GetUnknownThreadContext() const noexcept;
-
-			LogLevel GetLogLevel() const noexcept
-			{
-				return m_LogLevel;
-			}
-			void SetLogLevel(LogLevel logLevel) noexcept
-			{
-				if (ToInt(logLevel) >= 0)
-				{
-					m_LogLevel = logLevel;
-				}
-			}
-			bool CanLogLevel(LogLevel logLevel) const noexcept;
-
-			TimeZoneOffset GetTimeOffset() const noexcept
-			{
-				return m_TimeOffset;
-			}
-			void SetTimeOffset(const TimeZoneOffset& timeOffset)
-			{
-				m_TimeOffset = timeOffset;
-			}
-	};
-
 	class ScopedLoggerTLS
 	{
 		friend class ScopedLogger;
@@ -131,8 +65,8 @@ namespace kxf
 			std::atomic<std::weak_ptr<IScopedLoggerContext>> m_UserContextRef;
 			std::atomic<std::shared_ptr<IScopedLoggerTarget>> m_LogTarget;
 			std::vector<ScopedLogger*> m_ScopeStack;
-			SystemThread m_Thread;
 			SystemProcess m_Process;
+			SystemThread m_Thread;
 			DateTime m_TimeStamp;
 			size_t m_ScopeLevel = 0;
 			bool m_Terminated = false;
@@ -484,20 +418,20 @@ namespace kxf
 	{
 		protected:
 			ScopedLoggerTLS& m_ScopeTLS;
-			uint32_t m_Line = 0;
-			uint32_t m_Column = 0;
-			String m_FileName;
 			String m_Function;
 			String m_ReturnValue;
+			//String m_FileName;
+			//uint32_t m_Line = 0;
+			//uint32_t m_Column = 0;
 			bool m_IsSuccess = false;
 			bool m_IsVoid = false;
 
 		protected:
 			void FromSourceLocation(const std::source_location& sourceLocation)
 			{
-				m_Line = sourceLocation.line();
-				m_Column = sourceLocation.column();
-				m_FileName = sourceLocation.file_name();
+				//m_Line = sourceLocation.line();
+				//m_Column = sourceLocation.column();
+				//m_FileName = sourceLocation.file_name();
 				m_Function = sourceLocation.function_name();
 			}
 			bool CanEnterLeave() const noexcept
@@ -615,15 +549,18 @@ namespace kxf
 
 	class ScopedLoggerNewScope final: public ScopedLogger
 	{
+		private:
+			static ScopedLoggerTLS& GetTLS();
+
 		public:
 			ScopedLoggerNewScope(const std::source_location& sourceLocation = std::source_location::current())
-				:ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
+				:ScopedLogger(GetTLS(), sourceLocation)
 			{
 			}
 
 			template<class... Args>
 			ScopedLoggerNewScope(const std::source_location& sourceLocation, Args&&... arg)
-				: ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
+				:ScopedLogger(GetTLS(), sourceLocation, std::forward<Args>(arg)...)
 			{
 			}
 	};
@@ -631,18 +568,7 @@ namespace kxf
 	class ScopedLoggerAutoScope final: public ScopedLogger
 	{
 		private:
-			static ScopedLoggerTLS& GetActiveTLS() noexcept
-			{
-				auto& global = ScopedLoggerGlobalContext::GetInstance();
-				if (auto tls = global.QueryThreadContext())
-				{
-					return *tls;
-				}
-				else
-				{
-					return global.GetUnknownThreadContext();
-				}
-			}
+			static ScopedLoggerTLS& GetActiveTLS();
 
 		private:
 			ScopedLogger* m_Scope = nullptr;
@@ -704,7 +630,75 @@ namespace kxf
 namespace kxf
 {
 	String ToString(LogLevel value);
+
+	class ScopedLoggerGlobalContext final
+	{
+		public:
+			static ScopedLoggerGlobalContext& Initialize(std::shared_ptr<IScopedLoggerContext> userContext);
+			static ScopedLoggerGlobalContext& GetInstance();
+
+		private:
+			std::atomic<std::shared_ptr<IScopedLoggerContext>> m_UserContext;
+			std::atomic<TimeZoneOffset> m_TimeOffset;
+			std::atomic<LogLevel> m_LogLevel = LogLevel::Unknown;
+
+			std::optional<ScopedLoggerUnknownTLS> m_UnknownContextTLS;
+			FiberLocalSlot m_TLSIndex;
+			bool m_UpdateUserContext = false;
+
+		private:
+			bool IsInitialized() const noexcept;
+			void Initialize();
+			void Destroy();
+
+			void OnUserContextUpdated();
+
+		private:
+			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext)
+				:m_UserContext(std::move(userContext))
+			{
+				Initialize();
+			}
+			ScopedLoggerGlobalContext(const ScopedLoggerGlobalContext&) = delete;
+			~ScopedLoggerGlobalContext()
+			{
+				Destroy();
+			}
+
+		public:
+			std::shared_ptr<IScopedLoggerContext> GetUserContext() const noexcept
+			{
+				return m_UserContext;
+			}
+
+			ScopedLoggerTLS* QueryThreadContext() noexcept;
+			ScopedLoggerTLS& GetThreadContext();
+			ScopedLoggerTLS& GetUnknownThreadContext() noexcept;
+
+			LogLevel GetLogLevel() const noexcept
+			{
+				return m_LogLevel;
+			}
+			void SetLogLevel(LogLevel logLevel) noexcept
+			{
+				if (ToInt(logLevel) >= 0)
+				{
+					m_LogLevel = logLevel;
+				}
+			}
+			bool CanLogLevel(LogLevel logLevel) const noexcept;
+
+			TimeZoneOffset GetTimeOffset() const noexcept
+			{
+				return m_TimeOffset;
+			}
+			void SetTimeOffset(const TimeZoneOffset& timeOffset)
+			{
+				m_TimeOffset = timeOffset;
+			}
+	};
 }
+
 namespace kxf::Log
 {
 	template<class TFormat, class... Args>

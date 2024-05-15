@@ -71,7 +71,7 @@ namespace kxf
 
 		return globalContext;
 	}
-	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::GetInstance() noexcept
+	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::GetInstance()
 	{
 		return Initialize(nullptr);
 	}
@@ -96,23 +96,23 @@ namespace kxf
 		}
 
 		m_TimeOffset = TimeZone::Local;
-		m_UnknownContext = std::make_unique<ScopedLoggerUnknownTLS>(*this);
+		m_UnknownContextTLS.emplace(*this);
 
 		Log::WxOverride::Install();
 	}
 	void ScopedLoggerGlobalContext::Destroy()
 	{
-		m_UnknownContext = {};
+		m_UnknownContextTLS.reset();
 		m_TLSIndex.Uninitialize();
 	}
 
 	void ScopedLoggerGlobalContext::OnUserContextUpdated()
 	{
 		m_UpdateUserContext = true;
-		m_UnknownContext->UpdateUserContext(m_UserContext);
+		m_UnknownContextTLS->UpdateUserContext(m_UserContext);
 	}
 
-	ScopedLoggerTLS* ScopedLoggerGlobalContext::QueryThreadContext() const noexcept
+	ScopedLoggerTLS* ScopedLoggerGlobalContext::QueryThreadContext() noexcept
 	{
 		if (void* ptr = m_TLSIndex.GetValue())
 		{
@@ -140,9 +140,9 @@ namespace kxf
 			return *ptr;
 		}
 	}
-	ScopedLoggerTLS& ScopedLoggerGlobalContext::GetUnknownThreadContext() const noexcept
+	ScopedLoggerTLS& ScopedLoggerGlobalContext::GetUnknownThreadContext() noexcept
 	{
-		return *m_UnknownContext;
+		return *m_UnknownContextTLS;
 	}
 	bool ScopedLoggerGlobalContext::CanLogLevel(LogLevel logLevel) const noexcept
 	{
@@ -169,8 +169,8 @@ namespace kxf
 {
 	void ScopedLoggerTLS::Initialize()
 	{
-		m_Thread = SystemThread::GetCurrentThread();
 		m_Process = SystemProcess::GetCurrentProcess();
+		m_Thread = SystemThread::GetCurrentThread();
 		m_TimeStamp = DateTime::Now();
 		InitializeUserData(m_GlobalContext.GetUserContext());
 
@@ -244,7 +244,7 @@ namespace kxf
 
 		// Log location
 		bool isUnknown = IsUnknown();
-		buffer.Format("[PID:{:0>5}|{}:{:0>5}]",
+		buffer.Format("[PID:{:0>6}|{}:{:0>6}]",
 					  m_Process.GetID(),
 					  isUnknown ? "UNK" : "TID",
 					  isUnknown ? SystemThread::GetCurrentThread().GetID() : m_Thread.GetID()
@@ -326,7 +326,7 @@ namespace kxf
 				logger.Log("Enter: ", m_Function);
 				if (!serializedParameters.empty())
 				{
-					logger.Format(" ({})", serializedParameters);
+					logger.Format(" /. ({})", serializedParameters);
 				}
 			}
 			m_ScopeTLS.OnScopeEnter(*this);
@@ -363,6 +363,24 @@ namespace kxf
 
 namespace kxf
 {
+	ScopedLoggerTLS& ScopedLoggerNewScope::GetTLS()
+	{
+		return ScopedLoggerGlobalContext::GetInstance().GetThreadContext();
+	}
+
+	ScopedLoggerTLS& ScopedLoggerAutoScope::GetActiveTLS()
+	{
+		auto& global = ScopedLoggerGlobalContext::GetInstance();
+		if (auto tls = global.QueryThreadContext())
+		{
+			return *tls;
+		}
+		else
+		{
+			return global.GetUnknownThreadContext();
+		}
+	}
+
 	void ScopedLoggerUnknownScope::Initialize()
 	{
 		m_Function = "<unknown context>()";
@@ -376,8 +394,8 @@ namespace kxf
 
 	void ScopedLoggerUnknownTLS::Initialize()
 	{
-		m_Thread = {};
 		m_Process = SystemProcess::GetCurrentProcess();
+		m_Thread = {};
 		m_TimeStamp = DateTime::Now();
 		InitializeUserData(m_GlobalContext.GetUserContext());
 		m_Scope.Initialize();
