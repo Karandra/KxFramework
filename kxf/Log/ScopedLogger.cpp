@@ -329,13 +329,13 @@ namespace kxf
 
 namespace kxf
 {
-	void ScopedLoggerUnknown::Initialize()
+	void ScopedLoggerUnknownScope::Initialize()
 	{
 		m_Function = "<unknown context>()";
 		m_IsVoid = true;
 		m_IsSuccess = true;
 	}
-	void ScopedLoggerUnknown::Destroy()
+	void ScopedLoggerUnknownScope::Destroy()
 	{
 		m_Function.clear();
 	}

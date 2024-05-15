@@ -15,7 +15,8 @@
 namespace kxf
 {
 	class ScopedLoggerTLS;
-	class ScopedLoggerScope;
+	class ScopedLoggerUnknownTLS;
+	class ScopedLoggerNewScope;
 	class ScopedLoggerGlobalContext;
 	class ScopedMessageLogger;
 }
@@ -615,22 +616,22 @@ namespace kxf
 			}
 	};
 
-	class ScopedLoggerScope final: public ScopedLogger
+	class ScopedLoggerNewScope final: public ScopedLogger
 	{
 		public:
-			ScopedLoggerScope(const std::source_location& sourceLocation = std::source_location::current())
+			ScopedLoggerNewScope(const std::source_location& sourceLocation = std::source_location::current())
 				:ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
 			{
 			}
 
 			template<class... Args>
-			ScopedLoggerScope(const std::source_location& sourceLocation, Args&&... arg)
+			ScopedLoggerNewScope(const std::source_location& sourceLocation, Args&&... arg)
 				: ScopedLogger(ScopedLoggerGlobalContext::GetInstance().GetThreadContext(), sourceLocation)
 			{
 			}
 	};
 
-	class ScopedLoggerAuto final: public ScopedLogger
+	class ScopedLoggerAutoScope final: public ScopedLogger
 	{
 		private:
 			static ScopedLoggerTLS& GetActiveTLS() noexcept
@@ -650,7 +651,7 @@ namespace kxf
 			ScopedLogger* m_Scope = nullptr;
 
 		public:
-			ScopedLoggerAuto()
+			ScopedLoggerAutoScope()
 				:ScopedLogger(GetActiveTLS())
 			{
 				m_Scope = m_ScopeTLS.GetCurrentScope();
@@ -666,7 +667,7 @@ namespace kxf
 
 namespace kxf
 {
-	class ScopedLoggerUnknown final: public ScopedLogger
+	class ScopedLoggerUnknownScope final: public ScopedLogger
 	{
 		friend class ScopedLoggerUnknownTLS;
 
@@ -675,7 +676,7 @@ namespace kxf
 			void Destroy();
 
 		private:
-			ScopedLoggerUnknown(ScopedLoggerTLS& tls)
+			ScopedLoggerUnknownScope(ScopedLoggerTLS& tls)
 				:ScopedLogger(tls)
 			{
 			}
@@ -684,7 +685,7 @@ namespace kxf
 	class ScopedLoggerUnknownTLS final: public ScopedLoggerTLS
 	{
 		private:
-			ScopedLoggerUnknown m_Scope;
+			ScopedLoggerUnknownScope m_Scope;
 
 		private:
 			void Initialize() override;
@@ -707,79 +708,80 @@ namespace kxf::Log
 	template<class TFormat, class... Args>
 	void Critical(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Critical().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Critical().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void CriticalCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Critical(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Critical(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Error(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Error().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Error().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void ErrorCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Error(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Error(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Warning(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Warning().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Warning().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void WarningCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Warning(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Warning(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Info(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Info().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Info().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void InfoCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Info(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Info(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Debug(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Debug().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Debug().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void DebugCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Debug(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Debug(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void Trace(const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Trace().Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Trace().Format(format, std::forward<Args>(arg)...);
 	}
 
 	template<class TFormat, class... Args>
 	void TraceCategory(String category, const TFormat& format, Args&&... arg)
 	{
-		ScopedLoggerAuto().Trace(std::move(category)).Format(format, std::forward<Args>(arg)...);
+		ScopedLoggerAutoScope().Trace(std::move(category)).Format(format, std::forward<Args>(arg)...);
 	}
 }
 
-#define KX_SCOPEDLOG				scopedLogger_
-#define KX_SCOPEDLOG_AUTO			kxf::ScopedLoggerAuto		KX_SCOPEDLOG;
-#define KX_SCOPEDLOG_FUNC			kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current());
-#define KX_SCOPEDLOG_ARGS(...)		kxf::ScopedLoggerScope		KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__);
+#define KX_SCOPEDLOG							scopedLogger_
+#define KX_SCOPEDLOG_AUTO						kxf::ScopedLoggerAuto		KX_SCOPEDLOG
+#define KX_SCOPEDLOG_FUNC						kxf::ScopedLoggerNewScope	KX_SCOPEDLOG(std::source_location::current())
+#define KX_SCOPEDLOG_ARGS(...)					kxf::ScopedLoggerNewScope	KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__)
+
 #define KX_SCOPEDLOG_VALUE_AS(name, value)		.Format(#name "=[{}]", (value)).Sep()
 #define KX_SCOPEDLOG_VALUE(value)				KX_SCOPEDLOG_VALUE_AS(value, value)

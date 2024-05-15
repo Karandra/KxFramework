@@ -53,7 +53,7 @@ namespace kxf::Log
 
 		wxSetAssertHandler([](const wxString& file, int line, const wxString& func, const wxString& condition, const wxString& message)
 		{
-			if (ScopedLoggerAuto logger; true)
+			if (ScopedLoggerAutoScope logger; true)
 			{
 				 logger.Debug().Format("[wxWidgets] Assestion failed [File={}:{}], [Function={}], [Condition={}], [Message={}]", file, line, func, condition, message);
 			}
@@ -81,11 +81,11 @@ namespace kxf::Log
 		{
 			logger.Format("[Message: {}]", msg);
 		}
-		ScopedLoggerAuto().GetTLS().Write(MapLogLevel(level), DateTime().SetValue(info.timestampMS), logger.ToString(), LogCategory::wxWidgets);
+		ScopedLoggerAutoScope().GetTLS().Write(MapLogLevel(level), DateTime().SetValue(info.timestampMS), logger.ToString(), LogCategory::wxWidgets);
 	}
 
 	void WxOverride::Flush()
 	{
-		ScopedLoggerAuto().GetTLS().Flush();
+		ScopedLoggerAutoScope().GetTLS().Flush();
 	}
 }
