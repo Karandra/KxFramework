@@ -262,6 +262,10 @@ namespace kxf
 			bool RemoveSection(const String& sectionName, bool removeEmpty = true);
 			bool RemoveValue(const String& sectionName, const String& keyName, bool removeEmpty = true);
 
+			std::optional<String> IniQueryValue(const String& sectionName, const String& keyName) const
+			{
+				return IniDoGetValue(sectionName, keyName);
+			}
 			String IniGetValue(const String& sectionName, const String& keyName, const String& defaultValue = {}) const
 			{
 				return IniDoGetValue(sectionName, keyName).value_or(defaultValue);
