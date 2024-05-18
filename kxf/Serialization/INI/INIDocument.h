@@ -243,6 +243,7 @@ namespace kxf
 		public:
 			// INIDocument
 			bool Load(const String& ini);
+			bool Load(std::span<const char8_t> utf8Data);
 			bool Load(IInputStream& stream);
 			bool Save(IOutputStream& stream) const;
 			String Save() const;

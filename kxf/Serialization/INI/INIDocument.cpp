@@ -433,6 +433,16 @@ namespace kxf
 
 		return DoLoad(reinterpret_cast<const char*>(buffer.GetBufferStart()), buffer.GetBufferSize());
 	}
+	bool INIDocument::Load(std::span<const char8_t> utf8Data)
+	{
+		DoUnload();
+
+		if (utf8Data.empty())
+		{
+			return DoLoad(reinterpret_cast<const char*>(utf8Data.data()), utf8Data.size_bytes());
+		}
+		return false;
+	}
 	bool INIDocument::Save(IOutputStream& stream) const
 	{
 		if (m_Document)
