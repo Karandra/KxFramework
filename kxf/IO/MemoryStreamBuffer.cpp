@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr size_t g_BufferSize = kxf::DataSize::FromKB(64).ToBytes();
+	constexpr size_t g_BufferSize = kxf::DataSize::FromKB(8).ToBytes();
 }
 
 namespace kxf

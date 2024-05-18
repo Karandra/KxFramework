@@ -154,6 +154,10 @@ namespace kxf
 			{
 				return m_BufferEnd - m_BufferCurrent;
 			}
+			size_t GetBufferSize() const noexcept
+			{
+				return m_BufferEnd - m_BufferStart;
+			}
 
 			size_t Read(void* buffer, size_t size) noexcept;
 			size_t Read(MemoryStreamBuffer& other);
@@ -169,6 +173,16 @@ namespace kxf
 			{
 				return m_BufferStart;
 			}
+
+			const void* GetBufferCurrent() const noexcept
+			{
+				return m_BufferCurrent;
+			}
+			void* GetBufferCurrent() noexcept
+			{
+				return m_BufferCurrent;
+			}
+
 			const void* GetBufferEnd() const noexcept
 			{
 				return m_BufferEnd;
@@ -176,10 +190,6 @@ namespace kxf
 			void* GetBufferEnd() noexcept
 			{
 				return m_BufferEnd;
-			}
-			size_t GetBufferSize() const noexcept
-			{
-				return m_BufferEnd - m_BufferStart;
 			}
 
 		public:
