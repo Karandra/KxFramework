@@ -71,24 +71,14 @@ namespace kxf
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 													   FlagSet<FSActionFlag> flags = {}
 			);
-
-		public:
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
-			}
 	};
 
-	class KX_API IFileIDSystem: public RTTI::Interface<IFileIDSystem>
+	class KX_API IFileSystemWithID: public RTTI::Interface<IFileSystemWithID>
 	{
-		KxRTTI_DeclareIID(IFileIDSystem, {0x8a4f7e63, 0x6092, 0x4859, {0xa1, 0x74, 0x25, 0x8, 0x7a, 0x4a, 0x90, 0xcb}});
+		KxRTTI_DeclareIID(IFileSystemWithID, {0x8a4f7e63, 0x6092, 0x4859, {0xa1, 0x74, 0x25, 0x8, 0x7a, 0x4a, 0x90, 0xcb}});
 
 		public:
-			virtual ~IFileIDSystem() = default;
+			virtual ~IFileSystemWithID() = default;
 
 		public:
 			virtual bool IsNull() const = 0;
@@ -129,21 +119,11 @@ namespace kxf
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 													   FlagSet<FSActionFlag> flags = {}
 			);
-
-		public:
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
-			}
 	};
 }
 
 namespace kxf::FileSystem
 {
 	KX_API IFileSystem& GetNullFileSystem() noexcept;
-	KX_API IFileIDSystem& GetNullFileIDSystem() noexcept;
+	KX_API IFileSystemWithID& GetNullFileSystemWithID() noexcept;
 }

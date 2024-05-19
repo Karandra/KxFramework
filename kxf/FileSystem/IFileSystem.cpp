@@ -38,11 +38,11 @@ namespace kxf
 
 namespace kxf
 {
-	std::unique_ptr<IInputStream> IFileIDSystem::OpenToRead(const UniversallyUniqueID& id, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<FSActionFlag> flags) const
+	std::unique_ptr<IInputStream> IFileSystemWithID::OpenToRead(const UniversallyUniqueID& id, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<FSActionFlag> flags) const
 	{
-		return QueryStream<IInputStream>(const_cast<IFileIDSystem&>(*this), id, IOStreamAccess::Read, disposition, share, flags);
+		return QueryStream<IInputStream>(const_cast<IFileSystemWithID&>(*this), id, IOStreamAccess::Read, disposition, share, flags);
 	}
-	std::unique_ptr<IOutputStream> IFileIDSystem::OpenToWrite(const UniversallyUniqueID& id, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<FSActionFlag> flags)
+	std::unique_ptr<IOutputStream> IFileSystemWithID::OpenToWrite(const UniversallyUniqueID& id, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<FSActionFlag> flags)
 	{
 		return QueryStream<IOutputStream>(*this, id, IOStreamAccess::Write, disposition, share, flags);
 	}
@@ -55,7 +55,7 @@ namespace kxf::FileSystem
 	{
 		return g_NullFileSystem;
 	}
-	IFileIDSystem& GetNullFileIDSystem() noexcept
+	IFileSystemWithID& GetNullFileSystemWithID() noexcept
 	{
 		return g_NullFileSystem;
 	}

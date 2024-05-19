@@ -23,7 +23,7 @@ namespace kxf::SevenZip
 			IArchiveUpdate,
 			IWithEvtHandler,
 			IFileSystem,
-			IFileIDSystem
+			IFileSystemWithID
 		>
 	{
 		protected:
@@ -322,7 +322,7 @@ namespace kxf::SevenZip
 			}
 
 		public:
-			// IFileIDSystem
+			// IFileSystemWithID
 			UniversallyUniqueID GetLookupScope() const override
 			{
 				return {};

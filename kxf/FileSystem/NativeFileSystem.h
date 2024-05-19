@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	class KX_API NativeFileSystem: public RTTI::Implementation<NativeFileSystem, IFileSystem, IFileIDSystem>
+	class KX_API NativeFileSystem: public RTTI::Implementation<NativeFileSystem, IFileSystem, IFileSystemWithID>
 	{
 		public:
 			static FSPath GetExecutingModuleRootDirectory();
@@ -98,7 +98,7 @@ namespace kxf
 			using IFileSystem::OpenToWrite;
 
 		public:
-			// IFileIDSystem
+			// IFileSystemWithID
 			UniversallyUniqueID GetLookupScope() const override
 			{
 				return m_LookupVolume.GetUniqueID();
@@ -148,8 +148,8 @@ namespace kxf
 											   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
 											   FlagSet<FSActionFlag> flags = {}
 			) override;
-			using IFileIDSystem::OpenToRead;
-			using IFileIDSystem::OpenToWrite;
+			using IFileSystemWithID::OpenToRead;
+			using IFileSystemWithID::OpenToWrite;
 
 		public:
 			// NativeFileSystem
@@ -175,16 +175,6 @@ namespace kxf
 
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
-
-		public:
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
-			}
 	};
 }
 

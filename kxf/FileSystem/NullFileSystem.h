@@ -6,7 +6,7 @@
 
 namespace kxf::FileSystem
 {
-	class NullFileSystem final: public RTTI::Implementation<NullFileSystem, IFileSystem, IFileIDSystem>
+	class NullFileSystem final: public RTTI::Implementation<NullFileSystem, IFileSystem, IFileSystemWithID>
 	{
 		public:
 			NullFileSystem() noexcept = default;
@@ -114,7 +114,7 @@ namespace kxf::FileSystem
 			using IFileSystem::OpenToWrite;
 
 		public:
-			// IFileIDSystem
+			// IFileSystemWithID
 			UniversallyUniqueID GetLookupScope() const override
 			{
 				return {};
@@ -182,17 +182,7 @@ namespace kxf::FileSystem
 			{
 				return nullptr;
 			}
-			using IFileIDSystem::OpenToRead;
-			using IFileIDSystem::OpenToWrite;
-
-		public:
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
-			}
+			using IFileSystemWithID::OpenToRead;
+			using IFileSystemWithID::OpenToWrite;
 	};
 }

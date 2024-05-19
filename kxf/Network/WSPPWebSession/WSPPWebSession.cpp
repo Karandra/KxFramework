@@ -35,7 +35,7 @@ namespace kxf
 	}
 	void kxf::WSPPWebSession::SetFileSystem(IFileSystem& fileSystem)
 	{
-		if (fileSystem && fileSystem.IsLookupScoped())
+		if (!fileSystem.IsNull() && fileSystem.IsLookupScoped())
 		{
 			m_FileSystem = &fileSystem;
 		}
