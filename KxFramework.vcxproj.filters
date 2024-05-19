@@ -2451,6 +2451,9 @@
     <ClInclude Include="kxf\Core\Private\ErrorCode.h">
       <Filter>kxf\Core\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Utility\Callback.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
