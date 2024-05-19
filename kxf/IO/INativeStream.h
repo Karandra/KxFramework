@@ -35,5 +35,57 @@ namespace kxf
 
 			virtual bool GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const = 0;
 			virtual bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
+
+		public:
+			DateTime GetCreationTime() const
+			{
+				DateTime creationTime;
+				DateTime modificationTime;
+				DateTime lastAccessTime;
+
+				if (GetTimestamp(creationTime, modificationTime, lastAccessTime))
+				{
+					return creationTime;
+				}
+				return {};
+			}
+			bool SetCreationTime(DateTime creationTime)
+			{
+				return ChangeTimestamp(creationTime, {}, {});
+			}
+
+			DateTime GetModificationTime() const
+			{
+				DateTime creationTime;
+				DateTime modificationTime;
+				DateTime lastAccessTime;
+
+				if (GetTimestamp(creationTime, modificationTime, lastAccessTime))
+				{
+					return modificationTime;
+				}
+				return {};
+			}
+			bool SetModificationTime(DateTime modificationTime)
+			{
+				return ChangeTimestamp({}, modificationTime, {});
+			}
+
+			DateTime GetLastAccessTime() const
+			{
+				DateTime creationTime;
+				DateTime modificationTime;
+				DateTime lastAccessTime;
+
+				if (GetTimestamp(creationTime, modificationTime, lastAccessTime))
+				{
+					return creationTime;
+				}
+				return {};
+			}
+			bool SetLastAccessTime(DateTime lastAccessTime)
+			{
+				return ChangeTimestamp({}, {}, lastAccessTime);
+			}
 	};
 }
