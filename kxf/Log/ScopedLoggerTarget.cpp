@@ -28,7 +28,7 @@ namespace kxf::Private
 			}
 		};
 
-		if (m_FlushTreshold != std::numeric_limits<size_t>::max() && m_WriteCount >= m_FlushTreshold)
+		if (m_FlushThreshold != std::numeric_limits<size_t>::max() && m_WriteCount >= m_FlushThreshold)
 		{
 			return true;
 		}

@@ -16,7 +16,7 @@ namespace kxf::Private
 
 		private:
 			size_t m_WriteCount = 0;
-			size_t m_FlushTreshold = FlushDefault;
+			size_t m_FlushThreshold = FlushDefault;
 
 		public:
 			void OnWrite() noexcept
@@ -29,9 +29,9 @@ namespace kxf::Private
 			}
 			bool ShouldFlush(LogLevel logLevel) const noexcept;
 
-			void SetFlushTreshold(size_t value) noexcept
+			void SetFlushThreshold(size_t value) noexcept
 			{
-				m_FlushTreshold = value;
+				m_FlushThreshold = value;
 			}
 	};
 }
@@ -85,9 +85,9 @@ namespace kxf
 			void Flush() override;
 
 			// ScopedLoggerFileTarget
-			void SetFlushTreshold(size_t value) noexcept
+			void SetFlushThreshold(size_t value) noexcept
 			{
-				m_FlushControl.SetFlushTreshold(value);
+				m_FlushControl.SetFlushThreshold(value);
 			}
 	};
 
@@ -113,9 +113,9 @@ namespace kxf
 			void Flush() override;
 
 			// ScopedLoggerSingleFileTarget
-			void SetFlushTreshold(size_t value) noexcept
+			void SetFlushThreshold(size_t value) noexcept
 			{
-				m_FlushControl.SetFlushTreshold(value);
+				m_FlushControl.SetFlushThreshold(value);
 			}
 	};
 

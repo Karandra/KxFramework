@@ -633,7 +633,7 @@ namespace kxf
 					directories.emplace_back(path);
 
 					size_t failCount = 0;
-					size_t failCountTreshold = directories.size() * 2;
+					size_t failCountThreshold = directories.size() * 2;
 					bool shouldExit = false;
 					while (!shouldExit && !directories.empty())
 					{
@@ -655,7 +655,7 @@ namespace kxf
 						}
 
 						// Not be the best solution but anyway
-						if (failCount >= failCountTreshold)
+						if (failCount >= failCountThreshold)
 						{
 							return false;
 						}
