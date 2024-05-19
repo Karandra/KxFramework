@@ -143,6 +143,8 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
+    <ClInclude Include="kxf\Core\EncodingConverter\NativeEncodingConverter.h" />
+    <ClInclude Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.h" />
     <ClInclude Include="kxf\Core\Private\ErrorCode.h" />
     <ClInclude Include="kxf\Core\Private\FormatQtStyle.h" />
     <ClInclude Include="kxf\Core\Private\StringFormatters.h" />
@@ -277,8 +279,6 @@
     <ClInclude Include="kxf\Core\NullVariablesCollection.h" />
     <ClInclude Include="kxf\Core\OptionalPtr.h" />
     <ClInclude Include="kxf\Core\OptionalRef.h" />
-    <ClInclude Include="kxf\Core\Private\NativeEncodingConverter.h" />
-    <ClInclude Include="kxf\Core\Private\WhateverWorksEncodingConverter.h" />
     <ClInclude Include="kxf\Core\RecursionGuard.h" />
     <ClInclude Include="kxf\Core\RegEx.h" />
     <ClInclude Include="kxf\Core\ResourceID.h" />
@@ -852,6 +852,8 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Core\EncodingConverter\NativeEncodingConverter.cpp" />
+    <ClCompile Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\Private\ErrorCode.cpp" />
     <ClCompile Include="kxf\Core\StandardAllocator.cpp" />
     <ClCompile Include="kxf\Core\UniChar.cpp" />
@@ -913,12 +915,9 @@
     <ClCompile Include="kxf\Core\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\Core\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\Core\ErrorCode.cpp" />
-    <ClCompile Include="kxf\Core\IEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\Core\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\Core\NativeUUID.cpp" />
-    <ClCompile Include="kxf\Core\Private\NativeEncodingConverter.cpp" />
-    <ClCompile Include="kxf\Core\Private\WhateverWorksEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\RegEx.cpp" />
     <ClCompile Include="kxf\Core\ResourceID.cpp" />
     <ClCompile Include="kxf\Core\StaticVariablesCollection.cpp" />

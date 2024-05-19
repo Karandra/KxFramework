@@ -1,21 +1,17 @@
 #include "KxfPCH.h"
 #include "WhateverWorksEncodingConverter.h"
 #include "NativeEncodingConverter.h"
-#include "kxf/Core/String.h"
 #include <Windows.h>
 
 namespace
 {
+	// ISO 8859-1/Latin 1
 	constexpr int g_ISO8859_1 = 28591;
 }
 
 namespace kxf
 {
-	String WhateverWorksEncodingConverter::GetEncodingName() const
-	{
-		return "WhateverWorks";
-	}
-
+	// IEncodingConverter
 	size_t WhateverWorksEncodingConverter::ToMultiByteBuffer(std::span<const wchar_t> source, std::span<std::byte> destination)
 	{
 		// UTF-8
@@ -32,7 +28,6 @@ namespace kxf
 			return result;
 		}
 
-		// ISO 8859-1/Latin 1
 		result = NativeEncodingConverter(g_ISO8859_1).ToMultiByte(source, destination);
 		return result;
 	}
@@ -52,8 +47,13 @@ namespace kxf
 			return result;
 		}
 
-		// ISO 8859-1/Latin 1
 		result = NativeEncodingConverter(g_ISO8859_1).ToWideChar(source, destination);
 		return result;
+	}
+
+	// IEncodingConverter
+	String WhateverWorksEncodingConverter::GetEncodingName() const
+	{
+		return {};
 	}
 }

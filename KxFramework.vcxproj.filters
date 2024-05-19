@@ -308,6 +308,9 @@
     <Filter Include="kxf\System\SystemWindow">
       <UniqueIdentifier>{9ad2b5d1-4bd5-4da5-a707-c0d0f3ee2bbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Core\EncodingConverter">
+      <UniqueIdentifier>{591d0480-be16-47b2-823a-1e8a96381fc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1896,12 +1899,6 @@
     <ClInclude Include="kxf\Core\IEncodingConverter.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\Private\NativeEncodingConverter.h">
-      <Filter>kxf\Core\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Core\Private\WhateverWorksEncodingConverter.h">
-      <Filter>kxf\Core\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Application\CommandLineParser.h">
       <Filter>kxf\Application</Filter>
     </ClInclude>
@@ -2453,6 +2450,12 @@
     </ClInclude>
     <ClInclude Include="kxf\Utility\Callback.h">
       <Filter>kxf\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.h">
+      <Filter>kxf\Core\EncodingConverter</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Core\EncodingConverter\NativeEncodingConverter.h">
+      <Filter>kxf\Core\EncodingConverter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3366,15 +3369,6 @@
     <ClCompile Include="kxf\IO\StreamReaderWriter.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\IEncodingConverter.cpp">
-      <Filter>kxf\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Core\Private\NativeEncodingConverter.cpp">
-      <Filter>kxf\Core\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Core\Private\WhateverWorksEncodingConverter.cpp">
-      <Filter>kxf\Core\Private</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Application\CommandLineParser.cpp">
       <Filter>kxf\Application</Filter>
     </ClCompile>
@@ -3729,6 +3723,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Core\Private\ErrorCode.cpp">
       <Filter>kxf\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.cpp">
+      <Filter>kxf\Core\EncodingConverter</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\EncodingConverter\NativeEncodingConverter.cpp">
+      <Filter>kxf\Core\EncodingConverter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

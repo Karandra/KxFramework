@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "IEncodingConverter.h"
-#include "Private/NativeEncodingConverter.h"
-#include "Private/WhateverWorksEncodingConverter.h"
+#include "EncodingConverter/NativeEncodingConverter.h"
+#include "EncodingConverter/WhateverWorksEncodingConverter.h"
 #include <Windows.h>
 
 namespace
