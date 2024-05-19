@@ -278,7 +278,7 @@ namespace kxf
 		else
 		{
 			m_UserContextRef.store({});
-			m_LogTarget = std::make_shared<ScopedLoggerConsoleTarget>(*this);
+			m_LogTarget = nullptr;
 		}
 	}
 	void ScopedLoggerTLS::UpdateUserContext(std::shared_ptr<IScopedLoggerContext> userContext)
