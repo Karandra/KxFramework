@@ -79,7 +79,7 @@ namespace kxf
 
 				if (GetTimestamp(creationTime, modificationTime, lastAccessTime))
 				{
-					return creationTime;
+					return lastAccessTime;
 				}
 				return {};
 			}
