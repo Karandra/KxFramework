@@ -807,7 +807,7 @@ namespace kxf
 
 		return path.IsAbsolute() && NativeFileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
 	}
-	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<bool(String, DataSize)> func) const
+	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<CallbackCommand(String, DataSize)> func) const
 	{
 		if (IsNull())
 		{
@@ -832,7 +832,7 @@ namespace kxf
 				{
 					// Fetch the file info and invoke the callback
 					counter++;
-					if (!std::invoke(func, streamInfo.cStreamName, DataSize::FromBytes(streamInfo.StreamSize.QuadPart)))
+					if (std::invoke(func, streamInfo.cStreamName, DataSize::FromBytes(streamInfo.StreamSize.QuadPart)) == CallbackCommand::Terminate)
 					{
 						break;
 					}

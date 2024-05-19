@@ -171,7 +171,7 @@ namespace kxf
 			}
 
 			bool IsInUse(const FSPath& path) const;
-			size_t EnumStreams(const FSPath& path, std::function<bool(String, DataSize)> func) const;
+			size_t EnumStreams(const FSPath& path, std::function<CallbackCommand(String, DataSize)> func) const;
 
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
