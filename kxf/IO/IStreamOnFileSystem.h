@@ -15,7 +15,7 @@ namespace kxf
 			virtual ~IStreamOnFileSystem() = default;
 
 		public:
-			virtual FSPath GetPath() const = 0;
-			virtual UniversallyUniqueID GetUniqueID() const = 0;
+			virtual FSPath GetFilePath() const = 0;
+			virtual UniversallyUniqueID GetFileUniqueID() const = 0;
 	};
 }

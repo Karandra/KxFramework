@@ -301,7 +301,7 @@ namespace kxf
 	// IReadableOutputStream
 	std::unique_ptr<IInputStream> NativeFileStream::CreateInputStream() const
 	{
-		NativeFileStream stream(GetPath(), IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, m_Flags);
+		NativeFileStream stream(GetFilePath(), IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, m_Flags);
 		if (stream)
 		{
 			return std::make_unique<NativeFileStream>(std::move(stream));
@@ -422,11 +422,11 @@ namespace kxf
 	}
 
 	// IStreamOnFileSystem
-	FSPath NativeFileStream::GetPath() const
+	FSPath NativeFileStream::GetFilePath() const
 	{
 		return GetPathByHandle(m_Handle);
 	}
-	UniversallyUniqueID NativeFileStream::GetUniqueID() const
+	UniversallyUniqueID NativeFileStream::GetFileUniqueID() const
 	{
 		if (DoIsOpened())
 		{

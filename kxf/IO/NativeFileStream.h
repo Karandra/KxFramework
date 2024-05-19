@@ -125,8 +125,8 @@ namespace kxf
 			bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
 			// IStreamOnFileSystem
-			FSPath GetPath() const override;
-			UniversallyUniqueID GetUniqueID() const override;
+			FSPath GetFilePath() const override;
+			UniversallyUniqueID GetFileUniqueID() const override;
 
 			// NativeFileStream
 			bool Open(const FSPath& path,

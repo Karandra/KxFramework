@@ -125,7 +125,7 @@ namespace kxf::FileSystem::Private
 			};
 
 			// File item and path
-			FileItem fileItem(stream.GetPath());
+			FileItem fileItem(stream.GetFilePath());
 
 			BY_HANDLE_FILE_INFORMATION fileInfo = {};
 			if (::GetFileInformationByHandle(fileHandle, &fileInfo))
