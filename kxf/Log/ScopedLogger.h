@@ -775,7 +775,7 @@ namespace kxf::Log
 }
 
 #define KX_SCOPEDLOG							scopedLogger_
-#define KX_SCOPEDLOG_AUTO						kxf::ScopedLoggerAuto		KX_SCOPEDLOG
+#define KX_SCOPEDLOG_AUTO						kxf::ScopedLoggerAutoScope	KX_SCOPEDLOG
 #define KX_SCOPEDLOG_FUNC						kxf::ScopedLoggerNewScope	KX_SCOPEDLOG(std::source_location::current())
 #define KX_SCOPEDLOG_ARGS(...)					kxf::ScopedLoggerNewScope	KX_SCOPEDLOG(std::source_location::current(), __VA_ARGS__)
 
