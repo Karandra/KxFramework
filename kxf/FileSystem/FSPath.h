@@ -255,13 +255,15 @@ namespace kxf
 	template<class T>
 	FSPath operator+(FSPath left, T&& right)
 	{
-		return left.Concat(std::forward<T>(right));
+		left.Concat(std::forward<T>(right));
+		return left;
 	}
 
 	template<class T>
 	FSPath operator/(FSPath left, T&& right)
 	{
-		return left.Append(std::forward<T>(right));
+		left.Append(std::forward<T>(right));
+		return left;
 	}
 }
 
