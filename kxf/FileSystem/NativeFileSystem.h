@@ -9,6 +9,7 @@ namespace kxf
 	class KX_API NativeFileSystem: public RTTI::Implementation<NativeFileSystem, IFileSystem, IFileSystemWithID>
 	{
 		public:
+			static FSPath GetCurrentModuleRootDirectory();
 			static FSPath GetExecutingModuleRootDirectory();
 			static FSPath GetExecutingModuleWorkingDirectory();
 			static bool SetExecutingModuleWorkingDirectory(const FSPath& directory);

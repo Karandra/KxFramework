@@ -211,6 +211,10 @@ namespace
 
 namespace kxf
 {
+	FSPath NativeFileSystem::GetCurrentModuleRootDirectory()
+	{
+		return DynamicLibrary::GetCurrentModule().GetFilePath().GetParent();
+	}
 	FSPath NativeFileSystem::GetExecutingModuleRootDirectory()
 	{
 		return DynamicLibrary::GetExecutingModule().GetFilePath().GetParent();
