@@ -702,6 +702,20 @@ namespace kxf
 namespace kxf::Log
 {
 	template<class TFormat, class... Args>
+	void LogAtLevel(LogLevel logLevel, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAutoScope scope;
+		ScopedMessageLogger(scope, logLevel).Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
+	void LogCategoryAtLevel(String category, LogLevel logLevel, const TFormat& format, Args&&... arg)
+	{
+		ScopedLoggerAutoScope scope;
+		ScopedMessageLogger(scope, logLevel, std::move(category)).Format(format, std::forward<Args>(arg)...);
+	}
+
+	template<class TFormat, class... Args>
 	void Critical(const TFormat& format, Args&&... arg)
 	{
 		ScopedLoggerAutoScope().Critical().Format(format, std::forward<Args>(arg)...);
