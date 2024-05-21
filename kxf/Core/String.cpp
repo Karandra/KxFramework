@@ -254,16 +254,69 @@ namespace
 	}
 
 	template<class T, class TFunc>
-	bool ConvertToInteger(T& value, int base, const kxf::XChar* start, TFunc&& func) noexcept
+	bool ConvertToInteger(T& value, int base, std::basic_string_view<kxf::XChar> buffer, TFunc&& func) noexcept
 	{
-		errno = 0;
-		kxf::XChar* end = nullptr;
-		auto result = std::invoke(func, start, &end, base);
-
-		if (end != start && errno == 0)
+		bool negate = false;
+		if (base < 0)
 		{
-			value = result;
-			return true;
+			if constexpr(std::is_signed_v<T>)
+			{
+				if (buffer.starts_with('-'))
+				{
+					negate = true;
+					buffer.remove_prefix(1);
+				}
+			}
+
+			const auto temp = buffer;
+			if (buffer.starts_with('0'))
+			{
+				buffer.remove_prefix(1);
+				if (buffer.starts_with('x') || buffer.starts_with('X'))
+				{
+					buffer.remove_prefix(1);
+					base = 16;
+				}
+				else if (buffer.starts_with('o') || buffer.starts_with('O'))
+				{
+					buffer.remove_prefix(1);
+					base = 8;
+				}
+				else if (buffer.starts_with('b') || buffer.starts_with('B'))
+				{
+					buffer.remove_prefix(1);
+					base = 2;
+				}
+			}
+
+			if (base < 0)
+			{
+				base = 10;
+				buffer = temp;
+			}
+		}
+
+		if (!buffer.empty())
+		{
+			const kxf::XChar* start = buffer.data();
+			kxf::XChar* end = nullptr;
+
+			errno = 0;
+			auto result = std::invoke(func, start, &end, base);
+
+			if (end != start && errno == 0)
+			{
+				if constexpr(std::is_signed_v<T>)
+				{
+					if (negate)
+					{
+						result = -result;
+					}
+				}
+
+				value = result;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -870,11 +923,11 @@ namespace kxf
 	}
 	bool String::DoToSignedInteger(int64_t& value, int base) const noexcept
 	{
-		return ConvertToInteger(value, base, wc_str(), std::wcstoll);
+		return ConvertToInteger(value, base, wc_view(), std::wcstoll);
 	}
 	bool String::DoToUnsignedInteger(uint64_t& value, int base) const noexcept
 	{
-		return ConvertToInteger(value, base, wc_str(), std::wcstoull);
+		return ConvertToInteger(value, base, wc_view(), std::wcstoull);
 	}
 
 	// Miscellaneous
