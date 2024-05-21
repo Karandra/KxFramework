@@ -854,6 +854,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Core\EncodingConverter\NativeEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.cpp" />
+    <ClCompile Include="kxf\Core\IEncodingConverter.cpp" />
     <ClCompile Include="kxf\Core\Private\ErrorCode.cpp" />
     <ClCompile Include="kxf\Core\StandardAllocator.cpp" />
     <ClCompile Include="kxf\Core\UniChar.cpp" />

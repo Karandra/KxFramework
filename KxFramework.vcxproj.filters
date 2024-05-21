@@ -3730,6 +3730,9 @@
     <ClCompile Include="kxf\Core\EncodingConverter\NativeEncodingConverter.cpp">
       <Filter>kxf\Core\EncodingConverter</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Core\IEncodingConverter.cpp">
+      <Filter>kxf\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
