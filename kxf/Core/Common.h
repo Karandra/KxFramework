@@ -137,7 +137,8 @@ namespace kxf
 	enum class CallbackCommand
 	{
 		Continue,
-		Terminate
+		Terminate,
+		Discard
 	};
 }
 
