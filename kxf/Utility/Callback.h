@@ -14,14 +14,14 @@ namespace kxf::Utility
 
 		public:
 			MoveToVectorCallback(std::vector<TItem>& ref, size_t reserve = 0) noexcept
-				:m_Container(&m_Container)
+				:m_Container(&ref)
 			{
 				if (reserve != 0 && reserve != std::numeric_limits<size_t>::max())
 				{
 					ref.reserve(reserve);
 				}
 			}
-			MoveToVectorCallback(const MoveToVectorCallback&) = delete;
+			MoveToVectorCallback(const MoveToVectorCallback&) = default;
 			MoveToVectorCallback(MoveToVectorCallback&&) = default;
 
 		public:
@@ -32,7 +32,7 @@ namespace kxf::Utility
 			}
 
 		public:
-			MoveToVectorCallback& operator=(const MoveToVectorCallback&) = delete;
+			MoveToVectorCallback& operator=(const MoveToVectorCallback&) = default;
 			MoveToVectorCallback& operator=(MoveToVectorCallback&&) = default;
 	};
 }
