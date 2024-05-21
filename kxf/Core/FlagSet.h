@@ -364,7 +364,7 @@ namespace std
 	struct formatter<kxf::FlagSet<TEnum>, TChar>: formatter<typename kxf::FlagSet<TEnum>::TInt, TChar>
 	{
 		template<class TFormatContext>
-		auto format(const kxf::FlagSet<TEnum>& value, TFormatContext& formatContext)
+		auto format(const kxf::FlagSet<TEnum>& value, TFormatContext& formatContext) const
 		{
 			using Tx = typename kxf::FlagSet<TEnum>::TInt;
 			return formatter<Tx, TChar>::format(value.ToInt(), formatContext);
