@@ -305,6 +305,15 @@ namespace kxf
 		}
 	}
 
+	INIDocument::INIDocument()
+		:INIDocumentSection(*this, {})
+	{
+		Init();
+	}
+	INIDocument::INIDocument(INIDocument&& other) noexcept
+	{
+		*this = std::move(*this);
+	}
 	INIDocument::~INIDocument() = default;
 
 	// IXNode
@@ -557,5 +566,14 @@ namespace kxf
 			return m_Document->Delete(sectionName.utf8_str(), keyName.utf8_str(), removeEmpty);
 		}
 		return false;
+	}
+
+	INIDocument& INIDocument::operator=(INIDocument&& other) noexcept
+	{
+		static_cast<INIDocumentSection&>(*this) = std::move(other);
+		m_Ref = this;
+		m_Document = std::move(other.m_Document);
+
+		return *this;
 	}
 }

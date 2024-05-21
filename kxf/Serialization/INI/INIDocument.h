@@ -181,11 +181,7 @@ namespace kxf
 			bool IniDoSetValue(const String& sectionName, const String& keyName, const String& value, const String& comment = {}, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto);
 
 		public:
-			INIDocument()
-				:INIDocumentSection(*this, {})
-			{
-				Init();
-			}
+			INIDocument();
 			INIDocument(const String& ini)
 				:INIDocument()
 			{
@@ -200,10 +196,7 @@ namespace kxf
 				Load(stream);
 			}
 			INIDocument(const INIDocument&) = delete;
-			INIDocument(INIDocument&& other) noexcept
-			{
-				*this = std::move(*this);
-			}
+			INIDocument(INIDocument&& other) noexcept;
 			~INIDocument();
 
 		public:
@@ -343,14 +336,7 @@ namespace kxf
 
 		public:
 			INIDocument& operator=(const INIDocument&) = delete;
-			INIDocument& operator=(INIDocument&& other) noexcept
-			{
-				static_cast<INIDocumentSection&>(*this) = std::move(other);
-				m_Ref = this;
-				m_Document = std::move(other.m_Document);
-
-				return *this;
-			}
+			INIDocument& operator=(INIDocument&& other) noexcept;
 	};
 }
 
