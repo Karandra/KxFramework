@@ -127,6 +127,7 @@ namespace kxf
 namespace kxf
 {
 	template<class TEnum_>
+	requires(std::is_enum_v<TEnum_> || std::is_integral_v<TEnum_>)
 	class FlagSet final
 	{
 		public:
