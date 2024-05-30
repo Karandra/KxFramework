@@ -68,9 +68,10 @@ namespace kxf
 	}
 	uint64_t EventID::Deserialize(IInputStream& stream)
 	{
+		m_TypeInfo = nullptr;
+
 		uint64_t index = 0;
 		uint64_t read = Serialization::ReadObject(stream, index);
-
 		switch (index)
 		{
 			case 0:
@@ -151,11 +152,13 @@ namespace kxf
 		return NullString;
 	}
 
+	#ifdef __WXWINDOWS__
 	bool EventID::IsWxWidgetsID() const noexcept
 	{
 		int64_t id = AsInt();
 		return id >= wxEVT_FIRST && id <= g_LastWxEventID;
 	}
+	#endif
 }
 
 namespace kxf::EventSystem

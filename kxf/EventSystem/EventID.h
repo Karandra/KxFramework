@@ -3,9 +3,15 @@
 #include "kxf/Core/String.h"
 #include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/Serialization/BinarySerializer.h"
+#include "kxf/Utility/Common.h"
 #include "kxf/Utility/Memory.h"
 #include <type_traits>
 #include <variant>
+
+namespace kxf
+{
+	class IEvent;
+}
 
 namespace kxf
 {
@@ -14,8 +20,12 @@ namespace kxf
 		friend struct std::hash<EventID>;
 		friend struct BinarySerializer<EventID>;
 
+		template<class TEvent>
+		friend class EventTag;
+
 		private:
 			std::variant<int64_t, UniversallyUniqueID, String> m_ID;
+			const std::type_info* m_TypeInfo = nullptr;
 
 		private:
 			size_t GetHash() const noexcept;
@@ -33,18 +43,17 @@ namespace kxf
 			}
 
 			// Member function pointer
-			template<class TFunc> requires(std::is_member_function_pointer_v<TFunc>)
+			template<class TFunc>
+			requires(std::is_member_function_pointer_v<TFunc>)
 			EventID(TFunc func) noexcept
 				:m_ID(Utility::StoreMemberFunction(func).ToUniversallyUniqueID())
 			{
 			}
 			
-			// Simple integer
-			EventID(int64_t id) noexcept
-				:m_ID(id)
-			{
-			}
-			EventID(int id) noexcept
+			// Simple integer or enum
+			template<class T>
+			requires(std::is_integral_v<T> || std::is_enum_v<T>)
+			EventID(T id) noexcept
 				:m_ID(static_cast<int64_t>(id))
 			{
 			}
@@ -69,16 +78,18 @@ namespace kxf
 			{
 			}
 			
-			// Wx event tag (integer)
+			// wxWidgets event tag (integer)
+			#ifdef __WXWINDOWS__
 			template<class T>
 			EventID(const wxEventTypeTag<T>& eventTag) noexcept
 				:m_ID(static_cast<wxEventType>(eventTag))
 			{
 			}
-			
+			#endif
+
 			EventID(EventID&& other) noexcept
-				:m_ID(std::move(other.m_ID))
 			{
+				*this = std::move(other);
 			}
 			EventID(const EventID&) = default;
 
@@ -89,7 +100,16 @@ namespace kxf
 			UniversallyUniqueID AsUniqueID() const noexcept;
 			const String& AsString() const noexcept;
 
+			template<class T>
+			requires(std::is_base_of_v<IEvent, T>)
+			bool IsSameEventClass() const noexcept
+			{
+				return m_TypeInfo && *m_TypeInfo == typeid(T);
+			}
+
+			#ifdef __WXWINDOWS__
 			bool IsWxWidgetsID() const noexcept;
+			#endif
 
 		public:
 			explicit operator bool() const noexcept
@@ -101,12 +121,24 @@ namespace kxf
 				return IsNull();
 			}
 
-			std::strong_ordering operator<=>(const EventID&) const noexcept = default;
-			bool operator==(const EventID&) const noexcept = default;
+			auto operator<=>(const EventID& other) const noexcept
+			{
+				return m_ID <=> other.m_ID;
+			}
+			bool operator==(const EventID& other) const noexcept
+			{
+				return m_ID == other.m_ID;
+			}
+			bool operator!=(const EventID& other) const noexcept
+			{
+				return m_ID != other.m_ID;
+			}
 
 			EventID& operator=(EventID&& other) noexcept
 			{
 				m_ID = std::move(other.m_ID);
+				m_TypeInfo = Utility::ExchangeResetAndReturn(other.m_TypeInfo, nullptr);
+
 				return *this;
 			}
 			EventID& operator=(const EventID&) = default;
@@ -115,39 +147,60 @@ namespace kxf
 
 namespace kxf
 {
-	template<class T>
+	template<class TEvent_>
 	class EventTag final
 	{
+		public:
+			using TEvent = TEvent_;
+
 		private:
 			EventID m_ID;
+
+		private:
+			void Init() noexcept
+			{
+				if (!std::is_same_v<TEvent, IEvent>)
+				{
+					m_ID.m_TypeInfo = &typeid(TEvent);
+				}
+				else
+				{
+					m_ID.m_TypeInfo = nullptr;
+				}
+			}
 
 		public:
 			EventTag() noexcept = default;
 			EventTag(EventID id) noexcept
 				:m_ID(std::move(id))
 			{
+				Init();
 			}
+
+			template<class T> requires(std::is_constructible_v<EventID, T>)
+			EventTag(T&& arg) noexcept(std::is_nothrow_constructible_v<EventID, T>)
+				:m_ID(std::forward<T>(arg))
+			{
+				Init();
+			}
+
 			EventTag(EventTag&& other) noexcept
 				:m_ID(std::move(other))
 			{
 			}
 			EventTag(const EventTag&) = default;
 
-			template<class T, class = std::enable_if_t<std::is_nothrow_constructible_v<EventID, T>>>
-			EventTag(T&& arg) noexcept
-				:m_ID(std::forward<T>(arg))
-			{
-			}
-
 		public:
 			bool IsNull() const noexcept
 			{
 				return m_ID.IsNull();
 			}
-			wxEventTypeTag<T> ToWxTag() const noexcept
+			#ifdef __WXWINDOWS__
+			wxEventTypeTag<TEvent> ToWxTag() const noexcept
 			{
 				return m_ID.AsInt();
 			}
+			#endif
 
 			const EventID& operator*() const noexcept
 			{
