@@ -96,13 +96,16 @@ namespace kxf
 			virtual ~ISignalInvocationEvent() = default;
 
 		public:
-			virtual bool GetParameters(void* parameters) = 0;
+			virtual bool ExpectsResult() const = 0;
+			virtual bool ContainsResult() const = 0;
 
+			virtual bool GetParameters(void* parameters) = 0;
 			virtual void TakeResult(void* value) = 0;
 			virtual void PutResult(void* value) = 0;
 	};
 
-	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+	template<class TFunc>
+	requires(std::is_member_function_pointer_v<TFunc>)
 	EventTag(TFunc func) -> EventTag<ISignalInvocationEvent>;
 }
 

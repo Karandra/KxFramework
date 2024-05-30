@@ -1,5 +1,5 @@
 #pragma once
-#include "Event.h"
+#include "BasicEvent.h"
 #include "kxf/Core/AlignedStorage.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Memory.h"
@@ -20,7 +20,8 @@ namespace kxf::EventSystem
 			std::optional<TActualResult> m_Result;
 
 		public:
-			template<class... Args, std::enable_if_t<std::is_constructible_v<TArgsTuple, Args...>, int> = 0>
+			template<class... Args>
+			requires(std::is_constructible_v<TArgsTuple, Args...>)
 			SignalInvocationEvent(Args&&... arg)
 				:m_Parameters(std::forward<Args>(arg)...)
 			{
@@ -34,6 +35,15 @@ namespace kxf::EventSystem
 			}
 
 			// ISignalInvocationEvent
+			bool ExpectsResult() const override
+			{
+				return !std::is_void_v<TResult>;
+			}
+			bool ContainsResult() const override
+			{
+				return !std::is_void_v<TResult> && m_Result.has_value();
+			}
+
 			bool GetParameters(void* parameters) override
 			{
 				if constexpr(signalSemantics == SignalParametersSemantics::Copy)
@@ -49,7 +59,6 @@ namespace kxf::EventSystem
 					static_assert(sizeof(TSignal_*) == 0, "incorrect 'SignalParametersSemantics' option");
 				}
 			}
-
 			void TakeResult(void* value) override
 			{
 				if constexpr(!std::is_void_v<TResult>)

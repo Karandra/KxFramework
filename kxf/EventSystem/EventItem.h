@@ -11,10 +11,10 @@ namespace kxf::EventSystem
 	class EventItem final
 	{
 		private:
-			optional_ptr<IEventExecutor> m_Executor;
 			EventID m_EventID;
 			LocallyUniqueID m_BindSlot;
 			FlagSet<BindEventFlag> m_Flags;
+			optional_ptr<IEventExecutor> m_Executor;
 
 		public:
 			EventItem() noexcept = default;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/EventSystem/IEvtHandler.h"
+#include "kxf/FileSystem/FSActionEvent.h"
 #include "kxf/Localization/ILocalizationPackage.h"
 class wxCmdLineParser;
 
@@ -12,7 +13,6 @@ namespace kxf
 	class IEventExecutor;
 
 	class IThreadPool;
-	class FSActionEvent;
 	class CommandLineParser;
 }
 

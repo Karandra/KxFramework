@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Event.h"
+#include "BasicEvent.h"
 
 namespace kxf
 {

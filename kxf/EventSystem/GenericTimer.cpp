@@ -12,7 +12,7 @@ namespace kxf::Private
 		private:
 			void OnTimer(wxTimerEvent& eventWx)
 			{
-				m_Owner.m_EvtHandler->ProcessEvent(TimerEvent::EvtNotify, m_Owner, TimeSpan::Milliseconds(eventWx.GetInterval()), GetId());
+				m_Owner.m_EvtHandler->ProcessEvent(TimerEvent::EvtNotify, RTTI::assume_non_owned(m_Owner), TimeSpan::Milliseconds(eventWx.GetInterval()), GetId());
 			}
 
 		public:

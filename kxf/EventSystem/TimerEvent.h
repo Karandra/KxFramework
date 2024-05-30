@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Event.h"
+#include "BasicEvent.h"
 #include "kxf/Core/DateTime.h"
 
 namespace kxf
@@ -16,7 +16,7 @@ namespace kxf
 			KxEVENT_MEMBER(TimerEvent, Notify);
 
 		private:
-			ITimer* m_Timer = nullptr;
+			std::shared_ptr<ITimer> m_Timer;
 			TimeSpan m_Interval;
 			int m_ID = -1;
 
@@ -26,8 +26,8 @@ namespace kxf
 				:m_Interval(interval), m_ID(id)
 			{
 			}
-			TimerEvent(ITimer& timer, TimeSpan interval, int id = -1)
-				:m_Timer(&timer), m_Interval(interval), m_ID(id)
+			TimerEvent(std::shared_ptr<ITimer> timer, TimeSpan interval, int id = -1)
+				:m_Timer(std::move(timer)), m_Interval(interval), m_ID(id)
 			{
 			}
 
@@ -37,7 +37,7 @@ namespace kxf
 				return std::make_unique<TimerEvent>(std::move(*this));
 			}
 
-			ITimer* GetTimer() const noexcept
+			std::shared_ptr<ITimer> GetTimer() const noexcept
 			{
 				return m_Timer;
 			}

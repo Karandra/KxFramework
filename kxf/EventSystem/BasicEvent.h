@@ -10,9 +10,7 @@ namespace kxf::EventSystem
 	enum class EventPublicState: uint32_t
 	{
 		None = 0,
-
-		Skipped = 1 << 0,
-		Allowed = 1 << 1
+		Skipped = 1 << 0
 	};
 	enum class EventPrivateState: uint32_t
 	{
@@ -59,7 +57,7 @@ namespace kxf
 			UniversallyUniqueID m_UniqueID;
 			TimeSpan m_Timestamp;
 
-			FlagSet<EventPublicState> m_PublicState = EventPublicState::Allowed;
+			FlagSet<EventPublicState> m_PublicState;
 			mutable FlagSet<EventPrivateState> m_PrivateState;
 			FlagSet<ProcessEventFlag> m_ProcessFlags;
 			EventSystem::Private::EventWaitInfo m_WaitInfo;
@@ -203,11 +201,10 @@ namespace kxf
 
 			bool IsAllowed() const noexcept override
 			{
-				return m_PublicState.Contains(EventPublicState::Allowed);
+				return true;
 			}
 			void Allow(bool allow = true) noexcept override
 			{
-				m_PublicState.Mod(EventPublicState::Allowed, allow);
 			}
 
 		public:
@@ -219,7 +216,7 @@ namespace kxf
 				m_UniqueID = std::move(other.m_UniqueID);
 				m_Timestamp = std::move(other.m_Timestamp);
 
-				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::Allowed);
+				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::None);
 				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
 				m_WaitInfo = std::move(other.m_WaitInfo);
 

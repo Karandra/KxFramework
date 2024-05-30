@@ -1,5 +1,5 @@
 #pragma once
-#include "Event.h"
+#include "BasicEvent.h"
 #include "kxf/Utility/TypeTraits.h"
 
 namespace kxf::EventSystem
@@ -84,8 +84,8 @@ namespace kxf::EventSystem
 			using TClass = typename Utility::MethodTraits<TMethod>::TInstance;
 
 		protected:
-			std::tuple<Args...> m_Parameters;
 			TMethod m_Method = nullptr;
+			std::tuple<Args...> m_Parameters;
 
 		public:
 			MethodIndirectInvocation(TMethod method, Args&&... arg)
@@ -104,10 +104,10 @@ namespace kxf::EventSystem
 			// IIndirectInvocationEvent
 			void Execute() override
 			{
-				std::apply([this](auto&&... arg)
+				std::apply([this]<class... Args>(Args&&... arg)
 				{
 					TClass* evtHandler = static_cast<TClass*>(GetEventSource());
-					std::invoke(m_Method, evtHandler, std::forward<decltype(arg)>(arg)...);
+					std::invoke(m_Method, evtHandler, std::forward<Args>(arg)...);
 				}, std::move(m_Parameters));
 			}
 	};
