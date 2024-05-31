@@ -455,8 +455,8 @@ namespace kxf
 			{
 				try
 				{
-					auto utf8 = String::FromUTF8(format);
-					return std::vformat_to(outputIt, utf8.wc_str(), std::make_wformat_args(std::forward<Args>(arg)...));
+					auto formatStr = String::FromUTF8(format);
+					return std::vformat_to(outputIt, formatStr.wc_view(), std::make_wformat_args(arg...));
 				}
 				catch (const std::format_error& e)
 				{
@@ -470,7 +470,7 @@ namespace kxf
 			{
 				try
 				{
-					return std::vformat_to(outputIt, format, std::make_wformat_args(std::forward<Args>(arg)...));
+					return std::vformat_to(outputIt, format, std::make_wformat_args(arg...));
 				}
 				catch (const std::format_error& e)
 				{
@@ -1237,7 +1237,7 @@ namespace kxf
 		{
 			try
 			{
-				return std::vformat(format, std::make_wformat_args(std::forward<Args>(arg)...));
+				return std::vformat(format, std::make_wformat_args(arg...));
 			}
 			catch (const std::format_error& e)
 			{
@@ -1249,8 +1249,8 @@ namespace kxf
 		template<class... Args>
 		String DoFormat(std::string_view format, Args&&... arg)
 		{
-			auto utf8 = String::FromUTF8(format);
-			return DoFormat(utf8.wc_view(), std::forward<Args>(arg)...);
+			auto formatStr = String::FromUTF8(format);
+			return DoFormat(formatStr.wc_view(), std::forward<Args>(arg)...);
 		}
 
 		template<class OutputIt, class... Args>
@@ -1258,7 +1258,7 @@ namespace kxf
 		{
 			try
 			{
-				return std::vformat_to(outputIt, format, std::make_wformat_args(std::forward<Args>(arg)...));
+				return std::vformat_to(outputIt, format, std::make_wformat_args(arg...));
 			}
 			catch (const std::format_error& e)
 			{
@@ -1270,8 +1270,8 @@ namespace kxf
 		template<class OutputIt, class... Args>
 		OutputIt DoFormatTo(OutputIt outputIt, std::string_view format, Args&&... arg)
 		{
-			auto utf8 = String::FromUTF8(format);
-			return DoFormatTo(outputIt, utf8.wc_view(), std::forward<Args>(arg)...);
+			auto formatStr = String::FromUTF8(format);
+			return DoFormatTo(outputIt, formatStr.wc_view(), std::forward<Args>(arg)...);
 		}
 
 		template<class... Args>
@@ -1291,8 +1291,8 @@ namespace kxf
 		template<class... Args>
 		size_t DoFormattedSize(std::string_view format, Args&&... arg)
 		{
-			auto utf8 = String::FromUTF8(format);
-			return DoFormattedSize(utf8.wc_view(), std::forward<Args>(arg)...);
+			auto formatStr = String::FromUTF8(format);
+			return DoFormattedSize(formatStr.wc_view(), std::forward<Args>(arg)...);
 		}
 	}
 
