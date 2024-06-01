@@ -20,9 +20,6 @@ namespace kxf
 		friend struct std::hash<EventID>;
 		friend struct BinarySerializer<EventID>;
 
-		template<class TEvent>
-		friend class EventTag;
-
 		private:
 			std::variant<int64_t, UniversallyUniqueID, String> m_ID;
 			const std::type_info* m_TypeInfo = nullptr;
@@ -100,11 +97,37 @@ namespace kxf
 			UniversallyUniqueID AsUniqueID() const noexcept;
 			const String& AsString() const noexcept;
 
-			template<class T>
-			requires(std::is_base_of_v<IEvent, T>)
-			bool IsSameEventClass() const noexcept
+			bool HasEventClassInfo() const noexcept
 			{
-				return m_TypeInfo && *m_TypeInfo == typeid(T);
+				return m_TypeInfo != nullptr;
+			}
+
+			template<class TEvent>
+			requires(std::is_base_of_v<IEvent, TEvent>)
+			bool IsOfEventClass() const noexcept
+			{
+				if (std::is_same_v<TEvent, IEvent>)
+				{
+					return m_TypeInfo == nullptr;
+				}
+				else
+				{
+					return m_TypeInfo && *m_TypeInfo == typeid(TEvent);
+				}
+			}
+
+			template<class TEvent>
+			requires(std::is_base_of_v<IEvent, TEvent>)
+			void AssignEventClass() noexcept
+			{
+				if (!std::is_same_v<TEvent, IEvent>)
+				{
+					m_TypeInfo = &typeid(TEvent);
+				}
+				else
+				{
+					m_TypeInfo = nullptr;
+				}
 			}
 
 			#ifdef __WXWINDOWS__
@@ -159,13 +182,13 @@ namespace kxf
 		private:
 			void Init() noexcept
 			{
-				if (!std::is_same_v<TEvent, IEvent>)
+				if constexpr(std::is_base_of_v<IEvent, TEvent>)
 				{
-					m_ID.m_TypeInfo = &typeid(TEvent);
+					m_ID.AssignEventClass<TEvent>();
 				}
 				else
 				{
-					m_ID.m_TypeInfo = nullptr;
+					m_ID.AssignEventClass<IEvent>();
 				}
 			}
 

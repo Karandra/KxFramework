@@ -37,12 +37,14 @@ namespace kxf
 	}
 	uint64_t EventID::Serialize(IOutputStream& stream) const
 	{
-		uint64_t written = 0;
 		auto WriteIndex = [&]()
 		{
 			return Serialization::WriteObject(stream, static_cast<uint64_t>(m_ID.index()));
 		};
 
+		// We don't serialize type info
+
+		uint64_t written = 0;
 		if (auto value = std::get_if<int64_t>(&m_ID))
 		{
 			written += WriteIndex();
@@ -68,6 +70,7 @@ namespace kxf
 	}
 	uint64_t EventID::Deserialize(IInputStream& stream)
 	{
+		// Reset the type info as we can't serialize it (not std::type_info type info anyway)
 		m_TypeInfo = nullptr;
 
 		uint64_t index = 0;
