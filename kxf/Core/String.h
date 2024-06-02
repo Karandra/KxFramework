@@ -206,7 +206,7 @@ namespace kxf
 					return 1;
 				}
 
-				size_t separatorPos = string.Find(sep, 0, flags);
+				size_t separatorPos = string.Find(sep, flags);
 				if (separatorPos == String::npos)
 				{
 					std::invoke(func, view);
@@ -230,7 +230,7 @@ namespace kxf
 					}
 
 					pos += stringPieceLength + sep.length();
-					separatorPos = string.Find(sep, pos, flags);
+					separatorPos = string.Find(sep, flags, pos);
 
 					// No separator found, but this is not the last element
 					if (separatorPos == String::npos && pos < string.length())
@@ -761,9 +761,26 @@ namespace kxf
 			
 		public:
 			template<class T>
-			size_t Find(T&& pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const
+			size_t Find(T&& pattern, FlagSet<StringActionFlag> flags = {}, size_t offset = 0) const
 			{
+				flags.Remove(StringActionFlag::FromEnd);
+
 				if constexpr(IsAnyCharType<T>())
+				{
+					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
+				}
+				else
+				{
+					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags);
+				}
+			}
+
+			template<class T>
+			size_t ReverseFind(T&& pattern, FlagSet<StringActionFlag> flags = {}, size_t offset = npos) const
+			{
+				flags.Add(StringActionFlag::FromEnd);
+
+				if constexpr (IsAnyCharType<T>())
 				{
 					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
 				}
@@ -839,7 +856,7 @@ namespace kxf
 			template<class T>
 			bool Contains(T&& pattern, FlagSet<StringActionFlag> flags = {}) const
 			{
-				return Find(std::forward<T>(pattern), 0, flags) != npos;
+				return Find(std::forward<T>(pattern), flags) != npos;
 			}
 
 		private:
@@ -944,7 +961,9 @@ namespace kxf
 				}
 				return *this;
 			}
-			String& Trim(FlagSet<StringActionFlag> flags = {});
+			String& TrimLeft(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
+			String& TrimRight(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
+			String& TrimBoth(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
 			String Clone() const
 			{
 				return m_String;

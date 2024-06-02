@@ -27,7 +27,7 @@ namespace
 	{
 		using namespace kxf;
 
-		return path.Find(c, 0, reverse ? StringActionFlag::FromEnd : StringActionFlag::None);
+		return reverse ? path.ReverseFind(c) : path.Find(c);
 	}
 	size_t RemoveLeadingSpaces(kxf::String& path)
 	{
@@ -548,10 +548,10 @@ namespace kxf
 	{
 		if (CheckStringOnAssignName(name))
 		{
-			const size_t pos = m_Path.Find(g_PathSeparator, 0, StringActionFlag::FromEnd);
+			const size_t pos = m_Path.ReverseFind(g_PathSeparator);
 			if (pos != String::npos)
 			{
-				const size_t dot = m_Path.Find('.', pos);
+				const size_t dot = m_Path.Find('.', {}, pos);
 				if (dot != String::npos)
 				{
 					m_Path.ReplaceRange(pos + 1, dot - pos, name);
@@ -575,7 +575,7 @@ namespace kxf
 	{
 		auto Replace = [this](const String& ext)
 		{
-			const size_t pos = m_Path.Find('.', 0, StringActionFlag::FromEnd);
+			const size_t pos = m_Path.ReverseFind('.');
 			if (pos != String::npos)
 			{
 				m_Path.ReplaceRange(pos + 1, m_Path.length() - pos, ext);

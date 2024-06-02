@@ -14,8 +14,7 @@ namespace
 
 	void NormalizeValue(kxf::String& value)
 	{
-		value.Trim();
-		value.Trim(kxf::StringActionFlag::FromEnd);
+		value.TrimBoth();
 		value.Replace('\r', kxf::NullString);
 		value.Replace('\n', kxf::NullString);
 	}

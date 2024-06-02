@@ -117,27 +117,27 @@ namespace kxf
 		{
 			case SoftwareLicenseType::MIT:
 			{
-				return Format(g_MIT, copyright).Trim();
+				return Format(g_MIT, copyright).TrimRight();
 			}
 			case SoftwareLicenseType::ZLib:
 			{
-				return Format(g_Zlib, copyright).Trim();
+				return Format(g_Zlib, copyright).TrimRight();
 			}
 			case SoftwareLicenseType::GNU_GPLv3:
 			{
-				return Format(LoadLicense("GNU_GPLv3"), copyright).Trim();
+				return Format(LoadLicense("GNU_GPLv3"), copyright).TrimRight();
 			}
 			case SoftwareLicenseType::GNU_LGPLv3:
 			{
-				return Format(LoadLicense("GNU_LGPLv3"), copyright).Trim();
+				return Format(LoadLicense("GNU_LGPLv3"), copyright).TrimRight();
 			}
 			case SoftwareLicenseType::BSD2_Clause:
 			{
-				return Format(g_BSD2_CALUSE, copyright).Trim();
+				return Format(g_BSD2_CALUSE, copyright).TrimRight();
 			}
 			case SoftwareLicenseType::BSD3_Clause:
 			{
-				return Format(g_BSD3_CALUSE, copyright).Trim();
+				return Format(g_BSD3_CALUSE, copyright).TrimRight();
 			}
 		};
 		return {};

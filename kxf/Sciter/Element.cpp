@@ -1010,7 +1010,7 @@ namespace kxf::Sciter
 			{
 				for (size_t i = 1; i <= regEx.GetMatchCount(); i++)
 				{
-					String value = regEx.GetMatch(fontFamily, i).Trim().Trim(StringActionFlag::FromEnd);
+					String value = regEx.GetMatch(fontFamily, i).TrimBoth();
 					if (i == regEx.GetMatchCount())
 					{
 						if (value == "fantasy")

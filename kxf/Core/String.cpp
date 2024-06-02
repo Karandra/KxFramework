@@ -440,7 +440,7 @@ namespace kxf
 		}
 
 		flags.Remove(StringActionFlag::FromEnd);
-		const size_t pos = Find(pattern, 0, flags);
+		const size_t pos = Find(pattern, flags);
 		if (pos == 0)
 		{
 			if (rest)
@@ -464,7 +464,7 @@ namespace kxf
 			return false;
 		}
 
-		const size_t pos = Find(pattern, 0, flags|StringActionFlag::FromEnd);
+		const size_t pos = ReverseFind(pattern, flags);
 		if (pos == m_String.length() - pattern.length())
 		{
 			if (rest)
@@ -548,7 +548,7 @@ namespace kxf
 	// Substring extraction
 	String String::AfterFirst(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags);
+		const size_t pos = Find(c, flags);
 		if (pos != npos)
 		{
 			if (rest)
@@ -568,7 +568,7 @@ namespace kxf
 	}
 	String String::AfterLast(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags|StringActionFlag::FromEnd);
+		const size_t pos = ReverseFind(c, flags);
 		if (pos != npos)
 		{
 			if (rest)
@@ -589,7 +589,7 @@ namespace kxf
 
 	String String::BeforeFirst(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags);
+		const size_t pos = Find(c, flags);
 		if (pos != npos)
 		{
 			if (rest)
@@ -605,7 +605,7 @@ namespace kxf
 	}
 	String String::BeforeLast(UniChar c, String* rest, FlagSet<StringActionFlag> flags) const
 	{
-		const size_t pos = Find(c, 0, flags|StringActionFlag::FromEnd);
+		const size_t pos = ReverseFind(c, flags);
 		if (pos != npos)
 		{
 			if (rest)
@@ -640,7 +640,7 @@ namespace kxf
 	}
 	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
 	{
-		if (!m_String.empty() && offset < m_String.length())
+		if (!m_String.empty())
 		{
 			if (flags & StringActionFlag::IgnoreCase)
 			{
@@ -672,13 +672,18 @@ namespace kxf
 	}
 	size_t String::DoFind(UniChar pattern, size_t offset, FlagSet<StringActionFlag> flags) const noexcept
 	{
-		if (m_String.empty() || offset >= m_String.length())
+		if (m_String.empty())
 		{
 			return npos;
 		}
 
 		if (flags & StringActionFlag::FromEnd)
 		{
+			if (offset >= m_String.length())
+			{
+				offset = 0;
+			}
+
 			for (size_t i = m_String.length() - 1 - offset; i != 0; i--)
 			{
 				if (Compare(m_String[i], pattern, flags) == 0)
@@ -689,6 +694,11 @@ namespace kxf
 		}
 		else
 		{
+			if (offset >= m_String.length())
+			{
+				return npos;
+			}
+
 			for (size_t i = offset; i < m_String.length(); i++)
 			{
 				if (Compare(m_String[i], pattern, flags) == 0)
@@ -892,12 +902,33 @@ namespace kxf
 	}
 
 	// Miscellaneous
-	String& String::Trim(FlagSet<StringActionFlag> flags)
+	String& String::TrimLeft(const String& chars, FlagSet<StringActionFlag> flags)
 	{
 		wxString temp;
 		Private::MoveWxString(temp, std::move(m_String));
 
-		temp.Trim(flags & StringActionFlag::FromEnd);
+		temp.Trim(false);
+		Private::MoveWxString(m_String, std::move(temp));
+
+		return *this;
+	}
+	String& String::TrimRight(const String& chars, FlagSet<StringActionFlag> flags)
+	{
+		wxString temp;
+		Private::MoveWxString(temp, std::move(m_String));
+
+		temp.Trim(true);
+		Private::MoveWxString(m_String, std::move(temp));
+
+		return *this;
+	}
+	String& String::TrimBoth(const String& chars, FlagSet<StringActionFlag> flags)
+	{
+		wxString temp;
+		Private::MoveWxString(temp, std::move(m_String));
+
+		temp.Trim(false);
+		temp.Trim(true);
 		Private::MoveWxString(m_String, std::move(temp));
 
 		return *this;

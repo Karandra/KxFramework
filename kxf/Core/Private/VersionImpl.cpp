@@ -66,7 +66,7 @@ namespace kxf::Private::Version
 				}
 				componentCount++;
 
-				pos = source.Find('.', pos + 1);
+				pos = source.Find('.', {}, pos + 1);
 			}
 
 			// Check

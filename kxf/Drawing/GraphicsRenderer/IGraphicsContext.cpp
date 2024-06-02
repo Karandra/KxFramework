@@ -399,7 +399,7 @@ namespace kxf
 			{
 				if (it == text.end() || *it == '\n')
 				{
-					currentLine.Trim();
+					currentLine.TrimLeft();
 					currentLine = DoEllipsizeSingleLine(currentLine, *this, maxWidth, mode, flags, font, replacementWidth);
 
 					// Add this (ellipsized) row to the rest of the label
