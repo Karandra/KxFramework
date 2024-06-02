@@ -11,36 +11,6 @@
 
 namespace
 {
-	void StringMakeLower(std::wstring& string) noexcept
-	{
-		::CharLowerBuffW(string.data(), string.length());
-	}
-	void StringMakeUpper(std::wstring& string) noexcept
-	{
-		::CharUpperBuffW(string.data(), string.length());
-	}
-	void StringMakeLower(wxString& string) noexcept
-	{
-		::CharLowerBuffW(wxStringBuffer(string, string.length()), string.length());
-	}
-	void StringMakeUpper(wxString& string) noexcept
-	{
-		::CharUpperBuffW(wxStringBuffer(string, string.length()), string.length());
-	}
-
-	wxString StringToLower(const wxScopedCharTypeBuffer<wxChar>& string) noexcept
-	{
-		wxString result = string;
-		StringMakeLower(result);
-		return result;
-	}
-	wxString StringToUpper(const wxScopedCharTypeBuffer<wxChar>& string) noexcept
-	{
-		wxString result = string;
-		StringMakeUpper(result);
-		return result;
-	}
-
 	std::strong_ordering DoCompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
@@ -360,15 +330,6 @@ namespace kxf
 	{
 		return {buffer.data(), buffer.length()};
 	}
-
-	template<class T>
-	const auto ScopedCharBufferOf(T&& value) noexcept
-	{
-		auto view = StringViewOf(std::forward<T>(value));
-		using CharType = typename decltype(view)::value_type;
-
-		return wxScopedCharTypeBuffer<CharType>::CreateNonOwned(view.data(), view.length());
-	}
 }
 
 namespace kxf
@@ -662,12 +623,12 @@ namespace kxf
 	// Case conversion
 	String& String::MakeLower() noexcept
 	{
-		StringMakeLower(m_String);
+		::CharLowerBuffW(m_String.data(), m_String.length());
 		return *this;
 	}
 	String& String::MakeUpper() noexcept
 	{
-		StringMakeUpper(m_String);
+		::CharUpperBuffW(m_String.data(), m_String.length());
 		return *this;
 	}
 
@@ -683,27 +644,27 @@ namespace kxf
 		{
 			if (flags & StringActionFlag::IgnoreCase)
 			{
-				wxString sourceL = StringToLower(ScopedCharBufferOf(m_String));
-				wxString patternL = StringToLower(ScopedCharBufferOf(pattern));
+				auto sourceL = ToLower();
+				auto patternL = String(pattern).MakeLower();
 
 				if (flags & StringActionFlag::FromEnd)
 				{
-					return sourceL.rfind(patternL, offset);
+					return sourceL.m_String.rfind(patternL.wc_view(), offset);
 				}
 				else
 				{
-					return sourceL.find(patternL, offset);
+					return sourceL.m_String.find(patternL.wc_view(), offset);
 				}
 			}
 			else
 			{
 				if (flags & StringActionFlag::FromEnd)
 				{
-					return m_String.rfind(ScopedCharBufferOf(pattern), offset);
+					return m_String.rfind(pattern, offset);
 				}
 				else
 				{
-					return m_String.find(ScopedCharBufferOf(pattern), offset);
+					return m_String.find(pattern, offset);
 				}
 			}
 		}
@@ -768,31 +729,31 @@ namespace kxf
 		size_t replacementCount = 0;
 		size_t pos = wxString::npos;
 
-		wxString sourceL;
-		wxString patternL;
+		String sourceL;
+		String patternL;
 		if (flags & StringActionFlag::IgnoreCase)
 		{
-			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(m_String)));
-			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(pattern)));
+			sourceL = ToLower();
+			patternL = String(pattern).MakeLower();
 
 			if (flags & StringActionFlag::FromEnd)
 			{
-				pos = sourceL.rfind(patternL, offset);
+				pos = sourceL.m_String.rfind(patternL.wc_view(), offset);
 			}
 			else
 			{
-				pos = sourceL.find(patternL, offset);
+				pos = sourceL.m_String.find(patternL.wc_view(), offset);
 			}
 		}
 		else
 		{
 			if (flags & StringActionFlag::FromEnd)
 			{
-				pos = m_String.rfind(ScopedCharBufferOf(pattern), offset);
+				pos = m_String.rfind(pattern, offset);
 			}
 			else
 			{
-				pos = m_String.find(ScopedCharBufferOf(pattern), offset);
+				pos = m_String.find(pattern, offset);
 			}
 		}
 
@@ -810,22 +771,22 @@ namespace kxf
 			{
 				if (flags & StringActionFlag::FromEnd)
 				{
-					pos = sourceL.rfind(patternL, pos + replacementLength);
+					pos = sourceL.m_String.rfind(patternL.wc_view(), pos + replacementLength);
 				}
 				else
 				{
-					pos = sourceL.find(patternL, pos + replacementLength);
+					pos = sourceL.m_String.find(patternL.wc_view(), pos + replacementLength);
 				}
 			}
 			else
 			{
 				if (flags & StringActionFlag::FromEnd)
 				{
-					pos = m_String.rfind(ScopedCharBufferOf(pattern), pos + replacementLength);
+					pos = m_String.rfind(pattern, pos + replacementLength);
 				}
 				else
 				{
-					pos = m_String.find(ScopedCharBufferOf(pattern), pos + replacementLength);
+					pos = m_String.find(pattern, pos + replacementLength);
 				}
 			}
 		}
