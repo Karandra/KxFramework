@@ -19,7 +19,9 @@ namespace kxf
 
 		Spaces = 1u << 0,
 		Quotes = 1u << 1,
-		MultiKey = 1u << 2
+		MultiKey = 1u << 2,
+		InlineComments = 1u << 3,
+		IgnoreCase = 1u << 4
 	};
 	KxFlagSet_Declare(INIDocumentOption);
 }
@@ -48,7 +50,7 @@ namespace kxf
 		public:
 			INIDocumentSection() = default;
 			INIDocumentSection(INIDocument& document, String sectionName, String comment = {}, size_t index = npos)
-				:m_Ref(&document), m_SectionName(std::move(sectionName)), m_Comment(std::move(comment))
+				:m_Ref(&document), m_SectionName(std::move(sectionName)), m_Comment(std::move(comment)), m_Index(index)
 			{
 			}
 			INIDocumentSection(const INIDocumentSection&) = default;
@@ -133,6 +135,7 @@ namespace kxf
 				Utility::ExchangeAndReset(m_AsCDATA, other.m_AsCDATA, AsCDATA::Auto);
 				m_SectionName = std::move(other.m_SectionName);
 				m_Comment = std::move(other.m_Comment);
+				m_Index = Utility::ExchangeResetAndReturn(other.m_Index, npos);
 
 				return *this;
 			}
@@ -148,6 +151,7 @@ namespace kxf
 
 		private:
 			std::unique_ptr<INIDocumentImpl> m_Document;
+			FlagSet<INIDocumentOption> m_Options;
 
 		protected:
 			// IXNode
@@ -179,6 +183,10 @@ namespace kxf
 
 			std::optional<String> IniDoGetValue(const String& sectionName, const String& keyName, String* comment = nullptr) const;
 			bool IniDoSetValue(const String& sectionName, const String& keyName, const String& value, const String& comment = {}, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto);
+
+			bool RemoveQuotes(String& value) const;
+			bool RemoveInlineComments(String& value, String* comment = nullptr) const;
+			bool StartsWithInlineComment(const String& value) const;
 
 		public:
 			INIDocument();

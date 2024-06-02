@@ -237,11 +237,8 @@ namespace kxf
 		m_Document = std::make_unique<INIDocumentImpl>();
 		m_Document->SetAllowKeyOnly(false);
 		m_Document->SetUnicode(true);
-
-		m_Document->SetSpaces(false);
-		m_Document->SetQuotes(false);
-		m_Document->SetMultiKey(false);
 		m_Document->SetMultiLine(false);
+		SetOptions(m_Options);
 	}
 	bool INIDocument::DoLoad(const char* ini, size_t length)
 	{
@@ -263,27 +260,50 @@ namespace kxf
 	{
 		if (m_Document)
 		{
+			const auto options = GetOptions();
+			if (options.Contains(INIDocumentOption::InlineComments) && StartsWithInlineComment(keyName))
+			{
+				return {};
+			}
+
+			String keyName2 = keyName;
+			if (options.Contains(INIDocumentOption::Quotes))
+			{
+				RemoveQuotes(keyName2);
+			}
+
+			std::optional<String> value;
 			if (comment)
 			{
 				// Single key only for now
-				std::optional<String> value;
 				m_Document->ForEachValue([&](const INIDocumentImpl::Entry& entry)
 				{
 					value = String::FromUTF8(entry.pItem);
 					*comment = String::FromUTF8(entry.pComment);
 
 					return CallbackCommand::Terminate;
-				}, sectionName, keyName);
-
-				return value;
+				}, sectionName, keyName2);
 			}
 			else
 			{
-				if (const char* value = m_Document->GetValue(sectionName.utf8_str(), keyName.utf8_str(), nullptr))
+				if (const char* ptr = m_Document->GetValue(sectionName.utf8_str(), keyName2.utf8_str(), nullptr))
 				{
-					return String::FromUTF8(value);
+					value = String::FromUTF8(ptr);
 				}
 			}
+
+			if (value && !value->IsEmpty())
+			{
+				if (options.Contains(INIDocumentOption::InlineComments))
+				{
+					RemoveInlineComments(*value, comment);
+				}
+				if (options.Contains(INIDocumentOption::Quotes))
+				{
+					RemoveQuotes(*value);
+				}
+			}
+			return value;
 		}
 		return {};
 	}
@@ -303,6 +323,80 @@ namespace kxf
 			auto status = m_Document->SetValue(sectionName.utf8_str(), keyName.utf8_str(), value.utf8_str(), !comment.IsEmpty() ? comment.utf8_str() : nullptr, true);
 			return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
 		}
+	}
+
+	bool INIDocument::RemoveQuotes(String& value) const
+	{
+		constexpr auto quote1 = '\"';
+		constexpr auto quote2 = '\'';
+
+		size_t count = 0;
+		auto itL = value.begin();
+		auto itR = value.rbegin();
+		for (; itL != value.end() && itR != value.rend(); ++itL, ++itR)
+		{
+			if ((*itL == quote1 && *itR == quote1) || (*itL == quote2 && *itR == quote2))
+			{
+				count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (count != 0)
+		{
+			value.Remove(0, count);
+			value.RemoveFromEnd(count);
+
+			return true;
+		}
+		return false;
+	}
+	bool INIDocument::RemoveInlineComments(String& value, String* comment) const
+	{
+		size_t length = 1;
+		size_t index = value.ReverseFind(';');
+		if (index == npos)
+		{
+			index = value.ReverseFind('#');
+			length = 1;
+		}
+		if (index == npos)
+		{
+			index = value.ReverseFind(kxS("//"));
+			length = 2;
+		}
+
+		if (index != npos)
+		{
+			if (comment)
+			{
+				*comment = value.SubMid(index + length);
+			}
+			value.Truncate(index);
+			value.TrimRight();
+
+			return true;
+		}
+		return false;
+	}
+	bool INIDocument::StartsWithInlineComment(const String& value) const
+	{
+		if (!value.IsEmpty())
+		{
+			auto c = value.front();
+			if (c == ';' || c == '#')
+			{
+				return true;
+			}
+			else if (value.length() >= 2 && c == '/' && value[1] == '/')
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	INIDocument::INIDocument()
@@ -492,10 +586,11 @@ namespace kxf
 	{
 		if (m_Document)
 		{
-			FlagSet<INIDocumentOption> options;
-			options.Add(INIDocumentOption::Spaces, m_Document->UsingSpaces());
-			options.Add(INIDocumentOption::Quotes, m_Document->UsingQuotes());
-			options.Add(INIDocumentOption::MultiKey, m_Document->IsMultiKey());
+			FlagSet<INIDocumentOption> options = m_Options;
+			options.Add(INIDocumentOption::IgnoreCase);
+			options.Mod(INIDocumentOption::Spaces, m_Document->UsingSpaces());
+			options.Mod(INIDocumentOption::Quotes, m_Document->UsingQuotes());
+			options.Mod(INIDocumentOption::MultiKey, m_Document->IsMultiKey());
 
 			return options;
 		}
@@ -505,6 +600,7 @@ namespace kxf
 	{
 		if (m_Document)
 		{
+			m_Options = options;
 			m_Document->SetSpaces(options.Contains(INIDocumentOption::Spaces));
 			m_Document->SetQuotes(options.Contains(INIDocumentOption::Quotes));
 			m_Document->SetMultiKey(options.Contains(INIDocumentOption::MultiKey));
@@ -515,7 +611,7 @@ namespace kxf
 	{
 		if (m_Document)
 		{
-			return m_Document->ForEachSection([&](const INIDocumentImpl::Entry& entry)
+			return m_Document->ForEachSection([&, options = GetOptions()](const INIDocumentImpl::Entry& entry)
 			{
 				return std::invoke(func, String::FromUTF8(entry.pItem));
 			}, SortOrder::Ascending);
@@ -526,9 +622,19 @@ namespace kxf
 	{
 		if (m_Document)
 		{
-			return m_Document->ForEachKey([&](const INIDocumentImpl::Entry& entry)
+			return m_Document->ForEachKey([&, options = GetOptions()](const INIDocumentImpl::Entry& entry)
 			{
-				return std::invoke(func, String::FromUTF8(entry.pItem));
+				auto keyName = String::FromUTF8(entry.pItem);
+				if (options.Contains(INIDocumentOption::InlineComments) && StartsWithInlineComment(keyName))
+				{
+					return CallbackCommand::Discard;
+				}
+				if (options.Contains(INIDocumentOption::Quotes))
+				{
+					RemoveQuotes(keyName);
+				}
+
+				return std::invoke(func, std::move(keyName));
 			}, sectionName, SortOrder::Ascending);
 		}
 		return 0;
