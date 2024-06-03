@@ -3714,7 +3714,6 @@
     <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
       <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\UniChar.cpp" />
     <ClCompile Include="kxf\Log\ScopedLoggerContext.cpp">
       <Filter>kxf\Log</Filter>
     </ClCompile>
@@ -3731,6 +3730,9 @@
       <Filter>kxf\Core\EncodingConverter</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Core\IEncodingConverter.cpp">
+      <Filter>kxf\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\UniChar.cpp">
       <Filter>kxf\Core</Filter>
     </ClCompile>
   </ItemGroup>
