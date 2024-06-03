@@ -30,13 +30,13 @@ namespace kxf::Utility::Container
 namespace kxf::Utility::Container
 {
 	template<class TContainer, class TFunc>
-	auto FindIf(TContainer&& container, TFunc&& func) noexcept
+	auto FindIf(TContainer&& container, TFunc&& func)
 	{
-		return std::find_if(std::begin(std::forward<TContainer>(container)), std::end(std::forward<TContainer>(container)), std::forward<TFunc>(func));
+		return std::find_if(std::begin(container), std::end(container), std::forward<TFunc>(func));
 	}
 
 	template<class TContainer, class TFunc>
-	bool Contains(const TContainer& container, TFunc&& func) noexcept
+	bool Contains(const TContainer& container, TFunc&& func)
 	{
 		return FindIf(container, std::forward<TFunc>(func)) != std::end(container);
 	}
