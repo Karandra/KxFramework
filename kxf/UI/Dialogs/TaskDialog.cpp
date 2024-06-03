@@ -5,6 +5,7 @@
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Drawing/ArtProvider.h"
+#include "kxf/Utility/Memory.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
 
@@ -100,7 +101,7 @@ namespace kxf::UI
 
 		if (m_Handle)
 		{
-			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_SET_ELEMENT_TEXT, 0, Utility::IntFromLowHigh<DWORD, WORD, WORD>(0, range));
+			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_SET_ELEMENT_TEXT, 0, *Utility::CompositeInteger<uint16_t>(0, range));
 		}
 	}
 	void TaskDialog::DoSetValue(int value)

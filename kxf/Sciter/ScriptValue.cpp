@@ -2,6 +2,7 @@
 #include "ScriptValue.h"
 #include "SciterAPI.h"
 #include "kxf/Sciter/Private/Conversion.h"
+#include "kxf/Utility/Memory.h"
 
 namespace kxf::Sciter
 {
@@ -295,7 +296,7 @@ namespace kxf::Sciter
 		{
 			// 'DateTime' is always in local time
 			constexpr bool isUTC = false;
-			GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), Utility::IntFromLowHigh<uint64_t>(fileTime.dwLowDateTime, fileTime.dwHighDateTime), T_DATE, isUTC);
+			GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), *Utility::CompositeInteger(fileTime.dwLowDateTime, fileTime.dwHighDateTime), T_DATE, isUTC);
 		}
 		return *this;
 	}

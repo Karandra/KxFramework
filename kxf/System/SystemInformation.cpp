@@ -10,6 +10,7 @@
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/Enumerator.h"
 #include "kxf/Utility/Literals.h"
+#include "kxf/Utility/Memory.h"
 #include "kxf/Utility/String.h"
 #include <wx/settings.h>
 
@@ -610,7 +611,7 @@ namespace kxf::System
 						info.DeviceID = description.DeviceId;
 						info.SubSystemID = description.SubSysId;
 						info.Revision = description.Revision;
-						info.UniqueID = Utility::IntFromLowHigh<uint64_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
+						info.UniqueID = *Utility::CompositeInteger<uint32_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
 						info.DedicatedVideoMemory = DataSize::FromBytes(description.DedicatedVideoMemory);
 						info.DedicatedSystemMemory = DataSize::FromBytes(description.DedicatedSystemMemory);
 						info.SharedSystemMemory = DataSize::FromBytes(description.SharedSystemMemory);

@@ -4,7 +4,7 @@
 #include "RegEx.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
-#include "kxf/Utility/Common.h"
+#include "kxf/Utility/Memory.h"
 
 #include <Windows.h>
 #include <rpcdce.h>
@@ -267,15 +267,15 @@ namespace kxf
 				DoPart(m_ID.Data3, 4);
 
 				// Combine the first 2 bytes of the 8 byte array into an 'uint16_t' to print it
-				DoPart(Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[0], m_ID.Data4[1]), 4);
+				DoPart(Utility::CompositeInteger<uint8_t>(m_ID.Data4[0], m_ID.Data4[1]).GetFull(), 4);
 
 				// Combine the last 6 bytes into an 'uint64_t' and print it
-				auto d4_23 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[2], m_ID.Data4[3]);
-				auto d4_45 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[4], m_ID.Data4[5]);
-				auto d4_67 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[6], m_ID.Data4[7]);
-				auto d4_x0 = Utility::IntFromLowHigh<uint32_t>(d4_23, d4_45);
-				auto d4_x1 = Utility::IntFromLowHigh<uint32_t>(d4_67, static_cast<uint16_t>(0));
-				DoPart(Utility::IntFromLowHigh<uint64_t>(d4_x0, d4_x1), 12, true);
+				auto d4_23 = *Utility::CompositeInteger<uint8_t>(m_ID.Data4[2], m_ID.Data4[3]);
+				auto d4_45 = *Utility::CompositeInteger<uint8_t>(m_ID.Data4[4], m_ID.Data4[5]);
+				auto d4_67 = *Utility::CompositeInteger<uint8_t>(m_ID.Data4[6], m_ID.Data4[7]);
+				auto d4_x0 = *Utility::CompositeInteger<uint16_t>(d4_23, d4_45);
+				auto d4_x1 = *Utility::CompositeInteger<uint16_t>(d4_67, 0);
+				DoPart(*Utility::CompositeInteger<uint32_t>(d4_x0, d4_x1), 12, true);
 			}
 		}
 		else

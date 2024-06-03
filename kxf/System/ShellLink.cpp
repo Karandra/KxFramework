@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "ShellLink.h"
 #include "Private/Shell.h"
-#include "kxf/Utility/Common.h"
+#include "kxf/Utility/Memory.h"
 #include <ShObjIDL.h>
 #include "UndefWindows.h"
 
@@ -158,9 +158,10 @@ namespace kxf
 		WORD hotKeys = 0;
 		if (HResult(m_ShellLink->GetHotkey(&hotKeys)))
 		{
-			keyState.m_keyCode = Utility::IntLowPart<BYTE>(hotKeys);
+			Utility::CompositeInteger<BYTE> hotKeyData(hotKeys);
+			keyState.m_keyCode = hotKeyData.GetLow();
 
-			BYTE modifiers = Utility::IntHighPart<BYTE>(hotKeys);
+			auto modifiers = hotKeyData.GetHigh();
 			keyState.m_controlDown = modifiers & HOTKEYF_CONTROL;
 			keyState.m_altDown = modifiers & HOTKEYF_ALT;
 			keyState.m_shiftDown = modifiers & HOTKEYF_SHIFT;
@@ -174,6 +175,6 @@ namespace kxf
 		modifiers.Add(HOTKEYF_ALT, keyState.AltDown());
 		modifiers.Add(HOTKEYF_SHIFT, keyState.ShiftDown());
 
-		return m_ShellLink->SetHotkey(Utility::IntFromLowHigh<WORD>(*modifiers, static_cast<BYTE>(keyState.GetKeyCode())));
+		return m_ShellLink->SetHotkey(*Utility::CompositeInteger(*modifiers, static_cast<BYTE>(keyState.GetKeyCode())));
 	}
 }

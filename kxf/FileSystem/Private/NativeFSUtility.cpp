@@ -3,6 +3,7 @@
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/Memory.h"
 
 namespace kxf::FileSystem::Private
 {
@@ -17,7 +18,7 @@ namespace kxf::FileSystem::Private
 		// Raymond Chen shows us use of NTFS ObjectIDs but I'm not sure it's the best idea to always use them
 		// https://stackoverflow.com/questions/62440438/getfileinformationbyhandleex-fileidinfo-vs-deviceiocontrol-fsctl-create-or-get-o
 
-		UniversallyUniqueID result = LocallyUniqueID(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileIndexLow, fileInfo.nFileIndexHigh));
+		UniversallyUniqueID result = LocallyUniqueID(*Utility::CompositeInteger(fileInfo.nFileIndexLow, fileInfo.nFileIndexHigh));
 		if (System::IsWindowsVersionOrGreater(NamedSystemRelease::Windows8))
 		{
 			FILE_ID_INFO fileIDInfo = {};
@@ -145,7 +146,7 @@ namespace kxf::FileSystem::Private
 				// File size
 				if (!isDirectory)
 				{
-					fileItem.SetSize(DataSize::FromBytes(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileSizeLow, fileInfo.nFileSizeHigh)));
+					fileItem.SetSize(DataSize::FromBytes(*Utility::CompositeInteger(fileInfo.nFileSizeLow, fileInfo.nFileSizeHigh)));
 				}
 
 				// Date and time
