@@ -35,6 +35,41 @@ namespace kxf
 			{
 				return m_Value >= 0x10000 && m_Value <= 0x10FFFF;
 			}
+			constexpr bool IsWhitespace() const noexcept
+			{
+				switch (m_Value)
+				{
+					case 0x0009: // Character tabulation
+					case 0x000A: // Line feed
+					case 0x000B: // Line tabulation
+					case 0x000C: // Form feed
+					case 0x000D: // Carriage return
+					case 0x0020: // Space
+					case 0x0085: // Next line
+					case 0x00A0: // No-break space
+					case 0x1680: // Ogham space mark
+					case 0x2000: // En quad
+					case 0x2001: // Em quad
+					case 0x2002: // En space
+					case 0x2003: // Em space
+					case 0x2004: // Three-per-em space
+					case 0x2005: // Four-per-em space
+					case 0x2006: // Six-per-em space
+					case 0x2007: // Figure space
+					case 0x2008: // Punctuation space
+					case 0x2009: // Thin space
+					case 0x200A: // Hair space
+					case 0x2028: // Line separator
+					case 0x2029: // Paragraph separator
+					case 0x202F: // Narrow no-break space
+					case 0x205F: // Medium mathematical space
+					case 0x3000: // Ideographic space
+					{
+						return true;
+					}
+				};
+				return false;
+			}
 
 			constexpr std::optional<char> ToASCII() const noexcept
 			{
