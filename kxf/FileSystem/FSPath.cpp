@@ -75,7 +75,7 @@ namespace
 			String result = path.SubLeft(pos);
 			if (!result.IsEmpty() && result.back() == g_PathSeparator)
 			{
-				result.RemoveFromEnd(1);
+				result.RemoveRight(1);
 			}
 			return result;
 		}

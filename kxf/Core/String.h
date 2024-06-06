@@ -22,7 +22,6 @@ namespace kxf
 	{
 		None = 0,
 		IgnoreCase = 1 << 0,
-		FromEnd = 1 << 1,
 		Symmetrical = 1 << 1,
 		FirstMatchOnly = 1 << 2,
 	};
@@ -283,7 +282,7 @@ namespace kxf
 			static String ConcatWithSeparator(const String& sep, Args&&... arg)
 			{
 				String value = ((String(std::forward<Args>(arg)) + sep) + ...);
-				value.RemoveFromEnd(sep.length());
+				value.RemoveRight(sep.length());
 				return value;
 			}
 
@@ -756,53 +755,49 @@ namespace kxf
 
 			// Searching and replacing
 		private:
-			size_t DoFind(std::string_view pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const;
-			size_t DoFind(std::wstring_view pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const;
-			size_t DoFind(UniChar pattern, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) const noexcept;
+			size_t DoFind(std::string_view pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const;
+			size_t DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const;
+			size_t DoFind(UniChar pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const noexcept;
 			
 		public:
 			template<class T>
 			size_t Find(T&& pattern, FlagSet<StringActionFlag> flags = {}, size_t offset = 0) const
 			{
-				flags.Remove(StringActionFlag::FromEnd);
-
 				if constexpr(IsAnyCharType<T>())
 				{
-					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags, false);
 				}
 				else
 				{
-					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags, false);
 				}
 			}
 
 			template<class T>
 			size_t ReverseFind(T&& pattern, FlagSet<StringActionFlag> flags = {}, size_t offset = npos) const
 			{
-				flags.Add(StringActionFlag::FromEnd);
-
 				if constexpr (IsAnyCharType<T>())
 				{
-					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags, true);
 				}
 				else
 				{
-					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags, true);
 				}
 			}
 
 		private:
-			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
-			size_t DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
-			size_t DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
-			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {});
-			size_t DoReplace(UniChar c, UniChar replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept;
-			size_t DoReplace(UniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
+			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false);
+			size_t DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false);
+			size_t DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false);
+			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false);
+			size_t DoReplace(UniChar c, UniChar replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false) noexcept;
+			size_t DoReplace(UniChar c, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false) noexcept
 			{
 				const char pattern[2] = {c.GetAs<char>(), 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
-			size_t DoReplace(UniChar c, std::wstring_view replacement, size_t offset = 0, FlagSet<StringActionFlag> flags = {}) noexcept
+			size_t DoReplace(UniChar c, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse = false) noexcept
 			{
 				const wchar_t pattern[2] = {c.GetAs<XChar>(), 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
@@ -942,16 +937,16 @@ namespace kxf
 			}
 			String& Remove(size_t offset, size_t count)
 			{
-				if (offset < m_String.length())
+				if (count != 0 && offset < m_String.length())
 				{
 					m_String.erase(offset, count);
 				}
 				return *this;
 			}
-			String& RemoveFromEnd(size_t count)
+			String& RemoveRight(size_t count)
 			{
 				size_t offset = m_String.length() - count;
-				if (offset < m_String.length())
+				if (count != 0 && offset < m_String.length())
 				{
 					m_String.erase(offset, count);
 				}

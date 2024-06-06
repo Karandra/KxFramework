@@ -21,7 +21,7 @@ namespace
 			auto value = localizationPackage.GetItem(id);
 			if (!value)
 			{
-				id.RemoveFromEnd(std::size(g_MnemonicSuffix) - 1);
+				id.RemoveRight(std::size(g_MnemonicSuffix) - 1);
 				value = localizationPackage.GetItem(id);
 			}
 			if (value)

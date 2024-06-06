@@ -439,7 +439,6 @@ namespace kxf
 			return false;
 		}
 
-		flags.Remove(StringActionFlag::FromEnd);
 		const size_t pos = Find(pattern, flags);
 		if (pos == 0)
 		{
@@ -633,12 +632,12 @@ namespace kxf
 	}
 
 	// Searching and replacing
-	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
+	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const
 	{
 		String patternCopy = FromUnknownEncoding(pattern);
-		return DoFind(StringViewOf(patternCopy), offset, flags);
+		return DoFind(StringViewOf(patternCopy), offset, flags, reverse);
 	}
-	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags) const
+	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const
 	{
 		if (!m_String.empty())
 		{
@@ -647,7 +646,7 @@ namespace kxf
 				auto sourceL = ToLower();
 				auto patternL = String(pattern).MakeLower();
 
-				if (flags & StringActionFlag::FromEnd)
+				if (reverse)
 				{
 					return sourceL.m_String.rfind(patternL.wc_view(), offset);
 				}
@@ -658,7 +657,7 @@ namespace kxf
 			}
 			else
 			{
-				if (flags & StringActionFlag::FromEnd)
+				if (reverse)
 				{
 					return m_String.rfind(pattern, offset);
 				}
@@ -670,14 +669,14 @@ namespace kxf
 		}
 		return npos;
 	}
-	size_t String::DoFind(UniChar pattern, size_t offset, FlagSet<StringActionFlag> flags) const noexcept
+	size_t String::DoFind(UniChar pattern, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) const noexcept
 	{
 		if (m_String.empty())
 		{
 			return npos;
 		}
 
-		if (flags & StringActionFlag::FromEnd)
+		if (reverse)
 		{
 			if (offset >= m_String.length())
 			{
@@ -710,23 +709,23 @@ namespace kxf
 		return npos;
 	}
 
-	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse)
 	{
 		String patternCopy = FromUnknownEncoding(pattern);
 		String replacementCopy = FromUnknownEncoding(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
-	size_t String::DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	size_t String::DoReplace(std::string_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse)
 	{
 		auto patternConverted = FromUnknownEncoding(pattern);
-		return DoReplace(patternConverted.wc_view(), replacement, offset, flags);
+		return DoReplace(patternConverted.wc_view(), replacement, offset, flags, reverse);
 	}
-	size_t String::DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	size_t String::DoReplace(std::wstring_view pattern, std::string_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse)
 	{
 		auto replacementConverted = FromUnknownEncoding(replacement);
-		return DoReplace(pattern, replacementConverted.wc_view(), offset, flags);
+		return DoReplace(pattern, replacementConverted.wc_view(), offset, flags, reverse);
 	}
-	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags)
+	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse)
 	{
 		const size_t replacementLength = replacement.length();
 		const size_t patternLength = pattern.length();
@@ -746,7 +745,7 @@ namespace kxf
 			sourceL = ToLower();
 			patternL = String(pattern).MakeLower();
 
-			if (flags & StringActionFlag::FromEnd)
+			if (reverse)
 			{
 				pos = sourceL.m_String.rfind(patternL.wc_view(), offset);
 			}
@@ -757,7 +756,7 @@ namespace kxf
 		}
 		else
 		{
-			if (flags & StringActionFlag::FromEnd)
+			if (reverse)
 			{
 				pos = m_String.rfind(pattern, offset);
 			}
@@ -779,7 +778,7 @@ namespace kxf
 
 			if (flags & StringActionFlag::IgnoreCase)
 			{
-				if (flags & StringActionFlag::FromEnd)
+				if (reverse)
 				{
 					pos = sourceL.m_String.rfind(patternL.wc_view(), pos + replacementLength);
 				}
@@ -790,7 +789,7 @@ namespace kxf
 			}
 			else
 			{
-				if (flags & StringActionFlag::FromEnd)
+				if (reverse)
 				{
 					pos = m_String.rfind(pattern, pos + replacementLength);
 				}
@@ -802,7 +801,7 @@ namespace kxf
 		}
 		return replacementCount;
 	}
-	size_t String::DoReplace(UniChar pattern, UniChar replacement, size_t offset, FlagSet<StringActionFlag> flags) noexcept
+	size_t String::DoReplace(UniChar pattern, UniChar replacement, size_t offset, FlagSet<StringActionFlag> flags, bool reverse) noexcept
 	{
 		if (m_String.empty() || offset >= m_String.length())
 		{
@@ -822,7 +821,7 @@ namespace kxf
 			return true;
 		};
 
-		if (flags & StringActionFlag::FromEnd)
+		if (reverse)
 		{
 			for (size_t i = m_String.length() - 1 - offset; i != 0; i--)
 			{
@@ -864,7 +863,7 @@ namespace kxf
 	{
 		for (auto c: pattern)
 		{
-			if (DoFind(c, 0, flags) != npos)
+			if (DoFind(c, 0, flags, false) != npos)
 			{
 				return true;
 			}
@@ -875,7 +874,7 @@ namespace kxf
 	{
 		for (auto c: pattern)
 		{
-			if (DoFind(c, 0, flags) != npos)
+			if (DoFind(c, 0, flags, false) != npos)
 			{
 				return true;
 			}

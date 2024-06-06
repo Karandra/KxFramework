@@ -348,7 +348,7 @@ namespace kxf
 		if (count != 0)
 		{
 			value.Remove(0, count);
-			value.RemoveFromEnd(count);
+			value.RemoveRight(count);
 
 			return true;
 		}
