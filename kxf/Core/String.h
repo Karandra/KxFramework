@@ -23,6 +23,7 @@ namespace kxf
 		None = 0,
 		IgnoreCase = 1 << 0,
 		FromEnd = 1 << 1,
+		Symmetrical = 1 << 1,
 		FirstMatchOnly = 1 << 2,
 	};
 	KxFlagSet_Declare(StringActionFlag);
@@ -877,6 +878,9 @@ namespace kxf
 			bool DoToSignedInteger(int64_t& value, int base) const noexcept;
 			bool DoToUnsignedInteger(uint64_t& value, int base) const noexcept;
 
+			// Misc
+			size_t TrimScan(const String& chars, FlagSet<StringActionFlag> flags, bool left) const;
+
 		public:
 			template<class T = double> requires(std::is_floating_point_v<T>)
 			std::optional<T> ToFloatingPoint() const noexcept
@@ -924,7 +928,7 @@ namespace kxf
 				return {};
 			}
 
-			// Miscellaneous
+			// Misc
 			bool IsASCII() const noexcept
 			{
 				for (const auto& c: m_String)
@@ -961,9 +965,19 @@ namespace kxf
 				}
 				return *this;
 			}
+
+			size_t TrimScanLeft(const String& chars = {}, FlagSet<StringActionFlag> flags = {}) const
+			{
+				return TrimScan(chars, flags, true);
+			}
+			size_t TrimScanRight(const String& chars = {}, FlagSet<StringActionFlag> flags = {}) const
+			{
+				return TrimScan(chars, flags, false);
+			}
 			String& TrimLeft(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
 			String& TrimRight(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
 			String& TrimBoth(const String& chars = {}, FlagSet<StringActionFlag> flags = {});
+
 			String Clone() const
 			{
 				return m_String;

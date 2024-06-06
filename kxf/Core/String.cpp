@@ -902,35 +902,86 @@ namespace kxf
 	}
 
 	// Miscellaneous
+	size_t kxf::String::TrimScan(const String& chars, FlagSet<StringActionFlag> flags, bool left) const
+	{
+		auto ScanChar = [&chars, &flags](size_t& count, UniChar c)
+		{
+			if (chars.IsEmpty())
+			{
+				if (c.IsWhitespace())
+				{
+					count++;
+					return CallbackCommand::Continue;
+				}
+				else
+				{
+					return CallbackCommand::Terminate;
+				}
+			}
+			else
+			{
+				bool found = false;
+				for (auto charsC: chars)
+				{
+					if (flags.Contains(StringActionFlag::IgnoreCase) ? c.CompareNoCase(charsC) == 0 : c.Compare(charsC) == 0)
+					{
+						count++;
+						found = true;
+						break;
+					}
+				}
+				return found ? CallbackCommand::Continue : CallbackCommand::Terminate;
+			}
+		};
+
+		size_t count = 0;
+		if (left)
+		{
+			for (auto it = m_String.begin(); it != m_String.end(); ++it)
+			{
+				if (ScanChar(count, *it) == CallbackCommand::Terminate)
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (auto it = m_String.rbegin(); it != m_String.rend(); ++it)
+			{
+				if (ScanChar(count, *it) == CallbackCommand::Terminate)
+				{
+					break;
+				}
+			}
+		}
+
+		return count;
+	}
 	String& String::TrimLeft(const String& chars, FlagSet<StringActionFlag> flags)
 	{
-		wxString temp;
-		Private::MoveWxString(temp, std::move(m_String));
-
-		temp.Trim(false);
-		Private::MoveWxString(m_String, std::move(temp));
+		auto count = TrimScan(chars, flags, true);
+		Remove(0, count);
 
 		return *this;
 	}
 	String& String::TrimRight(const String& chars, FlagSet<StringActionFlag> flags)
 	{
-		wxString temp;
-		Private::MoveWxString(temp, std::move(m_String));
-
-		temp.Trim(true);
-		Private::MoveWxString(m_String, std::move(temp));
+		auto count = TrimScan(chars, flags, false);
+		RemoveRight(count);
 
 		return *this;
 	}
 	String& String::TrimBoth(const String& chars, FlagSet<StringActionFlag> flags)
 	{
-		wxString temp;
-		Private::MoveWxString(temp, std::move(m_String));
+		auto left = TrimScan(chars, flags, true);
+		auto right = TrimScan(chars, flags, false);
 
-		temp.Trim(false);
-		temp.Trim(true);
-		Private::MoveWxString(m_String, std::move(temp));
-
+		if (!flags.Contains(StringActionFlag::Symmetrical) || left == right)
+		{
+			Remove(0, left);
+			RemoveRight(right);
+		}
 		return *this;
 	}
 
