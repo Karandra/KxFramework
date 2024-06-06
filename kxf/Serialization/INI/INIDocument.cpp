@@ -267,6 +267,7 @@ namespace kxf
 			}
 
 			String keyName2 = keyName;
+			keyName2.TrimBoth();
 			if (options.Contains(INIDocumentOption::Quotes))
 			{
 				RemoveQuotes(keyName2);
