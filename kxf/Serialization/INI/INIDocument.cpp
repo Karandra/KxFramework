@@ -524,8 +524,12 @@ namespace kxf
 	{
 		DoUnload();
 
-		auto utf8 = ini.ToUTF8();
-		return DoLoad(utf8.data(), utf8.length());
+		if (!ini.IsEmpty())
+		{
+			auto utf8 = ini.ToUTF8();
+			return DoLoad(utf8.data(), utf8.size());
+		}
+		return false;
 	}
 	bool INIDocument::Load(IInputStream& stream)
 	{
@@ -541,7 +545,7 @@ namespace kxf
 	{
 		DoUnload();
 
-		if (utf8Data.empty())
+		if (!utf8Data.empty())
 		{
 			return DoLoad(reinterpret_cast<const char*>(utf8Data.data()), utf8Data.size_bytes());
 		}
