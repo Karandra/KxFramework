@@ -57,14 +57,17 @@ namespace kxf
 		return FormatLogLevel(value);
 	}
 
-	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::Initialize(std::shared_ptr<IScopedLoggerContext> userContext)
+	ScopedLoggerGlobalContext& ScopedLoggerGlobalContext::Initialize(std::shared_ptr<IScopedLoggerContext> userContext, LogLevel logLevel)
 	{
-		static ScopedLoggerGlobalContext globalContext(userContext);
+		static ScopedLoggerGlobalContext globalContext(userContext, logLevel);
 		if (globalContext.IsInitialized() && userContext)
 		{
 			std::shared_ptr<IScopedLoggerContext> expected;
 			if (globalContext.m_UserContext.compare_exchange_strong(expected, std::move(userContext)))
 			{
+				LogLevel expectedLevel = LogLevel::Unknown;
+				globalContext.m_LogLevel.compare_exchange_strong(expectedLevel, logLevel);
+
 				globalContext.OnUserContextUpdated();
 			}
 		}

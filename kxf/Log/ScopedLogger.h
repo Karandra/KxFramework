@@ -634,7 +634,7 @@ namespace kxf
 	class ScopedLoggerGlobalContext final
 	{
 		public:
-			static ScopedLoggerGlobalContext& Initialize(std::shared_ptr<IScopedLoggerContext> userContext);
+			static ScopedLoggerGlobalContext& Initialize(std::shared_ptr<IScopedLoggerContext> userContext, LogLevel logLevel = LogLevel::Unknown);
 			static ScopedLoggerGlobalContext& GetInstance();
 
 		private:
@@ -654,8 +654,8 @@ namespace kxf
 			void OnUserContextUpdated();
 
 		private:
-			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext)
-				:m_UserContext(std::move(userContext))
+			ScopedLoggerGlobalContext(std::shared_ptr<IScopedLoggerContext> userContext, LogLevel logLevel)
+				:m_UserContext(std::move(userContext)), m_LogLevel(logLevel)
 			{
 				Initialize();
 			}
