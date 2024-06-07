@@ -59,7 +59,7 @@ namespace kxf
 		size_t i = 0;
 		for (int item: items)
 		{
-			if (item <= 0)
+			if (item < 0)
 			{
 				break;
 			}
