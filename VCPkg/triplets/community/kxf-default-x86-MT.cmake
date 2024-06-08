@@ -1,0 +1,12 @@
+set(VCPKG_TARGET_ARCHITECTURE x86)
+set(VCPKG_CRT_LINKAGE static)
+set(VCPKG_LIBRARY_LINKAGE static)
+
+if(PORT STREQUAL "sciter-js" OR PORT STREQUAL "kxvfs")
+    set(VCPKG_LIBRARY_LINKAGE dynamic)
+endif()
+
+if(PORT STREQUAL "wxwidgets")
+	set(WXWIDGETS_USE_STL ON)
+	set(WXWIDGETS_USE_STD_CONTAINERS ON)
+endif()
