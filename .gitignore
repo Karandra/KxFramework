@@ -5,8 +5,7 @@
 # Output binaries
 Bin/*
 Junk/*
-Release/*
-Debug/*
+Build/*
 
 # Other files
 *.pdb

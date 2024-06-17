@@ -235,7 +235,7 @@ namespace kxf::Private::StandardAllocator
 					m_Config = *config;
 					if (!m_Config.Heap)
 					{
-						Log::ErrorCategory(LogCategory::WinAPI, "Null heap");
+						Log::ErrorCategory(LogCategory::WinAPI, "Null heap provided");
 					}
 				}
 				else
@@ -244,7 +244,7 @@ namespace kxf::Private::StandardAllocator
 					if (!m_Config.Heap)
 					{
 						auto error = Win32Error::GetLastError();
-						Log::ErrorCategory(LogCategory::WinAPI, "GetProcessHeap failed : {} '{}'", error.GetValue(), error.GetMessage());
+						Log::ErrorCategory(LogCategory::WinAPI, "GetProcessHeap failed: {}", error);
 					}
 				}
 			}
@@ -399,6 +399,11 @@ namespace kxf::Private::StandardAllocator
 	};
 }
 
+namespace
+{
+	kxf::Private::StandardAllocator::CRuntimeAlloc g_DefaultMemoryAllocator;
+}
+
 namespace kxf
 {
 	std::shared_ptr<IMemoryAllocator> GetStandardAllocator(StandardAllocatorKind kind, const StandardAllocatorConfig* config)
@@ -428,4 +433,9 @@ namespace kxf
 		};
 		return nullptr;
 	}
+}
+
+namespace kxf
+{
+	IMemoryAllocator& DefaultMemoryAllocator = g_DefaultMemoryAllocator;
 }
