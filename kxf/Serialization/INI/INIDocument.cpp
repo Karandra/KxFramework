@@ -258,7 +258,7 @@ namespace kxf
 
 	std::optional<String> INIDocument::IniDoGetValue(const String& sectionName, const String& keyName, String* comment) const
 	{
-		if (m_Document)
+		if (m_Document && !keyName.IsEmptyOrWhitespace())
 		{
 			const auto options = GetOptions();
 			if (options.Contains(INIDocumentOption::InlineComments) && StartsWithInlineComment(keyName))
@@ -314,6 +314,10 @@ namespace kxf
 		{
 			return false;
 		}
+		else if (keyName.IsEmptyOrWhitespace())
+		{
+			return false;
+		}
 		else
 		{
 			if (!m_Document)
@@ -321,7 +325,10 @@ namespace kxf
 				Init();
 			}
 
-			auto status = m_Document->SetValue(sectionName.utf8_str(), keyName.utf8_str(), value.utf8_str(), !comment.IsEmpty() ? comment.utf8_str() : nullptr, true);
+			String keyName2 = keyName;
+			keyName2.TrimBoth();
+
+			auto status = m_Document->SetValue(sectionName.utf8_str(), keyName2.utf8_str(), value.utf8_str(), !comment.IsEmpty() ? comment.utf8_str() : nullptr, true);
 			return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
 		}
 	}
