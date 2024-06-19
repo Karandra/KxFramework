@@ -1,19 +1,17 @@
 #pragma once
 #include "Common.h"
 #include "kxf/Serialization/BinarySerializer.h"
+#include <cuchar>
 
 namespace kxf
 {
 	class UniChar final
 	{
-		friend struct std::hash<UniChar>;
-		friend struct BinarySerializer<UniChar>;
-
 		private:
-			uint32_t m_Value = 0;
+			char32_t m_Value = 0;
 
 		public:
-			constexpr UniChar(uint32_t c = 0) noexcept
+			constexpr UniChar(char32_t c = 0) noexcept
 				:m_Value(c)
 			{
 			}
@@ -25,15 +23,15 @@ namespace kxf
 			}
 			constexpr bool IsASCII() const noexcept
 			{
-				return m_Value < 0x80;
+				return m_Value < 0x80u;
 			}
 			constexpr bool IsBMP() const noexcept
 			{
-				return m_Value < 0x10000;
+				return m_Value < 0x10000u;
 			}
 			constexpr bool IsSupplementary() const noexcept
 			{
-				return m_Value >= 0x10000 && m_Value <= 0x10FFFF;
+				return m_Value >= 0x10000u && m_Value <= 0x10FFFFu;
 			}
 			constexpr bool IsWhitespace() const noexcept
 			{
@@ -83,7 +81,7 @@ namespace kxf
 			{
 				if (IsSupplementary())
 				{
-					return static_cast<uint16_t>(0xDC00 | ((m_Value - 0x10000) & 0x03FF));
+					return static_cast<uint16_t>(0xDC00u | ((m_Value - 0x10000u) & 0x03FFu));
 				}
 				return {};
 			}
@@ -91,16 +89,16 @@ namespace kxf
 			{
 				if (IsSupplementary())
 				{
-					return static_cast<uint16_t>(0xD800 | ((m_Value - 0x10000) >> 10));
+					return static_cast<uint16_t>(0xD800u | ((m_Value - 0x10000u) >> 10));
 				}
 				return {};
 			}
 
-			constexpr uint32_t GetValue() const noexcept
+			constexpr char32_t GetValue() const noexcept
 			{
 				return m_Value;
 			}
-			constexpr void SetValue(uint32_t c) noexcept
+			constexpr void SetValue(char32_t c) noexcept
 			{
 				m_Value = c;
 			}
@@ -114,11 +112,11 @@ namespace kxf
 			UniChar ToLowerCase() const noexcept;
 			UniChar ToUpperCase() const noexcept;
 
-			constexpr std::strong_ordering Compare(const UniChar& other) noexcept
+			constexpr std::strong_ordering Compare(const UniChar& other) const noexcept
 			{
 				return m_Value <=> other.m_Value;
 			}
-			std::strong_ordering CompareNoCase(const UniChar& other) noexcept
+			std::strong_ordering CompareNoCase(const UniChar& other) const noexcept
 			{
 				return ToLowerCase().m_Value <=> other.ToLowerCase().m_Value;
 			}
@@ -134,7 +132,7 @@ namespace kxf
 			}
 
 			constexpr auto operator<=>(const UniChar&) const noexcept = default;
-			constexpr uint32_t operator*() const noexcept
+			constexpr char32_t operator*() const noexcept
 			{
 				return m_Value;
 			}
@@ -148,7 +146,7 @@ namespace std
 	{
 		size_t operator()(const kxf::UniChar& c) const noexcept
 		{
-			return std::hash<uint32_t>()(c.m_Value);
+			return std::hash<uint32_t>()(static_cast<uint32_t>(c.GetValue()));
 		}
 	};
 }
@@ -160,11 +158,15 @@ namespace kxf
 	{
 		uint64_t Serialize(IOutputStream& stream, const UniChar& c) const
 		{
-			return Serialization::WriteObject(stream, c.m_Value);
+			return Serialization::WriteObject(stream, c.GetAs<uint32_t>());
 		}
 		uint64_t Deserialize(IInputStream& stream, UniChar& c) const
 		{
-			return Serialization::ReadObject(stream, c.m_Value);
+			uint32_t value = 0;
+			auto read = Serialization::ReadObject(stream, value);
+			c.SetValue(value);
+
+			return read;
 		}
 	};
 }
