@@ -4,10 +4,20 @@
 #include "FileItem.h"
 #include "StorageVolume.h"
 
+namespace kxf::FileSystem::Private
+{
+	class PathResolver;
+	class NativeDirectoryEnumerator;
+}
+
 namespace kxf
 {
 	class KX_API NativeFileSystem: public RTTI::Implementation<NativeFileSystem, IFileSystem, IFileSystemWithID>
 	{
+		private:
+			friend class kxf::FileSystem::Private::PathResolver;
+			friend class kxf::FileSystem::Private::NativeDirectoryEnumerator;
+
 		public:
 			static FSPath GetCurrentModuleRootDirectory();
 			static FSPath GetExecutingModuleRootDirectory();
@@ -17,6 +27,7 @@ namespace kxf
 		protected:
 			StorageVolume m_LookupVolume;
 			FSPath m_LookupDirectory;
+			bool m_AllowUnqualifiedPaths = false;
 
 		private:
 			void DoAssingLookupVolume(StorageVolume volume) noexcept
@@ -82,8 +93,8 @@ namespace kxf
 			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
-			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
 			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
 			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
@@ -125,11 +136,11 @@ namespace kxf
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<CallbackCommand(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<CallbackCommand(DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -171,35 +182,19 @@ namespace kxf
 				DoAssingLookupDirectory(std::move(directory));
 			}
 
+			bool UnqualifiedPathsAllowed() const noexcept
+			{
+				return m_AllowUnqualifiedPaths;
+			}
+			void AllowUnqualifiedPaths(bool allow = true) noexcept
+			{
+				m_AllowUnqualifiedPaths = allow;
+			}
+
 			bool IsInUse(const FSPath& path) const;
 			size_t EnumStreams(const FSPath& path, std::function<CallbackCommand(String, DataSize)> func) const;
 
-			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
-			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
-	};
-}
-
-namespace kxf
-{
-	class KX_API ScopedNativeFileSystem: public NativeFileSystem
-	{
-		public:
-			ScopedNativeFileSystem() = default;
-			ScopedNativeFileSystem(StorageVolume volume)
-				:NativeFileSystem(std::move(volume))
-			{
-			}
-			ScopedNativeFileSystem(FSPath directory)
-				:NativeFileSystem(std::move(directory))
-			{
-			}
-			ScopedNativeFileSystem(UniversallyUniqueID scope)
-				:NativeFileSystem(std::move(scope))
-			{
-			}
-
-		public:
-			// IFileSystem
-			bool IsNull() const override;
+			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
+			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(FSPath, FSPath, DataSize, DataSize)> func = {}, FlagSet<FSActionFlag> flags = {});
 	};
 }

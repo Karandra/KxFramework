@@ -80,40 +80,80 @@ namespace
 	{
 		return ::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL) && ::RemoveDirectoryW(path.wc_str());
 	}
-
-	template<class TFunc, class TNoneResult = std::invoke_result_t<TFunc, const FSPath&>>
-	auto DoWithResolvedPath1(const FSPath& currentDirectory, const FSPath& path, TFunc&& func, TNoneResult&& noneResult = {})
-	{
-		if (path.IsAbsolute())
-		{
-			return std::invoke(func, path);
-		}
-		else if (currentDirectory)
-		{
-			return std::invoke(func, currentDirectory / path);
-		}
-		return std::forward<TNoneResult>(noneResult);
-	}
-
-	template<class TFunc, class TNoneResult = std::invoke_result_t<TFunc, const FSPath&, const FSPath&>>
-	auto DoWithResolvedPath2(const FSPath& currentDirectory, const FSPath& path1, const FSPath& path2, TFunc&& func, TNoneResult&& noneResult = {})
-	{
-		const bool isAbsolute1 = path1.IsAbsolute();
-		const bool isAbsolute2 = path2.IsAbsolute();
-
-		if (isAbsolute1 && isAbsolute2)
-		{
-			return std::invoke(func, path1, path2);
-		}
-		else if (currentDirectory)
-		{
-			return std::invoke(func, (isAbsolute1 ? path1 : currentDirectory / path1), (isAbsolute2 ? path2 : currentDirectory / path2));
-		}
-		return std::forward<TNoneResult>(noneResult);
-	}
 }
-namespace
+namespace kxf::FileSystem::Private
 {
+	class PathResolver final
+	{
+		private:
+			const NativeFileSystem& m_FileSystem;
+
+		public:
+			PathResolver(const NativeFileSystem& fs) noexcept
+				:m_FileSystem(fs)
+			{
+			}
+
+		public:
+			FSPath Resolve(const FSPath& path) const
+			{
+				if (!m_FileSystem.IsNull())
+				{
+					bool isAbsolute = path.IsAbsolute();
+					if (m_FileSystem.m_LookupDirectory && !isAbsolute)
+					{
+						return m_FileSystem.m_LookupDirectory / path;
+					}
+					else if (isAbsolute || m_FileSystem.UnqualifiedPathsAllowed())
+					{
+						return path;
+					}
+				}
+				return {};
+			}
+
+			template<class TFunc, class R = std::invoke_result_t<TFunc, const FSPath&>>
+			requires(std::is_invocable_r_v<R, TFunc, const FSPath&>)
+			auto DoWithResolvedPath1(const FSPath& path, TFunc&& func, R&& noneResult = {}) const
+			{
+				if (!m_FileSystem.IsNull())
+				{
+					const bool isAbsolute = path.IsAbsolute();
+
+					if (m_FileSystem.m_LookupDirectory && !isAbsolute)
+					{
+						return std::invoke(func, m_FileSystem.m_LookupDirectory / path);
+					}
+					else if (isAbsolute || m_FileSystem.UnqualifiedPathsAllowed())
+					{
+						return std::invoke(func, path);
+					}
+				}
+				return std::forward<R>(noneResult);
+			}
+
+			template<class TFunc, class R = std::invoke_result_t<TFunc, const FSPath&, const FSPath&>>
+			requires(std::is_invocable_r_v<R, TFunc, const FSPath&, const FSPath&>)
+			auto DoWithResolvedPath2(const FSPath& path1, const FSPath& path2, TFunc&& func, R&& noneResult = {}) const
+			{
+				if (!m_FileSystem.IsNull())
+				{
+					const bool isAbsolute1 = path1.IsAbsolute();
+					const bool isAbsolute2 = path2.IsAbsolute();
+
+					if (m_FileSystem.m_LookupDirectory)
+					{
+						return std::invoke(func, (isAbsolute1 ? path1 : m_FileSystem.m_LookupDirectory / path1), (isAbsolute2 ? path2 : m_FileSystem.m_LookupDirectory / path2));
+					}
+					else if ((isAbsolute1 && isAbsolute2) || m_FileSystem.UnqualifiedPathsAllowed())
+					{
+						return std::invoke(func, path1, path2);
+					}
+				}
+				return std::forward<R>(noneResult);
+			}
+	};
+
 	class NativeDirectoryEnumerator final: public RecursiveCollectionEnumerator<FileItem, FSPath>
 	{
 		private:
@@ -261,23 +301,13 @@ namespace kxf
 	// IFileSystem
 	bool NativeFileSystem::IsValidPathName(const FSPath& path) const
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
 		// All forbidden characters don't have case variants so we can use case-sensitive comparison
 		return path && !path.ContainsAnyOfCharacters(wxFileName::GetForbiddenChars(), true);
 	}
 	String NativeFileSystem::GetForbiddenPathNameCharacters(const String& except) const
 	{
-		if (IsNull())
-		{
-			return {};
-		}
-
 		String forbiddenChars = wxFileName::GetForbiddenChars();
-		for (XChar c : except)
+		for (XChar c: except)
 		{
 			forbiddenChars.Replace(c, NullString);
 		}
@@ -286,37 +316,21 @@ namespace kxf
 
 	FSPath NativeFileSystem::ResolvePath(const FSPath& relativePath) const
 	{
-		if (IsNull())
-		{
-			return {};
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, relativePath, [](const FSPath& path)
-		{
-			return path;
-		});
+		return FileSystem::Private::PathResolver(*this).Resolve(relativePath);
 	}
 
 	bool NativeFileSystem::ItemExist(const FSPath& path) const
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [](const FSPath& path)
 		{
 			return FileSystem::Private::GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 		});
 	}
 	bool NativeFileSystem::FileExist(const FSPath& path) const
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [](const FSPath& path)
 		{
 			const FlagSet<DWORD> attributes = FileSystem::Private::GetFileAttributes(path);
 			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
@@ -324,12 +338,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::DirectoryExist(const FSPath& path) const
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [](const FSPath& path)
 		{
 			const FlagSet<uint32_t> attributes = FileSystem::Private::GetFileAttributes(path);
 			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
@@ -338,12 +348,8 @@ namespace kxf
 
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{
-		if (IsNull())
-		{
-			return {};
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path) -> FileItem
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [](const FSPath& path) -> FileItem
 		{
 			NativeFileStream file(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
 			if (file)
@@ -355,14 +361,16 @@ namespace kxf
 	}
 	Enumerator<FileItem> NativeFileSystem::EnumItems(const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
-		if (IsNull() || flags.Contains(FSActionFlag::LimitToFiles|FSActionFlag::LimitToDirectories))
+		// Invalid flags combination
+		if (flags.Contains(FSActionFlag::LimitToFiles|FSActionFlag::LimitToDirectories))
 		{
 			return {};
 		}
 
-		return DoWithResolvedPath1(m_LookupDirectory, directory, [&](FSPath path)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(directory, [&](FSPath path)
 		{
-			return NativeDirectoryEnumerator(std::move(path), query, flags);
+			return FileSystem::Private::NativeDirectoryEnumerator(std::move(path), query, flags);
 		});
 	}
 
@@ -382,12 +390,8 @@ namespace kxf
 
 	bool NativeFileSystem::CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
 			if (flags.Contains(FSActionFlag::Recursive))
 			{
@@ -425,12 +429,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
 			if (attributes != FileAttribute::Invalid && path.IsAbsolute())
 			{
@@ -442,12 +442,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
 			if ((creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid()))
 			{
@@ -462,14 +458,10 @@ namespace kxf
 		});
 	}
 
-	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath2(source, destination, [&](const FSPath& source, const FSPath& destination) -> bool
 		{
 			FlagSet<DWORD> copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
 			copyFlags.Add(COPY_FILE_FAIL_IF_EXISTS, !(flags & FSActionFlag::ReplaceIfExist));
@@ -483,19 +475,19 @@ namespace kxf
 			{
 				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(),
 									 [](LARGE_INTEGER TotalFileSize,
-									 LARGE_INTEGER TotalBytesTransferred,
-									 LARGE_INTEGER StreamSize,
-									 LARGE_INTEGER StreamBytesTransferred,
-									 DWORD dwStreamNumber,
-									 DWORD dwCallbackReason,
-									 HANDLE hSourceFile,
-									 HANDLE hDestinationFile,
-									 LPVOID lpData) -> DWORD
+										LARGE_INTEGER TotalBytesTransferred,
+										LARGE_INTEGER StreamSize,
+										LARGE_INTEGER StreamBytesTransferred,
+										DWORD dwStreamNumber,
+										DWORD dwCallbackReason,
+										HANDLE hSourceFile,
+										HANDLE hDestinationFile,
+										LPVOID lpData) -> DWORD
 				{
 					using T = std::remove_reference_t<decltype(func)>;
 					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
 
-					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)))
+					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)) != CallbackCommand::Terminate)
 					{
 						return PROGRESS_CONTINUE;
 					}
@@ -508,14 +500,10 @@ namespace kxf
 			}
 		});
 	}
-	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath2(source, destination, [&](const FSPath& source, const FSPath& destination) -> bool
 		{
 			FlagSet<DWORD> moveFlags = MOVEFILE_COPY_ALLOWED;
 			moveFlags.Add(MOVEFILE_REPLACE_EXISTING, flags & FSActionFlag::ReplaceIfExist);
@@ -527,19 +515,19 @@ namespace kxf
 			if (func)
 			{
 				return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), [](LARGE_INTEGER TotalFileSize,
-											   LARGE_INTEGER TotalBytesTransferred,
-											   LARGE_INTEGER StreamSize,
-											   LARGE_INTEGER StreamBytesTransferred,
-											   DWORD dwStreamNumber,
-											   DWORD dwCallbackReason,
-											   HANDLE hSourceFile,
-											   HANDLE hDestinationFile,
-											   LPVOID lpData) -> DWORD
+																								 LARGE_INTEGER TotalBytesTransferred,
+																								 LARGE_INTEGER StreamSize,
+																								 LARGE_INTEGER StreamBytesTransferred,
+																								 DWORD dwStreamNumber,
+																								 DWORD dwCallbackReason,
+																								 HANDLE hSourceFile,
+																								 HANDLE hDestinationFile,
+																								 LPVOID lpData) -> DWORD
 				{
 					using T = std::remove_reference_t<decltype(func)>;
 					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
 
-					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)))
+					if (std::invoke(callback, DataSize::FromBytes(TotalBytesTransferred.QuadPart), DataSize::FromBytes(TotalFileSize.QuadPart)) != CallbackCommand::Terminate)
 					{
 						return PROGRESS_CONTINUE;
 					}
@@ -554,12 +542,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath2(source, destination, [&](const FSPath& source, const FSPath& destination) -> bool
 		{
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -570,12 +554,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::RemoveItem(const FSPath& path)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
 			const String sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
@@ -599,12 +579,8 @@ namespace kxf
 	}
 	bool NativeFileSystem::RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
 			const String sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
@@ -682,12 +658,8 @@ namespace kxf
 														 FlagSet<IOStreamFlag> streamFlags,
 														 FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return nullptr;
-		}
-
-		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
 			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
 			if (!*fileStream && flags.Contains(FSActionFlag::CreateDirectoryTree) && fileStream->GetLastNativeError().IsSameAs<Win32Error>(ERROR_PATH_NOT_FOUND))
@@ -804,21 +776,16 @@ namespace kxf
 	// NativeFileSystem
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
-		if (IsNull())
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path) -> bool
 		{
-			return false;
-		}
-
-		return path.IsAbsolute() && NativeFileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
+			return NativeFileStream().Open(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
+		});
 	}
 	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<CallbackCommand(String, DataSize)> func) const
 	{
-		if (IsNull())
-		{
-			return 0;
-		}
-
-		if (path.IsAbsolute())
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath1(path, [&](const FSPath& path)
 		{
 			size_t counter = 0;
 			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -844,42 +811,23 @@ namespace kxf
 				while (::FindNextStreamW(handle, &streamInfo));
 			}
 			return counter;
-		}
-		return 0;
+		});
 	}
 
-	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags) const
+	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath2(source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
-			return false;
-		}
-
-		if (source.IsAbsolute() && destination.IsAbsolute())
-		{
-			return FileSystem::Private::CopyOrMoveDirectoryTree(const_cast<NativeFileSystem&>(*this), source, destination, std::move(func), flags, false);
-		}
-		return false;
+			return FileSystem::Private::CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, false);
+		});
 	}
-	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<CallbackCommand(FSPath, FSPath, DataSize, DataSize)> func, FlagSet<FSActionFlag> flags)
 	{
-		if (IsNull())
-		{
-			return false;
-		}
-
-		if (source.IsAbsolute() && destination.IsAbsolute())
+		FileSystem::Private::PathResolver pathResolver(*this);
+		return pathResolver.DoWithResolvedPath2(source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
 			return FileSystem::Private::CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
-		}
-		return false;
-	}
-}
-
-namespace kxf
-{
-	bool ScopedNativeFileSystem::IsNull() const
-	{
-		return m_LookupDirectory.IsNull() || m_LookupVolume.IsNull();
+		});
 	}
 }

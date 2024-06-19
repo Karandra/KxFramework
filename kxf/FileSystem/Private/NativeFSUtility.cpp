@@ -182,16 +182,16 @@ namespace kxf::FileSystem::Private
 	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
 								 const FSPath& source,
 								 const FSPath& destination,
-								 std::function<bool(FSPath, FSPath, DataSize, DataSize)> func,
+								 std::function<CallbackCommand(FSPath, FSPath, DataSize, DataSize)> func,
 								 FlagSet<FSActionFlag> flags,
 								 bool move)
 	{
-		for (const FileItem& item: fileSystem.EnumItems(source, {}, FSActionFlag::Recursive))
+		for (const FileItem& item: fileSystem.EnumItems(source, {}, flags|FSActionFlag::Recursive))
 		{
 			FSPath target = destination / item.GetFullPath().GetAfter(source);
 			if (item.IsDirectory())
 			{
-				if (!func || std::invoke(func, source, target, 0, 0))
+				if (!func || std::invoke(func, source, target, 0, 0) != CallbackCommand::Terminate)
 				{
 					fileSystem.CreateDirectory(target);
 					if (move)
