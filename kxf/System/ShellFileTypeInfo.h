@@ -146,7 +146,7 @@ namespace kxf
 			}
 			FSPath GetIconFile() const
 			{
-				return m_FileTypeInfo.GetIconFile();
+				return String(m_FileTypeInfo.GetIconFile());
 			}
 			ShellFileTypeInfo& SetIcon(const FSPath& filePath, int index = 0)
 			{

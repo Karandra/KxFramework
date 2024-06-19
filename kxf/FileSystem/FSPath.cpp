@@ -23,38 +23,6 @@ namespace
 }
 namespace
 {
-	size_t FindChar(const kxf::String& path, kxf::XChar c, bool reverse = false)
-	{
-		using namespace kxf;
-
-		return reverse ? path.ReverseFind(c) : path.Find(c);
-	}
-	size_t RemoveLeadingSpaces(kxf::String& path)
-	{
-		const std::locale locale;
-		size_t removedCount = 0;
-		bool removeSpaces = true;
-
-		for (size_t i = 0; i < path.length(); i++)
-		{
-			// Remove any leading space characters
-			if (removeSpaces)
-			{
-				if (std::isspace(static_cast<kxf::XChar>(path[i]), locale))
-				{
-					path.Remove(i, 1);
-					removedCount++;
-					i--;
-				}
-				else
-				{
-					removeSpaces = false;
-				}
-			}
-		}
-		return removedCount;
-	}
-
 	kxf::String ConcatWithNamespace(const kxf::String& path, kxf::FSPathNamespace withNamespace)
 	{
 		using namespace kxf;
@@ -69,7 +37,7 @@ namespace
 	{
 		using namespace kxf;
 
-		const size_t pos = FindChar(path, c, reverse);
+		const size_t pos = reverse ? path.ReverseFind(c) : path.Find(c);
 		if (pos != String::npos)
 		{
 			String result = path.SubLeft(pos);
@@ -85,7 +53,7 @@ namespace
 	{
 		using namespace kxf;
 
-		const size_t pos = FindChar(path, c, reverse);
+		const size_t pos = reverse ? path.ReverseFind(c) : path.Find(c);
 		if (pos != String::npos && pos + 1 < path.length())
 		{
 			String result = path.SubMid(pos + 1, count);
@@ -116,7 +84,8 @@ namespace kxf
 		if (!m_Path.IsEmpty())
 		{
 			// It's important to process namespace before normalization,
-			// because normalization can remove some namespace symbols.
+			// because normalization can remove some namespace symbols
+			// and normalization assumes there is no namespace prefix anymore.
 			ProcessNamespace();
 			Normalize();
 		}
@@ -125,7 +94,7 @@ namespace kxf
 	{
 		// We need to remove any leading spaces before searching for a namespace.
 		// This is duplicated in the 'Normalize' function but anyway we need it here.
-		RemoveLeadingSpaces(m_Path);
+		m_Path.TrimLeft();
 
 		const size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
 		if (namespacePrefixLength != 0)
@@ -135,9 +104,8 @@ namespace kxf
 	}
 	void FSPath::Normalize()
 	{
-		const std::locale locale;
+		m_Path.TrimLeft();
 
-		bool removeSpaces = true;
 		bool removeNextSlash = false;
 		for (size_t i = 0; i < m_Path.length(); i++)
 		{
@@ -147,20 +115,6 @@ namespace kxf
 			if (c == '/')
 			{
 				c = g_PathSeparator;
-			}
-
-			// Remove any leading space characters
-			if (removeSpaces)
-			{
-				if (std::isspace(static_cast<XChar>(c), locale))
-				{
-					m_Path.Remove(i, 1);
-					i--;
-				}
-				else
-				{
-					removeSpaces = false;
-				}
 			}
 
 			// Remove any duplicating slashes
@@ -180,6 +134,14 @@ namespace kxf
 			{
 				removeNextSlash = false;
 			}
+		}
+
+		using namespace FileSystem::Private;
+		if (m_Path.Contains(NamespacePrefix::DotRelative1) ||
+			m_Path.Contains(NamespacePrefix::DotRelative5) ||
+			m_Path.Contains(NamespacePrefix::DotRelative6))
+		{
+			SimplifyPath();
 		}
 	}
 
@@ -211,6 +173,16 @@ namespace kxf
 		if (path.IsEmpty() || path[0] != g_PathSeparator)
 		{
 			ns = FSPathNamespace::None;
+
+			// Check for non-namespace prefixes
+			if (path.StartsWith(NamespacePrefix::DotRelative1) || path.StartsWith(NamespacePrefix::DotRelative3))
+			{
+				return std::size(NamespacePrefix::DotRelative1) - 1;
+			}
+			else if (path.StartsWith(NamespacePrefix::DotRelative2) || path.StartsWith(NamespacePrefix::DotRelative4))
+			{
+				return std::size(NamespacePrefix::DotRelative2) - 1;
+			}
 			return 0;
 		}
 
@@ -321,7 +293,7 @@ namespace kxf
 	}
 	String FSPath::GetFullPath(FSPathNamespace withNamespace, FlagSet<FSPathFormat> format) const
 	{
-		String result = ConcatWithNamespace(m_Path, withNamespace);
+		String result = IsAbsolute() ? ConcatWithNamespace(m_Path, withNamespace) : m_Path;
 		if (!result.IsEmpty())
 		{
 			if (format & FSPathFormat::TrailingSeparator)
@@ -475,7 +447,7 @@ namespace kxf
 			return m_Path;
 		}
 	}
-	FSPath& FSPath::SetPath(const String& path)
+	FSPath& FSPath::SetPath(String path)
 	{
 		if (CheckStringOnAssignPath(path))
 		{
@@ -496,7 +468,7 @@ namespace kxf
 			else
 			{
 				// Replace the full path
-				m_Path = path;
+				m_Path = std::move(path);
 			}
 			Normalize();
 		}
@@ -515,7 +487,9 @@ namespace kxf
 				constexpr size_t length = std::numeric_limits<int16_t>::max();
 				if (HResult(NativeAPI::KernelBase::PathCchCanonicalizeEx(Utility::StringBuffer(result, length, true), length, m_Path.wc_str(), PATHCCH_ALLOW_LONG_PATHS|PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS)))
 				{
-					AssignFromPath(std::move(result));
+					m_Path = std::move(result);
+					ProcessNamespace();
+
 					isSuccess = true;
 				}
 			}
@@ -524,7 +498,9 @@ namespace kxf
 				wchar_t result[MAX_PATH] = {};
 				if (NativeAPI::ShlWAPI::PathCanonicalizeW(result, m_Path.wc_str()))
 				{
-					AssignFromPath(result);
+					m_Path = std::move(result);
+					ProcessNamespace();
+
 					isSuccess = true;
 				}
 			}
@@ -645,6 +621,8 @@ namespace kxf
 				m_Path += g_PathSeparator;
 			}
 			m_Path += other.m_Path;
+
+			Normalize();
 		}
 		return *this;
 	}
@@ -653,6 +631,7 @@ namespace kxf
 		if (IsNull() || other.IsRelative())
 		{
 			m_Path += other.m_Path;
+			Normalize();
 		}
 		return *this;
 	}

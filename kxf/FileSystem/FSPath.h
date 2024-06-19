@@ -57,14 +57,6 @@ namespace kxf
 			{
 				AssignFromPath(path);
 			}
-			FSPath(const wxString& path)
-				:FSPath(String(path))
-			{
-			}
-			FSPath(wxString&& path)
-				:FSPath(String(std::move(path)))
-			{
-			}
 			~FSPath() = default;
 
 		public:
@@ -144,7 +136,7 @@ namespace kxf
 			FSPath& SetVolume(const StorageVolume& volume);
 
 			String GetPath() const;
-			FSPath& SetPath(const String& path);
+			FSPath& SetPath(String path);
 			FSPath& SimplifyPath();
 
 			String GetName() const;

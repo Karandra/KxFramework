@@ -14,11 +14,11 @@ namespace
 		using namespace kxf;
 
 		String path = filePath.GetFullPath(FSPathNamespace::Win32File);
-		const DWORD length = func(path.wc_str(), nullptr, 0);
+		const DWORD length = std::invoke(func, path.wc_str(), nullptr, 0);
 		if (length != 0)
 		{
 			String result;
-			func(path.wc_str(), Utility::StringBuffer(result, length), length);
+			std::invoke(func, path.wc_str(), Utility::StringBuffer(result, length), length);
 
 			FSPath fsPath = std::move(result);
 			fsPath.EnsureNamespaceSet(filePath.GetNamespace());
@@ -32,7 +32,7 @@ namespace kxf::FileSystem
 {
 	FSPath CreateTempPathName(const FSPath& rootDirectory)
 	{
-		FSPath fsPath = wxFileName::CreateTempFileName(rootDirectory.GetFullPath());
+		FSPath fsPath = String(wxFileName::CreateTempFileName(rootDirectory.GetFullPath()));
 		fsPath.EnsureNamespaceSet(rootDirectory.GetNamespace());
 		return fsPath;
 	}
