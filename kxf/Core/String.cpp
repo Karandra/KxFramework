@@ -415,9 +415,9 @@ namespace kxf
 		}
 		else
 		{
-			for (const auto& c: m_String)
+			for (UniChar c: m_String)
 			{
-				if (!std::isspace(c))
+				if (!c.IsWhitespace())
 				{
 					return false;
 				}
