@@ -79,6 +79,7 @@ namespace kxf
 			
 			std::optional<uint8_t> Peek() override;
 			IInputStream& Read(void* buffer, size_t size) override;
+			using IInputStream::Read;
 
 			DataSize TellI() const override;
 			DataSize SeekI(DataSize offset, IOStreamSeek seek) override;
@@ -94,6 +95,7 @@ namespace kxf
 			}
 			
 			IOutputStream& Write(const void* buffer, size_t size) override;
+			using IOutputStream::Write;
 
 			DataSize TellO() const override;
 			DataSize SeekO(DataSize offset, IOStreamSeek seek) override;
