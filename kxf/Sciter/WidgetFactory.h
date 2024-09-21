@@ -88,7 +88,7 @@ namespace kxf::Sciter
 
 		public:
 			WidgetFactoryInstance() noexcept = default;
-			const WidgetFactoryInstance(const WidgetFactoryInstance&) = delete;
+			WidgetFactoryInstance(const WidgetFactoryInstance&) = delete;
 
 		protected:
 			~WidgetFactoryInstance() = default;
