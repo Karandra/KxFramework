@@ -776,7 +776,7 @@ namespace kxf
 			template<class T>
 			size_t ReverseFind(T&& pattern, FlagSet<StringActionFlag> flags = {}, size_t offset = npos) const
 			{
-				if constexpr (IsAnyCharType<T>())
+				if constexpr(IsAnyCharType<T>())
 				{
 					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags, true);
 				}

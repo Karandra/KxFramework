@@ -172,7 +172,7 @@ namespace kxf
 		public:
 			constexpr bool IsSameColorAs(const PackedRGB<T>& other) const noexcept
 			{
-				if constexpr (std::is_floating_point_v<T>)
+				if constexpr(std::is_floating_point_v<T>)
 				{
 					using namespace Utility;
 					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
