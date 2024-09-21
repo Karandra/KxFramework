@@ -108,6 +108,10 @@ namespace kxf::FFI
 		{
 			return TypeID::Float64;
 		}
+		else if constexpr(std::is_enum_v<T>)
+		{
+			return GetTypeID<std::underlying_type_t<T>>();
+		}
 		else
 		{
 			static_assert(sizeof(T*) == 0, "this type is not supported");
