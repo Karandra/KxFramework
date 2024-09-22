@@ -144,6 +144,7 @@ namespace kxf
 			void SetLongNamesEnabled(bool enable = true);
 			void SetSwitchCharacters(const String& switchCharacters);
 
+			bool FindCommandLine();
 			void SetCommandLine(int argc, char** argv);
 			void SetCommandLine(int argc, wchar_t** argv);
 			void SetCommandLine(const String& commandLine);

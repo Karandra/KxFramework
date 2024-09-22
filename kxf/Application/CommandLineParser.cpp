@@ -72,6 +72,15 @@ namespace kxf
 		m_Parser->SetSwitchChars(switchCharacters);
 	}
 
+	bool CommandLineParser::FindCommandLine()
+	{
+		if (auto commandLine = ::GetCommandLineW())
+		{
+			SetCommandLine(commandLine);
+			return true;
+		}
+		return false;
+	}
 	void CommandLineParser::SetCommandLine(int argc, char** argv)
 	{
 		if (!m_Parser)
