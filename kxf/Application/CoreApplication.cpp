@@ -663,11 +663,22 @@ namespace kxf
 						m_PendingEvtHandlersLock.LockWrite();
 					};
 
-					// We always call 'IEvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
-					// auto-remove themselves from this list (see 'RemovePendingEventHandler') if they have no more pending events.
-					if (evtHandler->ProcessPendingEvents())
+					if (OnPendingEventHandlerProcess(*evtHandler))
 					{
-						count++;
+						// We always call 'IEvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
+						// auto-remove themselves from this list (see 'RemovePendingEventHandler') if they have no more pending events.
+						if (evtHandler->ProcessPendingEvents())
+						{
+							count++;
+						}
+					}
+					else
+					{
+						// Remove the handler from pending events, but don't process any of its events
+						if (RemovePendingEventHandler(*evtHandler))
+						{
+							count++;
+						}
 					}
 				}
 
@@ -696,7 +707,7 @@ namespace kxf
 		size_t count = 0;
 		for (IEvtHandler* evtHandler: m_PendingEvtHandlers)
 		{
-			if (evtHandler->DiscardPendingEvents() != 0)
+			if (OnPendingEventHandlerDiscard(*evtHandler) && evtHandler->DiscardPendingEvents() != 0)
 			{
 				count++;
 			}

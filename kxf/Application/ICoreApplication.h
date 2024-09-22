@@ -87,6 +87,16 @@ namespace kxf::Application
 	{
 		KxRTTI_DeclareIID(IPendingEvents, {0xf3c249fd, 0xf2ca, 0x41af, {0x85, 0x31, 0x5a, 0x74, 0x3d, 0x78, 0x34, 0xb7}});
 
+		protected:
+			virtual bool OnPendingEventHandlerProcess(IEvtHandler& evtHandler)
+			{
+				return true;
+			}
+			virtual bool OnPendingEventHandlerDiscard(IEvtHandler& evtHandler)
+			{
+				return true;
+			}
+
 		public:
 			virtual ~IPendingEvents() = default;
 
