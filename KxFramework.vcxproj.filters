@@ -2457,6 +2457,9 @@
     <ClInclude Include="kxf\Core\EncodingConverter\NativeEncodingConverter.h">
       <Filter>kxf\Core\EncodingConverter</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Application\AttachedApplication.h">
+      <Filter>kxf\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3734,6 +3737,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Core\UniChar.cpp">
       <Filter>kxf\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Application\AttachedApplication.cpp">
+      <Filter>kxf\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
