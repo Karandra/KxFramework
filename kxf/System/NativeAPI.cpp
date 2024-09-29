@@ -305,7 +305,6 @@ namespace kxf
 
 namespace kxf::NativeAPI
 {
-	KX_SCOPEDLOG_FUNC;
 	namespace NtDLL
 	{
 		DEFINE_FUNCTION(RtlGetVersion);
