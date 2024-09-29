@@ -196,9 +196,8 @@ namespace kxf
 			INIT_FUNCTION(User32, SetThreadDpiAwarenessContext);
 			INIT_FUNCTION(User32, GetDpiForSystem);
 			INIT_FUNCTION(User32, GetDpiForWindow);
-
-			KX_SCOPEDLOG.SetSuccess();
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeShlWAPI() noexcept
 	{
@@ -208,9 +207,8 @@ namespace kxf
 		if (IsLibraryLoaded(NativeAPISet::ShlWAPI))
 		{
 			INIT_FUNCTION(ShlWAPI, PathCanonicalizeW);
-
-			KX_SCOPEDLOG.SetSuccess();
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeDWMAPI() noexcept
 	{
@@ -234,9 +232,8 @@ namespace kxf
 		if (IsLibraryLoaded(NativeAPISet::DbgHelp))
 		{
 			INIT_FUNCTION(DbgHelp, ImageNtHeader);
-
-			KX_SCOPEDLOG.SetSuccess();
 		}
+		KX_SCOPEDLOG.SetSuccess();
 	}
 	void NativeAPILoader::InitializeOleAcc() noexcept
 	{
