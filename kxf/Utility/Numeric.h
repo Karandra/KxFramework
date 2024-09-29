@@ -12,7 +12,7 @@ namespace kxf::Utility
 		return value < static_cast<T>(0) ? -value : value;
 	}
 
-	template<class T1, class T2> requires(std::is_arithmetic_v<T1> && std::is_integral_v<T2>)
+	template<class T1, class T2> requires(std::is_arithmetic_v<T1> && std::is_unsigned_v<T2>)
 	constexpr T1 Pow(T1 value, T2 pow) noexcept
 	{
 		T1 result = value;
