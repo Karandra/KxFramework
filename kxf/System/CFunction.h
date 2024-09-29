@@ -172,6 +172,7 @@ namespace kxf::FFI::Private
 namespace kxf
 {
 	template<class TSignature, FFI::ABI ABI_ = FFI::ABI::Default>
+	requires(std::is_function_v<TSignature>)
 	class CFunction: public FFI::Private::CompiledCallableWrapper<ABI_, TSignature>::TCompiledCallable
 	{
 		private:
