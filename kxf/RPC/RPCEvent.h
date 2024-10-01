@@ -17,11 +17,11 @@ namespace kxf
 		KxRTTI_DeclareIID(RPCEvent, {0x709fe4e1, 0xff7b, 0x4c2f, {0xb4, 0xce, 0xf5, 0xc3, 0x20, 0x7d, 0x55, 0xc9}});
 
 		public:
-			KxEVENT_MEMBER_STRING(RPCEvent, ServerStarted);
-			KxEVENT_MEMBER_STRING(RPCEvent, ServerTerminated);
+			KxEVENT_MEMBER_UNIQUE_STRING(RPCEvent, ServerStarted, "{709fe4e1-ff7b-4c2f-b4ce-f5c3207d55c9}");
+			KxEVENT_MEMBER_UNIQUE_STRING(RPCEvent, ServerTerminated, "{709fe4e1-ff7b-4c2f-b4ce-f5c3207d55c9}");
 
-			KxEVENT_MEMBER_STRING(RPCEvent, ClientConnected);
-			KxEVENT_MEMBER_STRING(RPCEvent, ClientDisconnected);
+			KxEVENT_MEMBER_UNIQUE_STRING(RPCEvent, ClientConnected, "{709fe4e1-ff7b-4c2f-b4ce-f5c3207d55c9}");
+			KxEVENT_MEMBER_UNIQUE_STRING(RPCEvent, ClientDisconnected, "{709fe4e1-ff7b-4c2f-b4ce-f5c3207d55c9}");
 
 		public:
 			RPCEvent() = default;
