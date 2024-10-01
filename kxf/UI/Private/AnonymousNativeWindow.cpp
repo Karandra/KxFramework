@@ -25,15 +25,14 @@ namespace kxf::Private
 	{
 		if (msg == WM_DESTROY)
 		{
-			m_NativeWindow = nullptr;
-			m_Handle = nullptr;
+			m_WxWindow = nullptr;
 		}
 
-		if (m_HandleMessage)
+		if (m_MessageHandler)
 		{
 			try
 			{
-				return std::invoke(m_HandleMessage, result, msg, wParam, lParam);
+				return std::invoke(m_MessageHandler, result, msg, wParam, lParam);
 			}
 			catch (...)
 			{
@@ -60,18 +59,22 @@ namespace kxf::Private
 
 	wxWindow* AnonymousNativeWindow::GetWxWindow()
 	{
-		if (!m_NativeWindow && m_Handle)
+		if (!m_WxWindow && m_Window)
 		{
-			m_NativeWindow = std::make_unique<wxNativeContainerWindow>(static_cast<HWND>(m_Handle));
+			m_WxWindow = std::make_unique<wxNativeContainerWindow>(static_cast<HWND>(m_Window.GetHandle()));
 		}
-		return m_NativeWindow.get();
+		return m_WxWindow.get();
 	}
 
-	bool AnonymousNativeWindow::Create(decltype(m_HandleMessage) messageHandler, const String& title)
+	bool AnonymousNativeWindow::Create(decltype(m_MessageHandler) messageHandler, const String& title)
 	{
-		if (!m_Handle)
+		return Create(std::move(messageHandler), title, WS_MINIMIZE|WS_DISABLED, WS_EX_TRANSPARENT);
+	}
+	bool AnonymousNativeWindow::Create(decltype(m_MessageHandler) messageHandler, const String& title, FlagSet<uint32_t> style, FlagSet<uint32_t> exStyle)
+	{
+		if (!m_Window)
 		{
-			m_HandleMessage = std::move(messageHandler);
+			m_MessageHandler = std::move(messageHandler);
 
 			WNDCLASSEXW windowClass = {};
 			windowClass.cbSize = sizeof(windowClass);
@@ -94,14 +97,12 @@ namespace kxf::Private
 
 			if (m_WindowClass != 0)
 			{
-				constexpr FlagSet<DWORD> style = WS_MINIMIZE|WS_DISABLED;
-				constexpr FlagSet<DWORD> exStyle = WS_EX_TRANSPARENT;
 				const wchar_t* windowTitle = !title.IsEmpty() ? title.wc_str() : windowClass.lpszClassName;
-				if (m_Handle = ::CreateWindowExW(*exStyle, windowClass.lpszClassName, windowTitle, *style, 100, 100, 512, 256, nullptr, nullptr, windowClass.hInstance, nullptr))
+				if (m_Window = ::CreateWindowExW(*exStyle, windowClass.lpszClassName, windowTitle, *style, 100, 100, 512, 256, nullptr, nullptr, windowClass.hInstance, nullptr))
 				{
-					::SendMessageW(reinterpret_cast<HWND>(m_Handle), WM_SETREDRAW, FALSE, 0);
-					::SetWindowTheme(reinterpret_cast<HWND>(m_Handle), L"Explorer", nullptr);
-					::SetWindowLongPtrW(reinterpret_cast<HWND>(m_Handle), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+					m_Window.SetValue(GWLP_USERDATA, reinterpret_cast<intptr_t>(this));
+					m_Window.SendMessage(WM_SETREDRAW, FALSE, 0);
+					::SetWindowTheme(reinterpret_cast<HWND>(m_Window.GetHandle()), L"Explorer", nullptr);
 
 					return true;
 				}
@@ -111,19 +112,14 @@ namespace kxf::Private
 	}
 	bool AnonymousNativeWindow::Destroy() noexcept
 	{
-		m_NativeWindow = nullptr;
+		m_WxWindow = nullptr;
+		bool destroyed = m_Window.Destroy();
 
-		bool destroyed = false;
-		if (m_Handle)
-		{
-			destroyed = ::DestroyWindow(reinterpret_cast<HWND>(m_Handle));
-			m_Handle = nullptr;
-		}
 		if (m_WindowClass != 0)
 		{
 			::UnregisterClassW(g_WindowClassName, GetCurrentModule());
 			m_WindowClass = 0;
 		}
-		return false;
+		return destroyed;
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/System/SystemWindow.h"
 class wxWindow;
 class wxNativeContainerWindow;
 
@@ -8,11 +9,11 @@ namespace kxf::Private
 	class AnonymousNativeWindow final
 	{
 		private:
-			std::function<bool(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam)> m_HandleMessage;
-			void* m_Handle = nullptr;
+			std::move_only_function<bool(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam)> m_MessageHandler;
+			OwningSystemWindow m_Window;
 			uint32_t m_WindowClass = 0;
 
-			std::unique_ptr<wxNativeContainerWindow> m_NativeWindow;
+			std::unique_ptr<wxNativeContainerWindow> m_WxWindow;
 
 		private:
 			bool HandleMessage(intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam) noexcept;
@@ -25,15 +26,20 @@ namespace kxf::Private
 		public:
 			bool IsNull() const noexcept
 			{
-				return m_Handle == nullptr;
+				return m_Window.IsNull();
 			}
 			void* GetHandle() const noexcept
 			{
-				return m_Handle;
+				return m_Window.GetHandle();
+			}
+			SystemWindow GetWindow() const noexcept
+			{
+				return m_Window;
 			}
 			wxWindow* GetWxWindow();
 
-			bool Create(decltype(m_HandleMessage) messageHandler, const String& title = {});
+			bool Create(decltype(m_MessageHandler) messageHandler, const String& title = {});
+			bool Create(decltype(m_MessageHandler) messageHandler, const String& title, FlagSet<uint32_t> style, FlagSet<uint32_t> exStyle);
 			bool Destroy() noexcept;
 
 		public:
