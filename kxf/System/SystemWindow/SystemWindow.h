@@ -57,6 +57,7 @@ namespace kxf
 
 			// SystemWindow
 			RunningSystemProcess OpenOwningProcess() const;
+			bool DoesExist() const;
 
 			bool IsBoradcastWindow() const;
 			void AttachHandle(void* hwnd)

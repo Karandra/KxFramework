@@ -249,6 +249,10 @@ namespace kxf
 		}
 		return {};
 	}
+	bool SystemWindow::DoesExist() const
+	{
+		return m_Handle && ::IsWindow(ToHWND(m_Handle));
+	}
 
 	bool SystemWindow::IsBoradcastWindow() const
 	{
