@@ -4,6 +4,7 @@
 #include "../SystemProcess/SystemProcessInfo.h"
 #include "kxf/System/Private/Shell.h"
 #include "kxf/System/NativeAPI.h"
+#include "kxf/System/Win32Error.h"
 #include "kxf/Utility/String.h"
 #include "kxf/Utility/Drawing.h"
 #include <Windows.h>
@@ -177,17 +178,26 @@ namespace kxf
 	}
 	std::optional<intptr_t> SystemWindow::SendMessage(uint32_t message, intptr_t wParam, intptr_t lParam, FlagSet<uint32_t> flags, TimeSpan timeout)
 	{
+		Win32Error::SetLastError(Win32Error::Success());
+
 		if (timeout.IsPositive())
 		{
 			DWORD_PTR result = 0;
-			if (::SendMessageTimeoutW(ToHWND(m_Handle), message, wParam, lParam, flags.ToInt(), timeout.GetMilliseconds(), &result))
+			auto status = ::SendMessageTimeoutW(ToHWND(m_Handle), message, wParam, lParam, flags.ToInt(), timeout.GetMilliseconds(), &result);
+			auto lastError = Win32Error::GetLastError();
+
+			if (status != 0 && lastError.IsSuccess())
 			{
 				return result;
 			}
 		}
 		else
 		{
-			return ::SendMessageW(ToHWND(m_Handle), message, wParam, lParam);
+			auto result = ::SendMessageW(ToHWND(m_Handle), message, wParam, lParam);
+			if (Win32Error::GetLastError().IsSuccess())
+			{
+				return result;
+			}
 		}
 		return {};
 	}
