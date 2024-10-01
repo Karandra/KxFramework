@@ -68,7 +68,7 @@ namespace kxf
 			}
 			size_t GetParameterCount() const override
 			{
-				return m_Procedure.GetParametersCount();
+				return m_Procedure.GetParameterCount();
 			}
 			IInputStream& RawGetParameters() override;
 			void RawSetResult(IInputStream& stream) override;

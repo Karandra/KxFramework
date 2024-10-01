@@ -342,7 +342,7 @@
     <ClInclude Include="kxf\RPC\SystemWindowRPC\SystemWindowRPCEvent.h" />
     <ClInclude Include="kxf\RPC\SystemWindowRPC\SystemWindowRPCServer.h" />
     <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.h" />
-    <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.h" />
+    <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\LocalizationItem.h" />
@@ -971,7 +971,7 @@
     <ClCompile Include="kxf\RPC\SystemWindowRPC\SystemWindowRPCEvent.cpp" />
     <ClCompile Include="kxf\RPC\SystemWindowRPC\SystemWindowRPCServer.cpp" />
     <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.cpp" />
-    <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.cpp" />
+    <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp" />

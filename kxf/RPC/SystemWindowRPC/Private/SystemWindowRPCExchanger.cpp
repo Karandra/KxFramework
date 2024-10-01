@@ -16,36 +16,6 @@ namespace
 
 namespace kxf
 {
-	size_t SystemWindowRPCExchanger::GetControlBufferSize() const
-	{
-		return 64;
-	}
-	String SystemWindowRPCExchanger::GetControlBufferName() const
-	{
-		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID);
-	}
-	String SystemWindowRPCExchanger::GetResultBufferName() const
-	{
-		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID);
-	}
-	String SystemWindowRPCExchanger::GetSessionMutexName() const
-	{
-		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID);
-	}
-
-	void SystemWindowRPCExchanger::OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
-	{
-		m_SessionID = sessionID;
-		m_EvtHandler = &evtHandler;
-		m_KernelScope = flags.Contains(RPCExchangeFlag::GlobalSession) ? KernelObjectNamespace::Global : KernelObjectNamespace::Local;
-	}
-	void SystemWindowRPCExchanger::OnTerminate()
-	{
-		m_ReceivingWindow.Destroy();
-		m_SessionMutex.Destroy();
-		m_ControlBuffer.Free();
-	}
-
 	void SystemWindowRPCExchanger::OnDataRecievedCommon(IInputStream& stream, SystemWindowRPCEvent& event, const String& clientID)
 	{
 		auto& procedure = event.m_Procedure;
@@ -90,17 +60,47 @@ namespace kxf
 			}
 		}
 	}
-	MemoryInputStream SystemWindowRPCExchanger::SendData(void* windowHandle, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult)
+
+	size_t SystemWindowRPCExchanger::GetControlBufferSize() const
 	{
+		return 64;
+	}
+	String SystemWindowRPCExchanger::GetControlBufferName() const
+	{
+		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID);
+	}
+	String SystemWindowRPCExchanger::GetResultBufferName() const
+	{
+		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID);
+	}
+	String SystemWindowRPCExchanger::GetSessionMutexName() const
+	{
+		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID);
+	}
+
+	void SystemWindowRPCExchanger::OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
+	{
+		m_SessionID = sessionID;
+		m_EvtHandler = &evtHandler;
+		m_KernelScope = flags.Contains(RPCExchangeFlag::GlobalSession) ? KernelObjectNamespace::Global : KernelObjectNamespace::Local;
+	}
+	void SystemWindowRPCExchanger::OnTerminate()
+	{
+		m_ReceivingTarget.Destroy();
+		m_SessionMutex.Destroy();
+		m_ControlBuffer.Free();
+	}
+
+	MemoryInputStream SystemWindowRPCExchanger::SendData(SystemWindow window, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult)
+	{
+		m_ResultBuffer.ZeroBuffer();
+
 		COPYDATASTRUCT parametersBufferData = {};
 		parametersBufferData.lpData = const_cast<void*>(buffer.GetBufferStart());
 		parametersBufferData.cbData = buffer.GetBufferSize();
+		auto sendResult = window.SendMessage(WM_COPYDATA, 0, reinterpret_cast<intptr_t>(&parametersBufferData));
 
-		m_ResultBuffer.ZeroBuffer();
-		Win32Error::SetLastError(Win32Error::Success());
-		::SendMessageW(reinterpret_cast<HWND>(windowHandle), WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&parametersBufferData));
-
-		if (!discardResult && procedure.HasResult() && Win32Error::GetLastError().IsSuccess() && m_ResultBuffer.Open(GetResultBufferName(), 0, MemoryProtection::RW, m_KernelScope))
+		if (!discardResult && procedure.HasResult() && sendResult && m_ResultBuffer.Open(GetResultBufferName(), 0, MemoryProtection::RW, m_KernelScope))
 		{
 			// Retrieve the actual size of the result
 			uint64_t actualSize = 0;

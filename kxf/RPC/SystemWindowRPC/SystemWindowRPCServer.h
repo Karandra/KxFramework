@@ -16,8 +16,8 @@ namespace kxf
 			EvtHandler m_ServiceEvtHandler;
 			IEvtHandler* m_UserEvtHandler = nullptr;
 
-			std::unordered_map<String, void*> m_UniqueClients;
-			std::unordered_set<void*> m_AnonymousClients;
+			std::unordered_map<String, SystemWindow> m_UniqueClients;
+			std::unordered_set<SystemWindow> m_AnonymousClients;
 
 		private:
 			void Notify(const EventID& eventID);
@@ -35,7 +35,7 @@ namespace kxf
 			void CleanupClients();
 
 		protected:
-			// Private::DefaultRPCExchanger
+			// SystemWindowRPCExchanger
 			void OnDataRecieved(IInputStream& stream) override;
 			bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) override;
 
@@ -55,5 +55,9 @@ namespace kxf
 
 			MemoryInputStream RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
 			void RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount) override;
+
+			// SystemWindowRPCServer
+			size_t EnumUniqueClients(std::move_only_function<CallbackCommand(const String&, SystemWindow)> func) const;
+			size_t EnumAnonymousClients(std::move_only_function<CallbackCommand(SystemWindow)> func) const;
 	};
 }

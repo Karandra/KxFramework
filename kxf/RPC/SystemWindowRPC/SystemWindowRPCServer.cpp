@@ -1,10 +1,11 @@
 #include "KxfPCH.h"
 #include "SystemWindowRPCServer.h"
 #include "SystemWindowRPCEvent.h"
-#include "Private/SystemWindowRPCExchangerWindow.h"
+#include "Private/SystemWindowRPCExchangerTarget.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
+#include "kxf/System/SystemProcess.h"
 #include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
@@ -27,7 +28,7 @@ namespace kxf
 		{
 			if (add)
 			{
-				if (m_UniqueClients.emplace(id, procedure.GetOriginHandle()).second)
+				if (m_UniqueClients.emplace(id, procedure.GetOriginWindow()).second)
 				{
 					event.Skip();
 				}
@@ -40,18 +41,18 @@ namespace kxf
 				}
 			}
 		}
-		else if (void* handle = procedure.GetOriginHandle())
+		else if (auto window = procedure.GetOriginWindow())
 		{
 			if (add)
 			{
-				if (m_AnonymousClients.emplace(handle).second)
+				if (m_AnonymousClients.emplace(window).second)
 				{
 					event.Skip();
 				}
 			}
 			else
 			{
-				if (m_AnonymousClients.erase(handle) != 0)
+				if (m_AnonymousClients.erase(window) != 0)
 				{
 					event.Skip();
 				}
@@ -63,7 +64,7 @@ namespace kxf
 		// Remove any invalid clients
 		for (auto it = m_UniqueClients.begin(); it != m_UniqueClients.end();)
 		{
-			if (!::IsWindow(reinterpret_cast<HWND>(it->second)))
+			if (!it->second.DoesExist())
 			{
 				it = m_UniqueClients.erase(it);
 			}
@@ -75,7 +76,7 @@ namespace kxf
 
 		for (auto it = m_AnonymousClients.begin(); it != m_AnonymousClients.end();)
 		{
-			if (!::IsWindow(reinterpret_cast<HWND>(*it)))
+			if (!it->DoesExist())
 			{
 				it = m_AnonymousClients.erase(it);
 			}
@@ -93,13 +94,13 @@ namespace kxf
 			size_t controlBufferSize = GetControlBufferSize();
 			if (m_SessionMutex.CreateAcquired(GetSessionMutexName(), m_KernelScope) && m_ControlBuffer.Allocate(controlBufferSize, MemoryProtection::RW, GetControlBufferName(), m_KernelScope))
 			{
-				if (m_ReceivingWindow.Create(m_SessionID))
+				if (m_ReceivingTarget.Create(m_SessionID))
 				{
 					// Write out everything that the client will need to connect to the server
 					MemoryOutputStream stream = m_ControlBuffer.GetOutputStream();
 					Serialization::WriteObject(stream, static_cast<uint64_t>(controlBufferSize));
-					Serialization::WriteObject(stream, static_cast<uint32_t>(::GetCurrentProcessId()));
-					Serialization::WriteObject(stream, reinterpret_cast<void*>(m_ReceivingWindow.GetHandle()));
+					Serialization::WriteObject(stream, SystemProcess::GetCurrentProcess().GetID());
+					Serialization::WriteObject(stream, m_ReceivingTarget.GetWindow().GetHandle());
 
 					// Notify server started
 					Notify(RPCEvent::EvtServerStarted);
@@ -138,7 +139,7 @@ namespace kxf
 		{
 			auto PrepareData = [&](IOutputStream& stream)
 			{
-				SystemWindowRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+				SystemWindowRPCProcedure procedure(procedureID, m_ReceivingTarget.GetWindow(), parametersCount, hasResult);
 
 				Serialization::WriteObject(stream, procedure);
 				if (procedure.HasParameters())
@@ -151,8 +152,7 @@ namespace kxf
 
 			if (!clientID.IsEmpty())
 			{
-				auto it = m_UniqueClients.find(clientID);
-				if (it != m_UniqueClients.end())
+				if (auto it = m_UniqueClients.find(clientID); it != m_UniqueClients.end())
 				{
 					MemoryOutputStream stream;
 					auto procedure = PrepareData(stream);
@@ -165,20 +165,20 @@ namespace kxf
 				MemoryOutputStream stream;
 				auto procedure = PrepareData(stream);
 
-				for (auto&& [id, handle]: m_UniqueClients)
+				for (auto&& [id, window]: m_UniqueClients)
 				{
-					SendData(handle, procedure, stream.GetStreamBuffer(), true);
+					SendData(window, procedure, stream.GetStreamBuffer(), true);
 				}
-				for (void* handle: m_AnonymousClients)
+				for (auto window: m_AnonymousClients)
 				{
-					SendData(handle, procedure, stream.GetStreamBuffer(), true);
+					SendData(window, procedure, stream.GetStreamBuffer(), true);
 				}
 			}
 		}
 		return {};
 	}
 
-	// Private::SystemWindowRPCExchanger
+	// SystemWindowRPCExchanger
 	void SystemWindowRPCServer::OnDataRecieved(IInputStream& stream)
 	{
 		if (m_SessionMutex)
@@ -191,10 +191,9 @@ namespace kxf
 	{
 		if (!procedure.m_ClientID.IsEmpty())
 		{
-			auto it = m_UniqueClients.find(procedure.m_ClientID);
-			if (it != m_UniqueClients.end())
+			if (auto it = m_UniqueClients.find(procedure.m_ClientID); it != m_UniqueClients.end())
 			{
-				return it->second == procedure.m_OriginHandle;
+				return it->second.GetHandle() == procedure.m_OriginHandle;
 			}
 			else
 			{
@@ -208,6 +207,7 @@ namespace kxf
 		return false;
 	}
 
+	// SystemWindowRPCServer
 	SystemWindowRPCServer::SystemWindowRPCServer()
 	{
 		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientConnected, [&](RPCEvent& event)
@@ -257,5 +257,55 @@ namespace kxf
 	void SystemWindowRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
 	{
 		DoInvokeProcedure({}, procedureID, parameters, parametersCount, false);
+	}
+
+	// SystemWindowRPCServer
+	size_t SystemWindowRPCServer::EnumUniqueClients(std::move_only_function<CallbackCommand(const String&, SystemWindow)> func) const
+	{
+		if (!func)
+		{
+			return 0;
+		}
+
+		size_t count = 0;
+		for (auto it = m_UniqueClients.begin(); it != m_UniqueClients.end();)
+		{
+			if (it->second.DoesExist())
+			{
+				auto command = std::invoke(func, it->first, it->second);
+				count++;
+
+				if (command != CallbackCommand::Continue)
+				{
+					break;
+				}
+			}
+		}
+
+		return count;
+	}
+	size_t SystemWindowRPCServer::EnumAnonymousClients(std::move_only_function<CallbackCommand(SystemWindow)> func) const
+	{
+		if (!func)
+		{
+			return 0;
+		}
+
+		size_t count = 0;
+		for (auto it = m_AnonymousClients.begin(); it != m_AnonymousClients.end();)
+		{
+			if (it->DoesExist())
+			{
+				auto command = std::invoke(func, *it);
+				count++;
+
+				if (command != CallbackCommand::Continue)
+				{
+					break;
+				}
+			}
+		}
+
+		return count;
 	}
 }

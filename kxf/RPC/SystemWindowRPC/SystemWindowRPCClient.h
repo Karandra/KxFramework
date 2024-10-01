@@ -1,5 +1,7 @@
 #pragma once
 #include "../IRPCClient.h"
+#include "kxf/System/SystemWindow.h"
+#include "kxf/System/SystemProcess.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "Private/SystemWindowRPCExchanger.h"
 
@@ -23,7 +25,7 @@ namespace kxf
 			void DoDisconnectFromServer(bool notify);
 
 		protected:
-			// Private::DefaultRPCExchanger
+			// SystemWindowRPCExchanger
 			void OnDataRecieved(IInputStream& stream) override;
 			bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) override;
 
@@ -46,5 +48,15 @@ namespace kxf
 			}
 
 			MemoryInputStream RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult) override;
+
+			// SystemWindowRPCClient
+			SystemProcess GetServerProcess() const noexcept
+			{
+				return m_ServerPID;
+			}
+			SystemWindow GetServerRecievingWindow() const noexcept
+			{
+				return m_ServerHandle;
+			}
 	};
 }

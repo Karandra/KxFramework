@@ -7,7 +7,7 @@
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/IO/MemoryStream.h"
 #include "kxf/RPC/SharedMemory.h"
-#include "SystemWindowRPCExchangerWindow.h"
+#include "SystemWindowRPCExchangerTarget.h"
 
 namespace kxf
 {
@@ -20,7 +20,7 @@ namespace kxf
 {
 	class SystemWindowRPCExchanger
 	{
-		friend class SystemWindowRPCExchangerWindow;
+		friend class SystemWindowRPCExchangerTarget;
 
 		protected:
 			Mutex m_SessionMutex;
@@ -30,12 +30,17 @@ namespace kxf
 			KernelObjectNamespace m_KernelScope = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
-			SystemWindowRPCExchangerWindow m_ReceivingWindow;
+			SystemWindowRPCExchangerTarget m_ReceivingTarget;
 			IEvtHandler* m_EvtHandler = nullptr;
 
 		protected:
+			virtual void OnDataRecieved(IInputStream& stream) = 0;
+			virtual bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) = 0;
+			void OnDataRecievedCommon(IInputStream& stream, SystemWindowRPCEvent& event, const String& clientID = {});
+
+		protected:
 			SystemWindowRPCExchanger()
-				:m_ReceivingWindow(*this)
+				:m_ReceivingTarget(*this)
 			{
 			}
 
@@ -49,11 +54,7 @@ namespace kxf
 			void OnTerminate();
 
 		public:
-			virtual void OnDataRecieved(IInputStream& stream) = 0;
-			virtual bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) = 0;
-			void OnDataRecievedCommon(IInputStream& stream, SystemWindowRPCEvent& event, const String& clientID = {});
-
-			MemoryInputStream SendData(void* windowHandle, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
+			MemoryInputStream SendData(SystemWindow window, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
 	};
 }
 
@@ -77,13 +78,13 @@ namespace kxf
 			EventID m_ProcedureID;
 			String m_ClientID;
 			void* m_OriginHandle = nullptr;
-			uint32_t m_ParametersCount = 0;
+			uint32_t m_ParameterCount = 0;
 			bool m_HasResult = false;
 
 		public:
 			SystemWindowRPCProcedure() noexcept = default;
-			SystemWindowRPCProcedure(EventID procedureID, void* originHandle, size_t parametersCount, bool hasResult = false) noexcept
-				:m_ProcedureID(std::move(procedureID)), m_OriginHandle(originHandle), m_ParametersCount(static_cast<uint32_t>(parametersCount)), m_HasResult(hasResult)
+			SystemWindowRPCProcedure(EventID procedureID, SystemWindow originWindow, size_t parametersCount, bool hasResult = false) noexcept
+				:m_ProcedureID(std::move(procedureID)), m_OriginHandle(originWindow.GetHandle()), m_ParameterCount(static_cast<uint32_t>(parametersCount)), m_HasResult(hasResult)
 			{
 			}
 
@@ -98,11 +99,11 @@ namespace kxf
 			}
 			bool HasParameters() const noexcept
 			{
-				return m_ParametersCount != 0;
+				return m_ParameterCount != 0;
 			}
-			uint32_t GetParametersCount() const noexcept
+			uint32_t GetParameterCount() const noexcept
 			{
-				return m_ParametersCount;
+				return m_ParameterCount;
 			}
 
 			const EventID& GetProcedureID() const& noexcept
@@ -118,7 +119,7 @@ namespace kxf
 			{
 				return m_Version;
 			}
-			void* GetOriginHandle() const
+			SystemWindow GetOriginWindow() const
 			{
 				return m_OriginHandle;
 			}
@@ -155,7 +156,7 @@ namespace kxf
 				Serialization::WriteObject(stream, value.m_ProcedureID) +
 				Serialization::WriteObject(stream, value.m_ClientID) +
 				Serialization::WriteObject(stream, value.m_OriginHandle) +
-				Serialization::WriteObject(stream, value.m_ParametersCount) +
+				Serialization::WriteObject(stream, value.m_ParameterCount) +
 				Serialization::WriteObject(stream, value.m_HasResult);
 		}
 		uint64_t Deserialize(IInputStream& stream, SystemWindowRPCProcedure& value) const
@@ -172,7 +173,7 @@ namespace kxf
 			read += Serialization::ReadObject(stream, value.m_ProcedureID);
 			read += Serialization::ReadObject(stream, value.m_ClientID);
 			read += Serialization::ReadObject(stream, value.m_OriginHandle);
-			read += Serialization::ReadObject(stream, value.m_ParametersCount);
+			read += Serialization::ReadObject(stream, value.m_ParameterCount);
 			read += Serialization::ReadObject(stream, value.m_HasResult);
 			return read;
 		}

@@ -1,30 +1,30 @@
 #pragma once
+#include "kxf/System/SystemWindow.h"
 #include "kxf/UI/Private/AnonymousNativeWindow.h"
 
 namespace kxf
 {
-	class UniversallyUniqueID;
 	class SystemWindowRPCExchanger;
 }
 
 namespace kxf
 {
-	class SystemWindowRPCExchangerWindow final
+	class SystemWindowRPCExchangerTarget final
 	{
 		private:
 			Private::AnonymousNativeWindow m_Window;
 			SystemWindowRPCExchanger& m_Exchanger;
 
 		public:
-			SystemWindowRPCExchangerWindow(SystemWindowRPCExchanger& exchanger) noexcept
+			SystemWindowRPCExchangerTarget(SystemWindowRPCExchanger& exchanger) noexcept
 				:m_Exchanger(exchanger)
 			{
 			}
 
 		public:
-			void* GetHandle() const noexcept
+			SystemWindow GetWindow() const noexcept
 			{
-				return m_Window.GetHandle();
+				return m_Window.GetWindow();
 			}
 
 			bool Create(const String& sessionID);

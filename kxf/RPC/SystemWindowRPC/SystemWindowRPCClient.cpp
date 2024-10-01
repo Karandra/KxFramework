@@ -1,13 +1,12 @@
 #include "KxfPCH.h"
 #include "SystemWindowRPCClient.h"
 #include "SystemWindowRPCEvent.h"
-#include "Private/SystemWindowRPCExchangerWindow.h"
+#include "Private/SystemWindowRPCExchangerTarget.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/IO/MemoryStream.h"
 #include "kxf/Serialization/BinarySerializer.h"
-#include <Windows.h>
 
 namespace kxf
 {
@@ -29,7 +28,7 @@ namespace kxf
 			if (m_SessionMutex.Open(GetSessionMutexName(), m_KernelScope) && m_ControlBuffer.Open(GetControlBufferName(), 0, MemoryProtection::Read, m_KernelScope))
 			{
 				// Read control parameters
-				const size_t initialControlBufferSize = GetControlBufferSize();
+				size_t initialControlBufferSize = GetControlBufferSize();
 				MemoryInputStream stream = m_ControlBuffer.GetInputStreamUnchecked(initialControlBufferSize);
 
 				uint64_t controlBufferSize = 0;
@@ -39,7 +38,7 @@ namespace kxf
 					Serialization::ReadObject(stream, m_ServerPID);
 					Serialization::ReadObject(stream, m_ServerHandle);
 
-					if (::IsWindow(reinterpret_cast<HWND>(m_ServerHandle)) && m_ReceivingWindow.Create(m_SessionID))
+					if (SystemWindow(m_ServerHandle).DoesExist() && m_ReceivingTarget.Create(m_SessionID))
 					{
 						Notify(RPCEvent::EvtClientConnected);
 						NotifyServer(RPCEvent::EvtClientConnected);
@@ -71,7 +70,7 @@ namespace kxf
 		OnTerminate();
 	}
 
-	// Private::SystemWindowRPCExchanger
+	// SystemWindowRPCExchanger
 	void SystemWindowRPCClient::OnDataRecieved(IInputStream& stream)
 	{
 		if (m_SessionMutex)
@@ -85,6 +84,7 @@ namespace kxf
 		return procedure.m_OriginHandle == m_ServerHandle;
 	}
 
+	// SystemWindowRPCClient
 	SystemWindowRPCClient::SystemWindowRPCClient()
 	{
 		// TODO: Watch server status using the provided PID and initiate disconnect event
@@ -122,7 +122,7 @@ namespace kxf
 	{
 		if (m_SessionMutex && procedureID)
 		{
-			SystemWindowRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+			SystemWindowRPCProcedure procedure(procedureID, m_ReceivingTarget.GetWindow(), parametersCount, hasResult);
 			procedure.m_ClientID = m_ClientID;
 
 			MemoryOutputStream stream;

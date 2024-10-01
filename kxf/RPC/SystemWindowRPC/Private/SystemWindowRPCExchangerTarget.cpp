@@ -1,12 +1,12 @@
 #include "KxfPCH.h"
-#include "SystemWindowRPCExchangerWindow.h"
+#include "SystemWindowRPCExchangerTarget.h"
 #include "SystemWindowRPCExchanger.h"
 #include "kxf/IO/MemoryStream.h"
 #include <Windows.h>
 
 namespace kxf
 {
-	bool SystemWindowRPCExchangerWindow::Create(const String& sessionID)
+	bool SystemWindowRPCExchangerTarget::Create(const String& sessionID)
 	{
 		return m_Window.Create([&](intptr_t& result, uint32_t msg, intptr_t wParam, intptr_t lParam) -> bool
 		{
@@ -20,9 +20,9 @@ namespace kxf
 				return true;
 			}
 			return false;
-		}, Format("kxf::SystemWindowRPCExchangerWindow-{}", sessionID));
+		}, Format("kxf::SystemWindowRPCExchangerTarget-{}", sessionID));
 	}
-	bool SystemWindowRPCExchangerWindow::Destroy() noexcept
+	bool SystemWindowRPCExchangerTarget::Destroy() noexcept
 	{
 		return m_Window.Destroy();
 	}
