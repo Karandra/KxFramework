@@ -211,6 +211,7 @@ namespace kxf
 			{
 				m_Handle = nullptr;
 				m_IsOwned = false;
+				return true;
 			}
 		}
 		return false;
@@ -223,6 +224,7 @@ namespace kxf
 			{
 				m_Handle = nullptr;
 				m_IsOwned = false;
+				return true;
 			}
 		}
 		return false;
