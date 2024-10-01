@@ -6,7 +6,7 @@
 #include "kxf/EventSystem/EventID.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/IO/MemoryStream.h"
-#include "kxf/IPC/SharedMemory.h"
+#include "kxf/RPC/SharedMemory.h"
 #include "SystemWindowRPCExchangerWindow.h"
 
 namespace kxf
