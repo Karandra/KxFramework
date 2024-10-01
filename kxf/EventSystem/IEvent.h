@@ -132,3 +132,4 @@ namespace kxf
 #define KxEVENT_MEMBER(type, name)									inline static const kxf::EventTag<type> Evt##name = kxf::EventSystem::NewSimpleEventID()
 #define KxEVENT_MEMBER_AS(type, name, other)						inline static const kxf::EventTag<type> Evt##name = static_cast<kxf::EventID>(other)
 #define KxEVENT_MEMBER_STRING(type, name)							inline static const kxf::EventTag<type> Evt##name = "kxf::" #type "::" #name
+#define KxEVENT_MEMBER_UNIQUE_STRING(type, name, uniqueID)			inline static const kxf::EventTag<type> Evt##name = "kxf::" #type "::" #name "-" uniqueID
