@@ -311,6 +311,12 @@
     <Filter Include="kxf\Core\EncodingConverter">
       <UniqueIdentifier>{591d0480-be16-47b2-823a-1e8a96381fc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\IPC\SystemWindowRPC">
+      <UniqueIdentifier>{2ae2a498-94a3-4520-93d4-da77b10e506e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\IPC\SystemWindowRPC\Private">
+      <UniqueIdentifier>{53b238d9-cabf-4299-8bec-89b76eccf45d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1866,23 +1872,8 @@
     <ClInclude Include="kxf\IPC\SharedMemory.h">
       <Filter>kxf\IPC</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\IPC\DefaultRPCServer.h">
-      <Filter>kxf\IPC</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Threading\Mutex.h">
       <Filter>kxf\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\IPC\DefaultRPCClient.h">
-      <Filter>kxf\IPC</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\IPC\Private\DefaultRPCExchanger.h">
-      <Filter>kxf\IPC\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\IPC\DefaultRPCEvent.h">
-      <Filter>kxf\IPC</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\IPC\Private\DefaultRPCExchangerWindow.h">
-      <Filter>kxf\IPC\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IPC\Private\RPCExchange.h">
       <Filter>kxf\IPC\Private</Filter>
@@ -2459,6 +2450,24 @@
     </ClInclude>
     <ClInclude Include="kxf\Application\AttachedApplication.h">
       <Filter>kxf\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCClient.h">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCEvent.h">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCServer.h">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.h">
+      <Filter>kxf\IPC\SystemWindowRPC\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.h">
+      <Filter>kxf\IPC\SystemWindowRPC\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SystemWindowRPC.h">
+      <Filter>kxf\IPC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3342,23 +3351,8 @@
     <ClCompile Include="kxf\IPC\SharedMemory.cpp">
       <Filter>kxf\IPC</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\IPC\DefaultRPCServer.cpp">
-      <Filter>kxf\IPC</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Threading\Mutex.cpp">
       <Filter>kxf\Threading</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\IPC\DefaultRPCClient.cpp">
-      <Filter>kxf\IPC</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\IPC\DefaultRPCEvent.cpp">
-      <Filter>kxf\IPC</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\IPC\Private\DefaultRPCExchangerWindow.cpp">
-      <Filter>kxf\IPC\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\IPC\Private\DefaultRPCExchanger.cpp">
-      <Filter>kxf\IPC\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\IO\MemoryStreamBuffer.cpp">
       <Filter>kxf\IO</Filter>
@@ -3740,6 +3734,21 @@
     </ClCompile>
     <ClCompile Include="kxf\Application\AttachedApplication.cpp">
       <Filter>kxf\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCClient.cpp">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCEvent.cpp">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SystemWindowRPC\SystemWindowRPCServer.cpp">
+      <Filter>kxf\IPC\SystemWindowRPC</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.cpp">
+      <Filter>kxf\IPC\SystemWindowRPC\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.cpp">
+      <Filter>kxf\IPC\SystemWindowRPC\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

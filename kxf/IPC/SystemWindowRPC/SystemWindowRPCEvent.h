@@ -1,25 +1,25 @@
 #pragma once
-#include "RPCEvent.h"
-#include "Private/DefaultRPCExchanger.h"
+#include "../RPCEvent.h"
+#include "Private/SystemWindowRPCExchanger.h"
 
 namespace kxf
 {
-	class DefaultRPCServer;
-	class DefaultRPCClient;
+	class SystemWindowRPCServer;
+	class SystemWindowRPCClient;
 }
 
 namespace kxf
 {
-	class DefaultRPCEvent: public RPCEvent
+	class SystemWindowRPCEvent: public RPCEvent
 	{
-		friend class DefaultRPCExchanger;
-		friend class DefaultRPCClient;
-		friend class DefaultRPCServer;
+		friend class SystemWindowRPCExchanger;
+		friend class SystemWindowRPCClient;
+		friend class SystemWindowRPCServer;
 
 		private:
-			DefaultRPCProcedure m_Procedure;
-			DefaultRPCServer* m_Server = nullptr;
-			DefaultRPCClient* m_Client = nullptr;
+			SystemWindowRPCProcedure m_Procedure;
+			SystemWindowRPCServer* m_Server = nullptr;
+			SystemWindowRPCClient* m_Client = nullptr;
 
 			IInputStream* m_ParametersStream = nullptr;
 			DataSize m_ParametersStreamOffset;
@@ -30,28 +30,28 @@ namespace kxf
 			MemoryInputStream RawGetResult();
 
 		public:
-			DefaultRPCEvent() = default;
-			DefaultRPCEvent(DefaultRPCServer& server)
+			SystemWindowRPCEvent() = default;
+			SystemWindowRPCEvent(SystemWindowRPCServer& server)
 				:m_Server(&server)
 			{
 			}
-			DefaultRPCEvent(DefaultRPCClient& client)
+			SystemWindowRPCEvent(SystemWindowRPCClient& client)
 				:m_Client(&client)
 			{
 			}
 
-			DefaultRPCEvent(const DefaultRPCEvent&) = delete;
-			DefaultRPCEvent(DefaultRPCEvent&& other) noexcept
+			SystemWindowRPCEvent(const SystemWindowRPCEvent&) = delete;
+			SystemWindowRPCEvent(SystemWindowRPCEvent&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			~DefaultRPCEvent() = default;
+			~SystemWindowRPCEvent() = default;
 
 		public:
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<DefaultRPCEvent>(std::move(*this));
+				return std::make_unique<SystemWindowRPCEvent>(std::move(*this));
 			}
 
 			// RPCEvent
@@ -73,19 +73,19 @@ namespace kxf
 			IInputStream& RawGetParameters() override;
 			void RawSetResult(IInputStream& stream) override;
 
-			// DefaultRPCEvent
-			const DefaultRPCProcedure& GetProcedure() const&
+			// SystemWindowRPCEvent
+			const SystemWindowRPCProcedure& GetProcedure() const&
 			{
 				return m_Procedure;
 			}
-			DefaultRPCProcedure GetProcedure() &&
+			SystemWindowRPCProcedure GetProcedure() &&
 			{
 				return std::move(m_Procedure);
 			}
 
 		public:
-			DefaultRPCEvent& operator=(const DefaultRPCEvent&) = delete;
-			DefaultRPCEvent& operator=(DefaultRPCEvent&& other) noexcept
+			SystemWindowRPCEvent& operator=(const SystemWindowRPCEvent&) = delete;
+			SystemWindowRPCEvent& operator=(SystemWindowRPCEvent&& other) noexcept
 			{
 				static_cast<BasicEvent&>(*this) = std::move(other);
 				m_Procedure = std::move(other.m_Procedure);

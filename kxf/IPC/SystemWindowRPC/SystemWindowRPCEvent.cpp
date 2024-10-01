@@ -1,17 +1,17 @@
 #include "KxfPCH.h"
-#include "DefaultRPCEvent.h"
-#include "DefaultRPCServer.h"
-#include "DefaultRPCClient.h"
+#include "SystemWindowRPCEvent.h"
+#include "SystemWindowRPCServer.h"
+#include "SystemWindowRPCClient.h"
 #include "kxf/IO/NullStream.h"
 
 namespace kxf
 {
-	void DefaultRPCEvent::RawSetParameters(IInputStream& stream)
+	void SystemWindowRPCEvent::RawSetParameters(IInputStream& stream)
 	{
 		m_ParametersStream = &stream;
 		m_ParametersStreamOffset = stream.TellI();
 	}
-	MemoryInputStream DefaultRPCEvent::RawGetResult()
+	MemoryInputStream SystemWindowRPCEvent::RawGetResult()
 	{
 		if (m_ResultStream)
 		{
@@ -20,16 +20,16 @@ namespace kxf
 		return {};
 	}
 
-	IRPCServer* DefaultRPCEvent::GetServer() const
+	IRPCServer* SystemWindowRPCEvent::GetServer() const
 	{
 		return m_Server;
 	}
-	IRPCClient* DefaultRPCEvent::GetClient() const
+	IRPCClient* SystemWindowRPCEvent::GetClient() const
 	{
 		return m_Client;
 	}
 
-	IInputStream& DefaultRPCEvent::RawGetParameters()
+	IInputStream& SystemWindowRPCEvent::RawGetParameters()
 	{
 		if (m_ParametersStream && m_Procedure.HasParameters())
 		{
@@ -38,7 +38,7 @@ namespace kxf
 		}
 		return NullInputStream::Get();
 	}
-	void DefaultRPCEvent::RawSetResult(IInputStream& stream)
+	void SystemWindowRPCEvent::RawSetResult(IInputStream& stream)
 	{
 		m_ResultStream = {};
 		if (m_Procedure.HasResult())

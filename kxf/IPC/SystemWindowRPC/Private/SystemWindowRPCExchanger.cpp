@@ -1,7 +1,6 @@
 #include "KxfPCH.h"
-#include "DefaultRPCExchanger.h"
-#include "../DefaultRPCEvent.h"
-#include "../SharedMemory.h"
+#include "SystemWindowRPCExchanger.h"
+#include "../SystemWindowRPCEvent.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/System/Win32Error.h"
@@ -12,42 +11,42 @@
 
 namespace
 {
-	constexpr kxf::XChar g_SharedPrefix[] = kxS("kxf::DefaultRPCExchanger");
+	constexpr kxf::XChar g_SharedPrefix[] = kxS("kxf::SystemWindowRPCExchanger");
 }
 
 namespace kxf
 {
-	size_t DefaultRPCExchanger::GetControlBufferSize() const
+	size_t SystemWindowRPCExchanger::GetControlBufferSize() const
 	{
 		return 64;
 	}
-	String DefaultRPCExchanger::GetControlBufferName() const
+	String SystemWindowRPCExchanger::GetControlBufferName() const
 	{
 		return Format("{}:{}-ControlBuffer", g_SharedPrefix, m_SessionID);
 	}
-	String DefaultRPCExchanger::GetResultBufferName() const
+	String SystemWindowRPCExchanger::GetResultBufferName() const
 	{
 		return Format("{}:{}-ResultBuffer", g_SharedPrefix, m_SessionID);
 	}
-	String DefaultRPCExchanger::GetSessionMutexName() const
+	String SystemWindowRPCExchanger::GetSessionMutexName() const
 	{
 		return Format("{}:{}-SessionMutex", g_SharedPrefix, m_SessionID);
 	}
 
-	void DefaultRPCExchanger::OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
+	void SystemWindowRPCExchanger::OnInitialize(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
 	{
 		m_SessionID = sessionID;
 		m_EvtHandler = &evtHandler;
 		m_KernelScope = flags.Contains(RPCExchangeFlag::GlobalSession) ? KernelObjectNamespace::Global : KernelObjectNamespace::Local;
 	}
-	void DefaultRPCExchanger::OnTerminate()
+	void SystemWindowRPCExchanger::OnTerminate()
 	{
 		m_ReceivingWindow.Destroy();
 		m_SessionMutex.Destroy();
 		m_ControlBuffer.Free();
 	}
 
-	void DefaultRPCExchanger::OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const String& clientID)
+	void SystemWindowRPCExchanger::OnDataRecievedCommon(IInputStream& stream, SystemWindowRPCEvent& event, const String& clientID)
 	{
 		auto& procedure = event.m_Procedure;
 		Serialization::ReadObject(stream, procedure);
@@ -68,7 +67,7 @@ namespace kxf
 			// Set stream with serialized parameters for an event handler to read from
 			if (procedure.HasParameters())
 			{
-				// The stream is not at its initial position at this point (we had read the procedure info)
+				// The stream is not at its initial position at this point (we've read the procedure info)
 				// so 'RawSetParameters' saves its position inside the event object.
 				event.RawSetParameters(stream);
 			}
@@ -76,7 +75,7 @@ namespace kxf
 			// Call event handler if any
 			if (m_EvtHandler->ProcessEvent(event, procedure.GetProcedureID()) && procedure.HasResult())
 			{
-				// If we had processed the event get serialized result and write it into shared result buffer
+				// If we've processed the event, get the serialized result and write it into shared result buffer
 				if (MemoryInputStream resultStream = event.RawGetResult())
 				{
 					// Allocate shared buffer for the result and the result's size
@@ -91,7 +90,7 @@ namespace kxf
 			}
 		}
 	}
-	MemoryInputStream DefaultRPCExchanger::SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult)
+	MemoryInputStream SystemWindowRPCExchanger::SendData(void* windowHandle, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult)
 	{
 		COPYDATASTRUCT parametersBufferData = {};
 		parametersBufferData.lpData = const_cast<void*>(buffer.GetBufferStart());

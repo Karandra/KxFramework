@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
-#include "DefaultRPCServer.h"
-#include "DefaultRPCEvent.h"
-#include "Private/DefaultRPCExchangerWindow.h"
+#include "SystemWindowRPCServer.h"
+#include "SystemWindowRPCEvent.h"
+#include "Private/SystemWindowRPCExchangerWindow.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
@@ -9,18 +9,18 @@
 
 namespace kxf
 {
-	// DefaultRPCServer
-	void DefaultRPCServer::Notify(const EventID& eventID)
+	// SystemWindowRPCServer
+	void SystemWindowRPCServer::Notify(const EventID& eventID)
 	{
-		DefaultRPCEvent event(*this);
+		SystemWindowRPCEvent event(*this);
 		m_EvtHandler->ProcessEvent(event, eventID);
 	}
-	void DefaultRPCServer::NotifyClients(const EventID& eventID)
+	void SystemWindowRPCServer::NotifyClients(const EventID& eventID)
 	{
 		BroadcastProcedure(eventID);
 	}
 
-	void DefaultRPCServer::HandleClientEvent(DefaultRPCEvent& event, bool add)
+	void SystemWindowRPCServer::HandleClientEvent(SystemWindowRPCEvent& event, bool add)
 	{
 		const auto& procedure = event.GetProcedure();
 		if (auto id = procedure.GetClientID(); !id.IsEmpty())
@@ -58,7 +58,7 @@ namespace kxf
 			}
 		}
 	}
-	void DefaultRPCServer::CleanupClients()
+	void SystemWindowRPCServer::CleanupClients()
 	{
 		// Remove any invalid clients
 		for (auto it = m_UniqueClients.begin(); it != m_UniqueClients.end();)
@@ -86,7 +86,7 @@ namespace kxf
 		}
 	}
 
-	bool DefaultRPCServer::DoStartServer()
+	bool SystemWindowRPCServer::DoStartServer()
 	{
 		try
 		{
@@ -116,7 +116,7 @@ namespace kxf
 		DoTerminateServer(false);
 		return false;
 	}
-	void DefaultRPCServer::DoTerminateServer(bool notify)
+	void SystemWindowRPCServer::DoTerminateServer(bool notify)
 	{
 		if (m_SessionMutex && notify)
 		{
@@ -130,7 +130,7 @@ namespace kxf
 		m_UniqueClients.clear();
 		m_AnonymousClients.clear();
 	}
-	MemoryInputStream DefaultRPCServer::DoInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream SystemWindowRPCServer::DoInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		CleanupClients();
 
@@ -138,7 +138,7 @@ namespace kxf
 		{
 			auto PrepareData = [&](IOutputStream& stream)
 			{
-				DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+				SystemWindowRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
 
 				Serialization::WriteObject(stream, procedure);
 				if (procedure.HasParameters())
@@ -178,16 +178,16 @@ namespace kxf
 		return {};
 	}
 
-	// Private::DefaultRPCExchanger
-	void DefaultRPCServer::OnDataRecieved(IInputStream& stream)
+	// Private::SystemWindowRPCExchanger
+	void SystemWindowRPCServer::OnDataRecieved(IInputStream& stream)
 	{
 		if (m_SessionMutex)
 		{
-			DefaultRPCEvent event(*this);
-			DefaultRPCExchanger::OnDataRecievedCommon(stream, event);
+			SystemWindowRPCEvent event(*this);
+			SystemWindowRPCExchanger::OnDataRecievedCommon(stream, event);
 		}
 	}
-	bool DefaultRPCServer::OnDataRecievedFilter(const DefaultRPCProcedure& procedure)
+	bool SystemWindowRPCServer::OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure)
 	{
 		if (!procedure.m_ClientID.IsEmpty())
 		{
@@ -208,28 +208,28 @@ namespace kxf
 		return false;
 	}
 
-	DefaultRPCServer::DefaultRPCServer()
+	SystemWindowRPCServer::SystemWindowRPCServer()
 	{
 		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientConnected, [&](RPCEvent& event)
 		{
-			HandleClientEvent(static_cast<DefaultRPCEvent&>(event), true);
+			HandleClientEvent(static_cast<SystemWindowRPCEvent&>(event), true);
 		});
 		m_ServiceEvtHandler.Bind(RPCEvent::EvtClientDisconnected, [&](RPCEvent& event)
 		{
-			HandleClientEvent(static_cast<DefaultRPCEvent&>(event), false);
+			HandleClientEvent(static_cast<SystemWindowRPCEvent&>(event), false);
 		}, BindEventFlag::AlwaysSkip);
 	}
-	DefaultRPCServer::~DefaultRPCServer()
+	SystemWindowRPCServer::~SystemWindowRPCServer()
 	{
 		DoTerminateServer(true);
 	}
 
 	// IRPCServer
-	bool DefaultRPCServer::IsServerRunning() const
+	bool SystemWindowRPCServer::IsServerRunning() const
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCServer::StartServer(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
+	bool SystemWindowRPCServer::StartServer(const String& sessionID, IEvtHandler& evtHandler, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags)
 	{
 		if (!m_SessionMutex)
 		{
@@ -241,12 +241,12 @@ namespace kxf
 		}
 		return false;
 	}
-	void DefaultRPCServer::TerminateServer()
+	void SystemWindowRPCServer::TerminateServer()
 	{
 		DoTerminateServer(true);
 	}
 
-	MemoryInputStream DefaultRPCServer::RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream SystemWindowRPCServer::RawInvokeProcedure(const String& clientID, const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		if (!clientID.IsEmpty())
 		{
@@ -254,7 +254,7 @@ namespace kxf
 		}
 		return {};
 	}
-	void DefaultRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
+	void SystemWindowRPCServer::RawBroadcastProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount)
 	{
 		DoInvokeProcedure({}, procedureID, parameters, parametersCount, false);
 	}

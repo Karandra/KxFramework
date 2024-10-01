@@ -6,21 +6,21 @@
 #include "kxf/EventSystem/EventID.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/IO/MemoryStream.h"
-#include "../SharedMemory.h"
-#include "DefaultRPCExchangerWindow.h"
+#include "kxf/IPC/SharedMemory.h"
+#include "SystemWindowRPCExchangerWindow.h"
 
 namespace kxf
 {
 	class IThreadPool;
-	class DefaultRPCEvent;
-	class DefaultRPCProcedure;
+	class SystemWindowRPCEvent;
+	class SystemWindowRPCProcedure;
 }
 
 namespace kxf
 {
-	class DefaultRPCExchanger
+	class SystemWindowRPCExchanger
 	{
-		friend class DefaultRPCExchangerWindow;
+		friend class SystemWindowRPCExchangerWindow;
 
 		protected:
 			Mutex m_SessionMutex;
@@ -30,11 +30,11 @@ namespace kxf
 			KernelObjectNamespace m_KernelScope = KernelObjectNamespace::None;
 
 			SharedMemoryBuffer m_ResultBuffer;
-			DefaultRPCExchangerWindow m_ReceivingWindow;
+			SystemWindowRPCExchangerWindow m_ReceivingWindow;
 			IEvtHandler* m_EvtHandler = nullptr;
 
 		protected:
-			DefaultRPCExchanger()
+			SystemWindowRPCExchanger()
 				:m_ReceivingWindow(*this)
 			{
 			}
@@ -50,21 +50,21 @@ namespace kxf
 
 		public:
 			virtual void OnDataRecieved(IInputStream& stream) = 0;
-			virtual bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) = 0;
-			void OnDataRecievedCommon(IInputStream& stream, DefaultRPCEvent& event, const String& clientID = {});
+			virtual bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) = 0;
+			void OnDataRecievedCommon(IInputStream& stream, SystemWindowRPCEvent& event, const String& clientID = {});
 
-			MemoryInputStream SendData(void* windowHandle, const DefaultRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
+			MemoryInputStream SendData(void* windowHandle, const SystemWindowRPCProcedure& procedure, const MemoryStreamBuffer& buffer, bool discardResult = false);
 	};
 }
 
 namespace kxf
 {
-	class DefaultRPCProcedure final
+	class SystemWindowRPCProcedure final
 	{
-		friend struct BinarySerializer<DefaultRPCProcedure>;
-		friend class DefaultRPCExchanger;
-		friend class DefaultRPCClient;
-		friend class DefaultRPCServer;
+		friend struct BinarySerializer<SystemWindowRPCProcedure>;
+		friend class SystemWindowRPCExchanger;
+		friend class SystemWindowRPCClient;
+		friend class SystemWindowRPCServer;
 
 		public:
 			static constexpr uint32_t GetFormatVersion() noexcept
@@ -81,8 +81,8 @@ namespace kxf
 			bool m_HasResult = false;
 
 		public:
-			DefaultRPCProcedure() noexcept = default;
-			DefaultRPCProcedure(EventID procedureID, void* originHandle, size_t parametersCount, bool hasResult = false) noexcept
+			SystemWindowRPCProcedure() noexcept = default;
+			SystemWindowRPCProcedure(EventID procedureID, void* originHandle, size_t parametersCount, bool hasResult = false) noexcept
 				:m_ProcedureID(std::move(procedureID)), m_OriginHandle(originHandle), m_ParametersCount(static_cast<uint32_t>(parametersCount)), m_HasResult(hasResult)
 			{
 			}
@@ -147,9 +147,9 @@ namespace kxf
 namespace kxf
 {
 	template<>
-	struct BinarySerializer<DefaultRPCProcedure> final
+	struct BinarySerializer<SystemWindowRPCProcedure> final
 	{
-		uint64_t Serialize(IOutputStream& stream, const DefaultRPCProcedure& value) const
+		uint64_t Serialize(IOutputStream& stream, const SystemWindowRPCProcedure& value) const
 		{
 			return Serialization::WriteObject(stream, value.m_Version) +
 				Serialization::WriteObject(stream, value.m_ProcedureID) +
@@ -158,14 +158,14 @@ namespace kxf
 				Serialization::WriteObject(stream, value.m_ParametersCount) +
 				Serialization::WriteObject(stream, value.m_HasResult);
 		}
-		uint64_t Deserialize(IInputStream& stream, DefaultRPCProcedure& value) const
+		uint64_t Deserialize(IInputStream& stream, SystemWindowRPCProcedure& value) const
 		{
 			auto read = Serialization::ReadObject(stream, value.m_Version);
-			if (value.m_Version != DefaultRPCProcedure::GetFormatVersion())
+			if (value.m_Version != SystemWindowRPCProcedure::GetFormatVersion())
 			{
-				throw BinarySerializerException(Format("Unsupported version encountered during 'DefaultRPCProcedure' deserialization: {} found, {} expected",
+				throw BinarySerializerException(Format("Unsupported version encountered during 'SystemWindowRPCProcedure' deserialization: {} found, {} expected",
 												value.m_Version,
-												DefaultRPCProcedure::GetFormatVersion())
+												SystemWindowRPCProcedure::GetFormatVersion())
 				);
 			}
 

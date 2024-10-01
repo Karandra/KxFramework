@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
-#include "DefaultRPCClient.h"
-#include "DefaultRPCEvent.h"
-#include "Private/DefaultRPCExchangerWindow.h"
+#include "SystemWindowRPCClient.h"
+#include "SystemWindowRPCEvent.h"
+#include "Private/SystemWindowRPCExchangerWindow.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/NullStream.h"
@@ -11,18 +11,18 @@
 
 namespace kxf
 {
-	// DefaultRPCClient
-	void DefaultRPCClient::Notify(const EventID& eventID)
+	// SystemWindowRPCClient
+	void SystemWindowRPCClient::Notify(const EventID& eventID)
 	{
-		DefaultRPCEvent event(*this);
+		SystemWindowRPCEvent event(*this);
 		m_EvtHandler->ProcessEvent(event, eventID);
 	}
-	void DefaultRPCClient::NotifyServer(const EventID& eventID)
+	void SystemWindowRPCClient::NotifyServer(const EventID& eventID)
 	{
 		InvokeProcedure(eventID);
 	}
 
-	bool DefaultRPCClient::DoConnectToServer()
+	bool SystemWindowRPCClient::DoConnectToServer()
 	{
 		try
 		{
@@ -56,7 +56,7 @@ namespace kxf
 		DoDisconnectFromServer(false);
 		return false;
 	}
-	void DefaultRPCClient::DoDisconnectFromServer(bool notify)
+	void SystemWindowRPCClient::DoDisconnectFromServer(bool notify)
 	{
 		if (m_SessionMutex && notify)
 		{
@@ -71,36 +71,36 @@ namespace kxf
 		OnTerminate();
 	}
 
-	// Private::DefaultRPCExchanger
-	void DefaultRPCClient::OnDataRecieved(IInputStream& stream)
+	// Private::SystemWindowRPCExchanger
+	void SystemWindowRPCClient::OnDataRecieved(IInputStream& stream)
 	{
 		if (m_SessionMutex)
 		{
-			DefaultRPCEvent event(*this);
-			DefaultRPCExchanger::OnDataRecievedCommon(stream, event, m_ClientID);
+			SystemWindowRPCEvent event(*this);
+			SystemWindowRPCExchanger::OnDataRecievedCommon(stream, event, m_ClientID);
 		}
 	}
-	bool DefaultRPCClient::OnDataRecievedFilter(const DefaultRPCProcedure& procedure)
+	bool SystemWindowRPCClient::OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure)
 	{
 		return procedure.m_OriginHandle == m_ServerHandle;
 	}
 
-	DefaultRPCClient::DefaultRPCClient()
+	SystemWindowRPCClient::SystemWindowRPCClient()
 	{
 		// TODO: Watch server status using the provided PID and initiate disconnect event
 		// when the server terminates without proper notifications (i.e crashes).
 	}
-	DefaultRPCClient::~DefaultRPCClient()
+	SystemWindowRPCClient::~SystemWindowRPCClient()
 	{
 		DoDisconnectFromServer(true);
 	}
 
 	// IRPCClient
-	bool DefaultRPCClient::IsConnectedToServer() const
+	bool SystemWindowRPCClient::IsConnectedToServer() const
 	{
 		return !m_SessionMutex.IsNull();
 	}
-	bool DefaultRPCClient::ConnectToServer(const String& sessionID, IEvtHandler& evtHandler, const String& clientID, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags )
+	bool SystemWindowRPCClient::ConnectToServer(const String& sessionID, IEvtHandler& evtHandler, const String& clientID, std::shared_ptr<IThreadPool> threadPool, FlagSet<RPCExchangeFlag> flags )
 	{
 		if (!m_SessionMutex)
 		{
@@ -113,16 +113,16 @@ namespace kxf
 		}
 		return false;
 	}
-	void DefaultRPCClient::DisconnectFromServer()
+	void SystemWindowRPCClient::DisconnectFromServer()
 	{
 		DoDisconnectFromServer(true);
 	}
 
-	MemoryInputStream DefaultRPCClient::RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
+	MemoryInputStream SystemWindowRPCClient::RawInvokeProcedure(const EventID& procedureID, IInputStream& parameters, size_t parametersCount, bool hasResult)
 	{
 		if (m_SessionMutex && procedureID)
 		{
-			DefaultRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
+			SystemWindowRPCProcedure procedure(procedureID, m_ReceivingWindow.GetHandle(), parametersCount, hasResult);
 			procedure.m_ClientID = m_ClientID;
 
 			MemoryOutputStream stream;

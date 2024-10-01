@@ -4,19 +4,19 @@
 namespace kxf
 {
 	class UniversallyUniqueID;
-	class DefaultRPCExchanger;
+	class SystemWindowRPCExchanger;
 }
 
 namespace kxf
 {
-	class DefaultRPCExchangerWindow final
+	class SystemWindowRPCExchangerWindow final
 	{
 		private:
 			Private::AnonymousNativeWindow m_Window;
-			DefaultRPCExchanger& m_Exchanger;
+			SystemWindowRPCExchanger& m_Exchanger;
 
 		public:
-			DefaultRPCExchangerWindow(DefaultRPCExchanger& exchanger) noexcept
+			SystemWindowRPCExchangerWindow(SystemWindowRPCExchanger& exchanger) noexcept
 				:m_Exchanger(exchanger)
 			{
 			}

@@ -1,16 +1,16 @@
 #pragma once
-#include "IRPCServer.h"
+#include "../IRPCServer.h"
 #include "kxf/EventSystem/EvtHandler.h"
-#include "Private/DefaultRPCExchanger.h"
+#include "Private/SystemWindowRPCExchanger.h"
 
 namespace kxf
 {
-	class DefaultRPCEvent;
+	class SystemWindowRPCEvent;
 }
 
 namespace kxf
 {
-	class DefaultRPCServer: public RTTI::DynamicImplementation<DefaultRPCServer, IRPCServer>, public DefaultRPCExchanger
+	class SystemWindowRPCServer: public RTTI::DynamicImplementation<SystemWindowRPCServer, IRPCServer>, public SystemWindowRPCExchanger
 	{
 		private:
 			EvtHandler m_ServiceEvtHandler;
@@ -31,17 +31,17 @@ namespace kxf
 			{
 				return m_UniqueClients.size() != 0 || m_AnonymousClients.size() != 0;
 			}
-			void HandleClientEvent(DefaultRPCEvent& event, bool add);
+			void HandleClientEvent(SystemWindowRPCEvent& event, bool add);
 			void CleanupClients();
 
 		protected:
 			// Private::DefaultRPCExchanger
 			void OnDataRecieved(IInputStream& stream) override;
-			bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) override;
+			bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) override;
 
 		public:
-			DefaultRPCServer();
-			~DefaultRPCServer();
+			SystemWindowRPCServer();
+			~SystemWindowRPCServer();
 
 		public:
 			// IRPCServer

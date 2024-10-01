@@ -1,11 +1,11 @@
 #pragma once
-#include "IRPCClient.h"
+#include "../IRPCClient.h"
 #include "kxf/EventSystem/EvtHandler.h"
-#include "Private/DefaultRPCExchanger.h"
+#include "Private/SystemWindowRPCExchanger.h"
 
 namespace kxf
 {
-	class DefaultRPCClient: public RTTI::DynamicImplementation<DefaultRPCClient, IRPCClient>, public DefaultRPCExchanger
+	class SystemWindowRPCClient: public RTTI::DynamicImplementation<SystemWindowRPCClient, IRPCClient>, public SystemWindowRPCExchanger
 	{
 		private:
 			EvtHandler m_ServiceEvtHandler;
@@ -25,11 +25,11 @@ namespace kxf
 		protected:
 			// Private::DefaultRPCExchanger
 			void OnDataRecieved(IInputStream& stream) override;
-			bool OnDataRecievedFilter(const DefaultRPCProcedure& procedure) override;
+			bool OnDataRecievedFilter(const SystemWindowRPCProcedure& procedure) override;
 
 		public:
-			DefaultRPCClient();
-			~DefaultRPCClient();
+			SystemWindowRPCClient();
+			~SystemWindowRPCClient();
 
 		public:
 			// IRPCClient
