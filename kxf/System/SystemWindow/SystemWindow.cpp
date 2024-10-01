@@ -210,7 +210,6 @@ namespace kxf
 			if (::CloseWindow(ToHWND(m_Handle)))
 			{
 				m_Handle = nullptr;
-				m_IsOwned = false;
 				return true;
 			}
 		}
@@ -223,7 +222,6 @@ namespace kxf
 			if (::DestroyWindow(ToHWND(m_Handle)))
 			{
 				m_Handle = nullptr;
-				m_IsOwned = false;
 				return true;
 			}
 		}

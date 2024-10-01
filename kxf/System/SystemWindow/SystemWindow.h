@@ -14,27 +14,13 @@ namespace kxf
 			static SystemWindow GetWindowFromPoint(const Point& position);
 			static SystemWindow GetWindowFromPhysicalPoint(const Point& position);
 
-		private:
+		protected:
 			void* m_Handle = nullptr;
-			bool m_IsOwned = false;
 
 		public:
-			SystemWindow() = default;
-			SystemWindow(void* hwnd, bool ownHndle = false)
-				:m_Handle(hwnd), m_IsOwned(ownHndle)
+			SystemWindow(void* hwnd = nullptr)
+				:m_Handle(hwnd)
 			{
-			}
-			SystemWindow(const SystemWindow&) = delete;
-			SystemWindow(SystemWindow&& other) noexcept
-			{
-				*this = std::move(other);
-			}
-			~SystemWindow()
-			{
-				if (m_IsOwned)
-				{
-					Destroy();
-				}
 			}
 
 		public:
@@ -73,21 +59,14 @@ namespace kxf
 			RunningSystemProcess OpenOwningProcess() const;
 
 			bool IsBoradcastWindow() const;
-			bool AttachHandle(void* hwnd, bool own = false)
+			void AttachHandle(void* hwnd)
 			{
-				if (!m_Handle)
-				{
-					m_Handle = hwnd;
-					m_IsOwned = own;
-					return true;
-				}
-				return false;
+				m_Handle = hwnd;
 			}
 			void* DetachHandle() noexcept
 			{
 				void* handle = m_Handle;
 				m_Handle = nullptr;
-				m_IsOwned = false;
 
 				return handle;
 			}
@@ -112,14 +91,42 @@ namespace kxf
 			}
 
 		public:
-			SystemWindow& operator=(const SystemWindow&) = delete;
-			SystemWindow& operator=(SystemWindow&& other) noexcept
+			explicit operator bool() const noexcept
 			{
-				m_IsOwned = other.m_IsOwned;
-				m_Handle = other.m_Handle;
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+	};
+}
 
+namespace kxf
+{
+	class KX_API OwningSystemWindow final: public SystemWindow
+	{
+		public:
+			OwningSystemWindow(void* hwnd = nullptr)
+				:SystemWindow(hwnd)
+			{
+			}
+			OwningSystemWindow(const OwningSystemWindow&) = delete;
+			OwningSystemWindow(OwningSystemWindow&& other) noexcept
+			{
+				*this = std::move(other);
+			}
+			~OwningSystemWindow()
+			{
+				Destroy();
+			}
+
+		public:
+			OwningSystemWindow& operator=(const OwningSystemWindow&) = delete;
+			OwningSystemWindow& operator=(OwningSystemWindow&& other) noexcept
+			{
+				m_Handle = other.m_Handle;
 				other.m_Handle = nullptr;
-				other.m_IsOwned = false;
 
 				return *this;
 			}
