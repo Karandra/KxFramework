@@ -121,6 +121,15 @@ namespace kxf
 			{
 				return IsNull();
 			}
+
+			auto operator<=>(const SystemProcess& other) const noexcept
+			{
+				return m_PID <=> other.m_PID;
+			}
+			bool operator==(const SystemProcess& other) const noexcept
+			{
+				return m_PID == other.m_PID;
+			}
 	};
 }
 
@@ -266,5 +275,18 @@ namespace kxf
 			}
 
 			std::unique_ptr<ISystemProcess> Spawn(EvtHandlerDelegate evtHandler = {}, FlagSet<CreateSystemProcessFlag> flags = {});
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::SystemProcess> final
+	{
+		size_t operator()(const kxf::SystemProcess& process) const noexcept
+		{
+			std::hash<uint32_t> calc;
+			return calc(process.GetID());
+		}
 	};
 }

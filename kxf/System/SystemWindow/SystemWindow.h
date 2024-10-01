@@ -100,6 +100,15 @@ namespace kxf
 			{
 				return IsNull();
 			}
+
+			auto operator<=>(const SystemWindow& other) const noexcept
+			{
+				return m_Handle <=> other.m_Handle;
+			}
+			bool operator==(const SystemWindow& other) const noexcept
+			{
+				return m_Handle == other.m_Handle;
+			}
 	};
 }
 
@@ -131,5 +140,37 @@ namespace kxf
 
 				return *this;
 			}
+
+			auto operator<=>(const OwningSystemWindow& other) const noexcept
+			{
+				return m_Handle <=> other.m_Handle;
+			}
+			bool operator==(const OwningSystemWindow& other) const noexcept
+			{
+				return m_Handle == other.m_Handle;
+			}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::SystemWindow> final
+	{
+		size_t operator()(const kxf::SystemWindow& window) const noexcept
+		{
+			std::hash<void*> calc;
+			return calc(window.GetHandle());
+		}
+	};
+
+	template<>
+	struct hash<kxf::OwningSystemWindow> final
+	{
+		size_t operator()(const kxf::OwningSystemWindow& window) const noexcept
+		{
+			std::hash<void*> calc;
+			return calc(window.GetHandle());
+		}
 	};
 }

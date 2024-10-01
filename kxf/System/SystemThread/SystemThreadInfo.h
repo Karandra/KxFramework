@@ -97,6 +97,15 @@ namespace kxf
 			{
 				return IsNull();
 			}
+
+			auto operator<=>(const SystemThread& other) const noexcept
+			{
+				return m_TID <=> other.m_TID;
+			}
+			bool operator==(const SystemThread& other) const noexcept
+			{
+				return m_TID == other.m_TID;
+			}
 	};
 }
 
@@ -188,5 +197,18 @@ namespace kxf
 			{
 				return 0;
 			}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::SystemThread> final
+	{
+		size_t operator()(const kxf::SystemThread& thread) const noexcept
+		{
+			std::hash<uint32_t> calc;
+			return calc(thread.GetID());
+		}
 	};
 }
