@@ -344,7 +344,7 @@ namespace kxf
 				}
 				CalcBoundingBox(rect);
 			}
-			if (auto textureVectorWx = texture.QueryInterface<WxGraphicsVectorTexture>())
+			else if (auto textureVectorWx = texture.QueryInterface<WxGraphicsVectorTexture>())
 			{
 				m_Context->DrawBitmap(textureVectorWx->Get(rect.GetSize(), m_InterpolationQuality), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 				CalcBoundingBox(rect);
@@ -469,7 +469,7 @@ namespace kxf
 		wxDouble height = 0;
 		wxDouble descent = 0;
 		wxDouble externalLeading = 0;
-		m_Context->GetTextExtent("W", &width, &height, &descent, &externalLeading);
+		m_Context->GetTextExtent(wxS("W"), &width, &height, &descent, &externalLeading);
 
 		if (!oldFont.IsNull())
 		{

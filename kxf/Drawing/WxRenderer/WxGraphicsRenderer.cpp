@@ -137,7 +137,8 @@ namespace kxf
 	{
 		if (m_Type == Type::GDIPlus)
 		{
-			// Measuring context works fine in GDI+ expect that for some unknown reason it draws its content on top of the entire screen.
+			// Measuring context works fine in GDI+ except that for some unknown reason it draws its content on top of the entire screen,
+			// so we're going to use a dummy memory context as a measuring context backend.
 			return std::make_shared<WxGraphicsMemoryContext>(*this, CreateTexture({1.0f, 1.0f}, Drawing::GetStockColor(StockColor::Transparent)), window);
 		}
 		else
@@ -267,12 +268,12 @@ namespace kxf
 	// WxGraphicsRenderer
 	bool WxGraphicsRenderer::CanRescaleBitmapOnDraw() const
 	{
-		// GDIPlus can do stretch-scale but it doesn't respect the interpolation quality option
+		// GDIPlus can do stretch-scale, but it doesn't respect the interpolation quality option
 		// or interprets it incorrectly. It works fast when it's set to best quality and slow if
 		// set to fast. Guess now it's best to let it do the rescaling.
 
 		// Some versions of Direct2D can only crop the image if it's larger than the provided rectangle,
-		// other versions can actually rescale texture and rescale it fast. Cropping was observed on Windows 7,
+		// other versions can actually rescale texture and do it fast. Cropping was observed on Windows 7,
 		// but on Windows 10 (v20H2 at least) it does proper fast rescaling.
 
 		// No information for Cairo, assuming it can't rescale. Testing required.
@@ -283,12 +284,14 @@ namespace kxf
 	{
 		// There is a bug where Direct2D renderer crashes when it asked to draw a null bitmap.
 		// It doesn't check anything and faces a nullptr somewhere deep inside its wx-side implementation.
+
 		return m_Type != Type::Direct2D;
 	}
 	bool WxGraphicsRenderer::CanUseNullPen() const
 	{
 		// It seems that for renderers other than Direct2D we need to always set active pen or some default
-		// black one will be used the caller expects none to be used.
+		// black one will be used while the caller expects none to be used.
+
 		return m_Type == Type::Direct2D;
 	}
 
