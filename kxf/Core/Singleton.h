@@ -3,22 +3,22 @@
 
 namespace kxf
 {
-	template<class T>
+	template<class TInstance_>
 	class Singleton
 	{
 		public:
-			using TObject = T;
+			using TInstance = TInstance_;
 
 		public:
-			static T& GetInstance()
+			static TInstance_& GetInstance() noexcept(std::is_nothrow_default_constructible_v<TInstance_>)
 			{
-				static T instance;
+				static TInstance_ instance;
 				return instance;
 			}
 
 		protected:
-			Singleton() = default;
-			~Singleton() = default;
+			Singleton() noexcept = default;
+			~Singleton() noexcept = default;
 
 		public:
 			Singleton(const Singleton&) = delete;
@@ -32,17 +32,17 @@ namespace kxf
 
 namespace kxf
 {
-	template<class T>
+	template<class TInstance_>
 	class SingletonPtr
 	{
 		public:
-			using TObject = T;
+			using TInstance = TInstance_;
 
 		private:
-			static inline T* ms_Instance = nullptr;
+			static inline TInstance_* ms_Instance = nullptr;
 
 		public:
-			static T* GetInstance()
+			static TInstance_* GetInstance() noexcept
 			{
 				return ms_Instance;
 			}
@@ -52,16 +52,16 @@ namespace kxf
 			{
 				if (!ms_Instance)
 				{
-					ms_Instance = static_cast<T*>(this);
+					ms_Instance = static_cast<TInstance_*>(this);
 				}
 				else
 				{
-					throw std::runtime_error("KxSingletonPtr: Only one instance of " __FUNCTION__ " is allowed");
+					throw std::runtime_error("kxf::SingletonPtr: Only one instance of " __FUNCTION__ " is allowed");
 				}
 			}
 			SingletonPtr(const SingletonPtr&) = delete;
 			SingletonPtr(SingletonPtr&&) = delete;
-			virtual ~SingletonPtr()
+			~SingletonPtr() noexcept
 			{
 				ms_Instance = nullptr;
 			}
