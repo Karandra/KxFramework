@@ -18,6 +18,7 @@ namespace kxf
 		protected:
 			String m_Name;
 			void* m_OriginalAddress = nullptr;
+			void* m_TargetAddress = nullptr;
 			void* m_HookAddress = nullptr;
 			bool m_Attached = false;
 
@@ -37,24 +38,34 @@ namespace kxf
 		public:
 			bool IsNull() const noexcept
 			{
-				return m_OriginalAddress == nullptr || m_HookAddress == nullptr;
+				return m_TargetAddress == nullptr || m_HookAddress == nullptr;
 			}
 			bool IsAttached() const noexcept
 			{
 				return m_Attached;
+			}
+			bool IsCommitted() const noexcept
+			{
+				return m_Attached && m_OriginalAddress != m_TargetAddress;
 			}
 
 			String GetName() const
 			{
 				return m_Name;
 			}
-			void* GetHookAddress() const noexcept
+
+			template<class TFunc = void>
+			requires(std::is_function_v<TFunc> || std::is_void_v<TFunc>)
+			TFunc* GetHookAddress() const noexcept
 			{
-				return m_HookAddress;
+				return static_cast<TFunc*>(m_HookAddress);
 			}
-			void* GetOriginalAddress() const noexcept
+
+			template<class TFunc = void>
+			requires(std::is_function_v<TFunc> || std::is_void_v<TFunc>)
+			TFunc* GetTargetAddress() const noexcept
 			{
-				return m_OriginalAddress;
+				return static_cast<TFunc*>(m_TargetAddress);
 			}
 
 		public:
@@ -71,7 +82,7 @@ namespace kxf
 			CFunctionHook& operator=(CFunctionHook&& other) noexcept
 			{
 				m_Name = std::move(other.m_Name);
-				m_OriginalAddress = Utility::ExchangeResetAndReturn(other.m_OriginalAddress, nullptr);
+				m_TargetAddress = Utility::ExchangeResetAndReturn(other.m_TargetAddress, nullptr);
 				m_HookAddress = Utility::ExchangeResetAndReturn(other.m_HookAddress, nullptr);
 				m_Attached = Utility::ExchangeResetAndReturn(other.m_Attached, false);
 
@@ -85,21 +96,27 @@ namespace kxf
 	{
 		public:
 			CFunctionTypedHook() noexcept = default;
+			CFunctionTypedHook(const CFunctionTypedHook&) = delete;
+			CFunctionTypedHook(CFunctionTypedHook&&) noexcept = default;
 
 		public:
 			template<class... Args>
 			requires(std::is_invocable_v<TFunc, Args...>)
 			auto InvokeHook(Args&&... arg)
 			{
-				return std::invoke(static_cast<TFunc*>(m_HookAddress), std::forward<Args>(arg)...);
+				return std::invoke(GetHookAddress<TFunc>(), std::forward<Args>(arg)...);
 			}
 
 			template<class... Args>
 			requires(std::is_invocable_v<TFunc, Args...>)
-			auto InvokeOriginal(Args&&... arg)
+			auto InvokeTarget(Args&&... arg)
 			{
-				return std::invoke(static_cast<TFunc*>(m_OriginalAddress), std::forward<Args>(arg)...);
+				return std::invoke(GetTargetAddress<TFunc>(), std::forward<Args>(arg)...);
 			}
+
+		public:
+			CFunctionTypedHook& operator=(const CFunctionTypedHook&) = delete;
+			CFunctionTypedHook& operator=(CFunctionTypedHook&&) noexcept = default;
 	};
 }
 
@@ -125,8 +142,12 @@ namespace kxf
 			Win32Error m_LastError = Win32Error::Fail();
 
 		private:
-			bool DoAttachHook(CFunctionHook& hook, void* originalPtr, void* hookPtr, String name);
+			bool DoAttachHook(CFunctionHook& hook, void* targetPtr, void* hookPtr, String name);
 			bool DoDetachHook(CFunctionHook& hook);
+
+			bool BeginTransaction();
+			void OnTransactionBegin();
+			void OnTransactionEnd();
 
 		private:
 			CFunctionHookTransaction(CFunctionHookController& controller, RunningSystemThread thread);
@@ -148,26 +169,16 @@ namespace kxf
 			bool Commit();
 			bool Abort();
 
-			CFunctionHook AttachFunctionPtr(void* address, void* hook, String name = {})
+			bool AttachFunctionPtr(CFunctionHook& result, void* target, void* hook, String name = {})
 			{
-				CFunctionHook result;
-				if (DoAttachHook(result, address, hook, std::move(name)))
-				{
-					return result;
-				}
-				return {};
+				return DoAttachHook(result, target, hook, std::move(name));
 			}
 
 			template<class TFunc>
 			requires(std::is_function_v<TFunc>)
-			CFunctionTypedHook<TFunc> AttachFunction(TFunc* address, TFunc* hook, String name = {})
+			bool AttachFunction(CFunctionHook& result, TFunc* target, TFunc* hook, String name = {})
 			{
-				CFunctionTypedHook<TFunc> result;
-				if (DoAttachHook(result, address, hook, std::move(name)))
-				{
-					return result;
-				}
-				return {};
+				return DoAttachHook(result, target, hook, std::move(name));
 			}
 
 			bool DetachHook(CFunctionHook& hook)

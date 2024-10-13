@@ -19,35 +19,49 @@ namespace kxf
 	void CFunctionHook::OnDetached(CFunctionHookTransaction& transaction)
 	{
 		m_Attached = false;
+		m_OriginalAddress = nullptr;
+		m_TargetAddress = nullptr;
+		m_HookAddress = nullptr;
 	}
 
 	CFunctionHook::~CFunctionHook()
 	{
-		if (m_Attached)
+		if (IsAttached())
 		{
-			Log::WarningCategory(LogCategory::kxf_Detours, "Destroying CFunctionHook without detaching it first: name=[{}], original address=[{}], hook address=[{}]", m_Name, m_OriginalAddress, m_HookAddress);
+			Log::WarningCategory(LogCategory::kxf_Detours, "Destroying CFunctionHook without detaching it first: Name=[{}], TargetAddress=[{}], HookAddress=[{}]", m_Name, m_TargetAddress, m_HookAddress);
+		}
+		if (IsCommitted())
+		{
+			Log::WarningCategory(LogCategory::kxf_Detours, "Destroying committed CFunctionHook without detaching it first: Name=[{}], TargetAddress=[{}], HookAddress=[{}]", m_Name, m_TargetAddress, m_HookAddress);
 		}
 	}
 }
 
 namespace kxf
 {
-	bool CFunctionHookTransaction::DoAttachHook(CFunctionHook& hook, void* originalPtr, void* hookPtr, String name)
+	bool CFunctionHookTransaction::DoAttachHook(CFunctionHook& hook, void* targetPtr, void* hookPtr, String name)
 	{
-		if (m_State == State::Ready && originalPtr && hookPtr && originalPtr != hookPtr)
+		if (m_State == State::Ready && targetPtr && hookPtr && targetPtr != hookPtr)
 		{
-			m_LastError = ::DetourAttach(reinterpret_cast<void**>(originalPtr), hookPtr);
+			hook.m_Name = std::move(name);
+			hook.m_OriginalAddress = targetPtr;
+			hook.m_TargetAddress = targetPtr;
+			hook.m_HookAddress = hookPtr;
+
+			m_LastError = ::DetourAttach(&hook.m_TargetAddress, hookPtr);
 			if (m_LastError.IsSuccess())
 			{
-				hook.m_Name = std::move(name);
-				hook.m_OriginalAddress = originalPtr;
-				hook.m_HookAddress = hookPtr;
 				hook.OnAttached(*this);
+				Log::TraceCategory(LogCategory::kxf_Detours, "DetourAttach: Name=[{}], TargetAddress=[{}], HookAddress=[{}]", hook.m_Name, hook.m_TargetAddress, hook.m_HookAddress);
 
 				return true;
 			}
 			else
 			{
+				hook.m_OriginalAddress = nullptr;
+				hook.m_TargetAddress = nullptr;
+				hook.m_HookAddress = nullptr;
+
 				Log::ErrorCategory(LogCategory::kxf_Detours, "DetourAttach: {}", m_LastError);
 			}
 		}
@@ -57,10 +71,12 @@ namespace kxf
 	{
 		if (m_State == State::Ready && hook.IsAttached())
 		{
-			m_LastError = ::DetourDetach(reinterpret_cast<void**>(hook.m_OriginalAddress), hook.m_HookAddress);
+			m_LastError = ::DetourDetach(&hook.m_TargetAddress, hook.m_HookAddress);
 			if (m_LastError.IsSuccess())
 			{
 				hook.OnDetached(*this);
+				Log::TraceCategory(LogCategory::kxf_Detours, "DetourDetach: Name=[{}], TargetAddress=[{}], HookAddress=[{}]", hook.m_Name, hook.m_TargetAddress, hook.m_HookAddress);
+
 				return true;
 			}
 			else
@@ -71,8 +87,7 @@ namespace kxf
 		return false;
 	}
 
-	CFunctionHookTransaction::CFunctionHookTransaction(CFunctionHookController& controller, RunningSystemThread thread)
-		:m_Controller(&controller), m_Thread(std::move(thread))
+	bool CFunctionHookTransaction::BeginTransaction()
 	{
 		if (m_Thread)
 		{
@@ -85,6 +100,9 @@ namespace kxf
 				if (m_LastError.IsSuccess())
 				{
 					m_State = State::Ready;
+					OnTransactionBegin();
+
+					return true;
 				}
 				else
 				{
@@ -102,6 +120,19 @@ namespace kxf
 			m_State = State::Unknown;
 			Log::ErrorCategory(LogCategory::kxf_Detours, "Invalid thread");
 		}
+		return false;
+	}
+	void CFunctionHookTransaction::OnTransactionBegin()
+	{
+	}
+	void CFunctionHookTransaction::OnTransactionEnd()
+	{
+	}
+
+	CFunctionHookTransaction::CFunctionHookTransaction(CFunctionHookController& controller, RunningSystemThread thread)
+		:m_Controller(&controller), m_Thread(std::move(thread))
+	{
+		BeginTransaction();
 	}
 	CFunctionHookTransaction::~CFunctionHookTransaction()
 	{
@@ -121,6 +152,7 @@ namespace kxf
 		{
 			m_LastError = ::DetourTransactionCommit();
 			m_State = State::Committed;
+			OnTransactionEnd();
 
 			if (m_LastError.IsFail())
 			{
@@ -136,6 +168,7 @@ namespace kxf
 		{
 			m_LastError = ::DetourTransactionAbort();
 			m_State = State::Aborted;
+			OnTransactionEnd();
 
 			if (m_LastError.IsFail())
 			{
@@ -155,10 +188,8 @@ namespace kxf
 		if (!::DetourRestoreAfterWith())
 		{
 			m_LastError = Win32Error::GetLastError();
-			Log::ErrorCategory(LogCategory::kxf_Detours, "DetourRestoreAfterWith: {}", m_LastError);
+			Log::WarningCategory(LogCategory::kxf_Detours, "DetourRestoreAfterWith: {}", m_LastError);
 		}
-
-		GetInstance();
 	}
 	CFunctionHookController::~CFunctionHookController()
 	{
