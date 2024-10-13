@@ -2463,11 +2463,13 @@
     <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.h">
       <Filter>kxf\RPC\SystemWindowRPC\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.h">
-      <Filter>kxf\RPC\SystemWindowRPC\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\RPC\SystemWindowRPC.h">
       <Filter>kxf\RPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\RPC.hpp" />
+    <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.h" />
+    <ClInclude Include="kxf\System\CFunctionHook.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3744,11 +3746,12 @@
     <ClCompile Include="kxf\RPC\SystemWindowRPC\SystemWindowRPCServer.cpp">
       <Filter>kxf\RPC\SystemWindowRPC</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerWindow.cpp">
-      <Filter>kxf\RPC\SystemWindowRPC\Private</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.cpp">
       <Filter>kxf\RPC\SystemWindowRPC\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.cpp" />
+    <ClCompile Include="kxf\System\CFunctionHook.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

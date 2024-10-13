@@ -417,6 +417,7 @@
     <ClInclude Include="kxf\Serialization\XML.h" />
     <ClInclude Include="kxf\Serialization\XML\Private\Utility.h" />
     <ClInclude Include="kxf\Serialization\XML\XMLDocument.h" />
+    <ClInclude Include="kxf\System\CFunctionHook.h" />
     <ClInclude Include="kxf\System\DynamicLibrary.h" />
     <ClInclude Include="kxf\System\DynamicLibraryEvent.h" />
     <ClInclude Include="kxf\System\ExecutableVersionResource.h" />
@@ -1019,6 +1020,7 @@
     <ClCompile Include="kxf\Serialization\XML\XMLAttribute.cpp" />
     <ClCompile Include="kxf\Serialization\XML\XMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\XML\XMLNode.cpp" />
+    <ClCompile Include="kxf\System\CFunctionHook.cpp" />
     <ClCompile Include="kxf\System\DynamicLibrary.cpp" />
     <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp" />
     <ClCompile Include="kxf\System\ExecutableVersionResource.cpp" />

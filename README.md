@@ -12,7 +12,7 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets[fonts,media,sound,webview]`
 	- [Sciter-JS](https://github.com/c-smile/sciter-js-sdk) - `sciter-js` (see notes).
 	- [libcurl](https://curl.haxx.se) - `curl[non-http,http2,openssl]`
-	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for libcurl but it's used directly as well.
+	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for libcurl, but it's used directly as well.
 	- [WebSocket++](https://github.com/zaphoyd/websocketpp) - `websocketpp`
 	- [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser) - `gumbo`
 	- [libffi](https://github.com/libffi/libffi) - `libffi`
@@ -23,11 +23,12 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 	- [TinyXML2](https://github.com/leethomason/tinyxml2) - `tinyxml2`
 	- [xxHash](https://github.com/Cyan4973/xxHash) - `xxhash`
 	- [URIParser](https://github.com/uriparser/uriparser) - `uriparser`
-	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's already built-in into wxWidgets but KxFramework uses its headers directly and they're not available from wxWidgets includes.
+	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's already built-in into wxWidgets, but KxFramework uses its headers directly and they're not available from wxWidgets includes.
 	- [lunasvg](https://github.com/sammycage/lunasvg) - `lunasvg`. Use the v1.4.2 VCPkg port provided in this repository for it. The new version has a different API and is not compatible at the time.
+	- [Microsoft Detours](https://github.com/microsoft/Detours) - `detours`
 
 - Set this instance of VCPkg as the default (`vcpkg integrate install`) or use project-specific linking (a NuGet package generated from a VCPkg installation: `vcpkg integrate project`).
-- Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. You can build **Debug** configuration as well but it's not used most of the time.
+- Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. You can build **Debug** configuration as well, but it's not used most of the time.
 
 ## As a dependency
 KxFramework can be built as a VCPkg package. You need to make a custom triplet using provided `kxf-default-[x86|x64].cmake` template file (or just use this triplet as is).
@@ -46,7 +47,7 @@ If you're using precompiled headers in your project don't forget to include `kxf
 ```
 
 ### Build notes
-Sciter-JS can't be built using the default `windows-static-md` triplet because it's a dynamic library but KxFramework itself is static. Modified triplet configuration is provided in `VCPkg\triplets\community` folder. The old Sciter isn't used anymore.
+Sciter-JS can't be built using the default `windows-static-md` triplet because it's a dynamic library, but KxFramework itself is static. Modified triplet configuration is provided in `VCPkg\triplets\community` folder. The old Sciter isn't used anymore.
 
 # Configuration
 
