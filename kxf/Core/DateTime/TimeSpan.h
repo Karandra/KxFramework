@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/Serialization/BinarySerializer.h"
+class wxTimeSpan;
 
 namespace kxf
 {
@@ -62,10 +63,7 @@ namespace kxf
 		public:
 			constexpr TimeSpan() noexcept = default;
 			constexpr TimeSpan(const TimeSpan&) noexcept = default;
-			TimeSpan(const wxTimeSpan& other) noexcept
-			{
-				*this = other;
-			}
+			TimeSpan(const wxTimeSpan& other) noexcept;
 
 		public:
 			constexpr bool IsNull() const noexcept
@@ -136,29 +134,14 @@ namespace kxf
 			}
 
 			String Format(const String& format) const;
-			String Format(const char* format) const
-			{
-				return Format(String(format));
-			}
-			String Format(const wchar_t* format) const
-			{
-				return Format(String(format));
-			}
-			String Format(const Locale& locale, FlagSet<TimeFormatFlag> flags = {}) const;
+			String FormatTime(const Locale& locale, FlagSet<TimeFormatFlag> flags = {}) const;
 
 		public:
 			constexpr TimeSpan& operator=(const TimeSpan&) noexcept = default;
-			TimeSpan& operator=(const wxTimeSpan& other) noexcept
-			{
-				m_Value = other.GetMilliseconds().GetValue();
-				return *this;
-			}
-			operator wxTimeSpan() const noexcept
-			{
-				return TimeSpan::GetMilliseconds();
-			}
+			operator wxTimeSpan() const noexcept;
 
 			constexpr auto operator<=>(const TimeSpan&) const noexcept = default;
+			constexpr bool operator==(const TimeSpan&) const noexcept = default;
 
 			constexpr TimeSpan& operator+=(const TimeSpan& other) noexcept
 			{

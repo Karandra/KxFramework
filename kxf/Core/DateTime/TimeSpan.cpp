@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "TimeSpan.h"
 #include "TimeClock.h"
+#include <wx/datetime.h>
 
 namespace kxf
 {
@@ -11,6 +12,11 @@ namespace kxf
 	TimeSpan TimeSpan::Now(const ITimeClock& clock) noexcept
 	{
 		return clock.Now();
+	}
+
+	TimeSpan::TimeSpan(const wxTimeSpan& other) noexcept
+		:m_Value(other.GetValue().GetValue())
+	{
 	}
 
 	String TimeSpan::Format(const String& format) const
@@ -24,7 +30,7 @@ namespace kxf
 			return wxTimeSpan::Milliseconds(m_Value).Format(format);
 		}
 	}
-	String TimeSpan::Format(const Locale& locale, FlagSet<TimeFormatFlag> flags) const
+	String TimeSpan::FormatTime(const Locale& locale, FlagSet<TimeFormatFlag> flags) const
 	{
 		if (flags & TimeFormatFlag::NoMinutes)
 		{
@@ -38,5 +44,10 @@ namespace kxf
 		{
 			return Format(kxS("%H:%M:%S"));
 		}
+	}
+
+	TimeSpan::operator wxTimeSpan() const noexcept
+	{
+		return wxTimeSpan(wxLongLong(m_Value));
 	}
 }
