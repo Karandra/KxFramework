@@ -7,6 +7,7 @@
 
 namespace kxf
 {
+	// NtStatus
 	NtStatus NtStatus::Success() noexcept
 	{
 		return STATUS_SUCCESS;
@@ -33,6 +34,12 @@ namespace kxf
 		}
 	}
 
+	NtStatus::NtStatus() noexcept
+		:m_Value(STATUS_UNSUCCESSFUL)
+	{
+	}
+
+	// IErrorCode
 	bool NtStatus::IsSuccess() const noexcept
 	{
 		return System::Private::NT_SUCCESS(m_Value);
@@ -65,6 +72,7 @@ namespace kxf
 		return System::Private::NT_INFORMATION(m_Value);
 	}
 
+	// NtStatus
 	std::optional<Win32Error> NtStatus::ToWin32() const noexcept
 	{
 		return System::Private::Win32FromNtStatus(m_Value);

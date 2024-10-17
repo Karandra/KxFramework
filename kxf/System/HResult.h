@@ -13,7 +13,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API HResult final: public RTTI::Implementation<HResult, IErrorCode>
+	class KX_API HResult final: public RTTI::DynamicImplementation<HResult, IErrorCode>
 	{
 		KxRTTI_DeclareIID(HResult, {0xfcb86dbc, 0xa3f9, 0x4385, {0x83, 0x72, 0x9, 0x15, 0x36, 0x5c, 0xb, 0x29}});
 
@@ -38,9 +38,10 @@ namespace kxf
 
 		private:
 			IErrorInfo* m_ErrorInfo = nullptr;
-			int32_t m_Value = 0;
+			int32_t m_Value = std::numeric_limits<int32_t>::min();
 
 		public:
+			HResult() noexcept;
 			HResult(int32_t value, IErrorInfo* errorInfo = nullptr) noexcept;
 			~HResult();
 

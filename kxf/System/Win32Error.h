@@ -11,7 +11,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API Win32Error final: public RTTI::Implementation<Win32Error, IErrorCode>
+	class KX_API Win32Error final: public RTTI::DynamicImplementation<Win32Error, IErrorCode>
 	{
 		KxRTTI_DeclareIID(Win32Error, {0x747f17c6, 0xea9d, 0x484d, {0xb9, 0xbe, 0xec, 0xc4, 0xa3, 0x72, 0x9f, 0x40}});
 
@@ -23,9 +23,10 @@ namespace kxf
 			static void SetLastError(Win32Error error) noexcept;
 
 		private:
-			uint32_t m_Value = 0;
+			uint32_t m_Value = std::numeric_limits<uint32_t>::max();
 
 		public:
+			Win32Error() noexcept;
 			Win32Error(uint32_t value) noexcept
 				:m_Value(value)
 			{

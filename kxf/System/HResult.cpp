@@ -8,6 +8,7 @@
 
 namespace kxf
 {
+	// HResult
 	HResult HResult::Success() noexcept
 	{
 		return S_OK;
@@ -77,6 +78,10 @@ namespace kxf
 		return E_ILLEGAL_METHOD_CALL;
 	}
 
+	HResult::HResult() noexcept
+		:m_Value(E_FAIL)
+	{
+	}
 	HResult::HResult(int32_t value, IErrorInfo* errorInfo) noexcept
 		:m_Value(value), m_ErrorInfo(errorInfo)
 	{
@@ -93,6 +98,7 @@ namespace kxf
 		}
 	}
 
+	// IErrorCode
 	bool HResult::IsSuccess() const noexcept
 	{
 		return SUCCEEDED(GetValue());
@@ -108,6 +114,7 @@ namespace kxf
 		return System::Private::FormatMessage(nullptr, m_Value, FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, locale);
 	}
 
+	// HResult
 	String HResult::GetSource() const
 	{
 		_bstr_t result = _com_error(m_Value, m_ErrorInfo).Source();

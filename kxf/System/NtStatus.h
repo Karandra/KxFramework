@@ -11,7 +11,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API NtStatus final: public RTTI::Implementation<NtStatus, IErrorCode>
+	class KX_API NtStatus final: public RTTI::DynamicImplementation<NtStatus, IErrorCode>
 	{
 		KxRTTI_DeclareIID(NtStatus, {0xcffef908, 0x7112, 0x4130, {0x91, 0x8c, 0x6c, 0x2, 0xcb, 0x42, 0x94, 0xf1}});
 
@@ -23,9 +23,10 @@ namespace kxf
 			static void SetLastError(NtStatus error) noexcept;
 
 		private:
-			int32_t m_Value = 0;
+			int32_t m_Value = std::numeric_limits<int32_t>::min();
 
 		public:
+			NtStatus() noexcept;
 			NtStatus(int32_t value) noexcept
 				:m_Value(value)
 			{

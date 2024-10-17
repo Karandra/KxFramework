@@ -7,6 +7,7 @@
 
 namespace kxf
 {
+	// Win32Error
 	Win32Error Win32Error::Success() noexcept
 	{
 		return ERROR_SUCCESS;
@@ -25,6 +26,12 @@ namespace kxf
 		::SetLastError(*error);
 	}
 
+	Win32Error::Win32Error() noexcept
+		:m_Value(ERROR_UNHANDLED_ERROR)
+	{
+	}
+
+	// IErrorCode
 	String Win32Error::ToString() const
 	{
 		// TODO: Add Win32 error code to its constant name mapping
@@ -35,6 +42,7 @@ namespace kxf
 		return System::Private::FormatMessage(nullptr, m_Value, FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, locale);
 	}
 
+	// Win32Error
 	std::optional<HResult> Win32Error::ToHResult() const noexcept
 	{
 		return HRESULT_FROM_WIN32(GetValue());

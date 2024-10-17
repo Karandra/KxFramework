@@ -317,6 +317,9 @@
     <Filter Include="kxf\RPC\SystemWindowRPC\Private">
       <UniqueIdentifier>{53b238d9-cabf-4299-8bec-89b76eccf45d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\System\&lt;ErrorCode&gt;">
+      <UniqueIdentifier>{867c4c86-fa9e-42c4-8264-55ac6310fd50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1415,17 +1418,8 @@
     <ClInclude Include="kxf\Core\IErrorCode.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\Win32Error.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\Private\ErrorCode.h">
       <Filter>kxf\System\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\HResult.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\NtStatus.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IO\StreamError.h">
       <Filter>kxf\IO</Filter>
@@ -2475,6 +2469,15 @@
     <ClInclude Include="kxf\RPC.hpp">
       <Filter>kxf/Modules</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\HResult.h">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\Win32Error.h">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\NtStatus.h">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3123,17 +3126,8 @@
     <ClCompile Include="kxf\IO\NativeFileStream.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\System\Win32Error.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\System\Private\ErrorCode.cpp">
       <Filter>kxf\System\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\HResult.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\NtStatus.cpp">
-      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
@@ -3758,6 +3752,15 @@
     </ClCompile>
     <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.cpp">
       <Filter>kxf\RPC\SystemWindowRPC</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\HResult.cpp">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\Win32Error.cpp">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\NtStatus.cpp">
+      <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
