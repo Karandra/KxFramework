@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "IObject.h"
 #include "kxf/Core/FlagSet.h"
-#include <variant>
+#include "kxf/Utility/Memory.h"
 
 namespace kxf::RTTI::Private
 {
@@ -48,7 +48,7 @@ namespace kxf::RTTI
 		public:
 			static const ClassInfo* GetFirstClassInfo() noexcept;
 
-		private:
+		protected:
 			ClassInfo* m_NextClassInfo = nullptr;
 
 			std::string_view m_FullyQualifiedName;
@@ -75,6 +75,7 @@ namespace kxf::RTTI
 			virtual IID DoGetIID() const noexcept = 0;
 			virtual size_t DoGetBaseClass(const ClassInfo** classInfo, size_t index = std::numeric_limits<size_t>::max()) const noexcept = 0;
 			virtual std::shared_ptr<IObject> DoCreateObjectInstance() const = 0;
+			virtual IObject* DoCreateObjectInstanceAt(void* ptr, size_t size) const = 0;
 
 			template<class TResult>
 			static std::unique_ptr<TResult> DynamicCast(std::unique_ptr<IObject> ptr) noexcept
@@ -150,6 +151,16 @@ namespace kxf::RTTI
 				if (auto instance = DoCreateObjectInstance())
 				{
 					return instance->QueryInterface<T>();
+				}
+				return nullptr;
+			}
+
+			template<std::derived_from<IObject> T = IObject>
+			T* CreateObjectInstanceAt(void* ptr, size_t size) const
+			{
+				if (auto instance = DoCreateObjectInstanceAt(ptr, size))
+				{
+					return static_cast<T*>(ptr);
 				}
 				return nullptr;
 			}
@@ -245,6 +256,10 @@ namespace kxf::RTTI::Private
 			{
 				return nullptr;
 			}
+			IObject* DoCreateObjectInstanceAt(void* ptr, size_t size) const override
+			{
+				return nullptr;
+			}
 			size_t DoGetBaseClass(const ClassInfo** classInfo, size_t index = std::numeric_limits<size_t>::max()) const noexcept override
 			{
 				if (classInfo && index < m_BaseClassInfo.size())
@@ -329,9 +344,14 @@ namespace kxf::RTTI
 			{
 				return RTTI::GetInterfaceID<T>();
 			}
+
 			std::shared_ptr<IObject> DoCreateObjectInstance() const override
 			{
 				return std::make_shared<T>();
+			}
+			IObject* DoCreateObjectInstanceAt(void* ptr, size_t size) const override
+			{
+				return Utility::AlignAndConstructAt<T>(ptr, size);
 			}
 
 		public:
