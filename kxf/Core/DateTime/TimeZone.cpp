@@ -1,47 +1,22 @@
 #include "KxfPCH.h"
 #include "TimeZone.h"
-#include <chrono>
-
-namespace
-{
-	constexpr int g_LocalOffset = -1;
-}
+#include "Private/Mapping.h"
+#include <wx/datetime.h>
 
 namespace kxf
 {
-	wxDateTime::TimeZone TimeZoneOffset::ToWxOffset() const noexcept
-	{
-		if (IsLocal())
-		{
-			return g_LocalOffset;
-		}
-		else
-		{
-			return m_Offset.GetSeconds();
-		}
-	}
-	void TimeZoneOffset::FromWxOffset(const wxDateTime::TimeZone& other) noexcept
-	{
-		if (other.IsLocal())
-		{
-			m_Offset = TimeSpan::Milliseconds(g_LocalOffset);
-		}
-		else
-		{
-			m_Offset = TimeSpan::Seconds(other.GetOffset());
-		}
-	}
 	void TimeZoneOffset::FromTimeZone(TimeZone tz) noexcept
 	{
-		FromWxOffset(wxDateTime::TimeZone(tz));
+		m_Offset = Private::MapTimeZone(wxDateTime::TimeZone(static_cast<wxDateTime::TZ>(tz)));
 	}
 
 	bool TimeZoneOffset::IsLocal() const noexcept
 	{
-		return m_Offset.GetMilliseconds() == g_LocalOffset;
+		return m_Offset.GetMilliseconds() == -1;
 	}
 	TimeSpan TimeZoneOffset::GetOffset() const noexcept
 	{
-		return TimeSpan::Seconds(ToWxOffset().GetOffset());
+		auto wxOffset = Private::MapTimeZone(m_Offset, IsLocal());
+		return TimeSpan::Seconds(wxOffset.GetOffset());
 	}
 }

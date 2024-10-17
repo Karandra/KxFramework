@@ -18,7 +18,7 @@ namespace kxf
 
 	wxDateTime::Tm DateTime::GetTm(const TimeZoneOffset& tz) const noexcept
 	{
-		return m_Value.GetTm(tz);
+		return m_Value.GetTm(Private::MapTimeZone(tz));
 	}
 	DateTime& DateTime::SetTm(const wxDateTime::Tm& value, const TimeZoneOffset& tz) noexcept
 	{
@@ -76,13 +76,13 @@ namespace kxf
 				years = 0;
 			}
 
-			int months = m_Value.GetMonth(tz);
+			int months = m_Value.GetMonth(Private::MapTimeZone(tz));
 			if (months == wxDateTime::Inv_Month)
 			{
 				months = 0;
 			}
 
-			return DateSpan(years, months, 0, m_Value.GetDay(tz));
+			return DateSpan(years, months, 0, m_Value.GetDay(Private::MapTimeZone(tz)));
 		}
 		return {};
 	}
@@ -158,11 +158,11 @@ namespace kxf
 	{
 		if (format.IsEmpty())
 		{
-			return m_Value.Format(wxDefaultDateTimeFormat, tz);
+			return m_Value.Format(wxDefaultDateTimeFormat, Private::MapTimeZone(tz));
 		}
 		else
 		{
-			return m_Value.Format(format, tz);
+			return m_Value.Format(format, Private::MapTimeZone(tz));
 		}
 	}
 	String DateTime::FormatDate(const Locale& locale, FlagSet<DateFormatFlag> flags, const TimeZoneOffset& tz) const

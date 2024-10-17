@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include <wx/datetime.h>
 
 namespace kxf::Private
 {
@@ -197,5 +198,32 @@ namespace kxf::Private
 			return wxDateTime::Name_Abbr;
 		}
 		return wxDateTime::Name_Full;
+	}
+
+	inline TimeSpan MapTimeZone(const wxDateTime::TimeZone& tz) noexcept
+	{
+		if (tz.IsLocal())
+		{
+			return TimeSpan::Milliseconds(-1);
+		}
+		else
+		{
+			return TimeSpan::Seconds(tz.GetOffset());
+		}
+	}
+	inline wxDateTime::TimeZone MapTimeZone(const TimeSpan& offset, bool isLocal) noexcept
+	{
+		if (isLocal)
+		{
+			return -1;
+		}
+		else
+		{
+			return offset.GetSeconds();
+		}
+	}
+	inline wxDateTime::TimeZone MapTimeZone(const TimeZoneOffset& tz) noexcept
+	{
+		return MapTimeZone(tz.GetOffset(), tz.IsLocal());
 	}
 }

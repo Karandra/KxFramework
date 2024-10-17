@@ -129,7 +129,7 @@ namespace kxf
 
 			int GetMillisecond(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetMillisecond(tz);
+				return m_Value.GetMillisecond(Private::MapTimeZone(tz));
 			}
 			DateTime& SetMillisecond(int value) noexcept
 			{
@@ -139,7 +139,7 @@ namespace kxf
 
 			int GetSecond(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetSecond(tz);
+				return m_Value.GetSecond(Private::MapTimeZone(tz));
 			}
 			DateTime& SetSecond(int value) noexcept
 			{
@@ -149,7 +149,7 @@ namespace kxf
 
 			int GetMinute(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetMinute(tz);
+				return m_Value.GetMinute(Private::MapTimeZone(tz));
 			}
 			DateTime& SetMinute(int value) noexcept
 			{
@@ -159,7 +159,7 @@ namespace kxf
 
 			int GetHour(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetHour(tz);
+				return m_Value.GetHour(Private::MapTimeZone(tz));
 			}
 			DateTime& SetHour(int value) noexcept
 			{
@@ -169,7 +169,7 @@ namespace kxf
 
 			int GetDay(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetDay(tz);
+				return m_Value.GetDay(Private::MapTimeZone(tz));
 			}
 			DateTime& SetDay(int value) noexcept
 			{
@@ -179,7 +179,7 @@ namespace kxf
 
 			Month GetMonth(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return Private::MapMonth(m_Value.GetMonth(tz));
+				return Private::MapMonth(m_Value.GetMonth(Private::MapTimeZone(tz)));
 			}
 			DateTime& SetMonth(Month value) noexcept
 			{
@@ -189,7 +189,7 @@ namespace kxf
 
 			int GetYear(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetYear(tz);
+				return m_Value.GetYear(Private::MapTimeZone(tz));
 			}
 			DateTime& SetYear(int value) noexcept
 			{
@@ -199,15 +199,15 @@ namespace kxf
 
 			int GetCentury(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetCentury(tz);
+				return m_Value.GetCentury(Private::MapTimeZone(tz));
 			}
 			int GetDayOfYear(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return m_Value.GetDayOfYear(tz);
+				return m_Value.GetDayOfYear(Private::MapTimeZone(tz));
 			}
 			WeekDay GetWeekDay(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
-				return Private::MapWeekDay(m_Value.GetWeekDay(tz));
+				return Private::MapWeekDay(m_Value.GetWeekDay(Private::MapTimeZone(tz)));
 			}
 			
 			DateTime GetDateOnly() const noexcept
@@ -478,11 +478,11 @@ namespace kxf
 			// Time Zone and DST support
 			DateTime ToTimeZone(const TimeZoneOffset& tz, bool noDST = false) const noexcept
 			{
-				return m_Value.ToTimezone(tz, noDST);
+				return m_Value.ToTimezone(Private::MapTimeZone(tz), noDST);
 			}
 			DateTime FromTimeZone(const TimeZoneOffset& tz, bool noDST = false) const noexcept
 			{
-				return m_Value.FromTimezone(tz, noDST);
+				return m_Value.FromTimezone(Private::MapTimeZone(tz), noDST);
 			}
 			DateTime ToUTC(bool noDST = false) const noexcept
 			{
