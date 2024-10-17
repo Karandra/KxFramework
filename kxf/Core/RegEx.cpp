@@ -17,7 +17,7 @@ namespace kxf
 		return wxRegEx::QuoteMeta(value);
 	}
 
-	void RegEx::Move(RegEx& other) noexcept
+	void RegEx::MoveFrom(RegEx& other) noexcept
 	{
 		// Construct an uninitialized object or destroy and reconstruct an already used one
 		if (!m_RegEx.IsConstructed())

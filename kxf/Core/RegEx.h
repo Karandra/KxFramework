@@ -38,7 +38,7 @@ namespace kxf
 			AlignedStorage<wxRegEx, sizeof(void*), alignof(void*)> m_RegEx;
 
 		private:
-			void Move(RegEx& other) noexcept;
+			void MoveFrom(RegEx& other) noexcept;
 
 		public:
 			RegEx() noexcept = default;
@@ -48,7 +48,7 @@ namespace kxf
 			}
 			RegEx(RegEx&& other) noexcept
 			{
-				Move(other);
+				MoveFrom(other);
 			}
 			RegEx(const RegEx&) = delete;
 			~RegEx() noexcept;
@@ -79,7 +79,7 @@ namespace kxf
 
 			RegEx& operator=(RegEx&& other) noexcept
 			{
-				Move(other);
+				MoveFrom(other);
 				return *this;
 			}
 			RegEx& operator=(const RegEx&) = delete;

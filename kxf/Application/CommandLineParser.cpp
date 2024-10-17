@@ -48,15 +48,66 @@ namespace
 
 		return flagsWx;
 	}
+
+	struct HackWxCmdLineParser final
+	{
+		struct wxCmdLineParserData* m_Impl = nullptr;
+	};
 }
 
 namespace kxf
 {
-	CommandLineParser::~CommandLineParser() = default;
+	void CommandLineParser::MoveFrom(CommandLineParser& other) noexcept
+	{
+		auto thisPtr = reinterpret_cast<HackWxCmdLineParser*>(m_Parser.get());
+		auto otherPtr = reinterpret_cast<HackWxCmdLineParser*>(other.m_Parser.get());
+
+		// Construct an uninitialized object or destroy and reconstruct an already used one
+		if (!m_Parser.IsConstructed())
+		{
+			m_Parser.Construct();
+		}
+		else if (thisPtr->m_Impl)
+		{
+			m_Parser.Destroy();
+			m_Parser.Construct();
+		}
+
+		if (other.m_Parser.IsConstructed())
+		{
+			thisPtr->m_Impl = otherPtr->m_Impl;
+			otherPtr->m_Impl = nullptr;
+		}
+	}
+
+	CommandLineParser::CommandLineParser()
+	{
+		m_Parser.Construct();
+	}
+	CommandLineParser::CommandLineParser(CommandLineParser&& other) noexcept
+	{
+		MoveFrom(other);
+	}
+	CommandLineParser::CommandLineParser(int argc, char** argv)
+	{
+		m_Parser.Construct(argc, argv);
+	}
+	CommandLineParser::CommandLineParser(int argc, wchar_t** argv)
+	{
+		m_Parser.Construct(argc, argv);
+	}
+	CommandLineParser::CommandLineParser(const String& commandLine)
+	{
+		m_Parser.Construct(commandLine);
+	}
+	CommandLineParser::~CommandLineParser() noexcept
+	{
+		m_Parser.Destroy();
+	}
 
 	bool CommandLineParser::IsNull() const noexcept
 	{
-		return m_Parser == nullptr;
+		return !m_Parser.IsConstructed();
 	}
 
 	bool CommandLineParser::IsLongNamesEnabled() const
@@ -83,36 +134,15 @@ namespace kxf
 	}
 	void CommandLineParser::SetCommandLine(int argc, char** argv)
 	{
-		if (!m_Parser)
-		{
-			m_Parser = std::make_unique<wxCmdLineParser>(argc, argv);
-		}
-		else
-		{
-			m_Parser->SetCmdLine(argc, argv);
-		}
+		m_Parser->SetCmdLine(argc, argv);
 	}
 	void CommandLineParser::SetCommandLine(int argc, wchar_t** argv)
 	{
-		if (!m_Parser)
-		{
-			m_Parser = std::make_unique<wxCmdLineParser>(argc, argv);
-		}
-		else
-		{
-			m_Parser->SetCmdLine(argc, argv);
-		}
+		m_Parser->SetCmdLine(argc, argv);
 	}
 	void CommandLineParser::SetCommandLine(const String& commandLine)
 	{
-		if (!m_Parser)
-		{
-			m_Parser = std::make_unique<wxCmdLineParser>(commandLine);
-		}
-		else
-		{
-			m_Parser->SetCmdLine(commandLine);
-		}
+		m_Parser->SetCmdLine(commandLine);
 	}
 	CommandLineParserResult CommandLineParser::Parse(bool showUsage)
 	{
@@ -266,5 +296,11 @@ namespace kxf
 			}
 		};
 		return CommandLineParserSwitch::None;
+	}
+
+	CommandLineParser& CommandLineParser::operator=(CommandLineParser&& other) noexcept
+	{
+		MoveFrom(other);
+		return *this;
 	}
 }

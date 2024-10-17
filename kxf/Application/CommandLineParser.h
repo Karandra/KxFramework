@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "kxf/Core/String.h"
 #include "kxf/Core/DateTime.h"
-#include "kxf/Core/AlignedObjectStorage.h"
+#include "kxf/Core/AlignedStorage.h"
 class wxCmdLineParser;
 
 namespace kxf
@@ -117,25 +117,19 @@ namespace kxf
 	class KX_API CommandLineParser final
 	{
 		private:
-			std::unique_ptr<wxCmdLineParser> m_Parser;
+			void MoveFrom(CommandLineParser& other) noexcept;
+
+		private:
+			AlignedStorage<wxCmdLineParser, sizeof(void*), alignof(void*)> m_Parser;
 
 		public:
-			CommandLineParser() = default;
+			CommandLineParser();
+			CommandLineParser(int argc, char** argv);
+			CommandLineParser(int argc, wchar_t** argv);
+			CommandLineParser(const String& commandLine);
 			CommandLineParser(const CommandLineParser&) = delete;
-			CommandLineParser(CommandLineParser&&) = default;
-			CommandLineParser(int argc, char** argv)
-			{
-				SetCommandLine(argc, argv);
-			}
-			CommandLineParser(int argc, wchar_t** argv)
-			{
-				SetCommandLine(argc, argv);
-			}
-			CommandLineParser(const String& commandLine)
-			{
-				SetCommandLine(commandLine);
-			}
-			~CommandLineParser();
+			CommandLineParser(CommandLineParser&& other) noexcept;
+			~CommandLineParser() noexcept;
 
 		public:
 			bool IsNull() const noexcept;
@@ -182,6 +176,6 @@ namespace kxf
 			}
 
 			CommandLineParser& operator=(const CommandLineParser&) = delete;
-			CommandLineParser& operator=(CommandLineParser&&) = default;
+			CommandLineParser& operator=(CommandLineParser&& other) noexcept;
 	};
 }
