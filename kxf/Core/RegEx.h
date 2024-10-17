@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
-#include "kxf/Utility/Common.h"
-#include <wx/regex.h>
+#include "AlignedStorage.h"
+class wxRegEx;
 
 namespace kxf
 {
@@ -31,88 +31,56 @@ namespace kxf
 	class KX_API RegEx final
 	{
 		public:
-			static String EscapeMeta(const String& value)
-			{
-				return wxRegEx::QuoteMeta(value);
-			}
+			static String EscapeMeta(const String& value);
 
 		private:
-			wxRegEx m_RegEx;
+			AlignedStorage<wxRegEx, sizeof(void*), alignof(void*)> m_RegEx;
+
+		private:
+			void Move(RegEx& other) noexcept;
 
 		public:
-			RegEx() = default;
+			RegEx() noexcept = default;
 			RegEx(const String& expression, FlagSet<RegExFlag> flags = {})
 			{
 				Compile(expression, flags);
 			}
+			RegEx(RegEx&& other) noexcept
+			{
+				Move(other);
+			}
 			RegEx(const RegEx&) = delete;
+			~RegEx() noexcept;
 
 		public:
-			bool IsValid() const noexcept
-			{
-				return m_RegEx.IsValid();
-			}
-			bool Compile(const String& expression, FlagSet<RegExFlag> flags = {})
-			{
-				constexpr auto MapRegExFlag = [](FlagSet<RegExFlag> flags) noexcept
-				{
-					FlagSet<int> nativeFlags;
-					nativeFlags.Add(wxRE_ICASE, flags & RegExFlag::IgnoreCase);
-					nativeFlags.Add(wxRE_NOSUB, flags & RegExFlag::NoSubstitution);
-					nativeFlags.Add(wxRE_NEWLINE, flags & RegExFlag::NewLine);
+			bool IsNull() const noexcept;
+			bool Compile(const String& expression, FlagSet<RegExFlag> flags = {});
 
-					return nativeFlags;
-				};
-
-				return m_RegEx.Compile(expression, wxRE_EXTENDED|wxRE_ADVANCED|*MapRegExFlag(flags));
-			}
-
-			bool Matches(const String& text, FlagSet<RegExCompileFlag> flags = {}) const
-			{
-				constexpr auto MapRegExCompileFlag = [](FlagSet<RegExCompileFlag> flags) noexcept
-				{
-					FlagSet<int> nativeFlags;
-					nativeFlags.Add(wxRE_NOTBOL, flags & RegExCompileFlag::NotBegin);
-					nativeFlags.Add(wxRE_NOTEOL, flags & RegExCompileFlag::NotEnd);
-
-					return nativeFlags;
-				};
-
-				return m_RegEx.Matches(text, *MapRegExCompileFlag(flags));
-			}
-			size_t GetMatchCount() const noexcept
-			{
-				return m_RegEx.GetMatchCount();
-			}
-			String GetMatch(const String& text, size_t index) const
-			{
-				return m_RegEx.GetMatch(text, index);
-			}
-			bool GetMatch(size_t& start, size_t& length, size_t index) const noexcept
-			{
-				return m_RegEx.GetMatch(&start, &length, index);
-			}
+			bool Matches(const String& text, FlagSet<RegExCompileFlag> flags = {}) const;
+			size_t GetMatchCount() const noexcept;
+			String GetMatch(const String& text, size_t index) const;
+			size_t EnumMatches(const String& text, std::move_only_function<CallbackCommand(String)> func) const;
+			bool GetMatch(size_t& start, size_t& length, size_t index) const noexcept;
 
 			size_t Replace(String& text, const String& replacement, size_t maxMatches = 0) const;
-			size_t ReplaceAll(String& text, const String& replacement) const
-			{
-				return Replace(text, replacement, 0);
-			}
-			size_t ReplaceFirst(String& text, const String& replacement) const
-			{
-				return Replace(text, replacement, 1);
-			}
+			size_t ReplaceAll(String& text, const String& replacement) const;
+			size_t ReplaceFirst(String& text, const String& replacement) const;
 
 		public:
 			explicit operator bool() const noexcept
 			{
-				return IsValid();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return !IsValid();
+				return IsNull();
 			}
 
+			RegEx& operator=(RegEx&& other) noexcept
+			{
+				Move(other);
+				return *this;
+			}
 			RegEx& operator=(const RegEx&) = delete;
 	};
 };
