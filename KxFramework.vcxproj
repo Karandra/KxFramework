@@ -700,7 +700,7 @@
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
-    <ClInclude Include="kxf\Utility\Callback.h" />
+    <ClInclude Include="kxf\Utility\CallbackAdapters.h" />
     <ClInclude Include="kxf\Utility\Enumerator.h" />
     <ClInclude Include="kxf\Utility\Functional.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />

@@ -4,7 +4,7 @@
 namespace kxf::Utility
 {
 	template<class TItem_>
-	class MoveToVectorCallback final
+	class VectorCallbackAdapter final
 	{
 		public:
 			using TItem = TItem_;
@@ -13,7 +13,7 @@ namespace kxf::Utility
 			std::vector<TItem>* m_Container = nullptr;
 
 		public:
-			MoveToVectorCallback(std::vector<TItem>& ref, size_t reserve = 0) noexcept
+			VectorCallbackAdapter(std::vector<TItem>& ref, size_t reserve = 0) noexcept
 				:m_Container(&ref)
 			{
 				if (reserve != 0 && reserve != std::numeric_limits<size_t>::max())
@@ -21,8 +21,8 @@ namespace kxf::Utility
 					ref.reserve(reserve);
 				}
 			}
-			MoveToVectorCallback(const MoveToVectorCallback&) = default;
-			MoveToVectorCallback(MoveToVectorCallback&&) = default;
+			VectorCallbackAdapter(const VectorCallbackAdapter&) = default;
+			VectorCallbackAdapter(VectorCallbackAdapter&&) = default;
 
 		public:
 			CallbackCommand operator()(TItem&& item)
@@ -32,7 +32,7 @@ namespace kxf::Utility
 			}
 
 		public:
-			MoveToVectorCallback& operator=(const MoveToVectorCallback&) = default;
-			MoveToVectorCallback& operator=(MoveToVectorCallback&&) = default;
+			VectorCallbackAdapter& operator=(const VectorCallbackAdapter&) = default;
+			VectorCallbackAdapter& operator=(VectorCallbackAdapter&&) = default;
 	};
 }

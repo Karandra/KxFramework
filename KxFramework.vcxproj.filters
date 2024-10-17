@@ -2433,7 +2433,7 @@
     <ClInclude Include="kxf\Core\Private\ErrorCode.h">
       <Filter>kxf\Core\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\Callback.h">
+    <ClInclude Include="kxf\Utility\CallbackAdapters.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.h">
