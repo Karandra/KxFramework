@@ -31,7 +31,6 @@ namespace kxf
 		return ChronoClockTimeNow<std::chrono::high_resolution_clock>();
 	}
 
-	#if __cplusplus > 201703L
 	TimeSpan FileClock::Now() const noexcept
 	{
 		return ChronoClockTimeNow<std::chrono::file_clock>();
@@ -51,5 +50,4 @@ namespace kxf
 	{
 		return ChronoClockTimeNow<std::chrono::tai_clock>();
 	}
-	#endif
 }
