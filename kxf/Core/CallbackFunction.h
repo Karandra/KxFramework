@@ -30,7 +30,7 @@ namespace kxf
 		public:
 			void UpdateWith(CallbackCommand command)
 			{
-				if (auto index = ToInt(command); index >= 0 && index < m_Counters.size())
+				if (auto index = ToInt(command); index >= 0 && static_cast<size_t>(index) < m_Counters.size())
 				{
 					m_Counters[static_cast<size_t>(index)]++;
 					m_LastCommand = command;
@@ -47,7 +47,7 @@ namespace kxf
 			}
 			size_t GetInvokeCount(CallbackCommand command) const noexcept
 			{
-				if (auto index = ToInt(command); index >= 0 && index < m_Counters.size())
+				if (auto index = ToInt(command); index >= 0 && static_cast<size_t>(index) < m_Counters.size())
 				{
 					return m_Counters[static_cast<size_t>(index)];
 				}
