@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "kxf/Core/RegEx.h"
 #include "kxf/Core/String.h"
+#include "kxf/Utility/Common.h"
 #include "wx/window.h"
 #include <wx/colour.h>
 #include <wx/brush.h>

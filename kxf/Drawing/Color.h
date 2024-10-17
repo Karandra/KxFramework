@@ -5,6 +5,8 @@
 #include "kxf/Serialization/BinarySerializer.h"
 class wxWindow;
 class wxColour;
+class wxBrush;
+class wxPen;
 
 namespace kxf
 {
