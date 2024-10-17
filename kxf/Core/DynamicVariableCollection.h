@@ -1,19 +1,19 @@
 #pragma once
 #include "Common.h"
-#include "StaticVariablesCollection.h"
+#include "StaticVariableCollection.h"
 
 namespace kxf
 {
-	class KX_API DynamicVariablesCollection: public StaticVariablesCollection
+	class KX_API DynamicVariableCollection: public RTTI::Implementation<DynamicVariableCollection, StaticVariableCollection>
 	{
 		public:
 			using TValue = std::function<Any(const String& ns, const String& id)>;
 
 		private:
-			std::map<StaticVariablesCollection::Item, TValue> m_DynamicItems;
+			std::map<StaticVariableCollection::Item, TValue> m_DynamicItems;
 
 		protected:
-			// IVariablesCollection
+			// IVariableCollection
 			size_t DoClearItems(const String& ns) override;
 			size_t DoGetItemCount(const String& ns) const override;
 			size_t DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const override;
@@ -22,14 +22,14 @@ namespace kxf
 			Any DoGetItem(const String& ns, const String& id) const override;
 			void DoSetItem(const String& ns, const String& id, Any item) override;
 
-			// DynamicVariablesCollection
+			// DynamicVariableCollection
 			void DoSetDynamicItem(const String& ns, const String& id, TValue func)
 			{
 				m_DynamicItems.insert_or_assign({ns, id}, std::move(func));
 			}
 
 		public:
-			// DynamicVariablesCollection
+			// DynamicVariableCollection
 			void SetDynamicItem(const String& id, TValue func)
 			{
 				DoSetDynamicItem({}, id, std::move(func));

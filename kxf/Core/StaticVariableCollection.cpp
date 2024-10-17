@@ -1,9 +1,10 @@
 #include "KxfPCH.h"
-#include "StaticVariablesCollection.h"
+#include "StaticVariableCollection.h"
 
 namespace kxf
 {
-	size_t StaticVariablesCollection::DoClearItems(const String& ns)
+	// IVariableCollection
+	size_t StaticVariableCollection::DoClearItems(const String& ns)
 	{
 		if (ns.IsEmpty())
 		{
@@ -26,7 +27,7 @@ namespace kxf
 			return count;
 		}
 	}
-	size_t StaticVariablesCollection::DoGetItemCount(const String& ns) const
+	size_t StaticVariableCollection::DoGetItemCount(const String& ns) const
 	{
 		if (ns.IsEmpty())
 		{
@@ -45,7 +46,7 @@ namespace kxf
 			return count;
 		}
 	}
-	size_t StaticVariablesCollection::DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const
+	size_t StaticVariableCollection::DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const
 	{
 		size_t count = 0;
 		for (auto&& [descriptor, value]: m_StaticItems)

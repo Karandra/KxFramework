@@ -1,14 +1,14 @@
 #pragma once
 #include "Common.h"
-#include "IVariablesCollection.h"
+#include "IVariableCollection.h"
 #include "kxf/Utility/Container.h"
 
 namespace kxf
 {
-	class NullVariablesCollection final: public IVariablesCollection
+	class NullVariableCollection final: public IVariableCollection
 	{
 		protected:
-			// IVariablesCollection
+			// IVariableCollection
 			size_t DoClearItems(const String& ns) override
 			{
 				return 0;
@@ -35,6 +35,6 @@ namespace kxf
 			}
 
 		public:
-			NullVariablesCollection() = default;
+			NullVariableCollection() = default;
 	};
 }

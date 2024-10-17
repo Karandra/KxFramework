@@ -1,11 +1,10 @@
 #pragma once
 #include "Common.h"
-#include "IVariablesCollection.h"
-#include <map>
+#include "IVariableCollection.h"
 
 namespace kxf
 {
-	class KX_API StaticVariablesCollection: public IVariablesCollection
+	class KX_API StaticVariableCollection: public RTTI::Implementation<StaticVariableCollection, IVariableCollection>
 	{
 		protected:
 			struct Item final
@@ -31,7 +30,7 @@ namespace kxf
 			std::map<Item, Any> m_StaticItems;
 
 		protected:
-			// IVariablesCollection
+			// IVariableCollection
 			size_t DoClearItems(const String& ns) override;
 			size_t DoGetItemCount(const String& ns) const override;
 			size_t DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const override;
@@ -53,6 +52,8 @@ namespace kxf
 			{
 				m_StaticItems.insert_or_assign({ns, id}, std::move(item));
 			}
+
+		public:
+			StaticVariableCollection() = default;
 	};
 }
-

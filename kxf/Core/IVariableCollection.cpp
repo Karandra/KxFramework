@@ -1,5 +1,5 @@
 #include "KxfPCH.h"
-#include "IVariablesCollection.h"
+#include "IVariableCollection.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/System/ShellOperations.h"
 #include "kxf/System/SystemInformation.h"
@@ -7,24 +7,24 @@
 
 namespace
 {
-	kxf::String DoExpandStdVariables(const kxf::String& source, const kxf::IVariablesCollection* collection = nullptr)
+	kxf::String DoExpandStdVariables(const kxf::String& source, const kxf::IVariableCollection* collection = nullptr)
 	{
 		using namespace kxf;
 
 		return ExpandVariables(source, [&](const String& ns, const String& id) -> String
 		{
-			if (ns == "LCIT")
+			if (ns == kxS("LCIT"))
 			{
 				if (auto app = ICoreApplication::GetInstance())
 				{
 					return app->GetLocalizationPackage().GetItem(id).GetString();
 				}
 			}
-			else if (ns == "ENV")
+			else if (ns == kxS("ENV"))
 			{
 				return System::GetEnvironmentVariable(id);
 			}
-			else if (ns == "SHDir")
+			else if (ns == kxS("SHDir"))
 			{
 				KnownDirectoryID desiredDirectoryID = KnownDirectoryID::None;
 				Shell::EnumKnownDirectories([&](KnownDirectoryID directoryID, String directoryName)
@@ -104,7 +104,7 @@ namespace kxf
 		}
 		return source;
 	}
-	String ExpandVariables(const String& source, const IVariablesCollection& collection)
+	String ExpandVariables(const String& source, const IVariableCollection& collection)
 	{
 		return ExpandVariables(source, [&](const String& ns, const String& id) -> String
 		{
@@ -116,7 +116,7 @@ namespace kxf
 	{
 		return DoExpandStdVariables(source);
 	}
-	String ExpandStdVariables(const String& source, const IVariablesCollection& collection)
+	String ExpandStdVariables(const String& source, const IVariableCollection& collection)
 	{
 		return DoExpandStdVariables(source, &collection);
 	}

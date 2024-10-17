@@ -230,9 +230,6 @@
     <Filter Include="kxf\Drawing\WxRenderer">
       <UniqueIdentifier>{a2fbc745-d4d0-4f41-87a4-f00f4ec82b32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Core\&lt;VariablesCollection&gt;">
-      <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Network\CURLWebSession">
       <UniqueIdentifier>{7a962409-a4c6-438c-bc0a-e182899e59fb}</UniqueIdentifier>
     </Filter>
@@ -319,6 +316,9 @@
     </Filter>
     <Filter Include="kxf\System\&lt;ErrorCode&gt;">
       <UniqueIdentifier>{867c4c86-fa9e-42c4-8264-55ac6310fd50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Core\&lt;VariableCollection&gt;">
+      <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1673,20 +1673,20 @@
     <ClInclude Include="kxf\Core\ErrorCode.h">
       <Filter>kxf\Core</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\CombinedVariablesCollection.h">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\CombinedVariableCollection.h">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\DynamicVariablesCollection.h">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\DynamicVariableCollection.h">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\StaticVariablesCollection.h">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\StaticVariableCollection.h">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\IVariablesCollection.h">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\IVariableCollection.h">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\NullVariablesCollection.h">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClInclude Include="kxf\Core\NullVariableCollection.h">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\RTTI\ClassInfo.h">
       <Filter>kxf\RTTI</Filter>
@@ -3249,17 +3249,17 @@
     <ClCompile Include="kxf\Core\ErrorCode.cpp">
       <Filter>kxf\Core</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\CombinedVariablesCollection.cpp">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\CombinedVariableCollection.cpp">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\DynamicVariablesCollection.cpp">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\DynamicVariableCollection.cpp">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\StaticVariablesCollection.cpp">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\StaticVariableCollection.cpp">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\IVariablesCollection.cpp">
-      <Filter>kxf\Core\&lt;VariablesCollection&gt;</Filter>
+    <ClCompile Include="kxf\Core\IVariableCollection.cpp">
+      <Filter>kxf\Core\&lt;VariableCollection&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp">
       <Filter>kxf\RTTI</Filter>
