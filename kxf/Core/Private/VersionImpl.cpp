@@ -102,9 +102,7 @@ namespace kxf::Private::Version
 	}
 	bool Parse(const String& source, DateTime& dateTime)
 	{
-		wxString temp = source;
-		wxString::const_iterator it = temp.begin();
-		return dateTime.ParseISOCombined(temp) || dateTime.ParseISOCombined(temp, ' ') || dateTime.ParseISODate(temp) || dateTime.ParseRFC822Date(temp, &it);
+		return dateTime.ParseISOCombined(source) || dateTime.ParseISOCombined(source, ' ') || dateTime.ParseISODate(source) || dateTime.ParseRFC822Date(source);
 	}
 
 	String Format(const DefaultFormat::Array& items, size_t itemCount)

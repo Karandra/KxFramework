@@ -60,7 +60,7 @@ namespace kxf::UI::DataView
 			}
 			void ClearDateTime()
 			{
-				m_Value.MakeNull();
+				m_Value = {};
 			}
 
 			bool HasDateRange() const
@@ -83,8 +83,8 @@ namespace kxf::UI::DataView
 			}
 			void ClearDateTimeRange()
 			{
-				m_RangeLower.MakeNull();
-				m_RangeUpper.MakeNull();
+				m_RangeLower = {};
+				m_RangeUpper = {};
 			}
 	};
 }
