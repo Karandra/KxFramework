@@ -4,15 +4,6 @@
 
 namespace kxf
 {
-	enum class ErrorCodeCategory
-	{
-		Unknown = -1,
-
-		Generic,
-		Win32,
-		HResult,
-		NtStatus
-	};
 	enum class UserNameFormat
 	{
 		None = -1,
