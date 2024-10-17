@@ -1,11 +1,12 @@
 #pragma once
 #include "Common.h"
 #include "TimeSpan.h"
+#include "kxf/Utility/Numeric.h"
+class wxDateSpan;
 
 namespace kxf
 {
 	class Locale;
-	class ITimeClock;
 }
 
 namespace kxf
@@ -13,183 +14,191 @@ namespace kxf
 	class KX_API DateSpan final
 	{
 		public:
-			static DateSpan Days(int days) noexcept
+			static constexpr DateSpan Days(int days) noexcept
 			{
-				return wxDateSpan::Days(days);
+				return DateSpan(0, 0, 0, days);
 			}
-			static DateSpan Weeks(int days) noexcept
+			static constexpr DateSpan Weeks(int weeks) noexcept
 			{
-				return wxDateSpan::Weeks(days);
+				return DateSpan(0, 0, weeks, 0);
 			}
-			static DateSpan Months(int months) noexcept
+			static constexpr DateSpan Months(int months) noexcept
 			{
-				return wxDateSpan::Months(months);
+				return DateSpan(0, months, 0, 0);
 			}
-			static DateSpan Years(int years) noexcept
+			static constexpr DateSpan Years(int years) noexcept
 			{
-				return wxDateSpan::Years(years);
+				return DateSpan(years, 0, 0, 0);
 			}
 
 		private:
-			wxDateSpan m_Value;
+			int m_Years = 0;
+			int m_Months = 0;
+			int m_Weeks = 0;
+			int m_Days = 0;
 
 		public:
-			DateSpan() noexcept
+			constexpr DateSpan() noexcept = default;
+			constexpr DateSpan(const DateSpan&) noexcept = default;
+			constexpr DateSpan(const TimeSpan& timeSpan) noexcept
+				:m_Days(timeSpan.GetDays())
 			{
 			}
-			DateSpan(const DateSpan&) noexcept = default;
-			DateSpan(const TimeSpan& other) noexcept
-				:m_Value(wxDateSpan::Days(other.GetDays()))
+			constexpr DateSpan(int years, int months, int weeks, int days) noexcept
+				:m_Years(years), m_Months(months), m_Weeks(weeks), m_Days(days)
 			{
 			}
-			DateSpan(const wxDateSpan& other) noexcept
-				:m_Value(other)
-			{
-			}
-			DateSpan(int years, int months, int weeks, int days)
-				:m_Value(years, months, weeks, days)
-			{
-			}
+			DateSpan(const wxDateSpan& dateSpan) noexcept;
 
 		public:
-			bool IsNull() const noexcept
+			constexpr bool IsNull() const noexcept
 			{
-				return m_Value.GetDays() == 0 && m_Value.GetWeeks() == 0 && m_Value.GetMonths() == 0 && m_Value.GetYears() == 0;
+				return m_Days == 0 && m_Weeks == 0 && m_Months == 0 && m_Years == 0;
 			}
-			bool IsNegative() const noexcept
+			constexpr bool IsNegative() const noexcept
 			{
-				return m_Value.GetDays() < 0 && m_Value.GetWeeks() < 0 && m_Value.GetMonths() < 0 && m_Value.GetYears() < 0;
+				return m_Days < 0 && m_Weeks < 0 && m_Months < 0 && m_Years < 0;
 			}
-			bool IsPositive() const noexcept
+			constexpr bool IsPositive() const noexcept
 			{
-				return m_Value.GetDays() > 0 && m_Value.GetWeeks() > 0 && m_Value.GetMonths() > 0 && m_Value.GetYears() > 0;
-			}
-
-			int GetDays() const noexcept
-			{
-				return m_Value.GetDays();
-			}
-			int GetWeeks() const noexcept
-			{
-				return m_Value.GetWeeks();
-			}
-			int GetMonths() const noexcept
-			{
-				return m_Value.GetMonths();
-			}
-			int GetYears() const noexcept
-			{
-				return m_Value.GetYears();
+				return m_Days > 0 && m_Weeks > 0 && m_Months > 0 && m_Years > 0;
 			}
 
-			int GetTotalDays() const noexcept
+			constexpr int GetDays() const noexcept
 			{
-				return m_Value.GetTotalDays();
+				return m_Days;
 			}
-			int GetTotalMonths() const noexcept
+			constexpr DateSpan& SetDays(int days) noexcept
 			{
-				return m_Value.GetTotalMonths();
-			}
-
-			DateSpan Abs() const noexcept
-			{
-				return wxDateSpan(std::abs(m_Value.GetYears()), std::abs(m_Value.GetMonths()), std::abs(m_Value.GetWeeks()), std::abs(m_Value.GetDays()));
-			}
-			DateSpan Negate() const noexcept
-			{
-				return m_Value.Negate();
+				m_Days = days;
+				return *this;
 			}
 
-			// Compare two time spans, works with the absolute values
-			bool IsLongerThan(const TimeSpan& other) const noexcept
+			constexpr int GetWeeks() const noexcept
+			{
+				return m_Weeks;
+			}
+			constexpr DateSpan& SetWeeks(int weeks) noexcept
+			{
+				m_Weeks = weeks;
+				return *this;
+			}
+
+			constexpr int GetMonths() const noexcept
+			{
+				return m_Months;
+			}
+			constexpr DateSpan& SetMonths(int months) noexcept
+			{
+				m_Months = months;
+				return *this;
+			}
+
+			constexpr int GetYears() const noexcept
+			{
+				return m_Years;
+			}
+			constexpr DateSpan& SetYears(int years) noexcept
+			{
+				m_Years = years;
+				return *this;
+			}
+
+			constexpr int GetTotalDays() const noexcept
+			{
+				return 7 * m_Weeks + m_Days;
+			}
+			constexpr int GetTotalMonths() const noexcept
+			{
+				return 12 * m_Years + m_Months;
+			}
+
+			constexpr DateSpan Abs() const noexcept
+			{
+				return DateSpan(Utility::Abs(m_Years), Utility::Abs(m_Months), Utility::Abs(m_Weeks), Utility::Abs(m_Days));
+			}
+			constexpr DateSpan Negate() const noexcept
+			{
+				return DateSpan(-m_Years, -m_Months, -m_Weeks, -m_Days);
+			}
+
+			// Compare two date spans, works with the absolute values
+			constexpr bool IsLongerThan(const DateSpan& other) const noexcept
 			{
 				return Abs() > other.Abs();
 			}
-			bool IsShorterThan(const TimeSpan& other) const noexcept
+			constexpr bool IsShorterThan(const DateSpan& other) const noexcept
 			{
 				return Abs() < other.Abs();
 			}
 
 			String Format(const String& format) const;
-			String Format(const char* format) const
-			{
-				return Format(String(format));
-			}
-			String Format(const wchar_t* format) const
-			{
-				return Format(String(format));
-			}
-			String Format(const Locale& locale, DateFormatFlag flags = DateFormatFlag::None) const;
+			String FormatDate(const Locale& locale, DateFormatFlag flags = DateFormatFlag::None) const;
 
 		public:
-			DateSpan& operator=(const DateSpan&) noexcept = default;
-			DateSpan& operator=(const TimeSpan& other) noexcept
-			{
-				m_Value = wxDateSpan::Days(other.GetDays());
-				return *this;
-			}
-			DateSpan& operator=(const wxDateSpan& other) noexcept
-			{
-				m_Value = other;
-				return *this;
-			}
-			operator wxDateSpan() const noexcept
-			{
-				return m_Value;
-			}
+			constexpr DateSpan& operator=(const DateSpan&) noexcept = default;
+			operator wxDateSpan() const noexcept;
 
-			std::strong_ordering operator<=>(const DateSpan& other) const noexcept
+			constexpr std::strong_ordering operator<=>(const DateSpan& other) const noexcept
 			{
-				if (auto cmp = m_Value.GetYears() <=> other.GetYears(); cmp != 0)
+				if (auto cmp = m_Years <=> m_Years; cmp != 0)
 				{
 					return cmp;
 				}
-				if (auto cmp = m_Value.GetMonths() <=> other.GetMonths(); cmp != 0)
+				if (auto cmp = m_Months <=> m_Months; cmp != 0)
 				{
 					return cmp;
 				}
-				if (auto cmp = m_Value.GetWeeks() <=> other.GetWeeks(); cmp != 0)
-				{
-					return cmp;
-				}
-				return m_Value.GetDays() <=> other.GetDays();
+				return GetTotalDays() <=> other.GetTotalDays();
 			}
-			bool operator==(const DateSpan& other) const noexcept
+			constexpr bool operator==(const DateSpan& other) const noexcept
 			{
-				return m_Value == other.m_Value;
+				return m_Years == other.m_Years && m_Months == other.m_Months && GetTotalDays() == other.GetTotalDays();
 			}
 
-			DateSpan& operator+=(const DateSpan& other) noexcept
+			constexpr DateSpan& operator+=(const DateSpan& other) noexcept
 			{
-				m_Value += other.m_Value;
+				m_Years += other.m_Years;
+				m_Months += other.m_Months;
+				m_Weeks += other.m_Weeks;
+				m_Days += other.m_Days;
+
 				return *this;
 			}
-			DateSpan& operator-=(const DateSpan& other) noexcept
+			constexpr DateSpan& operator-=(const DateSpan& other) noexcept
 			{
-				m_Value -= other.m_Value;
+				m_Years -= other.m_Years;
+				m_Months -= other.m_Months;
+				m_Weeks -= other.m_Weeks;
+				m_Days -= other.m_Days;
+
 				return *this;
 			}
-			DateSpan& operator*=(int multiplier) noexcept
+			constexpr DateSpan& operator*=(int factor) noexcept
 			{
-				m_Value *= multiplier;
+				m_Years *= factor;
+				m_Months *= factor;
+				m_Weeks *= factor;
+				m_Days *= factor;
+
 				return *this;
 			}
 
-			DateSpan operator-() const noexcept
+			constexpr DateSpan operator-() const noexcept
 			{
 				return Negate();
 			}
-			DateSpan operator+(const DateSpan& other) const noexcept
+			constexpr DateSpan operator+(const DateSpan& other) const noexcept
 			{
-				return m_Value + other.m_Value;
+				return DateSpan(m_Years + other.m_Years, m_Months + other.m_Months, m_Weeks + other.m_Weeks, m_Days + other.m_Days);
 			}
-			DateSpan operator-(const DateSpan& other) const noexcept
+			constexpr DateSpan operator-(const DateSpan& other) const noexcept
 			{
-				return m_Value - other.m_Value;
+				return DateSpan(m_Years - other.m_Years, m_Months - other.m_Months, m_Weeks - other.m_Weeks, m_Days - other.m_Days);
 			}
-			DateSpan operator*(int multiplier) const noexcept
+			constexpr DateSpan operator*(int factor) const noexcept
 			{
-				return m_Value * multiplier;
+				return DateSpan(m_Years * factor, m_Months * factor, m_Weeks * factor, m_Days * factor);
 			}
 	};
 }
