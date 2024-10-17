@@ -3,6 +3,7 @@
 #include "FSPath.h"
 #include "StorageVolume.h"
 #include "kxf/Core/DataSize.h"
+#include "kxf/Core/CallbackFunction.h"
 #include "kxf/Core/LocallyUniqueID.h"
 #include "kxf/Core/UniversallyUniqueID.h"
 #include "kxf/RTTI/RTTI.h"

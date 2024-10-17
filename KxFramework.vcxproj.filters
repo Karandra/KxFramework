@@ -2478,6 +2478,9 @@
     <ClInclude Include="kxf\System\NtStatus.h">
       <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Core\CallbackFunction.h">
+      <Filter>kxf\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -103,31 +103,27 @@ namespace kxf
 
 		return m_RegEx->GetMatch(text, index);
 	}
-	size_t RegEx::EnumMatches(const String& text, std::move_only_function<CallbackCommand(String)> func) const
+	CallbackResult RegEx::EnumMatches(const String& text, CallbackFunction<String> func) const
 	{
 		if (IsNull())
 		{
-			return 0;
+			return {};
 		}
 
 		size_t matchCount = m_RegEx->GetMatchCount();
-		size_t count = 0;
 		for (size_t i = 0; i < matchCount; i++)
 		{
 			size_t start = 0;
 			size_t length = 0;
 			if (m_RegEx->GetMatch(&start, &length, i))
 			{
-				auto command = std::invoke(func, text.SubMid(start, length));
-				count++;
-
-				if (command != CallbackCommand::Continue)
+				if (func.Invoke(text.SubMid(start, length)).ShouldTerminate())
 				{
 					break;
 				}
 			}
 		}
-		return count;
+		return func.GetResult();
 	}
 	bool RegEx::GetMatch(size_t& start, size_t& length, size_t index) const noexcept
 	{

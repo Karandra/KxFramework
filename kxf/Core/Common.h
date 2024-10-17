@@ -134,12 +134,6 @@ namespace kxf
 		Ascending,
 		Descending
 	};
-	enum class CallbackCommand
-	{
-		Continue,
-		Terminate,
-		Discard
-	};
 }
 
 namespace kxf::Private

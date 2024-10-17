@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
+#include "CallbackFunction.h"
 #include "AlignedStorage.h"
 class wxRegEx;
 
@@ -59,7 +60,7 @@ namespace kxf
 			bool Matches(const String& text, FlagSet<RegExCompileFlag> flags = {}) const;
 			size_t GetMatchCount() const noexcept;
 			String GetMatch(const String& text, size_t index) const;
-			size_t EnumMatches(const String& text, std::move_only_function<CallbackCommand(String)> func) const;
+			CallbackResult EnumMatches(const String& text, CallbackFunction<String> func) const;
 			bool GetMatch(size_t& start, size_t& length, size_t index) const noexcept;
 
 			size_t Replace(String& text, const String& replacement, size_t maxMatches = 0) const;

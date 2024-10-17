@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "String.h"
 #include "kxf/Core/Enumerator.h"
+#include "kxf/Core/CallbackFunction.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "Private/XDocument.h"
 

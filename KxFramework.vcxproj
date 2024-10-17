@@ -175,6 +175,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
+    <ClInclude Include="kxf\Core\CallbackFunction.h" />
     <ClInclude Include="kxf\Core\EncodingConverter\NativeEncodingConverter.h" />
     <ClInclude Include="kxf\Core\EncodingConverter\WhateverWorksEncodingConverter.h" />
     <ClInclude Include="kxf\Core\Private\ErrorCode.h" />
