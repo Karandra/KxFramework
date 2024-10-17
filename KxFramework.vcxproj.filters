@@ -320,6 +320,15 @@
     <Filter Include="kxf\Core\&lt;VariableCollection&gt;">
       <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\System\&lt;COM&gt;">
+      <UniqueIdentifier>{280188c9-c58a-413b-a216-551df34f6926}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\&lt;CFunction&gt;">
+      <UniqueIdentifier>{814f3257-5f75-49fb-a5e9-c3ab916cb94d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\&lt;Shell&gt;">
+      <UniqueIdentifier>{0916f0ce-ffd9-4a13-a034-7ae7fab6b19d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -466,15 +475,6 @@
     <ClInclude Include="kxf\Async\Coroutine\YieldInstruction.h">
       <Filter>kxf\Async\Coroutine</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\ShellFileType.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\ShellFileTypeInfo.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\ShellFileTypeManager.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\FileSystem\FileOperations.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
@@ -501,12 +501,6 @@
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\RecycleBin.h">
       <Filter>kxf\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\ShellOperations.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\COM.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\UndefWindows.h">
       <Filter>kxf\System</Filter>
@@ -588,12 +582,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Crypto\ISecretStore.h">
       <Filter>kxf\Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\CFunction.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\CFunctionCompiler.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\Private\CFunctionCompiler.h">
       <Filter>kxf\System\Private</Filter>
@@ -700,16 +688,10 @@
     <ClInclude Include="kxf\Utility.hpp">
       <Filter>kxf/Modules</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\ShellLink.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\Private\Shell.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\TaskScheduler.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\KnownDirectoryID.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\Private\KnownDirectoryDefinition.h">
@@ -1080,9 +1062,6 @@
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\DynamicLibraryEvent.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\VariantProperty.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h">
@@ -1745,9 +1724,6 @@
     <ClInclude Include="kxf\Utility\RecursiveCollectionEnumerator.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\SafeArray.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxfResources.h" />
     <ClInclude Include="kxf\Core\ILibraryInfo.h">
       <Filter>kxf\Core</Filter>
@@ -2385,14 +2361,8 @@
     <ClInclude Include="kxf\Log\ScopedLogger.h">
       <Filter>kxf\Log</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\SystemProcess.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\SystemThread\SystemThreadInfo.h">
       <Filter>kxf\System\SystemThread</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\SystemThread.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\SystemThread\ISystemThread.h">
       <Filter>kxf\System\SystemThread</Filter>
@@ -2408,9 +2378,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Core\Private\StringFormatters.h">
       <Filter>kxf\Core\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\SystemWindow.h">
-      <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\SystemWindow\ISystemWindow.h">
       <Filter>kxf\System\SystemWindow</Filter>
@@ -2460,9 +2427,6 @@
     <ClInclude Include="kxf\RPC\SystemWindowRPC.h">
       <Filter>kxf\RPC</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\CFunctionHook.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.h">
       <Filter>kxf\RPC\SystemWindowRPC</Filter>
     </ClInclude>
@@ -2480,6 +2444,51 @@
     </ClInclude>
     <ClInclude Include="kxf\Core\CallbackFunction.h">
       <Filter>kxf\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\COM.h">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SafeArray.h">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\VariantProperty.h">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\CFunctionCompiler.h">
+      <Filter>kxf\System\&lt;CFunction&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\CFunctionHook.h">
+      <Filter>kxf\System\&lt;CFunction&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\ShellFileType.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\ShellFileTypeInfo.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\ShellFileTypeManager.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\ShellLink.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\ShellOperations.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\KnownDirectoryID.h">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemThread.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemProcess.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\CFunction.h">
+      <Filter>kxf\System\&lt;CFunction&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\SystemWindow.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2552,15 +2561,6 @@
     <ClCompile Include="kxf\FileSystem\Common.cpp">
       <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\System\ShellFileType.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ShellFileTypeManager.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\FileSystem\FileOperations.cpp">
       <Filter>kxf\FileSystem</Filter>
     </ClCompile>
@@ -2581,12 +2581,6 @@
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\RecycleBin.cpp">
       <Filter>kxf\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ShellOperations.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\COM.cpp">
-      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Compression\ZLibStream.cpp">
       <Filter>kxf\Compression</Filter>
@@ -2627,9 +2621,6 @@
     <ClCompile Include="kxf\Crypto\SecretValue.cpp">
       <Filter>kxf\Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\System\CFunctionCompiler.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\System\Registry.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
@@ -2665,9 +2656,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp">
       <Filter>kxf\Localization\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ShellLink.cpp">
-      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\Private\Shell.cpp">
       <Filter>kxf\System\Private</Filter>
@@ -2950,9 +2938,6 @@
       <Filter>kxf\UI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\VariantProperty.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp">
@@ -3289,9 +3274,6 @@
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\WMI.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SafeArray.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Core\ResourceID.cpp">
@@ -3687,14 +3669,8 @@
     <ClCompile Include="kxf\Log\ScopedLogger.cpp">
       <Filter>kxf\Log</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\System\SystemProcess.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\System\SystemThread\SystemThreadInfo.cpp">
       <Filter>kxf\System\SystemThread</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SystemThread.cpp">
-      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Threading\ThreadLocalSlot.cpp">
       <Filter>kxf\Threading</Filter>
@@ -3707,12 +3683,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Log\ScopedLoggerTarget.cpp">
       <Filter>kxf\Log</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SystemWindow.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
-      <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Log\ScopedLoggerContext.cpp">
       <Filter>kxf\Log</Filter>
@@ -3750,9 +3720,6 @@
     <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchanger.cpp">
       <Filter>kxf\RPC\SystemWindowRPC\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\System\CFunctionHook.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\RPC\SystemWindowRPC\Private\SystemWindowRPCExchangerTarget.cpp">
       <Filter>kxf\RPC\SystemWindowRPC</Filter>
     </ClCompile>
@@ -3764,6 +3731,48 @@
     </ClCompile>
     <ClCompile Include="kxf\System\NtStatus.cpp">
       <Filter>kxf\System\&lt;ErrorCode&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\COM.cpp">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SafeArray.cpp">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\VariantProperty.cpp">
+      <Filter>kxf\System\&lt;COM&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\CFunctionCompiler.cpp">
+      <Filter>kxf\System\&lt;CFunction&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\CFunctionHook.cpp">
+      <Filter>kxf\System\&lt;CFunction&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\ShellFileType.cpp">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\ShellFileTypeManager.cpp">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\ShellLink.cpp">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\ShellOperations.cpp">
+      <Filter>kxf\System\&lt;Shell&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemWindow.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemThread.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemProcess.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
+      <Filter>kxf\System\SystemWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
