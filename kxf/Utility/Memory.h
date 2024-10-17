@@ -12,9 +12,30 @@ namespace kxf::Utility
 	KX_API void SecureZeroMemory(void* ptr, size_t size) noexcept;
 
 	template<class T, class... Args>
+	requires(std::is_constructible_v<T, Args...>)
 	T* ConstructAt(void* buffer, Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
 	{
 		return std::construct_at<T>(reinterpret_cast<T*>(buffer), std::forward<Args>(arg)...);
+	}
+
+	template<class T, class... Args>
+	requires(std::is_constructible_v<T, Args...>)
+	T* AlignAndConstructAt(void* buffer, size_t size, size_t alignment, Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
+	{
+		void* ptr = buffer;
+		size_t space = size;
+		if (std::align(alignment, size, ptr, space))
+		{
+			return ConstructAt<T>(ptr, std::forward<Args>(arg)...);
+		}
+		return nullptr;
+	}
+
+	template<class T, class... Args>
+	requires(std::is_constructible_v<T, Args...>)
+	T* AlignAndConstructAt(void* buffer, size_t size, Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
+	{
+		return AlignAndConstructAt<T>(buffer, size, alignof(T), std::forward<Args>(arg)...);
 	}
 
 	template<class T>
@@ -23,7 +44,8 @@ namespace kxf::Utility
 		std::destroy_at(static_cast<T*>(buffer));
 	}
 
-	template<class TFunc> requires(std::is_member_function_pointer_v<TFunc>)
+	template<class TFunc>
+	requires(std::is_member_function_pointer_v<TFunc>)
 	NativeUUID StoreMemberFunction(TFunc func) noexcept
 	{
 		static_assert(sizeof(func) <= sizeof(NativeUUID), "Member function size must be less or equal to the size of 'NativeUUID' type");
