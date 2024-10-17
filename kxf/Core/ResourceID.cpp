@@ -3,20 +3,7 @@
 
 namespace kxf
 {
-	bool ResourceID::IsNull() const noexcept
-	{
-		return m_Value.IsNull();
-	}
-
-	bool ResourceID::HasScheme() const
-	{
-		return m_Value.HasScheme();
-	}
-	kxf::String ResourceID::GetScheme() const
-	{
-		return m_Value.GetScheme();
-	}
-	kxf::String ResourceID::GetPath() const
+	String ResourceID::GetPath() const
 	{
 		String result = m_Value.GetServer();
 		String path = m_Value.GetPath();
@@ -28,10 +15,5 @@ namespace kxf
 		result += path;
 
 		return result;
-	}
-
-	kxf::String ResourceID::ToString() const
-	{
-		return m_Value.BuildURI();
 	}
 }

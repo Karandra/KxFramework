@@ -14,7 +14,8 @@ namespace kxf
 		public:
 			ResourceID() noexcept = default;
 
-			template<class T, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
+			template<class T>
+			requires(std::is_integral_v<T> || std::is_enum_v<T>)
 			ResourceID(T id) noexcept
 			{
 				m_Value.Create(kxf::ToString(id));
@@ -41,21 +42,31 @@ namespace kxf
 			ResourceID(ResourceID&&) noexcept = default;
 
 		public:
-			bool IsNull() const noexcept;
+			bool IsNull() const noexcept
+			{
+				return m_Value.IsNull();
+			}
 
-			bool HasScheme() const;
-			String GetScheme() const;
+			bool HasScheme() const noexcept
+			{
+				return m_Value.HasScheme();
+			}
+			String GetScheme() const
+			{
+				return m_Value.GetScheme();
+			}
 			String GetPath() const;
 
 			// Integer
-			template<class T = int, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
+			template<class T = int>
+			requires(std::is_integral_v<T> || std::is_enum_v<T>)
 			std::optional<T> ToInt() const noexcept
 			{
 				return GetPath().ToInteger<T>();
 			}
 
 			// URI
-			URI ToURI() const& noexcept
+			const URI& ToURI() const& noexcept
 			{
 				return m_Value;
 			}
@@ -65,7 +76,10 @@ namespace kxf
 			}
 
 			// String
-			String ToString() const;
+			String ToString() const
+			{
+				return m_Value.BuildURI();
+			}
 
 		public:
 			explicit operator bool() const
