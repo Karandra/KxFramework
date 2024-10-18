@@ -41,13 +41,13 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "CompanyName", "Kerber"
-            VALUE "FileDescription", "KxFramework"
+            VALUE "CompanyName", "Karandra"
+            VALUE "FileDescription", "kxf-framework"
             VALUE "FileVersion", "2.0.0.0"
             VALUE "InternalName", "kxf.dll"
-            VALUE "LegalCopyright", "Copyright© 2016-2021 Kerber"
+            VALUE "LegalCopyright", "Copyright© 2016-2024 Karandra"
             VALUE "OriginalFilename", "kxf.dll"
-            VALUE "ProductName", "KxFramework"
+            VALUE "ProductName", "kxf-framework"
             VALUE "ProductVersion", "2.0.0.0"
         END
     END
@@ -98,7 +98,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English resources
+// English (Neutral) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
@@ -113,7 +113,7 @@ GNU_GPLv3               SOFTWARELICENSEDB       "Resources\\SoftwareLicenseDB\\G
 
 GNU_LGPLv3              SOFTWARELICENSEDB       "Resources\\SoftwareLicenseDB\\GNU_LGPLv3.txt"
 
-#endif    // English resources
+#endif    // English (Neutral) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

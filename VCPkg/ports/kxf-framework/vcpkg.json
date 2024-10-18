@@ -1,10 +1,10 @@
 {
-	"name": "kxframework",
+	"name": "kxf-framework",
 	"version-string": "2.0.0",
 	"port-version": 1,
 	"supports": "windows",
-	"description": "[master] Support library for Kortex Mod Manager and a general use framework",
-	"homepage": "https://github.com/Karandra/KxFramework",
+	"description": "[master] Initially a support library for Kortex Mod Manager and a general use application framework",
+	"homepage": "https://github.com/Karandra/kxf-framework",
 	"license": "LGPL-3.0",
 	"dependencies": [
 		{
