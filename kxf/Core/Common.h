@@ -7,13 +7,6 @@ enum wxOrientation;
 
 namespace kxf
 {
-	enum class VersionType
-	{
-		None = -1,
-
-		Default,
-		DateTime,
-	};
 
 	enum class UnitNameFlag: uint32_t
 	{

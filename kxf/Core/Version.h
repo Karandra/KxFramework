@@ -7,6 +7,17 @@ class wxVersionInfo;
 
 namespace kxf
 {
+	enum class VersionType
+	{
+		None = -1,
+
+		Default,
+		DateTime,
+	};
+}
+
+namespace kxf
+{
 	class KX_API Version final
 	{
 		friend std::strong_ordering Private::Version::Compare(const kxf::Version& left, const kxf::Version& right);
