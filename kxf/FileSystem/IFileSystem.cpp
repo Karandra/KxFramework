@@ -7,7 +7,11 @@ namespace
 {
 	using namespace kxf;
 
-	kxf::FileSystem::NullFileSystem g_NullFileSystem;
+	kxf::FileSystem::NullFileSystem& GetNullFS() noexcept
+	{
+		static kxf::FileSystem::NullFileSystem instance;
+		return instance;
+	}
 
 	template<class TStream, class TFileSystem, class TID>
 	std::unique_ptr<TStream> QueryStream(TFileSystem& fs, const TID& id, FlagSet<IOStreamAccess> access, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<FSActionFlag> flags)
@@ -48,15 +52,14 @@ namespace kxf
 	}
 }
 
-
 namespace kxf::FileSystem
 {
 	IFileSystem& GetNullFileSystem() noexcept
 	{
-		return g_NullFileSystem;
+		return GetNullFS();
 	}
 	IFileSystemWithID& GetNullFileSystemWithID() noexcept
 	{
-		return g_NullFileSystem;
+		return GetNullFS();
 	}
 }
