@@ -716,6 +716,7 @@
     <ClInclude Include="kxf\wxWidgets\IWithEvent.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\StreamWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\StringFormatters.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
     <ClInclude Include="KxfPCH.h" />
     <ClInclude Include="kxf\Async.hpp" />

@@ -2490,6 +2490,9 @@
     <ClInclude Include="kxf\System\SystemWindow.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\StringFormatters.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

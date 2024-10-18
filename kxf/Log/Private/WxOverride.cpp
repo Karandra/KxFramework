@@ -2,6 +2,7 @@
 #include "WxOverride.h"
 #include "../Categories.h"
 #include "kxf/Application/ICoreApplication.h"
+#include "kxf/wxWidgets/StringFormatters.h"
 #include "kxf/Log/ScopedLogger.h"
 #include "kxf/Utility/Common.h"
 
