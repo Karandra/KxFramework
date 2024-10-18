@@ -4,6 +4,7 @@
 #include "GDIFont.h"
 #include "GDIBitmap.h"
 #include "kxf/System/SystemInformation.h"
+#include "kxf/Core/Private/Mapping.h"
 #include "../GraphicsRenderer.h"
 #include "UxTheme.h"
 #include "Private/UxThemeDefines.h"
@@ -385,7 +386,7 @@ namespace kxf
 	void GDIRendererNative::DrawItemText(wxWindow* window, GDIContext& dc, const String& text, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags, FlagSet<Alignment> alignment, EllipsizeMode ellipsizeMode)
 	{
 		CalcBoundingBox calcBoudingBox(dc, rect);
-		GetRenderer().DrawItemText(window, dc.ToWxDC(), text, rect, alignment.ToInt(), *MapWidgetFlags(widgetFlags), static_cast<wxEllipsizeMode>(ellipsizeMode));
+		GetRenderer().DrawItemText(window, dc.ToWxDC(), text, rect, *Private::MapAlignment(alignment), *MapWidgetFlags(widgetFlags), static_cast<wxEllipsizeMode>(ellipsizeMode));
 	}
 
 	// Title bar button

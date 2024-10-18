@@ -2,62 +2,61 @@
 #include "Common.h"
 #include "kxf/Core/String.h"
 #include "kxf/Core/UniversallyUniqueID.h"
-#include <wx/image.h>
 
 namespace kxf::ImageOption
 {
 	// Common
-	constexpr auto FileName = "FileName";
-	constexpr auto Quality = "quality";
+	extern const XChar* FileName;
+	extern const XChar* Quality;
 
-	constexpr auto DPI = "DPI";
-	constexpr auto Resolution = "Resolution";
-	constexpr auto ResolutionX = "ResolutionX";
-	constexpr auto ResolutionY = "ResolutionY";
-	constexpr auto ResolutionUnit = "ResolutionUnit";
+	extern const XChar* DPI;
+	extern const XChar* Resolution;
+	extern const XChar* ResolutionX;
+	extern const XChar* ResolutionY;
+	extern const XChar* ResolutionUnit;
 
-	constexpr auto DesiredWidth = "MaxWidth";
-	constexpr auto DesiredHeight = "MaxHeight";
+	extern const XChar* DesiredWidth;
+	extern const XChar* DesiredHeight;
 
-	constexpr auto OriginalWidth = "OriginalWidth";
-	constexpr auto OriginalHeight = "OriginalHeight";
+	extern const XChar* OriginalWidth;
+	extern const XChar* OriginalHeight;
 
 	namespace PNG
 	{
-		constexpr auto Format = wxIMAGE_OPTION_PNG_FORMAT;
-		constexpr auto BitDepth = wxIMAGE_OPTION_PNG_BITDEPTH;
-		constexpr auto Filter = wxIMAGE_OPTION_PNG_FILTER;
+		extern const XChar* Format;
+		extern const XChar* BitDepth;
+		extern const XChar* Filter;
 
-		constexpr auto CompressionLevel = wxIMAGE_OPTION_PNG_COMPRESSION_LEVEL;
-		constexpr auto CompressionMemoryLevel = wxIMAGE_OPTION_PNG_COMPRESSION_MEM_LEVEL;
-		constexpr auto CompressionStrategy = wxIMAGE_OPTION_PNG_COMPRESSION_STRATEGY;
-		constexpr auto CompressionBufferSize = wxIMAGE_OPTION_PNG_COMPRESSION_BUFFER_SIZE;
+		extern const XChar* CompressionLevel;
+		extern const XChar* CompressionMemoryLevel;
+		extern const XChar* CompressionStrategy;
+		extern const XChar* CompressionBufferSize;
 	}
 	namespace GIF
 	{
-		constexpr auto Comment = wxIMAGE_OPTION_GIF_COMMENT;
-		constexpr auto Transparency = wxIMAGE_OPTION_GIF_TRANSPARENCY;
-		constexpr auto TransparencyHighlight = wxIMAGE_OPTION_GIF_TRANSPARENCY_HIGHLIGHT;
-		constexpr auto TransparencyUnchanged = wxIMAGE_OPTION_GIF_TRANSPARENCY_UNCHANGED;
+		extern const XChar* Comment;
+		extern const XChar* Transparency;
+		extern const XChar* TransparencyHighlight;
+		extern const XChar* TransparencyUnchanged;
 	}
 	namespace SVG
 	{
-		constexpr auto CurrentTime = "CurrentTime";
-		constexpr auto HasAnimation = "HasAnimation";
-		constexpr auto AnimationDuration = "AnimationDuration";
+		extern const XChar* CurrentTime;
+		extern const XChar* HasAnimation;
+		extern const XChar* AnimationDuration;
 	}
 	namespace TIFF
 	{
-		constexpr auto BitsPerSample = wxT("BitsPerSample");
-		constexpr auto SamplesPerPixel = wxT("SamplesPerPixel");
-		constexpr auto Compression = wxT("Compression");
-		constexpr auto Photometric = wxT("Photometric");
-		constexpr auto ImageDescriptor = wxT("ImageDescriptor");
+		extern const XChar* BitsPerSample;
+		extern const XChar* SamplesPerPixel;
+		extern const XChar* Compression;
+		extern const XChar* Photometric;
+		extern const XChar* ImageDescriptor;
 	}
 	namespace Cursor
 	{
-		constexpr auto HotSpotX = wxIMAGE_OPTION_CUR_HOTSPOT_X;
-		constexpr auto HotSpotY = wxIMAGE_OPTION_CUR_HOTSPOT_Y;
+		extern const XChar* HotSpotX;
+		extern const XChar* HotSpotY;
 	}
 }
 

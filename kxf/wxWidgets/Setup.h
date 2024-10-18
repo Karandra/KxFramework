@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #include <wx/dc.h>
 #include <wx/log.h>
+#include <wx/defs.h>
 #include <wx/gdicmn.h>
 #include <wx/dcgraph.h>
 #include <wx/dcclient.h>
@@ -27,7 +28,7 @@
 #include <wx/cmdline.h>
 
 /////////////////////////////////////////////////////////////////////////////
-// Options for wxWidgets that are required for KxFramework-based applications
+// Options for wxWidgets that are required for kxf-based applications
 //
 // Refer to the original 'setup.h' file in the wxWidgets distribution for 
 // options description.

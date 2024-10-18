@@ -5,7 +5,7 @@
 namespace kxf::wxWidgets
 {
 	template<class T>
-	class ClientObject: public wxObject
+	class ClientObject final: public wxObject
 	{
 		private:
 			T m_Object;

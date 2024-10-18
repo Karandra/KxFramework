@@ -6,6 +6,7 @@
 #include "GDIGraphicsFont.h"
 #include "GDIAction.h"
 #include "GDIMemoryContext.h"
+#include "kxf/Core/Private/Mapping.h"
 #include <wx/msw/dc.h>
 
 namespace
@@ -475,7 +476,7 @@ namespace kxf
 			else
 			{
 				ChangeTextParameters textParametrs(const_cast<GDIContext&>(m_DC), font, NullGraphicsBrush);
-				return wxControl::Ellipsize(text, m_DC.ToWxDC(), static_cast<wxEllipsizeMode>(mode), static_cast<int>(maxWidth), flags.ToInt());
+				return wxControl::Ellipsize(text, m_DC.ToWxDC(), static_cast<wxEllipsizeMode>(mode), static_cast<int>(maxWidth), *Private::MapEllipsizeFlag(flags));
 			}
 		}
 		return {};

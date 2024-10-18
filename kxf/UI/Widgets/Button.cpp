@@ -4,6 +4,7 @@
 #include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
+#include "kxf/Core/Private/Mapping.h"
 
 namespace kxf::Widgets
 {
@@ -54,7 +55,7 @@ namespace kxf::Widgets
 	}
 	void Button::SetIcon(const BitmapImage& icon, FlagSet<Direction> direction)
 	{
-		Get()->SetBitmap(icon.ToGDIBitmap().ToWxBitmap());
+		Get()->SetBitmap(icon.ToGDIBitmap().ToWxBitmap(), *Private::MapDirection(direction));
 	}
 	void Button::SetStdIcon(FlagSet<StdIcon> stdIcon, FlagSet<Direction> direction)
 	{

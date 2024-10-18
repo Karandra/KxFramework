@@ -7,9 +7,6 @@
     <Filter Include="kxf\Threading">
       <UniqueIdentifier>{ccbec7f3-86f7-4bda-acbe-9a8176c4626d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\System">
-      <UniqueIdentifier>{7b228bc2-9ef1-4a57-ad08-f8ed2e2297f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\EventSystem">
       <UniqueIdentifier>{92dd9a25-4dd3-43b6-93d2-2e7e3aca0fee}</UniqueIdentifier>
     </Filter>
@@ -61,9 +58,6 @@
     <Filter Include="kxf\UI">
       <UniqueIdentifier>{d35e1c06-a587-42a8-897d-b06fd84ea9cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\System\Private">
-      <UniqueIdentifier>{01514fbc-31c6-49d0-9360-d06809164ea6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\FileSystem\Private">
       <UniqueIdentifier>{8d4abda0-ae07-4c67-8215-582952c35bd2}</UniqueIdentifier>
     </Filter>
@@ -84,9 +78,6 @@
     </Filter>
     <Filter Include="kxf\Drawing\Private">
       <UniqueIdentifier>{d0521874-4a25-4cdf-b542-c5159ced03de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="kxf\System\SystemProcess">
-      <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\UI\Windows">
       <UniqueIdentifier>{9450c2a9-a27f-432e-b708-f3e989d2763e}</UniqueIdentifier>
@@ -293,17 +284,11 @@
     <Filter Include="kxf\UI\Widgets\DataView\Editors">
       <UniqueIdentifier>{e4e18639-5e2f-4e27-b95d-dfd0be9a48a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\System\SystemThread">
-      <UniqueIdentifier>{2dd77d05-df15-42f6-a037-e93590f9a9ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Localization">
       <UniqueIdentifier>{78fcd35b-5cf3-4408-b0d1-c3feaddb2f37}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\Localization\Private">
       <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="kxf\System\SystemWindow">
-      <UniqueIdentifier>{9ad2b5d1-4bd5-4da5-a707-c0d0f3ee2bbc}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\Core\EncodingConverter">
       <UniqueIdentifier>{591d0480-be16-47b2-823a-1e8a96381fc5}</UniqueIdentifier>
@@ -314,11 +299,26 @@
     <Filter Include="kxf\RPC\SystemWindowRPC\Private">
       <UniqueIdentifier>{53b238d9-cabf-4299-8bec-89b76eccf45d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\System\&lt;ErrorCode&gt;">
-      <UniqueIdentifier>{867c4c86-fa9e-42c4-8264-55ac6310fd50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Core\&lt;VariableCollection&gt;">
       <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System">
+      <UniqueIdentifier>{7b228bc2-9ef1-4a57-ad08-f8ed2e2297f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\Private">
+      <UniqueIdentifier>{01514fbc-31c6-49d0-9360-d06809164ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\SystemProcess">
+      <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\SystemThread">
+      <UniqueIdentifier>{2dd77d05-df15-42f6-a037-e93590f9a9ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\SystemWindow">
+      <UniqueIdentifier>{9ad2b5d1-4bd5-4da5-a707-c0d0f3ee2bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\System\&lt;ErrorCode&gt;">
+      <UniqueIdentifier>{867c4c86-fa9e-42c4-8264-55ac6310fd50}</UniqueIdentifier>
     </Filter>
     <Filter Include="kxf\System\&lt;COM&gt;">
       <UniqueIdentifier>{280188c9-c58a-413b-a216-551df34f6926}</UniqueIdentifier>
@@ -2490,6 +2490,9 @@
     <ClInclude Include="kxf\wxWidgets\StringFormatters.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Core\Private\Mapping.h">
+      <Filter>kxf\Core\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -3381,9 +3384,6 @@
     <ClCompile Include="kxf\Drawing\Geometry.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Core\Common.cpp">
-      <Filter>kxf\Core</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\IWidget.cpp">
       <Filter>kxf\UI</Filter>
     </ClCompile>
@@ -3773,6 +3773,12 @@
     </ClCompile>
     <ClCompile Include="kxf\System\SystemWindow\SystemWindow.cpp">
       <Filter>kxf\System\SystemWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Core\Private\Mapping.cpp">
+      <Filter>kxf\Core\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\ImageDefines.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

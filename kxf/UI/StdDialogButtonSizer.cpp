@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "StdDialogButtonSizer.h"
 #include "kxf/Localization/Common.h"
+#include "kxf/Core/Private/Mapping.h"
 #include "kxf/UI/Controls/Button.h"
 #include "kxf/UI/Dialogs/Dialog.h"
 #include "kxf/Utility/Common.h"
@@ -111,6 +112,7 @@ namespace kxf::UI
 		ConfigureButton(button);
 
 		int border = GetSpacing(button);
+		auto flags = Utility::CombineEnumFlags<int>(*kxf::Private::MapAlignment(Alignment::Center), *kxf::Private::MapDirection(Direction::Left|Direction::Right));
 		if (prepend)
 		{
 			if (!m_HasFirstPrepend)
@@ -118,11 +120,11 @@ namespace kxf::UI
 				m_HasFirstPrepend = true;
 				InsertSpacer(0, button->FromDIP(Size(6, wxDefaultCoord).GetWidth()));
 			}
-			Insert(1, button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), border);
+			Insert(1, button, 0, flags, border);
 		}
 		else
 		{
-			Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), border);
+			Add(button, 0, flags, border);
 		}
 	}
 	void StdDialogButtonSizer::Realize()
@@ -135,7 +137,8 @@ namespace kxf::UI
 		{
 			if (button)
 			{
-				Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Left, Direction::Right), button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
+				auto flags = Utility::CombineEnumFlags<int>(*kxf::Private::MapAlignment(Alignment::Center), *kxf::Private::MapDirection(Direction::Left|Direction::Right));
+				Add(button, 0, flags, button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
 			}
 		};
 		AddStdButton(m_ButtonAffirmative);
@@ -158,9 +161,10 @@ namespace kxf::UI
 		SetLabel(m_ButtonCancel);
 		SetLabel(m_ButtonHelp);
 
+		auto flags = Utility::CombineEnumFlags<int>(*kxf::Private::MapAlignment(Alignment::Center), *kxf::Private::MapDirection(Direction::Left));
 		for (wxAnyButton* button: m_NonStandardButtons)
 		{
-			Add(button, 0, Utility::CombineEnumFlags<int>(Alignment::Center, Direction::Right), GetSpacing(button));
+			Add(button, 0, flags, GetSpacing(button));
 		}
 	}
 }

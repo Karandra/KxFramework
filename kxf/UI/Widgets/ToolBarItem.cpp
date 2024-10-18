@@ -3,6 +3,7 @@
 #include "ToolBarItem.h"
 #include "WXUI/ToolBar.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
+#include "kxf/Core/Private/Mapping.h"
 #include <wx/aui/auibar.h>
 
 namespace kxf::Widgets
@@ -301,7 +302,7 @@ namespace kxf::Widgets
 	{
 		if (m_Item)
 		{
-			return FlagSet<Alignment>().FromInt(m_Item->GetAlignment());
+			return Private::MapAlignment(static_cast<wxAlignment>(m_Item->GetAlignment()));
 		}
 		return {};
 	}
@@ -309,7 +310,7 @@ namespace kxf::Widgets
 	{
 		if (m_Item)
 		{
-			m_Item->SetAlignment(alignment.ToInt<int>());
+			m_Item->SetAlignment(*Private::MapAlignment(alignment));
 			ScheduleRefreshItem();
 		}
 	}

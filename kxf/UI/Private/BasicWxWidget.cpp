@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "BasicWxWidget.h"
+#include "kxf/Core/Private/Mapping.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/Common.h"

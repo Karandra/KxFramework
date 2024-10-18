@@ -1,19 +1,15 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/Core/FlagSet.h"
-#include <wx/defs.h>
-#include <wx/gdicmn.h>
-enum wxOrientation;
 
 namespace kxf
 {
-
 	enum class UnitNameFlag: uint32_t
 	{
 		None = 0,
 
-		Abbreviated = 1 << 0,
-		GenetiveCase = 1 << 1,
+		Abbreviated = FlagSetValue<UnitNameFlag>(0),
+		GenetiveCase = FlagSetValue<UnitNameFlag>(1)
 	};
 	KxFlagSet_Declare(UnitNameFlag);
 
@@ -23,6 +19,7 @@ namespace kxf
 		CounterClockwise = -1
 	};
 
+	// Keyboard NumPad layout
 	enum class CornerAlignment
 	{
 		None = 0,
@@ -42,18 +39,19 @@ namespace kxf
 
 	enum class EllipsizeMode
 	{
-		None = wxELLIPSIZE_NONE,
-		Start = wxELLIPSIZE_START,
-		Middle = wxELLIPSIZE_MIDDLE,
-		End = wxELLIPSIZE_END,
+		None = 0,
+
+		Start,
+		Middle,
+		End
 	};
 
 	enum class EllipsizeFlag: uint32_t
 	{
 		None = 0,
 
-		ExpandTabs = wxELLIPSIZE_FLAGS_EXPAND_TABS,
-		ProcessMnemonics = wxELLIPSIZE_FLAGS_PROCESS_MNEMONICS
+		ExpandTabs = FlagSetValue<EllipsizeFlag>(0),
+		ProcessMnemonics = FlagSetValue<EllipsizeFlag>(1)
 	};
 	KxFlagSet_Declare(EllipsizeFlag);
 
@@ -61,24 +59,24 @@ namespace kxf
 	{
 		None = 0,
 
-		Horizontal = wxHORIZONTAL,
-		Vertical = wxVERTICAL,
-		Both = wxBOTH,
+		Horizontal = FlagSetValue<Orientation>(0),
+		Vertical = FlagSetValue<Orientation>(1),
+		Both = Horizontal|Vertical
 	};
 	KxFlagSet_Declare(Orientation);
 
 	enum class Alignment: uint32_t
 	{
 		None = 0,
-		Invalid = static_cast<uint32_t>(wxAlignment::wxALIGN_INVALID),
+		Invalid = std::numeric_limits<std::underlying_type_t<Alignment>>::max(),
 
-		Left = wxALIGN_LEFT,
-		Right = wxALIGN_RIGHT,
-		Top = wxALIGN_TOP,
-		Bottom = wxALIGN_BOTTOM,
+		Left = None,
+		Right = FlagSetValue<Alignment>(1),
+		Top = None,
+		Bottom = FlagSetValue<Alignment>(3),
 
-		CenterVertical = wxALIGN_CENTER_VERTICAL,
-		CenterHorizontal = wxALIGN_CENTER_HORIZONTAL,
+		CenterVertical = FlagSetValue<Alignment>(7),
+		CenterHorizontal = FlagSetValue<Alignment>(8),
 		Center = CenterVertical|CenterHorizontal,
 	};
 	KxFlagSet_Declare(Alignment);
@@ -87,10 +85,12 @@ namespace kxf
 	{
 		None = 0,
 
-		Left = wxLEFT,
-		Right = wxRIGHT,
-		Up = wxUP,
-		Down = wxDOWN,
+		Left = FlagSetValue<Direction>(0),
+		Right = FlagSetValue<Direction>(1),
+		Up = FlagSetValue<Direction>(2),
+		Down = FlagSetValue<Direction>(3),
+
+		All = Left|Right|Up|Down
 	};
 	KxFlagSet_Declare(Direction);
 
@@ -127,10 +127,4 @@ namespace kxf
 		Ascending,
 		Descending
 	};
-}
-
-namespace kxf::Private
-{
-	FlagSet<wxOrientation> MapOrientation(FlagSet<Orientation> value) noexcept;
-	FlagSet<Orientation> MapOrientation(FlagSet<wxOrientation> wx) noexcept;
 }

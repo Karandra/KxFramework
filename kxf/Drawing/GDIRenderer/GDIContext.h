@@ -3,6 +3,7 @@
 #include "GDIPen.h"
 #include "GDIBrush.h"
 #include "Private/GDI.h"
+#include "kxf/Core/Private/Mapping.h"
 #include "kxf/UI/Common.h"
 #include "../AffineMatrix.h"
 #include "../Private/Common.h"
@@ -385,14 +386,14 @@ namespace kxf
 			Rect DrawLabel(const String& text, const Rect& rect, const GDIBitmap& bitmap, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
-				m_DC->DrawLabel(text, bitmap.ToWxBitmap(), rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
+				m_DC->DrawLabel(text, bitmap.ToWxBitmap(), rect, *Private::MapAlignment(alignment), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
 
 				return Rect(boundingBox);
 			}
 			Rect DrawLabel(const String& text, const Rect& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
-				m_DC->DrawLabel(text, wxNullBitmap, rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
+				m_DC->DrawLabel(text, wxNullBitmap, rect, *Private::MapAlignment(alignment), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
 
 				return Rect(boundingBox);
 			}
