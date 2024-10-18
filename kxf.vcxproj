@@ -771,7 +771,6 @@
     <ClInclude Include="kxf\Core\Math.h" />
     <ClInclude Include="kxf\Core\StdID.h" />
     <ClInclude Include="kxf\Core\NativeUUID.h" />
-    <ClInclude Include="kxf\Core\Private\ExtraData.h" />
     <ClInclude Include="kxf\Core\Private\VersionImpl.h" />
     <ClInclude Include="kxf\Core\Singleton.h" />
     <ClInclude Include="kxf\Core\String.h" />

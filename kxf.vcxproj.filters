@@ -523,9 +523,6 @@
     <ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h">
       <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Core\Private\ExtraData.h">
-      <Filter>kxf\Core\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\Private\IncludeNtStatus.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
